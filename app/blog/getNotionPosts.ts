@@ -1,17 +1,17 @@
 import { Client } from "@notionhq/client";
 
 const notion = new Client({
-  auth: "secret_2SE7KRu7hxaSFTX36wZ2Ly0eDgzFSw5wfuqvH2mm3dO",
+  auth: process.env.NOTION_API_KEY,
 });
 
 export async function getNotionPosts({
   cursor,
   size = 10,
-  databaseId = "ceddbc0d0ed148008abb01dc65d12fcf",
-}:{
-  cursor?: string
-  size?: number
-  databaseId?: string
+  databaseId = process.env.NOTION_DB_ID,
+}: {
+  cursor?: string;
+  size?: number;
+  databaseId?: string;
 }) {
   const response = await notion.databases.query({
     database_id: databaseId,
