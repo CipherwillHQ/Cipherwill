@@ -32,8 +32,6 @@ The **Open Source Cipherwill Web Client** is a user-friendly, secure interface f
 
 4. **Access the Web Client**: Open your browser and navigate to http://localhost:3000
 
-Here’s the updated contribution guideline:
-
 ## Contribution Guidelines
 
 We value your ideas and feedback! If you’d like to contribute, simply email us at [contribute@cipherwill.com](mailto:contribute@cipherwill.com) with details about what you’d like to see improved or added. 
