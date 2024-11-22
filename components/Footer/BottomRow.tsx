@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BiLogoYoutube, BiSupport, BiX } from "react-icons/bi";
+import { BiLogoGithub, BiLogoYoutube, BiSupport, BiX } from "react-icons/bi";
 import { FaXTwitter } from "react-icons/fa6";
 
 export default function BottomRow() {
@@ -19,8 +19,15 @@ export default function BottomRow() {
         <Link href="/i/terms-of-service" className="text-center">
           Terms of Service
         </Link>
+        <div className="hidden sm:flex border-l border-white/25  h-4" />
+        <Link
+          target="_blank"
+          href="https://github.com/CipherwillHQ/Cipherwill"
+          className="text-center"
+        >
+          Open Source Client
+        </Link>
       </div>
-
       <ul className="flex items-center mt-5 space-x-3 md:order-3 sm:mt-0">
         <li>
           <Link
@@ -47,6 +54,16 @@ export default function BottomRow() {
             className="flex items-center justify-center text-red-600 border border-white/25 rounded-full w-7 h-7"
           >
             <BiLogoYoutube />
+          </Link>
+        </li>
+
+        <li>
+          <Link
+            href="https://github.com/CipherwillHQ/Cipherwill"
+            target="_blank"
+            className="flex items-center justify-center text-white border border-white/25 rounded-full w-7 h-7"
+          >
+            <BiLogoGithub />
           </Link>
         </li>
       </ul>

@@ -84,6 +84,10 @@ const menu = [
         title: "Personas",
         path: "/i/personas",
       },
+      {
+        title: "Github",
+        path: "https://github.com/CipherwillHQ/cipherwill",
+      },
     ],
   },
   {
