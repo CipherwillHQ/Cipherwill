@@ -31,7 +31,7 @@ import { usePostHog } from "posthog-js/react";
 const AuthContext = createContext<any>({});
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD6vj8FeXx58g3zpDvIDFn6qIVRPZ4fUmk",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_KEY,
   authDomain: "auth.cipherwill.com",
   projectId: "project-cipherwill",
   storageBucket: "project-cipherwill.appspot.com",
