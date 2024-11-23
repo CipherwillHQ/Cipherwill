@@ -6,6 +6,7 @@ import { FULL_HOSTNAME } from "@/common/constant";
 import { PaymentGatewayProvider } from "@/contexts/PaymentGatewayContext";
 import { OfflineContext } from "@/contexts/OfflineContext";
 import { ThemeSelector } from "@/components/common/ThemeSelector";
+import { MaintananceModeProvider } from "@/contexts/MaintananceModeContext";
 
 export const metadata: Metadata = {
   title: "Cipherwill App",
@@ -28,23 +29,25 @@ export default function AppLayout({ children }) {
       <div className="select-none text-black dark:text-white">
         <ThemeSelector>
           <OfflineContext>
-            <AuthRedirectProvider>
-              <SessionProvider>
-                <PaymentGatewayProvider>
-                  <div className="flex flex-col sm:flex-row sm:items-center overflow-hidden h-screen w-screen">
-                    <div className="flex sm:h-full bg-secondary">
-                      <Sidebar />
-                    </div>
-                    <div className="flex flex-col h-full w-full bg-primary">
-                      {/* <div className="bg-red-400 p-4">Top Bar</div> */}
-                      <div className="flex flex-col pb-40 flex-1 h-full overflow-y-auto customScrollbar">
-                        {children}
+            <MaintananceModeProvider>
+              <AuthRedirectProvider>
+                <SessionProvider>
+                  <PaymentGatewayProvider>
+                    <div className="flex flex-col sm:flex-row sm:items-center overflow-hidden h-screen w-screen">
+                      <div className="flex sm:h-full bg-secondary">
+                        <Sidebar />
+                      </div>
+                      <div className="flex flex-col h-full w-full bg-primary">
+                        {/* <div className="bg-red-400 p-4">Top Bar</div> */}
+                        <div className="flex flex-col pb-40 flex-1 h-full overflow-y-auto customScrollbar">
+                          {children}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </PaymentGatewayProvider>
-              </SessionProvider>
-            </AuthRedirectProvider>
+                  </PaymentGatewayProvider>
+                </SessionProvider>
+              </AuthRedirectProvider>
+            </MaintananceModeProvider>
           </OfflineContext>
         </ThemeSelector>
       </div>
