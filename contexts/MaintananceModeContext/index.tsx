@@ -18,7 +18,13 @@ export function MaintananceModeProvider({ children }: Props) {
         message: string;
         ttl: string;
       }
-  >(false);
+  >(
+    // false
+    {
+        message: "We are currently under maintanance. We will be back soon.",
+        ttl: DateTime.now().minus({ minutes: 5 }).toMillis().toString(),
+    }
+);
   useEffect(() => {
     posthog.onFeatureFlags((flags) => {
       if (posthog.isFeatureEnabled("maintanance-mode")) {
@@ -55,11 +61,11 @@ export function MaintananceModeProvider({ children }: Props) {
 }
 
 function RemainingTimer({ ttl }: { ttl: number }) {
-  const [timeLeft, setTimeLeft] = useState(getTimeRemaining(ttl));
+  const [timeLeft, setTimeLeft] = useState(getTimeRemaining(ttl, true));
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimeLeft(getTimeRemaining(ttl));
+      setTimeLeft(getTimeRemaining(ttl, true));
     }, 1000);
 
     return () => clearInterval(interval);
