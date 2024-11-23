@@ -1,0 +1,12 @@
+name: Reset Beta Identifier
+
+on:
+  deployment_status:
+jobs:
+  run-e2es:
+    if: github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run reset hook
+        run: curl ${{ secrets.RESET_HOOK_URL }}
