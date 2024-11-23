@@ -1,8 +1,21 @@
 import { DateTime } from "luxon";
 
-export default function getTimeRemaining(endTime) {
+/**
+ * Calculates the time remaining until a specified end time and returns it as a human-readable string.
+ *
+ * @param endTime - The end time in Unix millisecond timestamp format.
+ * @param do_not_allow_past - If true, returns "any time now" if the end time is in the past.
+ * @returns A string representing the time remaining in days, hours, minutes, or seconds.
+ */
+export default function getTimeRemaining(
+  endTime: number,
+  do_not_allow_past = false
+): string {
   const now = new Date().getTime();
   const remaining = endTime - now;
+  if (remaining < 0 && do_not_allow_past) {
+    return "any time now";
+  }
   const seconds = Math.floor(remaining / 1000) % 60;
   const minutes = Math.floor(remaining / 1000 / 60) % 60;
   const hours = Math.floor(remaining / 1000 / 60 / 60) % 24;
