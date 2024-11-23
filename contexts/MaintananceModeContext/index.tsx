@@ -18,13 +18,7 @@ export function MaintananceModeProvider({ children }: Props) {
         message: string;
         ttl: string;
       }
-  >(
-    // false
-    {
-        message: "We are currently under maintanance. We will be back soon.",
-        ttl: DateTime.now().minus({ minutes: 5 }).toMillis().toString(),
-    }
-);
+  >(false);
   useEffect(() => {
     posthog.onFeatureFlags((flags) => {
       if (posthog.isFeatureEnabled("maintanance-mode")) {
