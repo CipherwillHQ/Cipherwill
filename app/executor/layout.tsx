@@ -1,4 +1,4 @@
-import { ThemeSelector } from "@/components/common/ThemeSelector";
+import { ThemeSelector } from "@/contexts/ThemeSelector";
 import ExecutorSidebar from "../../components/executor/ExecutorSidebar";
 import { AuthRedirectProvider } from "../../contexts/AuthRedirect";
 import { SessionProvider } from "../../contexts/SessionContext";
