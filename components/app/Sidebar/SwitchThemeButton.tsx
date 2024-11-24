@@ -1,8 +1,8 @@
-import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeSelector";
 import { TbMoon, TbSun } from "react-icons/tb";
 
 export default function SwitchThemeButton() {
-    const {current_theme, setCurrentTheme} = useAuth();
+    const {current_theme, setCurrentTheme} = useTheme();
 
   return (
     <div
