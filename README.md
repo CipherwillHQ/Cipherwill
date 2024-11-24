@@ -17,11 +17,7 @@ The **Open Source Cipherwill Web Client** is a user-friendly, secure interface f
 
 We value your ideas and feedback! If you’d like to contribute, simply email us at [contribute@cipherwill.com](mailto:contribute@cipherwill.com) with details about what you’d like to see improved or added. 
 
-Our team will review your suggestions and, if approved, implement them in the web client. 
-
-Please note: We do not encourage creating open pull requests for this client, as this could make the user experience too technical and complex. Our focus is on maintaining a simple, user-friendly interface that works for everyone.
-
-Thank you for helping us make the Cipherwill Web Client better for all!
+Our team will review your suggestions and, if approved, implement them in the web client. Thank you for helping us make the Cipherwill Web Client better for all!
 
 ## Security
 
