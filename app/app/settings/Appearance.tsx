@@ -1,11 +1,10 @@
 "use client";
 
-import themeAtom from "@/state/common/themeAtom";
+import { useTheme } from "@/contexts/ThemeSelector";
 import { BsCircle, BsCircleFill } from "react-icons/bs";
-import { useRecoilState } from "recoil";
 
 export default function Appearance() {
-  const [currentTheme, setCurrentTheme] = useRecoilState(themeAtom);
+  const { current_theme, setCurrentTheme } = useTheme();
   return (
     <div className="border border-default w-full max-w-2xl rounded-md bg-secondary">
       <h2 className="font-semibold border-b border-default p-3">Appearance</h2>
@@ -17,7 +16,7 @@ export default function Appearance() {
           <button
             className={`p-2 border rounded-md
                 ${
-                  currentTheme === "dark"
+                  current_theme === "dark"
                     ? "font-semibold border-white"
                     : "border-default"
                 }
@@ -230,13 +229,13 @@ export default function Appearance() {
               </defs>
             </svg>
             <div className="flex items-center gap-1 pt-2 text-sm">
-              {currentTheme === "dark" ? <BsCircleFill /> : <BsCircle />}
+              {current_theme === "dark" ? <BsCircleFill /> : <BsCircle />}
               <span>Dark</span>
             </div>
           </button>
           <button
             className={`p-2 border border-default rounded-md
-            ${currentTheme === "light" && "font-semibold border-black"}
+            ${current_theme === "light" && "font-semibold border-black"}
             `}
             onClick={() => setCurrentTheme("light")}
           >
@@ -446,7 +445,7 @@ export default function Appearance() {
               </defs>
             </svg>
             <div className="flex items-center gap-1 pt-2 text-sm">
-              {currentTheme === "light" ? <BsCircleFill /> : <BsCircle />}
+              {current_theme === "light" ? <BsCircleFill /> : <BsCircle />}
               <span>Light</span>
             </div>
           </button>

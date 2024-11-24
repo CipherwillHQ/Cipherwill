@@ -1,13 +1,20 @@
 "use client";
 
-import themeAtom from "@/state/common/themeAtom";
-import { useEffect, useState } from "react";
+import { DEFAULT_THEME } from "@/common/constant";
+import { useContext, useEffect, useState } from "react";
 import { IoMdSunny } from "react-icons/io";
 import { IoMoon } from "react-icons/io5";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { createContext } from "react";
+
+const ThemeContext = createContext({
+  current_theme: DEFAULT_THEME,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setCurrentTheme: (_theme: string) => {},
+});
 
 export function ThemeSelector({ children }: { children: React.ReactNode }) {
-  const current_theme = useRecoilValue(themeAtom);
+  const [current_theme, setCurrentTheme] = useState(DEFAULT_THEME);
+
   useEffect(() => {
     const selector = "#app-theme-layout";
     document.querySelector(selector)?.classList.remove("dark", "light");
@@ -15,14 +22,13 @@ export function ThemeSelector({ children }: { children: React.ReactNode }) {
 
     const popup_selector = "#popup-root";
     let popup_root = document.querySelector(popup_selector);
-    if(!popup_root){
+    if (!popup_root) {
       popup_root = document.createElement("div");
       popup_root.setAttribute("id", "popup-root");
       document.body.appendChild(popup_root);
     }
     popup_root.classList.remove("dark", "light");
     popup_root.classList.add(current_theme);
-
 
     let themeMetaTag = document.querySelector('meta[name="theme-color"]');
 
@@ -38,23 +44,26 @@ export function ThemeSelector({ children }: { children: React.ReactNode }) {
       themeMetaTag.setAttribute("content", "#ffffff");
     }
   }, [current_theme]);
+  const value = { current_theme, setCurrentTheme };
 
-  return children;
+  return (
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+  );
+}
+
+export function useTheme() {
+  return useContext(ThemeContext);
 }
 
 export function SwitchThemeIcon({ size = 20 }: { size?: number }) {
-  const [currentTheme, setCurrentTheme] = useRecoilState(themeAtom);
-  const [final_state, set_final_state] = useState("light");
-  useEffect(() => {
-    set_final_state(currentTheme);
-  }, [currentTheme]);
+  const { current_theme, setCurrentTheme } = useTheme();
 
   return (
     <div
       className="cursor-pointer mx-2"
-      onClick={() => setCurrentTheme(final_state === "dark" ? "light" : "dark")}
+      onClick={() => setCurrentTheme(current_theme === "dark" ? "light" : "dark")}
     >
-      {final_state === "dark" ? (
+      {current_theme === "dark" ? (
         <IoMdSunny size={size} />
       ) : (
         <IoMoon size={size} />

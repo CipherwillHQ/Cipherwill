@@ -5,8 +5,8 @@ import { SessionProvider } from "../../contexts/SessionContext";
 import { FULL_HOSTNAME } from "@/common/constant";
 import { PaymentGatewayProvider } from "@/contexts/PaymentGatewayContext";
 import { OfflineContext } from "@/contexts/OfflineContext";
-import { ThemeSelector } from "@/components/common/ThemeSelector";
 import { MaintananceModeProvider } from "@/contexts/MaintananceModeContext";
+import { ThemeSelector } from "@/contexts/ThemeSelector";
 
 export const metadata: Metadata = {
   title: "Cipherwill App",

@@ -4,7 +4,6 @@ import { ApolloContext } from "../contexts/ApolloContext";
 import { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { UserSetupProvider } from "../contexts/UserSetupContext";
-import { RecoilContext } from "@/contexts/RecoilContext";
 import { gilroy, PlayfairDisplay } from "./font";
 import { FULL_HOSTNAME } from "@/common/constant";
 import { MixpanelProvider } from "@/contexts/MixpanelContext";
@@ -125,7 +124,6 @@ export default function RootLayout({ children }) {
             </div>
           )}
         <Toaster position="top-right" />
-        <RecoilContext>
           <MixpanelProvider>
             <AuthProvider>
               <CSPostHogProvider>
@@ -139,7 +137,6 @@ export default function RootLayout({ children }) {
               </CSPostHogProvider>
             </AuthProvider>
           </MixpanelProvider>
-        </RecoilContext>
       </body>
     </html>
   );
