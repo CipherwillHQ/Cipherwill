@@ -5,11 +5,9 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { TfiClose, TfiMenu } from "react-icons/tfi";
-import { SwitchThemeIcon } from "../common/ThemeSelector";
 import black_logo from "../../assets/logo-black.png";
 import white_logo from "../../assets/logo-white.png";
 import menu from "./menu";
-import Link from "next/link";
 import SimpleButton from "../common/SimpleButton";
 import { MdExpandMore } from "react-icons/md";
 
