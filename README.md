@@ -3,34 +3,15 @@
 The **Open Source Cipherwill Web Client** is a user-friendly, secure interface for managing digital assets and creating digital wills. This web application allows individuals to organize their digital and physical information, encrypt it, and assign beneficiaries for seamless transfer upon their passing.
 
 ## Key Features
-
-- **Secure Encryption**: Protect your data with advanced encryption methods, ensuring privacy and security.
-- **Easy Data Management**: Organize bank details, investments, digital assets, and more in an intuitive interface.
-- **Beneficiary Assignment**: Assign trusted individuals as beneficiaries for your digital will.
-- **Automated Transfer**: Ensure assets are delivered securely to beneficiaries based on predefined conditions.
 - **Open Source**: Open source development with full transparency and community feedback.
 
-## Getting Started
+- **Double-Layer Encryption for Maximum Security**: Cipherwill uses a unique two-step encryption process. Your data is encrypted with a time capsule key and then re-encrypted with your beneficiary's public key. This ensures that only the rightful beneficiary can decrypt and access the information, even Cipherwill cannot access your data.
 
-1. **Clone the Repository**:
+- **Proactive Beneficiary Support**: If beneficiaries face challenges accessing the data, Cipherwill’s team takes a proactive approach by reaching out to them or their trusted contacts, ensuring that the digital assets reach the intended hands without delays.
 
-   ```bash
-   git clone https://github.com/CipherwillHQ/cipherwill.git
-   ```
+- **Digital Asset Coverage**: Cipherwill isn’t limited to just financial data. It manages and transfers a vast array of digital and physical assets, including cryptocurrency wallets, NFTs, social media accounts, legal documents, and even personal directives like health wishes or final messages.
 
-2. **Install Dependencies**: Navigate to the project directory and run
-
-   ```bash
-   npm install
-   ```
-
-3. **Run the Development Server**: Start the application locally
-
-   ```bash
-   npm run dev
-   ```
-
-4. **Access the Web Client**: Open your browser and navigate to http://localhost:3000
+- **Time Capsule for Legacy Planning**: Cipherwill offers a unique time capsule feature that securely locks your data until a predefined time or event. This lets you plan messages, instructions, or gifts for loved ones, ensuring your legacy remains impactful and timely.
 
 ## Contribution Guidelines
 
