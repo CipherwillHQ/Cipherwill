@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { IoMdSunny } from "react-icons/io";
 import { IoMoon } from "react-icons/io5";
 import { createContext } from "react";
+import { localstorage_get, localstorage_set } from "@/common/localstorage";
 
 const ThemeContext = createContext({
   current_theme: DEFAULT_THEME,
@@ -13,7 +14,9 @@ const ThemeContext = createContext({
 });
 
 export function ThemeSelector({ children }: { children: React.ReactNode }) {
-  const [current_theme, setCurrentTheme] = useState(DEFAULT_THEME);
+  const [current_theme, setCurrentTheme] = useState(
+    localstorage_get("theme") || DEFAULT_THEME
+  );
 
   useEffect(() => {
     const selector = "#app-theme-layout";
@@ -40,8 +43,10 @@ export function ThemeSelector({ children }: { children: React.ReactNode }) {
 
     if (current_theme === "dark") {
       themeMetaTag.setAttribute("content", "#171717");
+      localstorage_set("theme", "dark");
     } else {
       themeMetaTag.setAttribute("content", "#ffffff");
+      localstorage_set("theme", "light");
     }
   }, [current_theme]);
   const value = { current_theme, setCurrentTheme };
@@ -61,7 +66,9 @@ export function SwitchThemeIcon({ size = 20 }: { size?: number }) {
   return (
     <div
       className="cursor-pointer mx-2"
-      onClick={() => setCurrentTheme(current_theme === "dark" ? "light" : "dark")}
+      onClick={() =>
+        setCurrentTheme(current_theme === "dark" ? "light" : "dark")
+      }
     >
       {current_theme === "dark" ? (
         <IoMdSunny size={size} />
