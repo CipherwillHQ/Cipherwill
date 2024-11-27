@@ -47,7 +47,7 @@ export default function FAQPage({ params, searchParams }) {
         <div className="mt-40 mb-20 w-full flex flex-col gap-4 max-w-7xl mx-auto p-2 text-lg">
           <h1 className="font-medium text-3xl pr-4">{faq.title}</h1>
           {faq.content}
-          <QuestionFeedback />
+          <QuestionFeedback question={faq.title} />
         </div>
         <TopicsPanel />
       </div>
