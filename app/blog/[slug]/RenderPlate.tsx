@@ -70,7 +70,7 @@ const customcss = `
 export default function RenderPlate({ recordMap }) {
   return (
     <>
-      <style>{customcss}</style>
+      <style suppressHydrationWarning>{customcss}</style>
       <NotionRenderer
         fullPage={false}
         recordMap={recordMap}
