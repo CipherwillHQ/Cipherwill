@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
-import { RedirectType, redirect } from "next/navigation";
 import toast from "react-hot-toast";
 import Popup from "reactjs-popup";
 

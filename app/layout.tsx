@@ -8,12 +8,6 @@ import { gilroy, PlayfairDisplay } from "./font";
 import { FULL_HOSTNAME } from "@/common/constant";
 import { MixpanelProvider } from "@/contexts/MixpanelContext";
 import { CSPostHogProvider } from "@/contexts/CSPostHogProvider";
-import dynamic from "next/dynamic";
-import { Suspense } from "react";
-
-const CSSImporter = dynamic(() => import("@/components/CSSImporter"), {
-  ssr: false,
-});
 
 const title = "Cipherwill - Your Digital Will";
 const description =

@@ -6,9 +6,7 @@ import Link from "next/link";
 import CookieViewer from "./CookieViewer";
 import PolicyPageHeader from "@/components/public/i/PolicyPageHeader";
 
-const CookieManager = dynamic(() => import("./CookieManager"), {
-  ssr: false,
-});
+const CookieManager = dynamic(() => import("./CookieManager"));
 const title = "Cookie Policy";
 const description =
   "Learn how Cipherwill uses cookies to enhance your experience. Discover our cookie policy details and manage your preferences for a secure, personalized journey.";
