@@ -8,6 +8,10 @@ import { gilroy, PlayfairDisplay } from "./font";
 import { FULL_HOSTNAME } from "@/common/constant";
 import { MixpanelProvider } from "@/contexts/MixpanelContext";
 import { CSPostHogProvider } from "@/contexts/CSPostHogProvider";
+import dynamic from "next/dynamic";
+
+// This works with dynamic imports to lower LCP
+const CSSImporter = dynamic(() => import("@/components/CSSImporter"));
 
 const title = "Cipherwill - Your Digital Will";
 const description =
