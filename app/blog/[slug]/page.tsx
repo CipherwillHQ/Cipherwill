@@ -20,7 +20,7 @@ export async function generateMetadata({
   params,
   searchParams,
 }): Promise<Metadata> {
-  const { slug } = params;
+  const { slug } = await params;
   const { title, description, cover, error } = await getPost(slug);
   if (error) {
     console.log("error", error);
@@ -41,7 +41,7 @@ export async function generateMetadata({
 }
 
 export default async function BlogPost({ params }) {
-  const { slug } = params;
+  const { slug } = await params;
   const {
     id,
     title,
