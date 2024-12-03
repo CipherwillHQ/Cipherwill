@@ -1,12 +1,11 @@
 "use client";
-
-import MobilePageHeader from "@/components/mobile/MobilePageHeader";
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
-import { LuHome, LuUser2 } from "react-icons/lu";
+import { LuHome } from "react-icons/lu";
 import { TbLogout } from "react-icons/tb";
 import Popup from "reactjs-popup";
 import MobileFloatingMenu from "../Sidebar/MobileFloatingMenu";
+import { AiOutlineUser } from "react-icons/ai";
 
 export default function Topbar() {
   const { logout } = useAuth();
@@ -25,7 +24,7 @@ function ProfilePopup() {
     <Popup
       trigger={
         <button className="flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-md hover:bg-gray-100">
-          <LuUser2 size={24} />
+          <AiOutlineUser size={24} />
         </button>
       }
       position="bottom right"
@@ -36,7 +35,7 @@ function ProfilePopup() {
           className="flex items-center p-2 rounded-md justify-start hover:bg-neutral-100 dark:hover:bg-neutral-700"
         >
           <div className={`mr-2 text-xl`}>
-            <LuUser2 />
+            <AiOutlineUser  />
           </div>
           <div className={`text-sm font-medium`}>Profile</div>
         </Link>
