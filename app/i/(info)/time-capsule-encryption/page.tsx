@@ -36,9 +36,9 @@ export default function TimeCapsuleEncryption() {
         <div>
           Timed-release encryption (TRE) is a two-factor encryption method that
           combines public key encryption with time-based controls. Decryption
-          requires a special "trapdoor" key, which remains confidential until a
+          requires a special &quot;trapdoor&quot; key, which remains confidential until a
           specified time, managed by a secure time-server. At Cipherwill, we
-          refer to this system as <b>"Time Capsule Encryption."</b>
+          refer to this system as <b>&quot;Time Capsule Encryption.&quot;</b>
         </div>
         <div className="flex flex-col gap-2">
           <h2 className="text-2xl font-bold">

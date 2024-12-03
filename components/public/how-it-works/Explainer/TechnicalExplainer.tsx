@@ -84,7 +84,7 @@ export default function TechnicalExplainer() {
       <ul className="list-disc list-inside">
         <li>
           <b>Data Pods:</b> When you add data to Cipherwill, it is stored in the
-          system as a "data pod." Each data pod is encrypted using a key
+          system as a &quot;data pod.&quot; Each data pod is encrypted using a key
           associated with each of your security factors.
         </li>
         <li>
@@ -116,7 +116,7 @@ export default function TechnicalExplainer() {
       <ul className="list-disc list-inside">
         <li>
           <b>Commutative Encryption:</b> Cipherwill uses commutative encryption
-          to encrypt data pods again, creating a "time capsule" key. This key
+          to encrypt data pods again, creating a &quot;time capsule&quot; key. This key
           ensures that the data remains encrypted and inaccessible until a
           specified time.
         </li>
