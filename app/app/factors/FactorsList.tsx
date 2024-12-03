@@ -62,7 +62,7 @@ export default function FactorsList() {
           <div className="text-sm text-red-500 max-w-md mx-auto">
             Please note that if your forget or lose your security factors, you
             will lose access to your Cipherwill data because it is encrypted
-            with your security factors. You'll have to reset your account to get
+            with your security factors. You&apos;ll have to reset your account to get
             started again.
           </div>
         </div>

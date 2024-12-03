@@ -6,7 +6,7 @@ export default function TechnicalExplainer() {
       </h2>
       <p>
         Cipherwill provides a secure and comprehensive platform for managing and
-        transferring digital assets through encrypted digital wills. Here's a
+        transferring digital assets through encrypted digital wills. Here&apos;s a
         step-by-step breakdown of how it works, including the advanced
         encryption techniques used at each stage:
       </p>
@@ -95,7 +95,7 @@ export default function TechnicalExplainer() {
         <li>
           <b>Beneficiary Keys:</b> When you add or update a data pod, additional
           keys are generated for you and your beneficiaries. These keys, derived
-          from your and your beneficiaries' public keys, are necessary for
+          from your and your beneficiaries&apos; public keys, are necessary for
           decrypting the data pod when required.
         </li>
       </ul>
@@ -103,7 +103,7 @@ export default function TechnicalExplainer() {
       <ul className="list-disc list-inside">
         <li>
           <b>Uploading Keys:</b> The keys are uploaded to your account for
-          future access and are also uploaded to your beneficiaries' Cipherwill
+          future access and are also uploaded to your beneficiaries&apos; Cipherwill
           accounts, ensuring they can access the data when needed.
         </li>
         <li>
@@ -129,7 +129,7 @@ export default function TechnicalExplainer() {
       <h3 className="text-xl font-bold">Will Execution and Data Access</h3>
       <ul className="list-disc list-inside">
         <li>
-          <b>Dead Man's Switch:</b> If you fail to update your will within a
+          <b>Dead Man&apos;s Switch:</b> If you fail to update your will within a
           predefined time (e.g., due to death), the will is executed, and the
           time capsule keys are released to your beneficiaries.
         </li>
@@ -156,7 +156,7 @@ export default function TechnicalExplainer() {
           <b>Data Revocation and Deletion:</b> After a predefined period
           specified in your digital will, access to the data is revoked, and the
           data is permanently deleted from both your account and your
-          beneficiaries' accounts.
+          beneficiaries&apos; accounts.
         </li>
       </ul>
       <h2 className="text-3xl font-bold ">Important Points to Remember</h2>

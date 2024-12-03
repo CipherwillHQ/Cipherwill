@@ -12,9 +12,10 @@ export default function PlanRestricted({
   placeholder: React.ReactNode;
   required_plan?: string;
 }) {
-  if(!IS_PRODUCTION) return children;
   const plan = useCurrentUserPlan();
 
+  if(!IS_PRODUCTION) return children;
+  
   if (plan === required_plan) {
     return children;
   }
