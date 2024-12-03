@@ -14,7 +14,7 @@ export async function generateMetadata({
   params,
   searchParams,
 }): Promise<Metadata> {
-  const { og_img } = searchParams;
+  const { og_img } = await searchParams;
   let cover = "/og-img.png";
   if (og_img && og_img.startsWith("https://media.cipherwill.com")) {
     cover = og_img;

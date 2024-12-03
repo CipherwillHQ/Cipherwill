@@ -16,15 +16,9 @@ const Equation = dynamic(() =>
 );
 // const Pdf = dynamic(
 //   () => import("react-notion-x/build/third-party/pdf").then((m) => m.Pdf),
-//   {
-//     ssr: false,
-//   }
 // );
 const Modal = dynamic(
-  () => import("react-notion-x/build/third-party/modal").then((m) => m.Modal),
-  {
-    ssr: false,
-  }
+  () => import("react-notion-x/build/third-party/modal").then((m) => m.Modal)
 );
 
 // core styles shared by all of react-notion-x (required)

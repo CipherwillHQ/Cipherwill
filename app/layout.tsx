@@ -9,11 +9,9 @@ import { FULL_HOSTNAME } from "@/common/constant";
 import { MixpanelProvider } from "@/contexts/MixpanelContext";
 import { CSPostHogProvider } from "@/contexts/CSPostHogProvider";
 import dynamic from "next/dynamic";
-import { Suspense } from "react";
 
-const CSSImporter = dynamic(() => import("@/components/CSSImporter"), {
-  ssr: false,
-});
+// This works with dynamic imports to lower LCP
+const CSSImporter = dynamic(() => import("@/components/CSSImporter"));
 
 const title = "Cipherwill - Your Digital Will";
 const description =

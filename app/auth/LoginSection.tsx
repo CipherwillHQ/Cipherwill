@@ -1,8 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
-const EmailLogin = dynamic(() => import("./EmailLogin"), {
-  ssr: false,
-});
+const EmailLogin = dynamic(() => import("./EmailLogin"));
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext";
 import { useEffect, useState } from "react";

@@ -43,8 +43,8 @@ export default function WillExecutionTimeline() {
             Every year on your birthday, we will send our wishes and a reminder
             to open Cipherwill and make any changes you have in mind. This is a
             mandatory event that must be completed within 3 days of your
-            birthday so that we know you're alive and well. It's okay if you
-            don't have any changes - just visit the Cipherwill dashboard once.
+            birthday so that we know you&apos;re alive and well. It&apos;s okay if you
+            don&apos;t have any changes - just visit the Cipherwill dashboard once.
           </div>
         </div>
         <div className="flex flex-col gap-2">
@@ -55,11 +55,11 @@ export default function WillExecutionTimeline() {
             </div>
           </div>
           <div className="bg-slate-100 p-2 rounded-md font-semibold text-sm">
-            We will only send this reminder if you haven't opened Cipherwill
+            We will only send this reminder if you haven&apos;t opened Cipherwill
             within 3 days of your birthday
           </div>
           <div>
-            If you haven't opened Cipherwill within 3 days of your birthday, we
+            If you haven&apos;t opened Cipherwill within 3 days of your birthday, we
             will send this reminder to inform you that you need to access
             Cipherwill to avoid will execution event.
           </div>
@@ -72,11 +72,11 @@ export default function WillExecutionTimeline() {
             </div>
           </div>
           <div className="bg-slate-100 p-2 rounded-md font-semibold text-sm">
-            We will only send this reminder if you haven't opened Cipherwill
+            We will only send this reminder if you haven&apos;t opened Cipherwill
             within 30 days of your birthday
           </div>
           <div>
-            If you haven't opened Cipherwill within 30 days of your birthday and
+            If you haven&apos;t opened Cipherwill within 30 days of your birthday and
             27 days after the first reminder, we will send another reminder to
             warn you about the seriousness of your inaction.
           </div>
@@ -89,13 +89,13 @@ export default function WillExecutionTimeline() {
             </div>
           </div>
           <div className="bg-slate-100 p-2 rounded-md font-semibold text-sm">
-            We will only send this reminder if you haven't opened Cipherwill
+            We will only send this reminder if you haven&apos;t opened Cipherwill
             within 90 days of your birthday
           </div>
           <div>
-            If you haven't opened Cipherwill within 90 days of your birthday and
-            60 days after the second reminder, we’ll send you another gentle
-            nudge, just to make sure you’re aware of how important this is.
+            If you haven&apos;t opened Cipherwill within 90 days of your birthday and
+            60 days after the second reminder, we&apos;ll send you another gentle
+            nudge, just to make sure you&apos;re aware of how important this is.
           </div>
         </div>
         <div className="flex flex-col gap-2">
@@ -108,7 +108,7 @@ export default function WillExecutionTimeline() {
           <div>
             At this point, we will send you a message informing you that, since
             you did not respond to the previous 4 reminders from Cipherwill, the
-            "time capsule" encryption keys have been released to your
+            &quot;time capsule&quot; encryption keys have been released to your
             beneficiaries on their Cipherwill dashboard. We will also notify
             your beneficiaries that they now have access to a special dashboard
             for next 100 days containing the data you have uploaded for them.

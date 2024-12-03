@@ -14,7 +14,7 @@ export default function WishesPage() {
             How should we treat you?
           </h3>
           <p>
-            We're glad you asked! We're here to help you find the perfect gift for you. We understand that everyone has different tastes and preferences, so we've created a range of options to suit everyone's needs. Whether you're looking for a thoughtful gift or a unique experience, we've got you covered.
+            We&apos;re glad you asked! We&apos;re here to help you find the perfect gift for you. We understand that everyone has different tastes and preferences, so we&apos;ve created a range of options to suit everyone&apos;s needs. Whether you&apos;re looking for a thoughtful gift or a unique experience, we&apos;ve got you covered.
           </p>
         </div>
         

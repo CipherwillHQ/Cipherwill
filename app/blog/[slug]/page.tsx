@@ -1,7 +1,5 @@
 import RenderPlate from "./RenderPlate";
-import Image from "next/image";
 import CheckURL from "./CheckURL";
-import Link from "next/link";
 import getPost from "./getPost";
 import Footer from "../../../components/Footer";
 import Header from "../../../components/Header";
@@ -10,11 +8,10 @@ import { FULL_HOSTNAME } from "@/common/constant";
 import CTA from "@/components/public/CTA";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import SimpleButton from "@/components/common/SimpleButton";
 import dynamic from "next/dynamic";
 import BlogAd from "./BlogAd";
 
-const CoverImage = dynamic(() => import("./CoverImage"), { ssr: false });
+const CoverImage = dynamic(() => import("./CoverImage"));
 
 // Page cache not working because of dynamic route
 // making function getPost memoizable and using fetchPostApi to cache data
@@ -23,7 +20,7 @@ export async function generateMetadata({
   params,
   searchParams,
 }): Promise<Metadata> {
-  const { slug } = params;
+  const { slug } = await params;
   const { title, description, cover, error } = await getPost(slug);
   if (error) {
     console.log("error", error);
@@ -44,7 +41,7 @@ export async function generateMetadata({
 }
 
 export default async function BlogPost({ params }) {
-  const { slug } = params;
+  const { slug } = await params;
   const {
     id,
     title,

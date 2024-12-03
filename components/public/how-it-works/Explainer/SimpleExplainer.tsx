@@ -15,8 +15,8 @@ export default function SimpleExplainer() {
           <li>
             <strong>Add and Save Your Data</strong>
             <p className="">
-              Add your important information to Cipherwill, where it's stored as
-              a "data pod."
+              Add your important information to Cipherwill, where it&apos;s
+              stored as a &quot;data pod.&quot;
             </p>
           </li>
           <li>
@@ -24,15 +24,15 @@ export default function SimpleExplainer() {
             <p className="">Your data is encrypted on multiple levels:</p>
             <ul className="list-disc list-inside ml-4">
               <li>
-                <strong>Personal Encryption:</strong> It's encrypted with your
-                own security factors, so only you can access and update it.
+                <strong>Personal Encryption:</strong> It&apos;s encrypted with
+                your own security factors, so only you can access and update it.
               </li>
               <li>
                 <strong>Time Capsule Encryption:</strong> This ensures that the
                 data is only released to your beneficiaries in the future.
               </li>
               <li>
-                <strong>Beneficiary Encryption:</strong> Each beneficiary's
+                <strong>Beneficiary Encryption:</strong> Each beneficiary&apos;s
                 security factors further protect the data, allowing them access
                 only when the time is right.
               </li>
@@ -63,8 +63,8 @@ export default function SimpleExplainer() {
         <ul className="list-inside list-disc text-base space-y-4">
           <li>
             <strong>Device-Level Encryption:</strong> Your data is encrypted on
-            your device before it's saved, ensuring the actual data never leaves
-            your device without protection.
+            your device before it&apos;s saved, ensuring the actual data never
+            leaves your device without protection.
           </li>
           <li>
             <strong>Data Redundancy:</strong> Multiple copies of your data pods

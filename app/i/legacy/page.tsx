@@ -21,6 +21,7 @@ export default async function Legacy() {
           const slug = page.properties.slug.rich_text[0].text.content;
           return (
             <Link
+              key={page.id}
               href={`/i/legacy/${slug}-${page.id.replaceAll("-", "")}`}
               className="hover:underline"
             >
