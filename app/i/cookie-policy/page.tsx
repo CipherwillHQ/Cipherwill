@@ -1,12 +1,12 @@
 import { FULL_HOSTNAME } from "@/common/constant";
 import Footer from "../../../components/Footer";
 import Header from "../../../components/Header";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import CookieViewer from "./CookieViewer";
 import PolicyPageHeader from "@/components/public/i/PolicyPageHeader";
+import CookieManagerWrapper from "./CookieManagerWrapper";
 
-const CookieManager = dynamic(() => import("./CookieManager"));
+
 const title = "Cookie Policy";
 const description =
   "Learn how Cipherwill uses cookies to enhance your experience. Discover our cookie policy details and manage your preferences for a secure, personalized journey.";
@@ -29,7 +29,7 @@ export default function PrivacyPolicy() {
       <Header />
       <PolicyPageHeader title={`Cookie\nPolicy`} />
       <div className="flex flex-col md:flex-row justify-center items-center gap-2 my-10 max-w-4xl mx-auto">
-        <CookieManager />
+        <CookieManagerWrapper />
         <CookieViewer />
       </div>
       <div className="w-full max-w-4xl mx-auto my-10 p-4 font-medium text-lg">
