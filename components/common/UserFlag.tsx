@@ -5,12 +5,12 @@ import { useUserContext } from "@/contexts/UserSetupContext";
 import Link from "next/link";
 import { FaRegUserCircle } from "react-icons/fa";
 import { FaAngleRight } from "react-icons/fa6";
-import { LuHome } from "react-icons/lu";
 import { TbLogout } from "react-icons/tb";
 import Popup from "reactjs-popup";
 import SidebarItem from "../app/Sidebar/SidebarItem";
 import SwitchThemeButton from "../app/Sidebar/SwitchThemeButton";
 import { AiOutlineUser } from "react-icons/ai";
+import { IoHomeOutline } from "react-icons/io5";
 
 export default function UserFlag() {
   const { user } = useUserContext();
@@ -70,7 +70,7 @@ export default function UserFlag() {
           className="flex items-center p-2 rounded-md justify-start hover:bg-neutral-100 dark:hover:bg-neutral-700"
         >
           <div className={`mr-2 text-xl`}>
-            <LuHome />
+            <IoHomeOutline />
           </div>
           <div className={`font-medium text-sm`}>Home page</div>
         </Link>
