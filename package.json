@@ -44,7 +44,7 @@
     "lottie-react": "^2.4.0",
     "luxon": "^3.4.4",
     "mixpanel-browser": "^2.56.0",
-    "next": "^14.2.14",
+    "next": "^15.0.3",
     "next-sitemap": "^4.2.3",
     "notion-client": "^6.16.0",
     "posthog-js": "^1.194.3",
