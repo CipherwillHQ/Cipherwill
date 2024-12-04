@@ -13,7 +13,7 @@ const questions = [
       <div>
         Even if a hacker gets into Cipherwill&apos;s backend, your data stays
         safe. That&apos;s because your info isn&apos;t stored there directly.
-        It's kept in separate object storage and databases. So, breaking into
+        It&apos;s kept in separate object storage and databases. So, breaking into
         the backend doesn&apos;t mean they can see your data.
         <br />
         <br />
