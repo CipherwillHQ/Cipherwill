@@ -2,6 +2,7 @@ import { FULL_HOSTNAME } from "@/common/constant";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import InstallButton from "./InstallButton";
+import Link from "next/link";
 
 const title = "Cipherwill downloads";
 const description =
@@ -59,6 +60,24 @@ export default function Download() {
               2. Click on the <b>Install</b> button.
             </li>
           </ol>
+        </div>
+
+        <div className="mt-10 p-2 w-full max-w-xl mx-auto border-t">
+          <h2 className="font-bold text-xl pt-4">Browser Extensiomn</h2>
+          <p className="text-lg pt-1">any desktop browser</p>
+          <div className="py-6 text-left">
+            Cipherwill's browser extension functions as a Dead Man's Switch,
+            reminding you to update your cipherwill.
+          </div>
+          <Link
+            href={
+              "https://chromewebstore.google.com/detail/cipherwill-dead-mans-swit/nfjmbmpjnjlpjaamaofmnmdkjndgcfap"
+            }
+            target="_blank"
+            className="bg-black py-2 px-8 text-white rounded-md"
+          >
+            Download here
+          </Link>
         </div>
       </section>
 

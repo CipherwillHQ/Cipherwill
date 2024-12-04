@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Link from "next/link";
 import EncryptionDetails from "./EncryptionDetails";
 import SymbolicLogo from "@/components/public/logo/SymbolicLogo";
+import { IoIosHeart } from "react-icons/io";
 
 const title = "About us";
 const description =
@@ -25,15 +26,47 @@ export default function AboutUs() {
   return (
     <div className="w-full">
       <div className="pt-12 sm:pt-40 max-w-4xl mx-auto">
-        <div className="flex items-center justify-between px-4 pb-20">
-          <SymbolicLogo overrideTheme="light" size={40} />
-          <Link href={"/"}>
-            <button className="border border-black py-2 px-6 rounded-full font-semibold">
-              Go back to website
-            </button>
-          </Link>
+        <div className="flex flex-col md:flex-row items-center justify-between px-4 pb-8">
+          <div className="flex grow flex-col gap-2">
+            <SymbolicLogo overrideTheme="light" size={40} />
+            <h3 className="font-semibold text-xl flex items-center gap-2">
+              Developed with <IoIosHeart className="text-red-600" />
+              by
+            </h3>
+            <div>
+              Zetapad Technologies Inc.
+              <br />
+              <div className="text-sm">
+                registered in the U.S. and other countries.
+                <br />
+                Cipherwill is developed by a team of engineers, lawyers,
+                designers and security experts.
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col w-full sm:w-fit sm:max-w-fit pt-8 gap-2 text-sm">
+            <Link href={"/"}>
+              <button className="font-medium shadow-sm hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
+                Go back to website
+              </button>
+            </Link>
+            <Link href={"/i/live-status"}>
+              <button className="font-medium shadow-sm hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
+                Servers & Status
+              </button>
+            </Link>
+
+            <Link href={"/i/third-party-processors"}>
+              <button className="font-medium shadow-sm hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
+                Third Party Processors
+              </button>
+            </Link>
+          </div>
         </div>
-        <h1 className="text-5xl sm:text-7xl font-black p-4">about Cipherwill</h1>
+        <div className="w-full bg-gradient-to-b from-transparent to-black/5 border-b border-black/20 rounded-b-full h-8"></div>
+        <h1 className="text-5xl sm:text-7xl font-black p-4 mt-12">
+          about Cipherwill
+        </h1>
       </div>
       <div className="max-w-4xl mx-auto py-10 text-justify p-4 font-medium text-lg">
         <div className="py-2">
@@ -47,16 +80,16 @@ export default function AboutUs() {
         </h3>
         <div>
           Cipherwill was inspired by a news story that deeply moved our founder,
-          Shivam. The story was about a person who had amassed millions
-          in digital assets, including cryptocurrency, domain names, and a
-          thriving YouTube brand. Tragically, upon his sudden passing, his loved
-          ones were unable to locate or access any of these digital assets,
-          resulting in a significant loss. This poignant incident highlighted
-          the urgent need for a solution to manage and secure digital legacies
-          effectively. Determined to prevent others from facing such losses,
-          Our team envisioned Cipherwill as a secure, user-friendly platform to
-          store important digital information and ensure its seamless transfer
-          to loved ones, providing peace of mind in the digital age.
+          Shivam. A man had millions in digital assets, including
+          cryptocurrency, domain names, and a YouTube brand. After his sudden
+          passing, his loved ones couldn't access these assets, resulting in a
+          significant loss.
+          <br />
+          <br />
+          This incident highlighted the urgent need for managing digital
+          legacies. Determined to prevent such losses, our team envisioned
+          Cipherwill. It’s a secure, user-friendly platform to store important
+          digital information and ensure its seamless transfer to loved ones.
         </div>
         <h3 className="text-xl py-2 font-semibold mt-4">Our Mission</h3>
         <div className="border p-4 my-2 rounded-md bg-black text-white">
@@ -95,31 +128,34 @@ export default function AboutUs() {
         <h2 className="text-2xl py-2 font-semibold mt-4">What We Do</h2>
         <h3 className="text-xl py-2 font-semibold mt-2">Platform Overview</h3>
         <div>
-          Cipherwill is a secure digital platform designed to empower
-          individuals in managing and transferring their digital assets with
-          confidence. Through advanced encryption technology, Cipherwill ensures
-          the secure storage and seamless transfer of a wide range of assets,
-          including cryptocurrencies, online accounts, intellectual property,
-          and more. Users can organize their assets, create detailed plans, and
-          designate beneficiaries, all while maintaining privacy and security.
-          Cipherwill aims to simplify digital legacy planning, providing peace
-          of mind that one&apos;s digital footprint will be managed and
-          transferred according to their wishes.
+          Cipherwill is a secure digital platform that helps individuals manage
+          and transfer their digital assets with confidence. It uses advanced
+          encryption technology to ensure the safe storage and seamless transfer
+          of various assets, such as cryptocurrencies, online accounts, and
+          intellectual property.
+          <br /> <br />
+          Users can organize their assets, create detailed plans, and designate
+          beneficiaries while maintaining privacy and security. Cipherwill
+          simplifies digital legacy planning, offering peace of mind that your
+          digital footprint will be handled according to your wishes.
         </div>
 
         <h3 className="text-xl py-2 font-semibold mt-2">
           Commitment to Privacy & Security
         </h3>
         <div>
-          We prioritizes the privacy and security of user data. Employing
-          advanced encryption technology, Cipherwill ensures that all stored
-          information, including cryptocurrencies, online accounts, intellectual
-          property, and more, remains inaccessible to anyone other than the
-          designated user and their chosen beneficiaries. This commitment to
-          encryption guarantees that even Cipherwill itself cannot access or
-          view user data, thereby providing complete peace of mind that personal
-          information and digital assets are securely managed and transferred
-          according to the user&apos;s explicit instructions.
+          We prioritize the privacy and security of user data by employing
+          advanced encryption technology. This ensures that all stored
+          information, including cryptocurrencies, online accounts, and
+          intellectual property, remains accessible only to the user and their
+          chosen beneficiaries.
+          <br />
+          <br />
+          Cipherwill&apos;s encryption is so robust that even our team cannot
+          access or view user data. This commitment provides complete peace of
+          mind, ensuring personal information and digital assets are securely
+          managed and transferred according to the user&apos;s explicit
+          instructions.
         </div>
         <EncryptionDetails />
 
@@ -129,26 +165,25 @@ export default function AboutUs() {
           Our core team consists of dedicated experts who collectively ensure
           the platform&apos;s reliability and user satisfaction. They bring
           diverse expertise to uphold the highest standards of security and
-          operational excellence. Led by our visionary founder, our team is
-          committed to providing a secure, user-friendly platform that empowers
-          individuals to manage their digital legacies with confidence and peace
-          of mind.
+          operational excellence. Led by our founder, our team is committed to
+          providing a secure, user-friendly platform that empowers individuals
+          to manage their digital legacies with confidence and peace of mind.
         </div>
         <h3 className="text-xl py-2 font-semibold mt-2">Our Values</h3>
         <div>
-          Our work is driven by a set of core values that guide every aspect of
-          our commitment to users. We prioritize integrity, ensuring
-          transparency and honesty in all our interactions. Security is
-          paramount, underpinned by cutting-edge encryption technologies that
-          safeguard user data with the highest standards of protection. We value
-          user empowerment, aiming to provide a platform that empowers
+          <b>Integrity:</b> We prioritize transparency and honesty in all
+          interactions, ensuring trust with our users. <br />
+          <b>Security:</b> Our cutting-edge encryption technologies safeguard
+          user data with the highest standards of protection. <br />
+          <b>User Empowerment:</b> We aim to provide a platform that empowers
           individuals to manage and transfer their digital assets with
-          confidence and ease. Innovation fuels our continuous improvement, as
-          we strive to integrate the latest technological advancements to
-          enhance user experience and security measures. Ultimately, we are
-          dedicated to reliability and trustworthiness, ensuring that our
-          platform remains a dependable partner in managing and preserving
-          digital legacies for generations to come.
+          confidence and ease. <br />
+          <b>Innovation:</b> Continuous improvement drives us to integrate the
+          latest technological advancements for enhanced user experience and
+          security. <br />
+          <b>Reliability & Trustworthiness:</b> We are dedicated to being a
+          dependable partner in managing and preserving digital legacies for
+          generations to come.
         </div>
         <h2 className="text-2xl py-2 font-semibold mt-4">Join Us</h2>
         <h3 className="text-xl py-2 font-semibold mt-2">Become a User</h3>
