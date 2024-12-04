@@ -82,7 +82,7 @@ export default function AboutUs() {
           Cipherwill was inspired by a news story that deeply moved our founder,
           Shivam. A man had millions in digital assets, including
           cryptocurrency, domain names, and a YouTube brand. After his sudden
-          passing, his loved ones couldn't access these assets, resulting in a
+          passing, his loved ones couldn&apos;t access these assets, resulting in a
           significant loss.
           <br />
           <br />
