@@ -54,12 +54,12 @@ export default function FrequentlyAskedQuestions() {
           </div>
         </div>
         <div className="flex flex-col-reverse sm:flex-row gap-4 p-4 w-full">
-          <div className="grid grid-cols-1 gap-2 w-full">
+          <div className="grid grid-cols-1 gap-8 w-full">
             {Object.keys(questions_list).map((category, index) => {
               return (
                 <section key={index} className="flex flex-col gap-4">
-                  <h2 id={`q:${category}`} className="text-lg uppercase">
-                    {category}
+                  <h2 id={`q:${category}`} className="text-lg font-bold">
+                    {category} questions
                   </h2>
                   {questions_list[category].map((question, index) => (
                     <div key={index} className="flex items-center gap-2">

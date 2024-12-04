@@ -16,8 +16,12 @@ export async function generateMetadata({
   params,
   searchParams,
 }): Promise<Metadata> {
-  const { slug } = params;
-  const faq = questions.General.find((faq) => faq.slug === slug);
+  const { slug } = await params;
+  let faq;
+  for (const key in questions) {
+    faq = questions[key].find((faq) => faq.slug === slug);
+    if (faq) break;
+  }
   if (!faq) return redirect("/i/frequently-asked-questions");
   const title = faq.title;
   const description =
@@ -35,9 +39,13 @@ export async function generateMetadata({
   };
 }
 
-export default function FAQPage({ params, searchParams }) {
-  const slug = params.slug;
-  const faq = questions.General.find((faq) => faq.slug === slug);
+export default async function FAQPage({ params, searchParams }) {
+  const slug = (await params).slug;
+  let faq;
+  for (const key in questions) {
+    faq = questions[key].find((faq) => faq.slug === slug);
+    if (faq) break;
+  }
   if (!faq) return redirect("/i/frequently-asked-questions");
 
   return (
