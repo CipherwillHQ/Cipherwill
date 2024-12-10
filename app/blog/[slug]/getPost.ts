@@ -5,9 +5,10 @@ import { cache } from "react";
 const getPost = cache(async (slug: string) => {
   if (!slug) return { error: "Slug not passed" };
   const data = await fetch(
-    IS_PRODUCTION
-      ? `https://www.cipherwill.com/blog/fetchPostApi?slug=${slug}`
-      : `http://localhost:3000/blog/fetchPostApi?slug=${slug}`,
+    // IS_PRODUCTION
+    //   ?
+    `https://www.cipherwill.com/blog/fetchPostApi?slug=${slug}`,
+    // : `http://localhost:3000/blog/fetchPostApi?slug=${slug}`,
     {
       next: IS_PRODUCTION
         ? {
