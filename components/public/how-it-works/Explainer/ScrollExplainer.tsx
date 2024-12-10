@@ -4,23 +4,23 @@ import Image from "next/image";
 const items = [
   {
     "title": "Complete Your Profile",
-    "description": "Create a Cipherwill automated schedule by filling out your profile with key details."
+    "description": "Start by filling out your profile with key details about your digital assets and how you'd like them managed. This forms the foundation of your digital will."
   },
   {
     "title": "Add Your Data and Assets",
-    "description": "Securely store crypto wallets, investments, bank details, emails, logins, and notes in Cipherwill."
+    "description": "Securely store everything from crypto wallets, bank details, and investments to emails, logins, and personal notes. Cipherwill keeps it all encrypted and safe."
   },
   {
-    "title": "Add Beneficiaries and Friends",
-    "description": "Designate who will receive your data by adding beneficiaries and trusted friends to your will."
+    "title": "Multi-Layer Encryption Security",
+    "description": "Your data is protected with advanced encryption. Only authorized beneficiaries with the correct keys can unlock the information."
   },
   {
     "title": "Automatic Data Transfer",
-    "description": "If something happens, your data will be transferred to your beneficiaries based on Cipherwill's schedule."
+    "description": "If you’re unable to update your will, Cipherwill’s schedule ensures your encrypted data is transferred seamlessly to your beneficiaries."
   },
   {
     "title": "And just like that!",
-    "description": "Your legacy is secured with Cipherwill\n\n\n\n\n"
+    "description": "Your legacy is secured, your wishes are honored, and your loved ones are cared for, all with Cipherwill.\n\n\n\n\n"
   }
 ];
 

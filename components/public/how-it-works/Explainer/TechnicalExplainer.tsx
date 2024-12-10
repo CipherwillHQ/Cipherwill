@@ -24,18 +24,6 @@ export default function TechnicalExplainer() {
           assets should be managed and transferred in the future.
         </li>
       </ul>
-      <h3 className="text-xl font-bold">
-        Lawful and Globally Regularized Digital Will
-      </h3>
-      <ul className="list-disc list-inside">
-        <li>
-          <b>Regulatory Compliance:</b> Cipherwill ensures that your digital
-          will aligns with local and global regulations. The platform helps you
-          craft a will that is legally valid and compliant with the laws in your
-          jurisdiction, ensuring that your digital assets are transferred
-          according to your wishes.
-        </li>
-      </ul>
       <h3 className="text-xl font-bold">Scheduling Will Execution</h3>
       <ul className="list-disc list-inside">
         <li>

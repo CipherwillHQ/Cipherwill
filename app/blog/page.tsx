@@ -28,7 +28,7 @@ export const metadata = {
 };
 
 export default async function Blog({ params, searchParams }: any) {
-  const { cursor } = searchParams;
+  const { cursor } = await searchParams;
   const { pages, has_more, next_cursor } = await getNotionPosts({cursor});
   const first_page = pages[0];
   const remaining_pages = pages.slice(1);
