@@ -78,7 +78,7 @@ export default async function BlogPost({ params }) {
           </div>
         </div>
         <CoverImage cover={cover} title={title} />
-        <div className="flex justify-center max-w-7xl mx-auto">
+        <div className="flex justify-center max-w-7xl mx-auto" suppressHydrationWarning>
           <div className="max-w-4xl" suppressHydrationWarning>
             <RenderPlate recordMap={recordMap} />
           </div>
