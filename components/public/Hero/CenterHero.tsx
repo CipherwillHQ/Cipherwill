@@ -10,7 +10,7 @@ export default function CenterHero() {
   return (
     <>
       <section
-        className="relative text-black pt-40 md:pt-48 pb-32 px-2"
+        className="relative text-black pt-40 pb-32 px-2"
         // style={{
         //   backgroundImage: `url('${herograd.src}')`,
         //   // backgroundImage: `url('https://i.pinimg.com/originals/19/a1/b2/19a1b216f31a5d18a054aef242ccacab.jpg')`,
@@ -38,14 +38,17 @@ export default function CenterHero() {
           lower bottom
         </div> */}
         <div className="flex flex-col items-center mx-auto max-w-7xl w-full py-4">
-          <InfoButton
+          {/* <InfoButton
             icon={<TbLock />}
             triggerClassName="border-lime-500 text-lime-700 bg-lime-50 font-semibold text-sm mb-8"
             triggerTitle="Your data never leaves your device"
             title="Your data never leaves your device"
             description="We make sure everything is encrypted on device before it leaves your device. We never have access to your data."
             allowed_positions={"bottom center"}
-          />
+          /> */}
+          <div className="border bg-gray-100 rounded-full py-1 px-8 font-semibold mb-12 text-center">
+            Cipherwill is Open Source & Supports End-to-End Encryption
+          </div>
           <h1
             className={`text-4xl font-semibold leading-snug sm:text-5xl sm:leading-snug lg:text-6xl lg:leading-snug text-center whitespace-pre-wrap`}
             suppressHydrationWarning
