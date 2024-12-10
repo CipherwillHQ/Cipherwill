@@ -15,18 +15,20 @@ export default function NotesList() {
     <div className="flex flex-col w-full gap-2">
       {data.getMetamodels.models.length === 0 && <div>No notes</div>}
 
-      <div className="">
-        <div className="hidden sm:flex bg-secondary p-2 rounded-t-md">
-          <div>Note title</div>
+      {data.getMetamodels.models.length > 0 && (
+        <div className="">
+          <div className="hidden sm:flex bg-secondary p-2 rounded-t-md">
+            <div>Note title</div>
+          </div>
+          {data.getMetamodels.models.map((model) => (
+            <NoteTile
+              key={model.id}
+              id={model.id}
+              data={JSON.parse(model.metadata)}
+            />
+          ))}
         </div>
-        {data.getMetamodels.models.map((model) => (
-          <NoteTile
-            key={model.id}
-            id={model.id}
-            data={JSON.parse(model.metadata)}
-          />
-        ))}
-      </div>
+      )}
       {data.getMetamodels.has_more && (
         <button
           className="my-2 p-1 border rounded hover:bg-slate-100"
