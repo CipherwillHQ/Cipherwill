@@ -3,6 +3,7 @@ import Appearance from "./Appearance";
 import { TiDownloadOutline } from "react-icons/ti";
 import { BiUserCircle } from "react-icons/bi";
 import Link from "next/link";
+import { MdOutlineSdStorage } from "react-icons/md";
 
 export default function DefaultSettings() {
   return (
@@ -23,6 +24,16 @@ export default function DefaultSettings() {
 
         <Link href="/app/backup" className="text-sm hover:underline">
           Backup Now
+        </Link>
+      </div>
+      <div className="flex items-center justify-between bg-secondary p-4 w-full max-w-2xl rounded-md border border-default">
+        <div className="flex items-center gap-2">
+          <MdOutlineSdStorage size={22} />
+          Cipherwill Storage Usage
+        </div>
+
+        <Link href="/app/usage" className="text-sm hover:underline">
+          See Usage
         </Link>
       </div>
       <Appearance />

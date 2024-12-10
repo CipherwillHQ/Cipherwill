@@ -6,9 +6,8 @@ export default function UsagePage() {
   return (
     <div className="w-full">
       <DesktopAndMobilePageHeader title="Usage" />
-      <div className="px-4">
-        <Storageused />
-      </div>
+
+      <Storageused />
     </div>
   );
 }

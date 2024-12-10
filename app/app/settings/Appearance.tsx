@@ -29,7 +29,7 @@ export default function Appearance() {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <g clip-path="url(#clip0_701_65549)">
+              <g clipPath="url(#clip0_701_65549)">
                 <rect
                   x="0.742188"
                   width="161.5"
@@ -245,7 +245,7 @@ export default function Appearance() {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <g clip-path="url(#clip0_701_65608)">
+              <g clipPath="url(#clip0_701_65608)">
                 <rect
                   x="0.242188"
                   width="161.5"
