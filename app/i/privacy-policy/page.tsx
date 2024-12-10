@@ -2,6 +2,7 @@ import { FULL_HOSTNAME } from "@/common/constant";
 import Footer from "../../../components/Footer";
 import Header from "../../../components/Header";
 import PolicyPageHeader from "@/components/public/i/PolicyPageHeader";
+import Link from "next/link";
 
 const title = "Privacy Policy";
 const description =
@@ -116,6 +117,13 @@ export default function PrivacyPolicy() {
           behalf. These service providers have access to your personal
           information only to perform the specific tasks assigned to them and
           are obligated to maintain its confidentiality.
+          <br />
+          <Link
+            href={`/i/third-party-processors`}
+            className="text-blue-700 hover:underline"
+          >
+            List of Third Party Service Providers
+          </Link>
           <br />
           <br />
           3.2 Compliance with Laws: We may share your personal information when
