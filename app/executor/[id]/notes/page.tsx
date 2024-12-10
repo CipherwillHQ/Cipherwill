@@ -2,8 +2,10 @@
 import { useQuery } from "@apollo/client";
 import Link from "next/link";
 import GET_GRANTED_METAMODELS from "../../../../graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODELS";
+import { useParams } from "next/navigation";
 
-export default function GrantedNotes({ params }) {
+export default function GrantedNotes() {
+  const params = useParams();
   const id = params.id;
 
   const { loading, error, data, fetchMore } = useQuery(GET_GRANTED_METAMODELS, {
@@ -19,7 +21,7 @@ export default function GrantedNotes({ params }) {
     <div className="w-full">
       <div className="p-2">
         <h1 className="text-xl font-semibold">Notes</h1>
-        <div className="flex flex-col" data-cy="donor-models">
+        <div className="flex flex-col gap-2" data-cy="donor-models">
           {data.getGrantedMetamodels.models.map((model: any) => {
             const parsed_data = JSON.parse(model.metadata);
             return (

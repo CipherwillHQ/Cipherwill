@@ -4,6 +4,7 @@ import Link from "next/link";
 import GET_ACCESS_DETAILS from "../../../graphql/ops/app/executor/access/queries/GET_ACCESS_DETAILS";
 import getTimeRemaining from "../../../common/time/getTimeRemaining";
 import DonorDetails from "./DonorDetails";
+import { useParams } from "next/navigation";
 
 const metamodels = [
   {
@@ -16,7 +17,9 @@ const metamodels = [
   },
 ];
 
-export default function ExecutorPanel({ params }) {
+export default function ExecutorPanel() {
+  const params = useParams();
+
   const id = params.id;
 
   const { loading, error, data } = useQuery(GET_ACCESS_DETAILS, {

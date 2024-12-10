@@ -13,8 +13,10 @@ import CryptoJS from "crypto-js";
 import GET_POD from "../../../../../graphql/ops/app/pod/queries/GET_POD";
 import GET_GRANTED_METAMODEL from "../../../../../graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODEL";
 import { NOTE_TYPE } from "../../../../../types/pods/NOTE";
+import { useParams } from "next/navigation";
 
-export default function DonorNoteView({ params }) {
+export default function DonorNoteView() {
+  const params = useParams();
   const access_id = params.id;
   const note_id = params.noteId;
 

@@ -1,14 +1,14 @@
 "use client";
 
-import { useApolloClient, useQuery } from "@apollo/client";
+import { useApolloClient, useLazyQuery, useQuery } from "@apollo/client";
 import GET_PERSON_BY_IDS from "../../../graphql/ops/app/people/queries/GET_PERSON_BY_IDS";
 import GET_ACCESS_DETAILS from "../../../graphql/ops/app/executor/access/queries/GET_ACCESS_DETAILS";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function DonorName({ access_id }: { access_id: string }) {
   const [userName, setUserName] = useState("");
   const client = useApolloClient();
-  useQuery(GET_ACCESS_DETAILS, {
+  const [fetch_user_details] = useLazyQuery(GET_ACCESS_DETAILS, {
     variables: {
       id: access_id,
     },
@@ -32,6 +32,10 @@ export default function DonorName({ access_id }: { access_id: string }) {
       }
     },
   });
+  useEffect(() => {
+    fetch_user_details()
+  }, [fetch_user_details])
+  
 
   return userName;
 }

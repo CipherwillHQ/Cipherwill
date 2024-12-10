@@ -2,8 +2,10 @@
 import { useQuery } from "@apollo/client";
 import Link from "next/link";
 import GET_GRANTED_METAMODELS from "../../../../graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODELS";
+import { useParams } from "next/navigation";
 
-export default function GrantedBankAccounts({ params }) {
+export default function GrantedBankAccounts() {
+  const params = useParams();
   const id = params.id;
 
   const { loading, error, data, fetchMore } = useQuery(GET_GRANTED_METAMODELS, {
