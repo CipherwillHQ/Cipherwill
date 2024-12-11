@@ -54,7 +54,7 @@ export default function AddMasterPassword({ continuous }) {
         }}
       />
       <SimpleButton
-        // className="flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white p-1 rounded"
+        className="flex items-center justify-center gap-2"
         // data-cy="meta-password-submit-button"
         onClick={async () => {
           if (name.length < 1) {
@@ -84,7 +84,7 @@ export default function AddMasterPassword({ continuous }) {
         }}
       >
         {(loading || isMigrating) && (
-          <div className="w-4 h-4 border-2 border-dashed rounded-full animate-spin border-white mr-2" />
+          <div className="w-4 h-4 border-2 border-dashed rounded-full animate-spin mr-2" />
         )}
         Add
       </SimpleButton>

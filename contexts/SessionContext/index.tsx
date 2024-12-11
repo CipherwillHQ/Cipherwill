@@ -10,6 +10,8 @@ import logoWhite from "../../assets/name-white.png";
 import Image from "next/image";
 import MasterPassword from "./MasterPassword";
 import DevOnly from "@/components/debug/DevOnly";
+import Popup from "reactjs-popup";
+import ResetFactor from "./ResetFactor";
 
 const SessionContext = createContext<any>({});
 
@@ -98,6 +100,11 @@ export function SessionProvider({ children }) {
               }
             })}
           </div>
+        </div>
+        <div
+        className="py-12"
+        >
+        <ResetFactor/>
         </div>
       </div>
     );
