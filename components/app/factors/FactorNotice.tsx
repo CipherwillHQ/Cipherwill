@@ -8,7 +8,7 @@ export default function FactorNotice({ className }: { className?: string }) {
           your Cipherwill data because it is encrypted with your security
           factors.
         </li>
-        <li>You'll have to reset your account and start over.</li>
+        <li>You&apos;ll have to reset your account and start over.</li>
         <li>
           Please add at least two security factors so you can recover your
           account if you lose one.
