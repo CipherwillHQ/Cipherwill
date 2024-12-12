@@ -13,6 +13,11 @@ The **Open Source Cipherwill Web Client** is a user-friendly, secure interface f
 
 - **Time Capsule for Legacy Planning**: Cipherwill offers a unique time capsule feature that securely locks your data until a predefined time or event. This lets you plan messages, instructions, or gifts for loved ones, ensuring your legacy remains impactful and timely.
 
+## Supported Security Factor Types
+For End-to-End Encryption
+- Master Password - Seed password used with a nonce to generate the Public/Private keys.
+- Metamask - Signature of a nonce used as a seed to generate Public/Private keys.
+
 ## Contribution Guidelines
 
 We value your ideas and feedback! If you’d like to contribute, simply email us at [contribute@cipherwill.com](mailto:contribute@cipherwill.com) with details about what you’d like to see improved or added. 
