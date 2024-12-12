@@ -1,5 +1,5 @@
 "use client";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "../AuthContext";
 import Link from "next/link";
@@ -10,8 +10,9 @@ import logoWhite from "../../assets/name-white.png";
 import Image from "next/image";
 import MasterPassword from "./MasterPassword";
 import DevOnly from "@/components/debug/DevOnly";
-import Popup from "reactjs-popup";
 import ResetFactor from "./ResetFactor";
+import Metamask from "./Metamask";
+import { MetaMaskProvider } from "@metamask/sdk-react";
 
 const SessionContext = createContext<any>({});
 
@@ -86,6 +87,14 @@ export function SessionProvider({ children }) {
             Select Authentication Factor
           </h1>
           <div className="flex flex-wrap justify-center">
+             <MetaMaskProvider
+                  sdkOptions={{
+                    dappMetadata: {
+                      name: "Cipherwill",
+                      url: window.location.href,
+                    },
+                  }}
+                >
             {available_methods.map((method) => {
               if (method.type === "master-password") {
                 return (
@@ -95,10 +104,21 @@ export function SessionProvider({ children }) {
                     method={method}
                   />
                 );
-              } else {
+              }
+              else if (method.type === "metamask") {
+                return (
+                  <Metamask
+                    key={method.id}
+                    set_session_token={set_session_token}
+                    method={method}
+                  />
+                );
+              }
+              else {
                 return null;
               }
             })}
+            </MetaMaskProvider>
           </div>
         </div>
         <div

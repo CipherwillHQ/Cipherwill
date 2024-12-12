@@ -46,7 +46,11 @@ export default function Login({ params }) {
             <h1 className="hidden text-xl font-bold pb-6 text-center">
               Log in to your Cipherwill account or create a new one
             </h1>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense
+              fallback={
+                <div className="text-center p-2">Authentication Loading...</div>
+              }
+            >
               <LoginSection />
             </Suspense>
           </div>
