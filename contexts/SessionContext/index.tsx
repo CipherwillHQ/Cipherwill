@@ -13,6 +13,7 @@ import DevOnly from "@/components/debug/DevOnly";
 import ResetFactor from "./ResetFactor";
 import Metamask from "./Metamask";
 import { MetaMaskProvider } from "@metamask/sdk-react";
+import Passkey from "./Passkey";
 
 const SessionContext = createContext<any>({});
 
@@ -133,6 +134,14 @@ export function SessionProvider({ children }) {
                 } else if (method.type === "metamask") {
                   return (
                     <Metamask
+                      key={method.id}
+                      set_session_token={set_session_token}
+                      method={method}
+                    />
+                  );
+                } else if (method.type === "passkey") {
+                  return (
+                    <Passkey
                       key={method.id}
                       set_session_token={set_session_token}
                       method={method}

@@ -2,7 +2,7 @@
 
 import SimpleButton from "@/components/common/SimpleButton";
 import Popup from "reactjs-popup";
-import FactorChoise from "./FactorChoise";
+import FactorChoice from "./FactorChoice";
 
 export default function AddFactor({ continuous }) {
   return (
@@ -15,7 +15,7 @@ export default function AddFactor({ continuous }) {
         }
         modal
       >
-        <FactorChoise continuous={continuous} />
+        <FactorChoice continuous={continuous} />
       </Popup>
       {/* <SimpleButton
         data-cy={

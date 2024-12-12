@@ -64,7 +64,7 @@ function ConnectSignAndAdd({ continuous }) {
       {account ? (
         <SimpleButton
           onClick={async () => {
-            if (isMigrating) return;
+            if (isMigrating || loading) return;
             const nonce = Math.floor(Math.random() * 1000000).toString();
 
             const signResult = await sdk?.connectAndSign({
