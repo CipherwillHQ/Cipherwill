@@ -15,6 +15,7 @@ import { useSession } from "@/contexts/SessionContext";
 import continuousFactorIn from "./continuousFactorIn";
 import { useUserContext } from "@/contexts/UserSetupContext";
 import { sleep } from "@/common/time/sleep";
+import extractDomainName from "@/common/string/extractDomainName";
 
 const ec = new EC("secp256k1");
 
@@ -57,12 +58,10 @@ export default function AddPasskey({ continuous }) {
       <SimpleButton
         onClick={async () => {
           if (isMigrating || loading) return;
-          const hostname = window.location.hostname;
+          const domain = extractDomainName(window.location.hostname);
           if (
-            hostname !== "localhost" &&
-            hostname !== "cipherwill.com" &&
-            hostname !== "www.cipherwill.com" &&
-            hostname !== "preview.cipherwill.com"
+            domain !== "localhost" &&
+            domain !== "cipherwill.com"
           ) {
             toast.error("Cannot add passkey on this domain");
             return;
@@ -73,7 +72,7 @@ export default function AddPasskey({ continuous }) {
             .create({
               publicKey: {
                 challenge,
-                rp: { id: window.location.hostname, name: "Cipherwill" },
+                rp: { id: domain, name: "Cipherwill" },
                 user: {
                   id: new Uint8Array(Buffer.from(user.id, "utf-8")),
                   name: user.email,

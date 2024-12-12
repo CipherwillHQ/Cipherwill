@@ -5,6 +5,7 @@ import crypto from "crypto";
 import getShortKey from "@/factory/publicKey/getShortKey";
 import toast from "react-hot-toast";
 import logger from "@/common/debug/logger";
+import extractDomainName from "@/common/string/extractDomainName";
 
 const ec = new EC("secp256k1");
 
@@ -34,18 +35,18 @@ export default function Passkey({
         <SimpleButton
           className="w-full"
           onClick={async () => {
-            const hostname = window.location.hostname;
+            const domain = extractDomainName(window.location.hostname);
             const nonce = new Uint8Array(Buffer.from(method.nonce, "base64"));
             const challenge = nonce.slice(0, 32);
             console.log("challenge", challenge);
-            
+
             if (navigator.credentials) {
               await navigator.credentials
                 .get({
                   publicKey: {
                     //first 32 bytes of the hash of the nonce is the challenge
                     challenge: challenge,
-                    rpId: hostname,
+                    rpId: domain,
                     allowCredentials: [
                       {
                         type: "public-key",
@@ -61,7 +62,9 @@ export default function Passkey({
                     credentials.response.clientDataJSON
                   );
                   const clientDataObj = JSON.parse(clientDataStr);
-                  const stored_challenge: Uint8Array = new Uint8Array(Buffer.from(clientDataObj.challenge, "base64"));
+                  const stored_challenge: Uint8Array = new Uint8Array(
+                    Buffer.from(clientDataObj.challenge, "base64")
+                  );
                   let secret = crypto
                     .createHash("sha256")
                     .update(stored_challenge)
