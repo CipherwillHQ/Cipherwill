@@ -4,6 +4,7 @@ import DevOnly from "../../../components/debug/DevOnly";
 import FactorsList from "./FactorsList";
 import KeyCount from "./KeyCount";
 import DesktopAndMobilePageHeader from "@/components/app/common/page/DesktopAndMobilePageHeader";
+import FactorNotice from "@/components/app/factors/FactorNotice";
 
 export default function Factors() {
   return (
@@ -18,6 +19,7 @@ export default function Factors() {
       <div className="px-4">
         <KeyCount />
         <FactorsList />
+        <FactorNotice className="text-sm font-semibold text-red-700 max-w-xl mx-auto" />
       </div>
     </div>
   );
