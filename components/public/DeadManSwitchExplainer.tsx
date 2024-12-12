@@ -24,7 +24,10 @@ export default function DeadManSwitchExplainer() {
             </div>
             <Popup
               trigger={
-                <button className="border font-medium border-neutral-400 hover:bg-neutral-800 rounded-full text-sm px-4 py-1 mx-2 h-min">
+                <button
+                  className="border font-medium border-neutral-400 hover:bg-neutral-800 rounded-full text-sm px-4 py-1 mx-2 h-min"
+                  suppressHydrationWarning
+                >
                   What is that?
                 </button>
               }
