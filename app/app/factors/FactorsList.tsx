@@ -59,12 +59,6 @@ export default function FactorsList() {
       {data.getFactors.length === 0 && (
         <div className="flex flex-col gap-3 py-4 text-center">
           You have no security factors yet. Add one to get started.
-          <div className="text-sm text-red-500 max-w-md mx-auto">
-            Please note that if your forget or lose your security factors, you
-            will lose access to your Cipherwill data because it is encrypted
-            with your security factors. You&apos;ll have to reset your account to get
-            started again.
-          </div>
         </div>
       )}
 
