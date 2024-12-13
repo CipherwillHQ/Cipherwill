@@ -64,7 +64,7 @@ export default function Metamask({
                   privateKey: keyPair.getPrivate("hex"),
                 });
               } else {
-                toast.error("Invalid password");
+                toast.error("Invalid wallet");
               }
             }}
           >

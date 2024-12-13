@@ -57,6 +57,7 @@ export default function AddMasterPassword({ continuous }) {
         className="flex items-center justify-center gap-2"
         // data-cy="meta-password-submit-button"
         onClick={async () => {
+          if (isMigrating || loading) return;
           if (name.length < 1) {
             toast.error("You must enter a name for this factor");
             return;

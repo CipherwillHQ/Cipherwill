@@ -9,7 +9,6 @@ import { useSession } from "../../../../contexts/SessionContext";
 import continuousFactorIn from "./continuousFactorIn";
 import SimpleButton from "@/components/common/SimpleButton";
 import { MetaMaskProvider, useSDK } from "@metamask/sdk-react";
-import logger from "@/common/debug/logger";
 
 const ec = new EC("secp256k1");
 
@@ -64,7 +63,7 @@ function ConnectSignAndAdd({ continuous }) {
       {account ? (
         <SimpleButton
           onClick={async () => {
-            if (isMigrating) return;
+            if (isMigrating || loading) return;
             const nonce = Math.floor(Math.random() * 1000000).toString();
 
             const signResult = await sdk?.connectAndSign({

@@ -2,7 +2,8 @@
 
 import SimpleButton from "@/components/common/SimpleButton";
 import Popup from "reactjs-popup";
-import FactorChoise from "./FactorChoise";
+import FactorChoice from "./FactorChoice";
+import PassTest from "./PassTest";
 
 export default function AddFactor({ continuous }) {
   return (
@@ -15,8 +16,12 @@ export default function AddFactor({ continuous }) {
         }
         modal
       >
-        <FactorChoise continuous={continuous} />
+        <FactorChoice continuous={continuous} />
       </Popup>
+
+      {/* Just a Test Component to test the passkey functionality */}
+      {/* <PassTest/> */}
+
       {/* <SimpleButton
         data-cy={
           continuous ? "add-factor-popup-button" : "add-raw-factor-popup-button"

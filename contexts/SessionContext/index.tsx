@@ -13,12 +13,14 @@ import DevOnly from "@/components/debug/DevOnly";
 import ResetFactor from "./ResetFactor";
 import Metamask from "./Metamask";
 import { MetaMaskProvider } from "@metamask/sdk-react";
+import Passkey from "./Passkey";
 
 const SessionContext = createContext<any>({});
 
 export function SessionProvider({ children }) {
   const { user, logout } = useAuth();
   const [available_methods, set_available_methods] = useState(null);
+  const [inactive_user, set_inactive_user] = useState<false | string>(false);
   const [session_token, set_session_token] = useState<null | {
     publicKey: string;
     privateKey: string;
@@ -28,12 +30,37 @@ export function SessionProvider({ children }) {
       const methods = data.getFactors;
       set_available_methods(methods);
     },
+    onError(error) {
+      const code = (error?.cause as any)?.result?.errors[0]?.extensions?.code;
+      if (code === "USER_DEACTIVATED") {
+        set_inactive_user(code);
+      }
+    },
   });
   useEffect(() => {
     if (user) {
       getAuthFactors();
     }
   }, [user, getAuthFactors]);
+  if (inactive_user) {
+    return (
+      <div className="flex flex-col p-4 gap-2 items-center justify-center h-screen bg-white text-black">
+        <h2 className="text-lg font-bold">Inactive User Account</h2>
+        <div className="text-center">
+          Your account has a status "{inactive_user}". Please contact support at
+          support@cipherwill.com. This happens when your Cipherwill has
+          triggered all the events in your will and all your account data has
+          been removed from the system.
+        </div>
+        <button
+        className="text-red-700 hover:underline"
+        onClick={logout}
+        >
+          Logout
+        </button>
+      </div>
+    );
+  }
 
   if (available_methods === null) {
     return <FullscreenLoader />;
@@ -87,44 +114,48 @@ export function SessionProvider({ children }) {
             Select Authentication Factor
           </h1>
           <div className="flex flex-wrap justify-center">
-             <MetaMaskProvider
-                  sdkOptions={{
-                    dappMetadata: {
-                      name: "Cipherwill",
-                      url: window.location.href,
-                    },
-                  }}
-                >
-            {available_methods.map((method) => {
-              if (method.type === "master-password") {
-                return (
-                  <MasterPassword
-                    key={method.id}
-                    set_session_token={set_session_token}
-                    method={method}
-                  />
-                );
-              }
-              else if (method.type === "metamask") {
-                return (
-                  <Metamask
-                    key={method.id}
-                    set_session_token={set_session_token}
-                    method={method}
-                  />
-                );
-              }
-              else {
-                return null;
-              }
-            })}
+            <MetaMaskProvider
+              sdkOptions={{
+                dappMetadata: {
+                  name: "Cipherwill",
+                  url: window.location.href,
+                },
+              }}
+            >
+              {available_methods.map((method) => {
+                if (method.type === "master-password") {
+                  return (
+                    <MasterPassword
+                      key={method.id}
+                      set_session_token={set_session_token}
+                      method={method}
+                    />
+                  );
+                } else if (method.type === "metamask") {
+                  return (
+                    <Metamask
+                      key={method.id}
+                      set_session_token={set_session_token}
+                      method={method}
+                    />
+                  );
+                } else if (method.type === "passkey") {
+                  return (
+                    <Passkey
+                      key={method.id}
+                      set_session_token={set_session_token}
+                      method={method}
+                    />
+                  );
+                } else {
+                  return null;
+                }
+              })}
             </MetaMaskProvider>
           </div>
         </div>
-        <div
-        className="py-12"
-        >
-        <ResetFactor/>
+        <div className="py-12">
+          <ResetFactor />
         </div>
       </div>
     );
