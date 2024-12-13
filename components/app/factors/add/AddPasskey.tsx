@@ -14,7 +14,6 @@ import CREATE_FACTOR from "@/graphql/ops/auth/mutations/CREATE_FACTOR";
 import { useSession } from "@/contexts/SessionContext";
 import continuousFactorIn from "./continuousFactorIn";
 import { useUserContext } from "@/contexts/UserSetupContext";
-import { sleep } from "@/common/time/sleep";
 import extractDomainName from "@/common/string/extractDomainName";
 
 const ec = new EC("secp256k1");
@@ -62,14 +61,14 @@ export default function AddPasskey({ continuous }) {
       <SimpleButton
         onClick={async () => {
           if (isMigrating || loading) return;
-          const domain = extractDomainName(window.location.hostname);
+          const domain = extractDomainName(window.location.href);
+          logger.info("domain", domain);
           if (domain !== "localhost" && domain !== "cipherwill.com") {
             toast.error("Cannot add passkey on this domain");
             return;
           }
           const factor_nonce = generateRandomBytes(8); // 64 bits or 8 bytes random nonce
           const challenge = generateRandomBytes(32); // 256 bits or 32 bytes random challenge
-          logger.info("challenge", challenge);
           await navigator.credentials
             .create({
               publicKey: {
