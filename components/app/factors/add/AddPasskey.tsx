@@ -84,7 +84,10 @@ export default function AddPasskey({ continuous }) {
                     ? `${user.first_name}`
                     : user.email,
                 },
-                pubKeyCredParams: [{ type: "public-key", alg: -7 }],
+                pubKeyCredParams: [
+                  { alg: -7, type: "public-key" }, // ES256
+                  { alg: -257, type: "public-key" }, // RS256
+                ],
                 authenticatorSelection: {
                   requireResidentKey: true,
                   residentKey: "required",
