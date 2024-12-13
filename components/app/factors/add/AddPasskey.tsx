@@ -61,7 +61,7 @@ export default function AddPasskey({ continuous }) {
       <SimpleButton
         onClick={async () => {
           if (isMigrating || loading) return;
-          const domain = extractDomainName(window.location.hostname);
+          const domain = extractDomainName(window.location.href);
           logger.info("domain", domain);
           if (domain !== "localhost" && domain !== "cipherwill.com") {
             toast.error("Cannot add passkey on this domain");

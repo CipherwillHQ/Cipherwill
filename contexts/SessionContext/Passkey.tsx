@@ -36,12 +36,16 @@ export default function Passkey({
         <SimpleButton
           className="w-full"
           onClick={async () => {
-            const domain = extractDomainName(window.location.hostname);
+            const domain = extractDomainName(window.location.href);
+            if (domain !== "localhost" && domain !== "cipherwill.com") {
+              toast.error("Invalid domain to access Passkey");
+              return;
+            }
             if (navigator.credentials) {
               await navigator.credentials
                 .get({
                   publicKey: {
-                    challenge: new Uint8Array([1,2,3,4,5]),
+                    challenge: new Uint8Array([1, 2, 3, 4, 5]),
                     rpId: domain,
                     userVerification: "required",
                   },
