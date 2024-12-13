@@ -6,6 +6,7 @@ import getShortKey from "@/factory/publicKey/getShortKey";
 import toast from "react-hot-toast";
 import logger from "@/common/debug/logger";
 import extractDomainName from "@/common/string/extractDomainName";
+import mergeUint8Arrays from "@/common/string/mergeUint8Arrays";
 
 const ec = new EC("secp256k1");
 
@@ -36,38 +37,24 @@ export default function Passkey({
           className="w-full"
           onClick={async () => {
             const domain = extractDomainName(window.location.hostname);
-            const nonce = new Uint8Array(Buffer.from(method.nonce, "base64"));
-            const challenge = nonce.slice(0, 32);
-            console.log("challenge", challenge);
-
             if (navigator.credentials) {
               await navigator.credentials
                 .get({
                   publicKey: {
-                    //first 32 bytes of the hash of the nonce is the challenge
-                    challenge: challenge,
+                    challenge: new Uint8Array([1,2,3,4,5]),
                     rpId: domain,
-                    allowCredentials: [
-                      {
-                        type: "public-key",
-                        // remaining bytes of the hash of the nonce is the id
-                        id: nonce.slice(32),
-                      },
-                    ],
                     userVerification: "required",
                   },
                 })
                 .then((credentials: PublicKeyCredential) => {
-                  const clientDataStr = arrayBufferToStr(
-                    credentials.response.clientDataJSON
-                  );
-                  const clientDataObj = JSON.parse(clientDataStr);
-                  const stored_challenge: Uint8Array = new Uint8Array(
-                    Buffer.from(clientDataObj.challenge, "base64")
-                  );
                   let secret = crypto
                     .createHash("sha256")
-                    .update(stored_challenge)
+                    .update(
+                      mergeUint8Arrays(
+                        new Uint8Array(Buffer.from(method.nonce, "base64")),
+                        new Uint8Array(credentials.rawId)
+                      )
+                    )
                     .digest("hex");
                   const keyPair = ec.keyFromPrivate(secret);
                   const publicKey = keyPair.getPublic("hex");
@@ -77,7 +64,7 @@ export default function Passkey({
                       privateKey: keyPair.getPrivate("hex"),
                     });
                   } else {
-                    toast.error("Invalid passkey");
+                    toast.error("Invalid Passkey");
                   }
                 });
             } else {

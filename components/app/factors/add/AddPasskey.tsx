@@ -44,8 +44,12 @@ export default function AddPasskey({ continuous }) {
   });
 
   return (
-    <div>
+    <div
+    className="flex flex-col gap-2"
+    >
       <h3 className="font-semibold p-1">Add Passkey</h3>
+      <label>Name for factor</label>
+
       <input
         type="text"
         className="border p-2 rounded bg-white dark:bg-neutral-800"
@@ -59,13 +63,11 @@ export default function AddPasskey({ continuous }) {
         onClick={async () => {
           if (isMigrating || loading) return;
           const domain = extractDomainName(window.location.hostname);
-          if (
-            domain !== "localhost" &&
-            domain !== "cipherwill.com"
-          ) {
+          if (domain !== "localhost" && domain !== "cipherwill.com") {
             toast.error("Cannot add passkey on this domain");
             return;
           }
+          const factor_nonce = generateRandomBytes(8); // 64 bits or 8 bytes random nonce
           const challenge = generateRandomBytes(32); // 256 bits or 32 bytes random challenge
           logger.info("challenge", challenge);
           await navigator.credentials
@@ -74,22 +76,28 @@ export default function AddPasskey({ continuous }) {
                 challenge,
                 rp: { id: domain, name: "Cipherwill" },
                 user: {
-                  id: new Uint8Array(Buffer.from(user.id, "utf-8")),
+                  id: mergeUint8Arrays(
+                    factor_nonce,
+                    new Uint8Array(Buffer.from(user.id, "utf-8"))
+                  ),
                   name: user.email,
                   displayName: user.first_name
                     ? `${user.first_name}`
                     : user.email,
                 },
                 pubKeyCredParams: [{ type: "public-key", alg: -7 }],
+                authenticatorSelection: {
+                  requireResidentKey: true,
+                  residentKey: "required",
+                },
               },
             })
             .then(async (credential: PublicKeyCredential) => {
               const registration_id = new Uint8Array(credential.rawId);
-              logger.info("registration_id", registration_id);
-              if (registration_id) {
+              if (registration_id && factor_nonce) {
                 let secret = crypto
                   .createHash("sha256")
-                  .update(challenge)
+                  .update(mergeUint8Arrays(factor_nonce, registration_id))
                   .digest("hex");
                 const keyPair = ec.keyFromPrivate(secret);
                 const publicKey = keyPair.getPublic("hex");
@@ -99,9 +107,7 @@ export default function AddPasskey({ continuous }) {
                     name,
                     type: "passkey",
                     publicKey,
-                    nonce: Buffer.from(
-                      mergeUint8Arrays(challenge, registration_id)
-                    ).toString("base64"),
+                    nonce: Buffer.from(factor_nonce).toString("base64"),
                   },
                 });
               } else {
