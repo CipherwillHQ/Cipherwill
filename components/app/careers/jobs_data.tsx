@@ -1,7 +1,7 @@
 const jobs = [
   {
     id: "50123abcde01",
-    title: "Software Engineer - Fresher",
+    title: "Software Engineer",
     division: "Engineering",
     location: "Bangalore, India",
     level: "Fresher",
@@ -42,7 +42,7 @@ const jobs = [
   },
   {
     id: "50123abcde02",
-    title: "Full-Stack Developer - Fresher",
+    title: "Full-Stack Developer",
     division: "Engineering",
     location: "Bangalore, India",
     level: "Fresher",
@@ -81,7 +81,7 @@ const jobs = [
   },
   {
     id: "50123abcde03",
-    title: "Back-End Developer - Fresher",
+    title: "Back-End Developer",
     division: "Engineering",
     location: "Bangalore, India",
     level: "Fresher",
