@@ -8,7 +8,7 @@ import AddPasskey from "./add/AddPasskey";
 export default function FactorChoice({ continuous }) {
   const [choice, setChoice] = useState(null);
   return (
-    <div className="bg-white dark:bg-neutral-800 text-black dark:text-white rounded-md p-2 w-[700px] max-w-[250px] sm:max-w-sm">
+    <div className="bg-secondary p-4 rounded-md text-black dark:text-white w-full max-w-sm">
       {choice === null && (
         <div className="w-full flex flex-col gap-3">
           <h2 className="text-xl font-semibold text-center">
@@ -34,24 +34,39 @@ export default function FactorChoice({ continuous }) {
             }}
           >
             <div className="font-semibold">Metamask</div>
-            <div className="text-sm">
-              Use your Metamask wallet to encrypt your account with. Also can be
-              used with Hardware Wallets such as Ledger or Trezor.
-            </div>
+            <ul className="text-sm list-disc list-inside text-left font-medium">
+                <li>
+                Use your Metamask wallet account to use as a seed to encrypt your account with.
+                </li>
+                <li>
+                  Can be used with Hardware Wallets such as Ledger or Trezor.
+                </li>
+              </ul>
           </SimpleButton>
-          {navigator.credentials && <SimpleButton
-            className="w-full p-2"
-            onClick={() => {
-              setChoice("passkey");
-            }}
-          >
-            <div className="font-semibold">Passkey</div>
-            <div className="text-sm">
-              Use a passkey stored in your browser to encrypt your account with.
-              Also can be used with Password Managers such as OnePass or Apple
-              Keychain.
-            </div>
-          </SimpleButton>}
+          {navigator.credentials && (
+            <SimpleButton
+              className="w-full p-2"
+              onClick={() => {
+                setChoice("passkey");
+              }}
+            >
+              <div className="font-semibold">Passkey</div>
+              <ul className="text-sm list-disc list-inside text-left font-medium">
+                <li>
+                  Use a passkey stored in your device to encrypt your account
+                  with.
+                </li>
+                <li>
+                  Can be used with Password Managers such as OnePass or Apple
+                  Keychain.
+                </li>
+                <li>
+                  Can be used with FIDO2 devices such as Yubikey or Google
+                  Titan.
+                </li>
+              </ul>
+            </SimpleButton>
+          )}
         </div>
       )}
       {choice === "masterpassword" && (

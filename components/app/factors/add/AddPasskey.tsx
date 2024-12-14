@@ -43,10 +43,8 @@ export default function AddPasskey({ continuous }) {
   });
 
   return (
-    <div
-    className="flex flex-col gap-2"
-    >
-      <h3 className="font-semibold p-1">Add Passkey</h3>
+    <div className="flex flex-col gap-2">
+      <h3 className="font-semibold py-1 w-screen">Add Passkey</h3>
       <label>Name for factor</label>
 
       <input
@@ -58,6 +56,16 @@ export default function AddPasskey({ continuous }) {
           setName(e.target.value);
         }}
       />
+      <div className="text-sm text-neutral-500 dark:text-neutral-400">
+        <div>
+          Please note: If you're adding a passkey using a NFC device, keep your
+          device close to the NFC reader as it may take a little longer if
+          you've a slow NFC reader.
+        </div>
+        <div className="mt-2">
+          Avg Time: Minimum 3 seconds to Maximum 30 seconds
+        </div>
+      </div>
       <SimpleButton
         onClick={async () => {
           if (isMigrating || loading) return;

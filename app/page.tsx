@@ -32,13 +32,17 @@ export default function Home() {
     <div className="w-full flex flex-col">
       <Header expandedClassOverride="bg-white" />
       <CenterHero />
-      {/* <div className="bg-red-400 my-12 py-20">
-        <h2 className="text-xl font-bold text-center">Encrypt Your Data With</h2>
-        <div className="flex items-center gap-2">
+      {/* <div className="bg-red-400 my-12 py-8">
+        <h2 className="text-xl font-bold text-center py-8">
+          Cipherwill supports multiple encryption methods
+        </h2>
+        <div className="flex items-center gap-2 justify-evenly">
           <div>Master Password</div>
-          <div>FiDO U2F (YubiKeys)</div>
-          <div>NFC Tokens</div>
-          <div>Crypto Wallets</div>
+          <div>Metamask</div>
+          <div>Ledger Device</div>
+          <div>Trezor Device</div>
+          <div>FIDO U2F Keys</div>
+          <div>Yubikeys</div>
         </div>
       </div> */}
       {/* <ScreenshotDemo/> -------------------*/}
