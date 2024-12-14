@@ -178,7 +178,7 @@ const jobs = [
       <div className="space-y-4">
         <p>
           As a DevOps Engineer at Cipherwill, you will play a crucial role in
-          maintaining and optimizing our platform's infrastructure. This role
+          maintaining and optimizing our platform&apos;s infrastructure. This role
           requires expertise in automation, monitoring, and deployment processes
           to ensure our platform remains reliable and secure.
         </p>
