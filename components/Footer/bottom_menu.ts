@@ -7,6 +7,10 @@ const menu = [
         path: "/i/about-us",
       },
       {
+        title: "Careers",
+        path: "/careers",
+      },
+      {
         title: "How it works",
         path: "/how-it-works",
       },
