@@ -3,7 +3,7 @@ name: Reset Beta Identifier
 on:
   deployment_status:
 jobs:
-  run-e2es:
+  run-reset-query:
     if:
       github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success' &&
       github.ref != 'refs/heads/main'
