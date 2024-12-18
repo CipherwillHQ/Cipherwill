@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 
 const title = "Shard Switch | Cipherwill";
 const description =
-  "Cipherwill's dead man's switch ensures the platform's continuity and security, activating safeguards if the company ever faces unexpected challenges.";
+  "Shard switch ensures the platform's continuity and security, activating safeguards if the company ever faces unexpected challenges.";
 
 export const metadata = {
   title,
@@ -30,14 +30,14 @@ export default function ShardSwitch() {
           <p className="py-6 max-w-3xl text-center">{description}</p>
         </div>
         <div className="max-w-4xl mx-auto text-lg pt-20">
-          Cipherwill&apos;s dead man&apos;s switch is a sophisticated failsafe
-          designed to ensure the platform&apos;s continuity in the unlikely
-          event of a company-wide disruption. This system operates using
-          Shamir&apos;s Secret Sharing, a cryptographic method that divides a
-          secret into multiple parts, requiring a threshold of these parts to
-          reconstruct it. Cipherwill&apos;s secret is distributed among seven
-          trusted keyholders, creating a decentralized mechanism that ensures no
-          single person holds all the power, enhancing security and resilience.
+          Shard switch is a sophisticated failsafe designed to ensure the
+          platform&apos;s continuity in the unlikely event of a company-wide
+          disruption. This system operates using Shamir&apos;s Secret Sharing, a
+          cryptographic method that divides a secret into multiple parts,
+          requiring a threshold of these parts to reconstruct it.
+          Cipherwill&apos;s secret is distributed among seven trusted
+          keyholders, creating a decentralized mechanism that ensures no single
+          person holds all the power, enhancing security and resilience.
           <br />
           <br />
           Each keyholder is responsible for their portion of the secret and must
@@ -61,19 +61,19 @@ export default function ShardSwitch() {
           <br />
           <div className="border p-4 rounded-xl">
             <h2 className="font-semibold text-xl mb-4">Just a note</h2>
-            Cipherwill&apos;s dead man&apos;s switch is also designed to evolve
-            as the platform grows. In the future, we plan to include trusted
-            members from our user community, as well as third-party service
-            providers like Google Cloud, Azure, and AWS, as additional
-            keyholders. This will further decentralize the system, ensuring that
-            the responsibility of maintaining operational continuity is spread
-            across both our community and industry-leading infrastructure
-            partners. By incorporating these external stakeholders, we can
-            further strengthen the platform&apos;s resilience, guaranteeing that
-            Cipherwill remains functional and secure, even if challenges arise
-            with the company itself. This collaborative approach ensures that
-            our users&apos; legacies are protected and that services continue
-            seamlessly without interruption.
+            Shard switch is also designed to evolve as the platform grows. In
+            the future, we plan to include trusted members from our user
+            community, as well as third-party service providers like Google
+            Cloud, Azure, and AWS, as additional keyholders. This will further
+            decentralize the system, ensuring that the responsibility of
+            maintaining operational continuity is spread across both our
+            community and industry-leading infrastructure partners. By
+            incorporating these external stakeholders, we can further strengthen
+            the platform&apos;s resilience, guaranteeing that Cipherwill remains
+            functional and secure, even if challenges arise with the company
+            itself. This collaborative approach ensures that our users&apos;
+            legacies are protected and that services continue seamlessly without
+            interruption.
           </div>
         </div>
       </section>
