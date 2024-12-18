@@ -61,6 +61,11 @@ export default function AboutUs() {
                 Third Party Processors
               </button>
             </Link>
+            <Link href={"/i/shard-switch"}>
+              <button className="font-medium shadow-sm hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
+                Shard Switch
+              </button>
+            </Link>
           </div>
         </div>
         <div className="w-full bg-gradient-to-b from-transparent to-black/5 border-b border-black/20 rounded-b-full h-8"></div>
