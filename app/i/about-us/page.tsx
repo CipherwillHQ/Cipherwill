@@ -82,8 +82,8 @@ export default function AboutUs() {
           Cipherwill was inspired by a news story that deeply moved our founder,
           Shivam. A man had millions in digital assets, including
           cryptocurrency, domain names, and a YouTube brand. After his sudden
-          passing, his loved ones couldn&apos;t access these assets, resulting in a
-          significant loss.
+          passing, his loved ones couldn&apos;t access these assets, resulting
+          in a significant loss.
           <br />
           <br />
           This incident highlighted the urgent need for managing digital
@@ -198,12 +198,15 @@ export default function AboutUs() {
           users who trust Cipherwill to safeguard their digital legacies and
           ensure their wishes are honored. Sign up now and experience the peace
           of mind that comes with knowing your digital assets are in safe hands.
-        </div>
-        <Link href={"/app"}>
-          <div className="my-4 border rounded-md bg-black text-white p-2 text-center">
+          <br />
+          <Link
+            href={"/app"}
+            className="text-blue-500 hover:underline font-semibold"
+          >
             Get Started as User
-          </div>
-        </Link>
+          </Link>
+        </div>
+
         <h3 className="text-xl py-2 font-semibold mt-2">
           Career Opportunities
         </h3>
@@ -220,6 +223,13 @@ export default function AboutUs() {
           contribute to shaping the future of digital legacy management while
           advancing your career in a supportive and forward-thinking
           environment.
+          <br />
+          <Link
+            href={"/careers"}
+            className="text-blue-500 hover:underline font-semibold"
+          >
+            Learn about current job openings.
+          </Link>
         </div>
       </div>
       <Footer />
