@@ -58,9 +58,9 @@ export default function AddPasskey({ continuous }) {
       />
       <div className="text-sm text-neutral-500 dark:text-neutral-400">
         <div>
-          Please note: If you&apos;re adding a passkey using a NFC device, keep your
+          Please note: If you're adding a passkey using a NFC device, keep your
           device close to the NFC reader as it may take a little longer if
-          you&apos;ve a slow NFC reader.
+          you've a slow NFC reader.
         </div>
         <div className="mt-2">
           Avg Time: Minimum 3 seconds to Maximum 30 seconds

@@ -13,7 +13,7 @@ export default function FAQs() {
               Looking for answers?
             </h2>
             <div className="font-medium">
-              Stuck on something? We&apos;ve got you covered. Check out our
+              Stuck on something? We've got you covered. Check out our
               frequently asked questions page.
             </div>
           </div>

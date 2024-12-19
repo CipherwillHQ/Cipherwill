@@ -16,11 +16,11 @@ export default function TImelinePage() {
           <div>
             <h2 className="font-semibold">Interval</h2>
             <div className="text-sm lg:max-w-lg opacity-80 font-medium pt-2">
-              We will regularly check to see if you&apos;ve logged into your
-              Cipherwill account. If we notice that you haven&apos;t, we&apos;ll start
+              We will regularly check to see if you've logged into your
+              Cipherwill account. If we notice that you haven't, we'll start
               sending you reminders based on our schedule, encouraging you to
-              log in. If you still don&apos;t take any action after the reminders,
-              we&apos;ll grant access of your data to your beneficiaries.
+              log in. If you still don't take any action after the reminders,
+              we'll grant access of your data to your beneficiaries.
             </div>
           </div>
           <div className="bg-primary border border-default py-2 px-4 text-sm font-semibold rounded-md w-full lg:w-fit text-center">

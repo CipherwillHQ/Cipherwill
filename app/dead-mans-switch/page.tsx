@@ -27,29 +27,29 @@ export default function DeadMansSwitch() {
       <div className="mts-28 mbs-6 px-4 pt-28 pb-12 flex flex-col gap-2 items-center justify-center text-center bg-gradient-to-b from-sky-50 to-sky-100">
         <div className="py-20">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">
-            Dead Man&apos;s Switch
+            Dead Man's Switch
           </h1>
           <p className="pt-8 max-w-md mx-auto font-medium">{description}</p>
         </div>
       </div>
       <div className="flex flex-col gap-2 w-full max-w-3xl mx-auto p-4 font-medium">
         <div className="flex flex-col gap-3">
-          <h2 className="font-bold text-2xl">What is a Dead Man&apos;s Switch?</h2>
+          <h2 className="font-bold text-2xl">What is a Dead Man's Switch?</h2>
           <p className="text-justify">
-            A dead man&apos;s switch is basically a backup plan for when you&apos;re not
+            A dead man's switch is basically a backup plan for when you're not
             around anymore. It makes sure that your important stuff, like bank
             accounts, passwords, or even digital assets, gets passed on to the
-            right people automatically. In today&apos;s world, so much of our life is
-            online, and without a way to share that info when you&apos;re gone, your
-            loved ones could be left struggling. A dead man&apos;s switch like
-            Cipherwill steps in when you can&apos;t, so your important things are
-            taken care of and your family doesn&apos;t have to stress about it.
+            right people automatically. In today's world, so much of our life is
+            online, and without a way to share that info when you're gone, your
+            loved ones could be left struggling. A dead man's switch like
+            Cipherwill steps in when you can't, so your important things are
+            taken care of and your family doesn't have to stress about it.
           </p>
         </div>
         <div className="flex flex-col gap-3">
-          <h2 className="font-bold text-2xl">How a Dead Man&apos;s Switch works?</h2>
+          <h2 className="font-bold text-2xl">How a Dead Man's Switch works?</h2>
           <p className="text-justify">
-            A Dead Man&apos;s Switch is like your safety net for when you&apos;re no
+            A Dead Man's Switch is like your safety net for when you're no
             longer around. When you set up your Cipherwill account, you add all
             your important info, including your assets and wishes, just like
             filling out a form for your future. You then follow your{" "}
@@ -62,16 +62,16 @@ export default function DeadMansSwitch() {
             , You can set reminders to help you remember.
             <br />
             <br />
-            If you forget to check in by the time you&apos;re supposed to, the Dead
-            Man&apos;s Switch kicks in. This means that if something happens to you
-            and you can&apos;t check in, the system knows to take action. Once
+            If you forget to check in by the time you're supposed to, the Dead
+            Man's Switch kicks in. This means that if something happens to you
+            and you can't check in, the system knows to take action. Once
             activated, your loved ones automatically receive access to your
-            important information and assets. It&apos;s like passing the baton to
+            important information and assets. It's like passing the baton to
             someone you trust.
             <br />
             <br />
             With this setup, you can enjoy peace of mind knowing that your
-            wishes will be fulfilled even when you can&apos;t voice them yourself!
+            wishes will be fulfilled even when you can't voice them yourself!
           </p>
         </div>
         <div className="flex flex-col gap-3">
@@ -82,7 +82,7 @@ export default function DeadMansSwitch() {
             End-to-end encryption is the superhero of digital security, and it
             plays a crucial role in keeping your sensitive information safe.
             When you use Cipherwill, your data is encrypted from the moment you
-            enter it until it&apos;s securely delivered to your chosen beneficiaries.
+            enter it until it's securely delivered to your chosen beneficiaries.
             This means that only you and the people you trust can access your
             information.
             <br />
@@ -90,7 +90,7 @@ export default function DeadMansSwitch() {
             Think of it this way: when you send a message, end-to-end encryption
             locks it in a secure vault that only the intended recipient can
             open. Even if someone intercepts the message along the way, they
-            won&apos;t be able to read it without the special key. This keeps your
+            won't be able to read it without the special key. This keeps your
             assets, passwords, and personal wishes safe from prying eyes.
             <br />
             <br />
@@ -123,7 +123,7 @@ export default function DeadMansSwitch() {
             passwords, investments, digital assets, and any other data you want
             secured. <br />
             <b>3. Choose beneficiaries:</b> Select who should receive the data
-            when you&apos;re no longer around. <br />
+            when you're no longer around. <br />
             <b>4. Set reminders:</b> Cipherwill will remind you to log in and
             update your data at least once a year to ensure everything stays
             current and secure. <br />

@@ -39,15 +39,15 @@ export default function CommutativeEncryotionDetails() {
         </div>
         <div className="flex flex-col gap-2">
           <h2 className="text-2xl font-bold">
-            Cipherwill&apos;s Implementation of Commutative Encryption
+            Cipherwill's Implementation of Commutative Encryption
           </h2>
           <div className="border p-2 rounded-md bg-blue-50 text-blue-900 font-semibold">
             Cipherwill uses ordered commutative encryption to ensure that data
-            cannot be decrypted without first using the beneficiary&apos;s private
+            cannot be decrypted without first using the beneficiary's private
             key.
           </div>
           <p>
-            In Cipherwill&apos;s system, commutative encryption involves encrypting
+            In Cipherwill's system, commutative encryption involves encrypting
             data in multiple steps to ensure it remains secure. First, the user
             encrypts their data with a time capsule key provided by Cipherwill.
             This key locks the data for future use, but it cannot be used to
@@ -62,7 +62,7 @@ export default function CommutativeEncryotionDetails() {
             >
               time capsule encryption
             </Link>
-            , the user encrypts the data again using the beneficiary&apos;s public
+            , the user encrypts the data again using the beneficiary's public
             key. This extra layer of security ensures that only the designated
             recipient, using their private key, can access the data. When the
             beneficiary wants to decrypt the data, they must first use their
@@ -72,8 +72,8 @@ export default function CommutativeEncryotionDetails() {
             <br />
             <br />
             This process provides a high level of security because even if
-            someone gets hold of the time capsule key, they can&apos;t decrypt the
-            data without first having the beneficiary&apos;s private key. This
+            someone gets hold of the time capsule key, they can't decrypt the
+            data without first having the beneficiary's private key. This
             layered approach makes it nearly impossible for unauthorized parties
             to access sensitive information.
           </p>
@@ -85,11 +85,11 @@ export default function CommutativeEncryotionDetails() {
           <div className="border p-2 rounded-md bg-blue-50 text-blue-900 font-semibold">
             A commutative encryption is a kind of an encryption system that
             enables a plaintext to be encrypted more than once using different
-            users&apos; public keys.
+            users' public keys.
           </div>
           <p>
             Commutative encryption is a cryptographic technique where the order
-            in which encryption operations are applied doesn&apos;t affect the final
+            in which encryption operations are applied doesn't affect the final
             result. In simpler terms, you can encrypt data using multiple keys,
             and regardless of the sequence in which the keys are applied, the
             outcome will be the same. This is unlike traditional encryption,
@@ -105,7 +105,7 @@ export default function CommutativeEncryotionDetails() {
           </h2>
           <p>
             Commutative encryption relies on the concept that the order of
-            encryption steps doesn&apos;t change the final outcome. It allows
+            encryption steps doesn't change the final outcome. It allows
             multiple keys to encrypt the same piece of data in any sequence,
             without impacting its ability to be decrypted in reverse order. For
             example, if data is first encrypted with Key A and then Key B,

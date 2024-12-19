@@ -38,7 +38,7 @@ export default function FriendsFamily() {
             do not get access to your data.
           </span>{" "}
           They will helps us to get in contact with beneficiaries if they
-          don&apos;t respond to your notification to decrypt and access your
+          don't respond to your notification to decrypt and access your
           data after will execution
         </div>
         <FriendList />

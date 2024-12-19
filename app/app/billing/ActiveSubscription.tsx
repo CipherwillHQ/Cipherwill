@@ -81,7 +81,7 @@ export default function ActiveSubscription() {
       ) : (
         <>
           <div className="my-4 border border-default rounded-md p-4 bg-secondary max-w-2xl">
-            <div>You don&apos;t have any active subscriptions</div>
+            <div>You don't have any active subscriptions</div>
             <div className="my-2 flex gap-2">
               <SimpleButton onClick={upgradeUsingPaddle}>
                 Upgrade to Premium

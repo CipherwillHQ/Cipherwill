@@ -87,7 +87,7 @@ export default function AboutUs() {
           Cipherwill was inspired by a news story that deeply moved our founder,
           Shivam. A man had millions in digital assets, including
           cryptocurrency, domain names, and a YouTube brand. After his sudden
-          passing, his loved ones couldn&apos;t access these assets, resulting
+          passing, his loved ones couldn't access these assets, resulting
           in a significant loss.
           <br />
           <br />
@@ -117,12 +117,12 @@ export default function AboutUs() {
         <div className="border p-4 my-2 rounded-md bg-black text-white">
           To manage a billion digital wills, ensuring secure and seamless
           transfer of digital assets to loved ones around the world, creating a
-          future where everyone&apos;s legacy is protected and honored.
+          future where everyone's legacy is protected and honored.
         </div>
         <div>
           Our vision is to manage a billion digital wills, providing a secure
           and seamless transfer of digital assets to loved ones globally. We aim
-          to create a future where everyone&apos;s legacy is protected and
+          to create a future where everyone's legacy is protected and
           honored, ensuring that valuable information and assets are passed on
           with ease and security. By leveraging cutting-edge encryption and
           user-friendly design, we strive to empower individuals worldwide to
@@ -156,10 +156,10 @@ export default function AboutUs() {
           chosen beneficiaries.
           <br />
           <br />
-          Cipherwill&apos;s encryption is so robust that even our team cannot
+          Cipherwill's encryption is so robust that even our team cannot
           access or view user data. This commitment provides complete peace of
           mind, ensuring personal information and digital assets are securely
-          managed and transferred according to the user&apos;s explicit
+          managed and transferred according to the user's explicit
           instructions.
         </div>
         <EncryptionDetails />
@@ -168,7 +168,7 @@ export default function AboutUs() {
         <h3 className="text-xl py-2 font-semibold mt-2">Dedicated Experts</h3>
         <div>
           Our core team consists of dedicated experts who collectively ensure
-          the platform&apos;s reliability and user satisfaction. They bring
+          the platform's reliability and user satisfaction. They bring
           diverse expertise to uphold the highest standards of security and
           operational excellence. Led by our founder, our team is committed to
           providing a secure, user-friendly platform that empowers individuals

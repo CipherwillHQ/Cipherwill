@@ -143,7 +143,7 @@ export default function TOS() {
           You agree to indemnify and hold CipherWill and its affiliates,
           directors, officers, employees, agents, and licensors harmless from
           any claims, losses, damages, liabilities, costs, and expenses,
-          including reasonable attorneys&apos; fees, arising out of or in
+          including reasonable attorneys' fees, arising out of or in
           connection with your use of our Services, your violation of these
           Terms, or your violation of any rights.
         </div>

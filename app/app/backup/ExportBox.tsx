@@ -25,7 +25,7 @@ export default function ExportBox() {
         your computer.
       </p>
       <p className="py-4 text-sm text-red-600 font-semibold max-w-xl">
-        If you are the beneficiary of someone else&apos;s data, and you have
+        If you are the beneficiary of someone else's data, and you have
         access to their data. That data will not be included in the backup.
       </p>
       <p className="pb-4 text-sm text-red-600 font-semibold max-w-xl">

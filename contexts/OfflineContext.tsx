@@ -38,7 +38,7 @@ export function OfflineContext({ children }: Props) {
       ) : (
         <div className="flex flex-col items-center justify-center w-full h-screen p-3 text-center">
           <RiWifiOffLine size={30} />
-          <h1 className="text-xl font-semibold p-4">You&apos;re Offline</h1>
+          <h1 className="text-xl font-semibold p-4">You're Offline</h1>
           <p>Please check your internet connection</p>
         </div>
       )}

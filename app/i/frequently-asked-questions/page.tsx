@@ -45,7 +45,7 @@ export default function FrequentlyAskedQuestions() {
       <div className="flex flex-col gap-2 w-full max-w-5xl mx-auto py-20 px-4">
         <div className="w-full p-4 flex flex-col sm:flex-row items-center sm:items-start justify-between bg-purple-100 rounded-xl">
           <h2 className="text-3xl md:text-4xl font-semibold py-4 px-2">
-            We&apos;re here,
+            We're here,
             <br />
             to answer your questions
           </h2>

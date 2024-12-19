@@ -10,7 +10,7 @@ export default function TopRow() {
           <SymbolicLogo overrideTheme="dark" size={30} />
           <p className={`text-white/75 my-4`}>
             We ensure secure and seamless transfer of your data to loved ones
-            around the world, creating a future where everyone&apos;s legacy is
+            around the world, creating a future where everyone's legacy is
             protected and honored.
           </p>
           <div className="flex items-center gap-2">

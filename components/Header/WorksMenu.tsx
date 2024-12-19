@@ -33,7 +33,7 @@ export function WorksMenuDesktop() {
         <div className="w-80 hover:bg-orange-100 rounded-md p-4">
           <div className="font-semibold text-lg">Encryption Layers</div>
           <div className="text-sm">
-          Breaks down Cipherwill&apos;s Implementation of Commutative Encryption
+          Breaks down Cipherwill's Implementation of Commutative Encryption
           </div>
         </div>
       </Link>

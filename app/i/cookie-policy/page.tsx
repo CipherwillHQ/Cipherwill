@@ -58,7 +58,7 @@ export default function PrivacyPolicy() {
           <li className="mb-4">
             <strong>Statistics Cookies:</strong> These cookies collect
             information about how visitors use our website, such as which pages
-            are most popular. This data helps us improve the website&apos;s
+            are most popular. This data helps us improve the website's
             performance.
           </li>
           <li className="mb-4">

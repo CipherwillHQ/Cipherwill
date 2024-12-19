@@ -7,7 +7,7 @@ export default function SegmentsIntroduction() {
       <h2 className="font-semibold text-lg">Discover Segments</h2>
       <div className="text-sm">
         Segments help you organize your data. You can enable the segments you
-        need and turn off the ones you don&apos;t.
+        need and turn off the ones you don't.
       </div>
       <SimpleButton
         href={"/app/segments"}

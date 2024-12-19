@@ -58,7 +58,7 @@ export default function CenterHero() {
           </h1>
           <p className="my-8 font-medium text-xl max-w-xl mx-auto text-center">
             When you pass away, we make sure your data (such as bank details,
-            investments, properties, digital assets, etc.) get&apos;s to right
+            investments, properties, digital assets, etc.) get's to right
             people.
           </p>
           <div className="flex flex-col gap-2 items-center">

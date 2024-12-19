@@ -44,7 +44,7 @@ export default function Segments() {
                   Tell us what we can do better
                 </h2>
                 <p className="text-sm opacity-80">
-                  We&apos;re always looking for ways to improve CipherWill. If you
+                  We're always looking for ways to improve CipherWill. If you
                   have a suggestion, please let us know.
                 </p>
                 <input

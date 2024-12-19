@@ -33,7 +33,7 @@ export default function EncryptionDetails() {
         Utilizes mathematical structures to provide high levels of security
         against quantum computing threats and other advanced attacks.
         <br /> These encryption methods collectively ensure that
-        Cipherwill&apos;s platform offers state-of-the-art protection,
+        Cipherwill's platform offers state-of-the-art protection,
         guaranteeing that user data remains confidential and secure at all
         times.
       </div>

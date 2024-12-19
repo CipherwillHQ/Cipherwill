@@ -18,15 +18,15 @@ const jobs = [
     about: (
       <div className="space-y-4">
         <p>
-          At Cipherwill, we&apos;re looking for a passionate Software Engineer
+          At Cipherwill, we're looking for a passionate Software Engineer
           to join our dynamic engineering team. This role is perfect for fresh
           graduates who are eager to apply their knowledge and learn hands-on in
-          a collaborative and innovative environment. You&apos;ll be working on
+          a collaborative and innovative environment. You'll be working on
           developing secure, scalable, and user-friendly solutions that empower
           individuals to manage and transfer their digital legacy.
         </p>
         <p>
-          As a fresher, you&apos;ll receive mentorship from experienced
+          As a fresher, you'll receive mentorship from experienced
           engineers, gain exposure to modern technologies, and actively
           contribute to the development of key features. This is a fantastic
           opportunity to grow your skills and build a meaningful career in the
@@ -59,14 +59,14 @@ const jobs = [
     about: (
       <div className="space-y-4">
         <p>
-          Join Cipherwill&apos;s engineering team as a Full-Stack Developer and
+          Join Cipherwill's engineering team as a Full-Stack Developer and
           kick-start your career in one of the most versatile and exciting roles
-          in tech. As a fresher, you&apos;ll contribute to both front-end and
+          in tech. As a fresher, you'll contribute to both front-end and
           back-end development, ensuring that our platform delivers a seamless
           experience to users while maintaining high security standards.
         </p>
         <p>
-          You&apos;ll work on real-world projects, from developing new features
+          You'll work on real-world projects, from developing new features
           to optimizing performance and usability. This role offers exposure to
           a range of technologies and encourages creative problem-solving,
           giving you a solid foundation for your future as a developer.
@@ -105,9 +105,9 @@ const jobs = [
           our platform.
         </p>
         <p>
-          As part of the team, you&apos;ll work on implementing APIs, managing
+          As part of the team, you'll work on implementing APIs, managing
           databases, and enhancing the performance of our back-end systems. With
-          guidance from experienced mentors, you&apos;ll have the chance to hone
+          guidance from experienced mentors, you'll have the chance to hone
           your technical skills and contribute to meaningful projects.
         </p>
       </div>
@@ -139,14 +139,14 @@ const jobs = [
         <p>
           Cipherwill is looking for a Senior Software Engineer to lead the
           development of our secure digital legacy management platform. In this
-          role, you&apos;ll leverage your experience to design and implement
+          role, you'll leverage your experience to design and implement
           scalable solutions, mentor junior engineers, and ensure the overall
           technical excellence of the team.
         </p>
         <p>
           This position offers the opportunity to work on complex, cutting-edge
           challenges in cloud-based systems, encryption, and distributed
-          architectures. If you&apos;re passionate about building impactful
+          architectures. If you're passionate about building impactful
           software and shaping the direction of a growing platform, this role is
           for you.
         </p>
@@ -178,12 +178,12 @@ const jobs = [
       <div className="space-y-4">
         <p>
           As a DevOps Engineer at Cipherwill, you will play a crucial role in
-          maintaining and optimizing our platform&apos;s infrastructure. This role
+          maintaining and optimizing our platform's infrastructure. This role
           requires expertise in automation, monitoring, and deployment processes
           to ensure our platform remains reliable and secure.
         </p>
         <p>
-          You&apos;ll collaborate with cross-functional teams to build efficient
+          You'll collaborate with cross-functional teams to build efficient
           CI/CD pipelines, manage cloud infrastructure, and monitor system
           performance. Join us to take ownership of platform scalability and
           contribute to a seamless user experience.
@@ -222,7 +222,7 @@ const jobs = [
           effectively.
         </p>
         <p>
-          If you&apos;re passionate about creating user-centric products and
+          If you're passionate about creating user-centric products and
           enjoy working in a fast-paced environment, this position offers the
           opportunity to shape the future of a platform that helps people manage
           their digital assets with confidence.
@@ -260,7 +260,7 @@ const jobs = [
           hands-on exposure to product strategy, development, and execution.
         </p>
         <p>
-          You&apos;ll work closely with senior product managers, engineers, and
+          You'll work closely with senior product managers, engineers, and
           designers to gather insights, define product requirements, and track
           performance metrics. This is an excellent opportunity to develop your
           skills and grow into a seasoned product professional.
@@ -294,14 +294,14 @@ const jobs = [
         <p>
           Cipherwill is seeking a creative and experienced UI/UX Designer to
           craft intuitive, engaging, and visually appealing user experiences. In
-          this role, you&apos;ll work closely with product and engineering teams
+          this role, you'll work closely with product and engineering teams
           to design interfaces that make managing digital legacies simple and
           seamless.
         </p>
         <p>
-          You&apos;ll take ownership of the entire design process, from ideation
+          You'll take ownership of the entire design process, from ideation
           to delivery, ensuring that our platform not only meets but exceeds
-          user expectations. If you&apos;re passionate about user-centered
+          user expectations. If you're passionate about user-centered
           design, this is your chance to make an impact.
         </p>
       </div>
@@ -337,9 +337,9 @@ const jobs = [
           communicate our mission effectively to users.
         </p>
         <p>
-          As part of the team, you&apos;ll collaborate with marketing and
+          As part of the team, you'll collaborate with marketing and
           product teams to ensure consistency in branding and design. If you
-          have a keen eye for detail and a flair for creativity, we&apos;d love
+          have a keen eye for detail and a flair for creativity, we'd love
           to see your portfolio!
         </p>
       </div>
@@ -375,8 +375,8 @@ const jobs = [
           compliance with employment laws and regulations.
         </p>
         <p>
-          You&apos;ll work closely with leadership to draft policies, review
-          contracts, and support team growth. If you&apos;re organized,
+          You'll work closely with leadership to draft policies, review
+          contracts, and support team growth. If you're organized,
           detail-oriented, and passionate about HR and legal processes, this
           role offers a unique opportunity to contribute to our mission.
         </p>

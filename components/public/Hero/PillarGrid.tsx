@@ -13,7 +13,7 @@ export default function PillarGrid() {
           <div className="text-white/50">We use </div>
           <h2 className="font-bold text-xl pb-2">E2E Encryption</h2>
           <div className="text-white/50">
-            Your data is fully secure - even Cipherwill can&apos;t access it. Every
+            Your data is fully secure - even Cipherwill can't access it. Every
             piece of information is encrypted on your device before it ever
             leaves.
           </div>
@@ -78,8 +78,8 @@ export default function PillarGrid() {
           <h2 className="font-bold text-xl pb-2">Carl said:</h2>
           <div className="text-white/50">
             I have peace of mind knowing my digital assets are safe and will
-            reach my loved ones without any hassle. It&apos;s the best decision I&apos;ve
-            made for my family&apos;s future.
+            reach my loved ones without any hassle. It's the best decision I've
+            made for my family's future.
           </div>
         </div>
         <div className="bg-gradient-to-br from-green-900 to-green-950 p-2 rounded-lg">

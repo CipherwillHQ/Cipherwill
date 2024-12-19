@@ -66,7 +66,7 @@ export default function Download() {
           <h2 className="font-bold text-xl pt-4">Browser Extensiomn</h2>
           <p className="text-lg pt-1">any desktop browser</p>
           <div className="py-6 text-left">
-            Cipherwill&apos;s browser extension functions as a Dead Man&apos;s Switch,
+            Cipherwill's browser extension functions as a Dead Man's Switch,
             reminding you to update your cipherwill.
           </div>
           <Link

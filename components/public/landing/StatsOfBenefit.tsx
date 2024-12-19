@@ -10,11 +10,11 @@ export default function StatsOfBenefit() {
         <div className="flex flex-col gap-4 font-medium">
           <div className="flex flex-col sm:flex-row items-center gap-4 sm:h-24">
             <div className="text-center content-center bg-neutral-50 border-neutral-200 w-full sm:w-4/6 text-xl p-4 rounded-md h-full">
-              <span className="font-bold">60% of adults</span> don&apos;t have a will
+              <span className="font-bold">60% of adults</span> don't have a will
               of any kind
             </div>
             <div className="text-center content-center bg-neutral-50 border-neutral-200 w-full text-xl p-4 rounded-md h-full">
-              <span className="font-bold">73% of Americans</span> don&apos;t know
+              <span className="font-bold">73% of Americans</span> don't know
               what happens to their digital assets when they die
             </div>
           </div>

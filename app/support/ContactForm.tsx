@@ -40,7 +40,7 @@ export default function ContactForm() {
                 Live Chat with us
               </h3>
               <p className="my-2">
-                We&apos;re always available to help you with any questions or
+                We're always available to help you with any questions or
                 concerns. Just click on the start chat button below.
               </p>
               <AnonymousChatBox/>

@@ -66,7 +66,7 @@ export default function Smartwill() {
         <div className="text-sm font-medium mb-4 max-w-2xl">
           Beneficiaries will receive access to your data after the will is
           executed. They will receive notification and a special dashboard to
-          decrypt and access data that you&apos;ve encrypted for them to access
+          decrypt and access data that you've encrypted for them to access
         </div>
         <BeneficiaryList
           max_key_count={max_key_count}

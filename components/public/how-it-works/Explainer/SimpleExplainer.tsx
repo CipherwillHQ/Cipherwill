@@ -15,7 +15,7 @@ export default function SimpleExplainer() {
           <li>
             <strong>Add and Save Your Data</strong>
             <p className="">
-              Add your important information to Cipherwill, where it&apos;s
+              Add your important information to Cipherwill, where it's
               stored as a &quot;data pod.&quot;
             </p>
           </li>
@@ -24,7 +24,7 @@ export default function SimpleExplainer() {
             <p className="">Your data is encrypted on multiple levels:</p>
             <ul className="list-disc list-inside ml-4">
               <li>
-                <strong>Personal Encryption:</strong> It&apos;s encrypted with
+                <strong>Personal Encryption:</strong> It's encrypted with
                 your own security factors, so only you can access and update it.
               </li>
               <li>
@@ -32,7 +32,7 @@ export default function SimpleExplainer() {
                 data is only released to your beneficiaries in the future.
               </li>
               <li>
-                <strong>Beneficiary Encryption:</strong> Each beneficiary&apos;s
+                <strong>Beneficiary Encryption:</strong> Each beneficiary's
                 security factors further protect the data, allowing them access
                 only when the time is right.
               </li>
@@ -63,7 +63,7 @@ export default function SimpleExplainer() {
         <ul className="list-inside list-disc text-base space-y-4">
           <li>
             <strong>Device-Level Encryption:</strong> Your data is encrypted on
-            your device before it&apos;s saved, ensuring the actual data never
+            your device before it's saved, ensuring the actual data never
             leaves your device without protection.
           </li>
           <li>
@@ -73,7 +73,7 @@ export default function SimpleExplainer() {
           </li>
           <li>
             <strong>Ultimate Security:</strong> If you and your beneficiaries
-            have enabled all security factors, it&apos;s impossible for anyone
+            have enabled all security factors, it's impossible for anyone
             else to see your data. Only you, and your beneficiaries when the
             will is executed, have access.
           </li>

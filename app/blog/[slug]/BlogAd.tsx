@@ -13,8 +13,8 @@ export default function BlogAd() {
         className="rounded"
       />
       <div className="text-lg font-bold w-full">
-        Hey, we&apos;ve written this blog post. <br />
-        Here&apos;s what we do. If you&apos;re interested.
+        Hey, we've written this blog post. <br />
+        Here's what we do. If you're interested.
       </div>
       <div className="font-medium">
         We ensure your data reaches your loved ones when you pass away.

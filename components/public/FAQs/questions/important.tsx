@@ -11,14 +11,14 @@ const questions = [
       "Even if a hacker gets into Cipherwill's backend, your data stays safe. That's because your info isn't stored there directly. It's kept in separate object storage and databases. So, breaking into the backend doesn't mean they can see your data.",
     content: (
       <div>
-        Even if a hacker gets into Cipherwill&apos;s backend, your data stays
-        safe. That&apos;s because your info isn&apos;t stored there directly.
-        It&apos;s kept in separate object storage and databases. So, breaking into
-        the backend doesn&apos;t mean they can see your data.
+        Even if a hacker gets into Cipherwill's backend, your data stays
+        safe. That's because your info isn't stored there directly.
+        It's kept in separate object storage and databases. So, breaking into
+        the backend doesn't mean they can see your data.
         <br />
         <br />
-        Now, let&apos;s say a hacker somehow breaks into the storage or
-        database. Even then, they can&apos;t read your data because it&apos;s
+        Now, let's say a hacker somehow breaks into the storage or
+        database. Even then, they can't read your data because it's
         encrypted. Your encryption is locked down with your own{" "}
         <Link
           href={"/how-factors-work"}
@@ -29,13 +29,13 @@ const questions = [
         , making it unreadable without them.
         <br />
         <br />
-        The only risk comes if you haven&apos;t enabled your security factors.
+        The only risk comes if you haven't enabled your security factors.
         If a hacker gets in and also manages to access the time capsule keys,
-        your data could be at risk. But with security factors on, you&apos;re in
+        your data could be at risk. But with security factors on, you're in
         the clear.
         <br />
         <br />
-        So, the key takeaway? Always enable your security features. It&apos;s
+        So, the key takeaway? Always enable your security features. It's
         like adding an extra lock to keep hackers out. 💪🔐
       </div>
     ),
@@ -49,19 +49,19 @@ const questions = [
       "If you add someone as a beneficiary in Cipherwill, they'll only inherit the data you specifically uploaded for them after you pass away. That's how the system is designed as each beneficiary only gets access to their assigned data.",
     content: (
       <div>
-        If you add someone as a beneficiary in Cipherwill, they&apos;ll only
+        If you add someone as a beneficiary in Cipherwill, they'll only
         inherit the data you specifically uploaded for them after you pass away.
-        That&apos;s how the system is designed as each beneficiary only gets
+        That's how the system is designed as each beneficiary only gets
         access to their assigned data.
         <br />
         <br />
-        Now, let&apos;s imagine this beneficiary is a super hacker and somehow
+        Now, let's imagine this beneficiary is a super hacker and somehow
         manages to hack Cipherwill. Even then, they can only access the data
         meant for them. This would happen because they have their own security
         factor and the time capsule key tied to their inheritance.
         <br />
         <br />
-        However, they won&apos;t see any of the data you&apos;ve uploaded for
+        However, they won't see any of the data you've uploaded for
         other beneficiaries or any other user information. So, the only risk is
         them seeing their portion early, nothing more.
       </div>
@@ -76,13 +76,13 @@ const questions = [
       "If you add someone as a beneficiary in Cipherwill, they'll only inherit the data you specifically uploaded for them after you pass away. That's how the system is designed as each beneficiary only gets access to their assigned data.",
     content: (
       <div>
-        If a big company buys Cipherwill or there&apos;s a merger, nothing changes
-        with how your data is handled. The platform&apos;s core function stays the
+        If a big company buys Cipherwill or there's a merger, nothing changes
+        with how your data is handled. The platform's core function stays the
         same, and your data remains protected.
         <br />
         <br />
         All your information is encrypted using your security factors, which
-        only you control. This means even if ownership changes, they still can&apos;t
+        only you control. This means even if ownership changes, they still can't
         access your data.
         <br />
         <br />

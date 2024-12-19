@@ -116,7 +116,7 @@ export default function FactorsSyncStatus() {
         unencrypted_keys_count > 0 &&
         is_all_in_sync && (
           <div className="flex items-center justify-between border p-2 rounded-md">
-            <div>You&apos;ve some insecure data that you need to delete</div>
+            <div>You've some insecure data that you need to delete</div>
             <button
               className="flex items-center px-4 py-1 rounded-full text-sm bg-red-100 hover:bg-red-200 text-red-500 whitespace-nowrap"
               onClick={() => {

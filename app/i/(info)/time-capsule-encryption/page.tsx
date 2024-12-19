@@ -54,7 +54,7 @@ export default function TimeCapsuleEncryption() {
             <br />
             The idea behind Time Capsule Encryption is to create a
             time-sensitive lock on the data. Even if someone has the necessary
-            decryption keys, they won&apos;t be able to access the information until
+            decryption keys, they won't be able to access the information until
             the appointed time, making it ideal for safeguarding valuable assets
             or sensitive information for future release.
             <br />
@@ -94,7 +94,7 @@ export default function TimeCapsuleEncryption() {
           </p>
         </div>
         <div className="text-xl font-bold">
-          How Time Capsule Encryption Works in Cipherwill&apos;s{" "}
+          How Time Capsule Encryption Works in Cipherwill's{" "}
           <Link
             href="/i/commutative-encryption"
             className="text-blue-600 hover:text-blue-800 hover:underline"
@@ -148,7 +148,7 @@ export default function TimeCapsuleEncryption() {
             <br />
             <br />
             The time capsule key remains confidential and is managed by
-            Cipherwill&apos;s secure system, further enhancing the protection of your
+            Cipherwill's secure system, further enhancing the protection of your
             digital assets. This layer of encryption is crucial for safeguarding
             your information, providing you with peace of mind knowing that your
             data is secure until the right moment for release.
@@ -157,27 +157,27 @@ export default function TimeCapsuleEncryption() {
 
         <div className="flex flex-col gap-2">
           <h2 className="text-xl font-bold">
-            Second Layer: Beneficiary&apos;s Public Key
+            Second Layer: Beneficiary's Public Key
           </h2>
           <p>
             The second layer of encryption adds an essential level of security
-            by using the beneficiary&apos;s public key. Once your data is encrypted
+            by using the beneficiary's public key. Once your data is encrypted
             with the time capsule key, it undergoes a second encryption process
-            where the beneficiary&apos;s unique public key is applied. This ensures
+            where the beneficiary's unique public key is applied. This ensures
             that only the designated recipient can ultimately access the
             information.
             <br /> <br />
-            By encrypting the data again with the beneficiary&apos;s public key, we
+            By encrypting the data again with the beneficiary's public key, we
             create a highly secure environment that protects your digital assets
             from unauthorized access. Even if someone were to acquire the time
             capsule key, they would still be unable to decrypt the data without
-            the beneficiary&apos;s private key, which is kept confidential.
+            the beneficiary's private key, which is kept confidential.
             <br /> <br />
             This dual-layered approach not only enhances security but also
             ensures that the rightful heirs can access the information at the
             appropriate time. The combination of the time capsule key and the
-            beneficiary&apos;s public key creates a robust framework for safeguarding
-            your digital legacy, ensuring it remains secure until it&apos;s needed.
+            beneficiary's public key creates a robust framework for safeguarding
+            your digital legacy, ensuring it remains secure until it's needed.
           </p>
           <div className="">
             Read more about{" "}

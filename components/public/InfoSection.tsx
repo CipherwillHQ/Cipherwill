@@ -8,7 +8,7 @@ export default function InfoSection() {
           </h1>
           <p className="max-w-md mx-auto mt-5 text-lg font-normal text-neutral-700 dark:text-gray-300">
             Cipherwill stores your encrypted data and makes sure your loved ones
-            receive that data once you&apos;re no more
+            receive that data once you're no more
           </p>
         </div>
         <div className="flex flex-col items-center max-w-md mx-auto mt-8 lg:mt-20 lg:flex-row lg:max-w-none">

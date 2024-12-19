@@ -11,13 +11,13 @@ export default function WhyYouNeedCipherwill() {
           <h2 className="text-4xl md:text-6xl font-bold pb-12 italic">
             What happens to your data,
             <br />
-            When you&apos;re gone?
+            When you're gone?
           </h2>
           <div
           className="text-xl font-medium pb-12"
           >
             Your data vanishes into the digital void, lost forever with no one
-            to retrieve it after you&apos;re gone. Unless you&apos;ve digital will.
+            to retrieve it after you're gone. Unless you've digital will.
           </div>
           <div className="flex flex-col sm:flex-row gap-4 p-2">
             <div className="w-full border-l-4 border-accent-300 pl-4">

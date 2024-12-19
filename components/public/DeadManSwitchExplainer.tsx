@@ -20,7 +20,7 @@ export default function DeadManSwitchExplainer() {
           <div className="flex flex-col md:flex-row gap-2 justify-between md:items-end">
             <div className="flex items-center gap-2">
               <ImSwitch className="scale-75" />
-              DEAD MAN&apos;S SWITCH
+              DEAD MAN'S SWITCH
             </div>
             <Popup
               trigger={
@@ -35,10 +35,10 @@ export default function DeadManSwitchExplainer() {
             >
               <div className="bg-white p-4 rounded shadow-lg max-w-lg">
                 <h2 className="font-semibold text-xl mb-4">
-                  Dead man&apos;s switch from wikipedia
+                  Dead man's switch from wikipedia
                 </h2>
                 <p className="font-medium">
-                  A dead man&apos;s switch is a switch designed to be activated
+                  A dead man's switch is a switch designed to be activated
                   or deactivated if the human operator becomes incapacitated,
                   such as through death, loss of consciousness, or being bodily
                   removed from control.

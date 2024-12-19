@@ -62,7 +62,7 @@ export default function VerifyEmail() {
       {emailSent === true && (
         <div className="flex flex-col gap-4">
           <div className="text-center">
-            We&apos;ve sent you an email with a link to verify your email.
+            We've sent you an email with a link to verify your email.
             Please click the link to verify your email.
           </div>
           <button
@@ -77,7 +77,7 @@ export default function VerifyEmail() {
               setValidatingEmail(false);
             }}
           >
-            I&apos;ve verified my email
+            I've verified my email
           </button>
         </div>
       )}

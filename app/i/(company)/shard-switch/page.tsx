@@ -32,9 +32,9 @@ export default function ShardSwitch() {
         <div className="max-w-4xl mx-auto text-lg pt-20">
           <p>
             The Shard Switch is a robust failsafe mechanism designed to
-            guarantee the continuity of Cipherwill&apos;s operations, even in
+            guarantee the continuity of Cipherwill's operations, even in
             the face of unforeseen disruptions. This system leverages{" "}
-            <b>Shamir&apos;s Secret Sharing</b>, a cryptographic method that
+            <b>Shamir's Secret Sharing</b>, a cryptographic method that
             splits a secret into multiple parts. To reconstruct the original
             secret, a predefined threshold of these parts must be combined,
             creating a decentralized and secure framework.
@@ -43,10 +43,10 @@ export default function ShardSwitch() {
           <h2 className="py-8 font-bold text-xl">How It Works</h2>
 
           <p>
-            To enhance security and resilience, Cipherwill&apos;s secret is
+            To enhance security and resilience, Cipherwill's secret is
             distributed among <b>seven trusted keyholders</b>, ensuring no
             single individual has full control. Keyholders perform regular
-            &quot;check-ins&quot; typically once a week - to confirm the platform&apos;s
+            &quot;check-ins&quot; typically once a week - to confirm the platform's
             operational integrity. These check-ins act as a &quot;heartbeat&quot; for the
             system, verifying that everything is functioning as expected.
           </p>
@@ -54,7 +54,7 @@ export default function ShardSwitch() {
           <p>
             If keyholders miss a predefined number of check-ins or if another
             activation trigger occurs, the system engages a{" "}
-            <b>dead man&apos;s switch</b>. At this point, keyholders collaborate
+            <b>dead man's switch</b>. At this point, keyholders collaborate
             to combine their secret shares and reconstruct the critical
             information required to activate contingency protocols, ensuring
             uninterrupted platform functionality.
@@ -69,11 +69,11 @@ export default function ShardSwitch() {
             </li>
             <li>
               <b>Operational Continuity:</b> Regular check-ins and a dead
-              man&apos;s switch ensure that Cipherwill remains functional under
+              man's switch ensure that Cipherwill remains functional under
               extreme circumstances.
             </li>
             <li>
-              <b>User Assurance: </b> This approach builds users&apos; trust in the
+              <b>User Assurance: </b> This approach builds users' trust in the
               system and shows Cipherwill's dedication to protecting digital
               legacies.
             </li>
@@ -96,13 +96,13 @@ export default function ShardSwitch() {
               partners like Google Cloud, Azure, and AWS will be integrated as
               additional keyholders (automated watchdog systems with backup
               deployments). These external stakeholders will enhance the
-              platform&apos;s resilience by distributing responsibility across a
+              platform's resilience by distributing responsibility across a
               broader network.
             </li>
           </ul>
 
           <p>
-            This collaborative approach strengthens the system&apos;s security
+            This collaborative approach strengthens the system's security
             and guarantees operational continuity, even in scenarios where the
             company itself faces challenges.
           </p>

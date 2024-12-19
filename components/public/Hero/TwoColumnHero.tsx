@@ -29,7 +29,7 @@ export default function TwoColumnHero() {
           </h1>
           <p className="my-8 font-medium dark:font-normal text-xl max-w-md mx-auto md:mx-0">
             When you pass away, we make sure your data (such as bank details,
-            investments, properties, digital assets, etc.) get&apos;s to right
+            investments, properties, digital assets, etc.) get's to right
             people.
           </p>
           <div>

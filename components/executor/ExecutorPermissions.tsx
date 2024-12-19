@@ -32,7 +32,7 @@ export default function ExecutorPermissions() {
               <div>
                 <div>
                   You have permissions of <UserById id={access.user} />
-                  &apos;s Will
+                  's Will
                 </div>
                 <div>
                   Access until: {getTimeRemaining(parseInt(access.expire_at))}

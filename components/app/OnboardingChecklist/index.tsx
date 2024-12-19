@@ -18,7 +18,7 @@ export default function OnboardingChecklist() {
       <AddBeneficiaryStep />
       <div className="border-b border-default py-2 mb-2" />
       <div className="text-sm pt-2 max-w-sm">
-        We&apos;ll send you notifications via email to keep your Cipherwill up to
+        We'll send you notifications via email to keep your Cipherwill up to
         date with the schedule of your will.
       </div>
       <div className="py-2 text-sm font-medium text-gray-500 dark:text-gray-400">

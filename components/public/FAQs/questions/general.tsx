@@ -16,9 +16,9 @@ const questions = [
         investments, are passed to your chosen beneficiaries.
         <br />
         <br />
-        Cipherwill is a dead man&apos;s switch to that ensures your assets are passed
-        on securely. If you don&apos;t update your will within a set time, the system
-        assumes you&apos;re unavailable. It then automatically delivers your
+        Cipherwill is a dead man's switch to that ensures your assets are passed
+        on securely. If you don't update your will within a set time, the system
+        assumes you're unavailable. It then automatically delivers your
         encrypted information to your beneficiaries, ensuring nothing gets lost.
         <br />
         <br />
@@ -43,7 +43,7 @@ const questions = [
         <br />
         <br />
         Your data is first encrypted with a time capsule key, then re-encrypted
-        with your beneficiary&apos;s public key for double protection. The system
+        with your beneficiary's public key for double protection. The system
         also uses secure key exchange algorithms and future-proof encryption
         like Lattice-based cryptography to ensure long-term security.
         <br />
@@ -114,7 +114,7 @@ const questions = [
     content: (
       <div>
         After you pass away, Cipherwill triggers its <b>Will Execution</b> if
-        you haven&apos;t updated your will within the specified time.
+        you haven't updated your will within the specified time.
         <br />
         <br />
         At that point, your encrypted data is automatically sent to your
@@ -153,7 +153,7 @@ const questions = [
           time capsule encryption
         </Link>
         , which automatically releases your encrypted data to your beneficiaries
-        after a predefined time if you haven&apos;t updated your will. They can
+        after a predefined time if you haven't updated your will. They can
         access it securely using their decryption keys, ensuring your
         information is released to them without requiring your direct consent at
         that moment.
@@ -167,7 +167,7 @@ const questions = [
           href={`/i/time-capsule-encryption`}
           className="text-blue-500 hover:underline font-semibold"
         >
-          See Cipherwill&apos;s &quot;Timed-release encryption&quot;
+          See Cipherwill's &quot;Timed-release encryption&quot;
         </Link>
       </div>
     ),
@@ -237,7 +237,7 @@ const questions = [
         <br />
         This includes individuals with digital assets like cryptocurrency,
         social media profiles, online accounts, or important financial and legal
-        documents. It&apos;s also perfect for people with significant real-world
+        documents. It's also perfect for people with significant real-world
         assets, such as property or business interests, who want to ensure their
         legacy is protected.
         <br />
