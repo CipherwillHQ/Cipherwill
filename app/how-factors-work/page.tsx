@@ -36,36 +36,57 @@ export default function HowFactorsWork() {
           </p>
         </div>
       </div>
-      <div className="w-full max-w-3xl mx-auto px-4 py-12">
-        <h2 className="font-bold text-lg">What are Security Factors?</h2>
+      <div className="w-full max-w-3xl mx-auto px-4 py-12 text-lg">
+        <h2 className="font-bold text-lg py-4">What are Security Factors?</h2>
         <p className="text-justify font-medium">
-          Security factors are the keys used to both encrypt and decrypt your
-          data, ensuring that only authorized access is possible. These factors
-          act as safeguards, encrypting your data to protect it, and allowing
-          decryption when you need to access it securely.
+          Security factors are ways to protect your data by encrypting and
+          decrypting it, making sure only authorized people can access it. These
+          factors keep your data safe by locking it, and only someone with the
+          right keys can unlock it.
         </p>
-        <h2 className="font-bold text-lg mt-4">
+        <h2 className="font-bold text-lg  py-4">
           How Security Factors are used to encrypt data?
         </h2>
         <p className="text-justify font-medium">
-          Security Factors are the seeds used to derive public and private keys,
-          which are essential for encrypting and decrypting your data.
-          Basically, they generate a random 48-byte string, and from that, the
-          public/private key pair is derived. The public key is used to encrypt
-          the data, while the private key decrypts it. So, the Security Factors
-          play a crucial role in making sure your data stays safe and can only
-          be accessed by someone with the right keys.
+          Security factors help create special keys that are used to lock
+          (encrypt) and unlock (decrypt) your data. They generate a random 32 or
+          48 byte string seeds, and from that, we get two keys: a public key to
+          lock your data and a private key to unlock it. These factors make sure
+          your data stays safe and can only be accessed by the right person.
         </p>
-        <h2 className="font-bold text-lg mt-4">
+        <h2 className="font-bold text-lg  py-4">
           Which Security Factors are supported?
         </h2>
-        <p className="text-justify font-medium">
-          The main Security Factor we support is the "Master Password." It's a
-          simple but powerful password-based security feature. Your password,
-          along with its hash, acts as the seed to derive both public and
-          private keys. These keys are then used to securely encrypt and decrypt
-          your data.
+        <p className="text-justify">
+          We support several security factors to keep your data safe:
         </p>
+        <ol className="list-decimal list-inside">
+          <li>
+            <span className="font-semibold">Master Password:</span> A simple but
+            strong password that helps create keys for locking and unlocking
+            your data.
+          </li>
+          <li>
+            <span className="font-semibold">FIDO2 Keys:</span> A secure way to
+            log in and protect your data without being tricked by fake sites.
+          </li>
+          <li>
+            <span className="font-semibold">YubiKeys:</span> A small security
+            device that gives you an extra layer of protection when logging in.
+          </li>
+          <li>
+            <span className="font-semibold">
+              Device Hardware Authentication (Passkeys):
+            </span>{" "}
+            Uses your phone or computer to create a secure key for easy and safe
+            access.
+          </li>
+          <li>
+            <span className="font-semibold">MetaMask (Crypto Wallet):</span> You
+            can unlock your data using your MetaMask wallet, which keeps your
+            crypto and data secure.
+          </li>
+        </ol>
       </div>
       <EncryptionMetrix />
       <FAQs />
