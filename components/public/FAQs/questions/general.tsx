@@ -52,7 +52,7 @@ const questions = [
           href={`/how-it-works`}
           className="text-blue-500 hover:underline font-semibold"
         >
-          Read &quot;How Cipherwill Works?&quot; here
+          Read "How Cipherwill Works?" here
         </Link>
       </div>
     ),
@@ -167,7 +167,7 @@ const questions = [
           href={`/i/time-capsule-encryption`}
           className="text-blue-500 hover:underline font-semibold"
         >
-          See Cipherwill's &quot;Timed-release encryption&quot;
+          See Cipherwill's "Timed-release encryption"
         </Link>
       </div>
     ),

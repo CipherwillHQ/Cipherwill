@@ -46,8 +46,8 @@ export default function ShardSwitch() {
             To enhance security and resilience, Cipherwill's secret is
             distributed among <b>seven trusted keyholders</b>, ensuring no
             single individual has full control. Keyholders perform regular
-            &quot;check-ins&quot; typically once a week - to confirm the platform's
-            operational integrity. These check-ins act as a &quot;heartbeat&quot; for the
+            "check-ins" typically once a week - to confirm the platform's
+            operational integrity. These check-ins act as a "heartbeat" for the
             system, verifying that everything is functioning as expected.
           </p>
 

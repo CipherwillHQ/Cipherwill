@@ -16,7 +16,7 @@ export default function SimpleExplainer() {
             <strong>Add and Save Your Data</strong>
             <p className="">
               Add your important information to Cipherwill, where it's
-              stored as a &quot;data pod.&quot;
+              stored as a "data pod."
             </p>
           </li>
           <li>

@@ -27,8 +27,8 @@ export default function TOS() {
       <div className="max-w-4xl mx-auto py-10 text-justify p-4 font-medium text-lg">
         <div className="py-4">Last updated on December 3, 2024</div>
         <div>
-          These Terms of Use (&quot;Terms&quot;) govern your access to and use
-          of the CipherWill platform and services (&quot;Services&quot;). By
+          These Terms of Use ("Terms") govern your access to and use
+          of the CipherWill platform and services ("Services"). By
           accessing or using our Services, you agree to be bound by these Terms.
           If you do not agree to these Terms, please refrain from using our
           Services.

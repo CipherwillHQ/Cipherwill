@@ -60,7 +60,7 @@ export default function HowFactorsWork() {
           Which Security Factors are supported?
         </h2>
         <p className="text-justify font-medium">
-          The main Security Factor we support is the &quot;Master Password.&quot; It's a
+          The main Security Factor we support is the "Master Password." It's a
           simple but powerful password-based security feature. Your password,
           along with its hash, acts as the seed to derive both public and
           private keys. These keys are then used to securely encrypt and decrypt

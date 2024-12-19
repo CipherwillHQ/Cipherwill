@@ -29,10 +29,10 @@ export default function PrivacyPolicy() {
         <div className="py-2">Last updated on December 3, 2024</div>
         <br />
         <div>
-          This Privacy Policy describes how CipherWill (&quot;we,&quot;
-          &quot;us,&quot; or &quot;our&quot;) collects, uses, shares, discloses,
+          This Privacy Policy describes how CipherWill ("we,"
+          "us," or "our") collects, uses, shares, discloses,
           manages and protects the personal information of individuals
-          (&quot;you&quot; or &quot;users&quot;) who utilize our digital estate
+          ("you" or "users") who utilize our digital estate
           planning services and will management platform. Protecting your
           privacy and the confidentiality of your personal information is of
           utmost importance to us. Please read this Privacy Policy carefully to

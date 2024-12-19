@@ -108,7 +108,7 @@ export default function WillExecutionTimeline() {
           <div>
             At this point, we will send you a message informing you that, since
             you did not respond to the previous 4 reminders from Cipherwill, the
-            &quot;time capsule&quot; encryption keys have been released to your
+            "time capsule" encryption keys have been released to your
             beneficiaries on their Cipherwill dashboard. We will also notify
             your beneficiaries that they now have access to a special dashboard
             for next 100 days containing the data you have uploaded for them.
