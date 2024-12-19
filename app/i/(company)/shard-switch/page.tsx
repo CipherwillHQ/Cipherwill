@@ -30,51 +30,106 @@ export default function ShardSwitch() {
           <p className="py-6 max-w-3xl text-center">{description}</p>
         </div>
         <div className="max-w-4xl mx-auto text-lg pt-20">
-          Shard switch is a sophisticated failsafe designed to ensure the
-          platform&apos;s continuity in the unlikely event of a company-wide
-          disruption. This system operates using Shamir&apos;s Secret Sharing, a
-          cryptographic method that divides a secret into multiple parts,
-          requiring a threshold of these parts to reconstruct it.
-          Cipherwill&apos;s secret is distributed among seven trusted
-          keyholders, creating a decentralized mechanism that ensures no single
-          person holds all the power, enhancing security and resilience.
-          <br />
-          <br />
-          Each keyholder is responsible for their portion of the secret and must
-          check in regularly—typically once a week—to confirm the
-          platform&apos;s operational integrity. This routine check-in acts as a
-          heartbeat for the system, verifying that Cipherwill is functioning as
-          expected. If a predefined number of check-ins are missed or another
-          activation trigger occurs, the dead man&apos;s switch engages. The
-          keyholders then collaborate to combine their secret shares,
-          reconstructing the critical information needed to activate the
-          contingency protocols.
-          <br />
-          <br />
-          This approach not only ensures Cipherwill&apos;s operations remain
-          transparent and secure but also guarantees that user assets and
-          information are never at risk, even under extreme circumstances. By
-          leveraging a trusted team and cutting-edge cryptographic methods,
-          Cipherwill underscores its commitment to protecting your digital
-          legacy, no matter what challenges arise.
-          <br />
-          <br />
-          <div className="border p-4 rounded-xl">
-            <h2 className="font-semibold text-xl mb-4">Just a note</h2>
-            Shard switch is also designed to evolve as the platform grows. In
-            the future, we plan to include trusted members from our user
-            community, as well as third-party service providers like Google
-            Cloud, Azure, and AWS, as additional keyholders. This will further
-            decentralize the system, ensuring that the responsibility of
-            maintaining operational continuity is spread across both our
-            community and industry-leading infrastructure partners. By
-            incorporating these external stakeholders, we can further strengthen
-            the platform&apos;s resilience, guaranteeing that Cipherwill remains
-            functional and secure, even if challenges arise with the company
-            itself. This collaborative approach ensures that our users&apos;
-            legacies are protected and that services continue seamlessly without
-            interruption.
-          </div>
+          <p>
+            The Shard Switch is a robust failsafe mechanism designed to
+            guarantee the continuity of Cipherwill&apos;s operations, even in
+            the face of unforeseen disruptions. This system leverages{" "}
+            <b>Shamir&apos;s Secret Sharing</b>, a cryptographic method that
+            splits a secret into multiple parts. To reconstruct the original
+            secret, a predefined threshold of these parts must be combined,
+            creating a decentralized and secure framework.
+          </p>
+
+          <h2 className="py-8 font-bold text-xl">How It Works</h2>
+
+          <p>
+            To enhance security and resilience, Cipherwill&apos;s secret is
+            distributed among <b>seven trusted keyholders</b>, ensuring no
+            single individual has full control. Keyholders perform regular
+            &quot;check-ins&quot; typically once a week - to confirm the platform&apos;s
+            operational integrity. These check-ins act as a &quot;heartbeat&quot; for the
+            system, verifying that everything is functioning as expected.
+          </p>
+
+          <p>
+            If keyholders miss a predefined number of check-ins or if another
+            activation trigger occurs, the system engages a{" "}
+            <b>dead man&apos;s switch</b>. At this point, keyholders collaborate
+            to combine their secret shares and reconstruct the critical
+            information required to activate contingency protocols, ensuring
+            uninterrupted platform functionality.
+          </p>
+
+          <h2 className="py-8 font-bold text-xl">Key Benefits</h2>
+          <ul className="list-disc list-inside pb-4">
+            <li>
+              <b>Decentralized Security: </b> By dividing the secret among
+              multiple keyholders, the system eliminates single points of
+              failure.
+            </li>
+            <li>
+              <b>Operational Continuity:</b> Regular check-ins and a dead
+              man&apos;s switch ensure that Cipherwill remains functional under
+              extreme circumstances.
+            </li>
+            <li>
+              <b>User Assurance: </b> This approach builds users&apos; trust in the
+              system and shows Cipherwill's dedication to protecting digital
+              legacies.
+            </li>
+          </ul>
+
+          <h2 className="py-8 font-bold text-xl">Future Enhancements</h2>
+
+          <p>
+            As Cipherwill evolves, we plan to expand the Shard Switch mechanism
+            to include:
+          </p>
+          <ul className="list-disc list-inside py-4">
+            <li>
+              <b>Community Keyholders: </b> Trusted members of our user
+              community will take on keyholder roles, further decentralizing the
+              system.
+            </li>
+            <li>
+              <b>Third-Party Providers: </b> Industry-leading infrastructure
+              partners like Google Cloud, Azure, and AWS will be integrated as
+              additional keyholders (automated watchdog systems with backup
+              deployments). These external stakeholders will enhance the
+              platform&apos;s resilience by distributing responsibility across a
+              broader network.
+            </li>
+          </ul>
+
+          <p>
+            This collaborative approach strengthens the system&apos;s security
+            and guarantees operational continuity, even in scenarios where the
+            company itself faces challenges.
+          </p>
+
+          <h2 className="py-8 font-bold text-xl">Addressing Potential Risks</h2>
+
+          <p>
+            While decentralizing keyholder roles adds resilience, it also
+            introduces dependencies. To mitigate these risks:
+          </p>
+
+          <ul className="list-disc list-inside py-4">
+            <li>
+              All keyholders, internal and external adhere to strict security
+              protocols and regular audits.
+            </li>
+            <li>
+              The threshold for secret reconstruction ensures that operations
+              remain secure even if some keyholders are unavailable.
+            </li>
+          </ul>
+
+          <p>
+            By combining cryptographic methods with a collaborative model,
+            Cipherwill ensures that your digital legacy remains protected, no
+            matter what challenges arise.
+          </p>
         </div>
       </section>
       <Footer />
