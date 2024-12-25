@@ -13,6 +13,7 @@ const ME = gql`
       gender
       country
       plan
+      last_accessed
       created_at
       updated_at
     }

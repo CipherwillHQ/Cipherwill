@@ -1,7 +1,16 @@
+import { DateTime } from "luxon";
+import CustomCipherwillInterval from "./CustomCipherwillInterval";
+import Link from "next/link";
+import SimpleButton from "@/components/common/SimpleButton";
+
 export default function CycleDescription({
   birth_stamp,
+  interval,
+  last_accessed,
 }: {
   birth_stamp: string;
+  interval: number;
+  last_accessed: string | null;
 }) {
   const birthDate = new Date(parseInt(birth_stamp));
 
@@ -24,97 +33,149 @@ export default function CycleDescription({
     (upcomingBday.getTime() - today.getTime()) / one_day
   );
 
-  const firstReminder = new Date(
-    new Date(
-      upcomingBday.getFullYear(),
-      upcomingBday.getMonth(),
-      upcomingBday.getDate()
-    ).setDate(upcomingBday.getDate() + 3)
-  );
-  const SecondReminder = new Date(
-    new Date(
-      upcomingBday.getFullYear(),
-      upcomingBday.getMonth(),
-      upcomingBday.getDate()
-    ).setDate(upcomingBday.getDate() + 30)
-  );
-  const LastReminder = new Date(
-    new Date(
-      upcomingBday.getFullYear(),
-      upcomingBday.getMonth(),
-      upcomingBday.getDate()
-    ).setDate(upcomingBday.getDate() + 90)
-  );
-  const releaseDate = new Date(
-    new Date(
-      upcomingBday.getFullYear(),
-      upcomingBday.getMonth(),
-      upcomingBday.getDate()
-    ).setDate(upcomingBday.getDate() + 100)
-  );
-
   return (
-    <div className=" bg-secondary p-4 border border-default rounded-md w-full">
-      <h2 className="font-semibold">Schedule</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 py-4 border-b border-default mb-6">
-        <div className="flex flex-col items-center justify-center">
-          <div className="text-5xl font-bold py-2">
-            {daysLeft}
-            <span className="text-base font-semibold ml-1">days</span>
-          </div>
-          <div className="text-center">Until your next birthday</div>
-        </div>
+    <>
+      <div className=" bg-secondary p-4 border border-default rounded-md w-full">
+        <div className="flex justify-between items-center border-b border-default pb-4">
+          <h2 className="font-semibold">Schedule (based on Birthdate)</h2>
 
-        <div className="flex flex-col items-center justify-center">
-          <div className="text-5xl font-bold py-2">
-            {age}
-            <span className="text-base font-semibold ml-1">years</span>
-          </div>
-          <div className="text-center">Your current age</div>
+          <SimpleButton href="/app/profile" className="text-sm">
+            Edit profile
+          </SimpleButton>
         </div>
-
-        <div className="flex flex-col items-center justify-center">
-          <div className="text-5xl font-bold py-2">
-            {age + 1}
-            <span className="text-base font-semibold ml-1">years</span>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 py-4 border-b border-default mb-6">
+          <div className="flex flex-col items-center justify-center">
+            <div className="text-5xl font-bold py-2">
+              {daysLeft}
+              <span className="text-base font-semibold ml-1">days</span>
+            </div>
+            <div className="text-center">Until your next birthday</div>
           </div>
-          <div className="text-center">You will be on next birthday</div>
+
+          <div className="flex flex-col items-center justify-center">
+            <div className="text-5xl font-bold py-2">
+              {age}
+              <span className="text-base font-semibold ml-1">years</span>
+            </div>
+            <div className="text-center">Your current age</div>
+          </div>
+
+          <div className="flex flex-col items-center justify-center">
+            <div className="text-5xl font-bold py-2">
+              {age + 1}
+              <span className="text-base font-semibold ml-1">years</span>
+            </div>
+            <div className="text-center">You will be on next birthday</div>
+          </div>
+        </div>
+        <div className=" flex flex-col gap-3">
+          <div className="flex flex-col sm:flex-row w-full justify-between items-center">
+            <div className="text-sm opacity-70 font-medium">Birth date</div>
+            <div className="text-sm" data-cy="next-update-date">
+              {birthDate.toDateString()}
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row w-full justify-between items-center">
+            <div className="text-sm opacity-70 font-medium">Next birthday</div>
+            <div className="text-sm" data-cy="next-update-date">
+              {upcomingBday.toDateString()}
+            </div>
+          </div>
         </div>
       </div>
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col sm:flex-row w-full justify-between items-center">
-          <div className="text-sm font-medium text-gray-500">Next update event</div>
-          <div className="text-sm" data-cy="next-update-date">
-            {upcomingBday.toDateString()} (Next Birthday)
+      <div className="flex flex-col gap-4 p-4 border border-default rounded-md bg-secondary">
+        <div>
+          <h2 className="font-semibold">Check In Interval</h2>
+          <div className="text-sm lg:max-w-2xl opacity-80 font-medium pt-2">
+            We will regularly check to see if you've logged into your Cipherwill
+            account. If we notice that you haven't, we'll start sending you
+            reminders based on our schedule, encouraging you to log in. If you
+            still don't take any action after the reminders, we'll grant access
+            of your data to your beneficiaries.
           </div>
-        </div>
-        <div className="flex flex-col sm:flex-row w-full justify-between items-center">
-          <div className="text-sm font-medium text-gray-500">
-            First update reminder
-          </div>
-          <div className="text-sm">{firstReminder.toDateString()} (3 Days)</div>
-        </div>
-        <div className="flex flex-col sm:flex-row w-full justify-between items-center">
-          <div className="text-sm font-medium text-gray-500">
-            Second update reminder
-          </div>
-          <div className="text-sm">
-            {SecondReminder.toDateString()} (30 Days)
-          </div>
-        </div>
-        <div className="flex flex-col sm:flex-row w-full justify-between items-center">
-          <div className="text-sm font-medium text-gray-500">
-            Last update reminder
-          </div>
-          <div className="text-sm">{LastReminder.toDateString()} (90 Days)</div>
-        </div>
-        <div className="flex flex-col sm:flex-row w-full justify-between items-center">
-          <div className="text-sm font-medium text-gray-500">
-            Will release to beneficiary
-          </div>
-          <div className="text-sm">{releaseDate.toDateString()} (100 Days)</div>
         </div>
       </div>
-    </div>
+
+      <div className="flex flex-col gap-4 bg-secondary p-4 border border-default rounded-md w-full">
+        <CustomCipherwillInterval interval={interval} />
+
+        <div className="flex flex-col gap-3 border-b border-default pb-4 mb-2">
+          {last_accessed && (
+            <div className="flex flex-col sm:flex-row w-full justify-between items-center">
+              <div className="text-sm opacity-70 font-medium">
+                Last Check In was on
+              </div>
+              <div>
+                {DateTime.fromMillis(parseInt(last_accessed))
+                  .toJSDate()
+                  .toDateString()}
+              </div>
+            </div>
+          )}
+          <div className="flex flex-col sm:flex-row w-full justify-between items-center">
+            <div className="text-sm opacity-70 font-medium">
+              Next Check In is before
+            </div>
+            <div>
+              {DateTime.now()
+                .plus({ days: interval })
+                .toJSDate()
+                .toDateString()}{" "}
+              ({interval} days)
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col sm:flex-row w-full justify-between items-center">
+            <div className="text-sm opacity-70 font-medium">
+              First update reminder
+            </div>
+            <div className="text-sm">
+              {DateTime.now()
+                .plus({ days: interval + 3 })
+                .toJSDate()
+                .toDateString()}{" "}
+              (3 Days)
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row w-full justify-between items-center">
+            <div className="text-sm opacity-70 font-medium">
+              Second update reminder
+            </div>
+            <div className="text-sm">
+              {DateTime.now()
+                .plus({ days: interval + 30 })
+                .toJSDate()
+                .toDateString()}{" "}
+              (30 Days)
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row w-full justify-between items-center">
+            <div className="text-sm opacity-70 font-medium">
+              Last update reminder
+            </div>
+            <div className="text-sm">
+              {DateTime.now()
+                .plus({ days: interval + 90 })
+                .toJSDate()
+                .toDateString()}{" "}
+              (90 Days)
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row w-full justify-between items-center">
+            <div className="text-sm opacity-70 font-medium">
+              Will release to beneficiary
+            </div>
+            <div className="text-sm">
+              {DateTime.now()
+                .plus({ days: interval + 100 })
+                .toJSDate()
+                .toDateString()}{" "}
+              (100 Days)
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

@@ -4,6 +4,7 @@ const GET_PREFERENCES = gql`
   query GET_PREFERENCES {
     getPreferences {
       id
+      check_in_interval
       segment_bank_account
       segment_email_accounts
       segment_device_locks
