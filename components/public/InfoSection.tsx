@@ -269,7 +269,7 @@ export default function InfoSection() {
                 3
               </div>
               <p className="mt-5 text-xl font-medium text-neutral-800 dark:text-gray-300 ">
-                Update your cipherwill once a year on your birthday
+                Update your cipherwill once a year
               </p>
             </div>
           </div>

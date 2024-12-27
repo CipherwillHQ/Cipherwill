@@ -2,6 +2,7 @@ import { FULL_HOSTNAME } from "@/common/constant";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import CTA from "@/components/public/CTA";
+import Link from "next/link";
 
 const title = "Cipherwill Execution Timeline";
 const description =
@@ -34,32 +35,35 @@ export default function WillExecutionTimeline() {
       <div className="flex flex-col gap-8 w-full max-w-3xl mx-auto p-4 font-medium">
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between text-lg font-bold">
-            <h2>Birthday Reminder</h2>
+            <h2>Trigger</h2>
             <div className="py-2 px-4 text-sm rounded-full bg-sky-50">
-              On your birthday
+              Default 1 Year
             </div>
           </div>
+          <div className="bg-slate-100 p-2 rounded-md font-semibold text-sm">
+            You can change this to weekly, monthly, quarterly, semi-annually or
+            annually
+          </div>
           <div>
-            Every year on your birthday, we will send our wishes and a reminder
-            to open Cipherwill and make any changes you have in mind. This is a
-            mandatory event that must be completed within 3 days of your
-            birthday so that we know you're alive and well. It's okay if you
-            don't have any changes - just visit the Cipherwill dashboard once.
+            We check if you've logged in to Cipherwill within the trigger period
+            you've selected (default 1 year). If you have not done any activity
+            for the trigger period. we will start sending reminders and
+            described below.
           </div>
         </div>
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between text-lg font-bold">
             <h2>First Reminder</h2>
             <div className="py-2 px-4 text-sm rounded-full bg-sky-50">
-              After 3 Days of Your Birthday
+              After 3 Days
             </div>
           </div>
           <div className="bg-slate-100 p-2 rounded-md font-semibold text-sm">
             We will only send this reminder if you haven't opened Cipherwill
-            within 3 days of your birthday
+            within the trigger period you've selected.
           </div>
           <div>
-            If you haven't opened Cipherwill within 3 days of your birthday, we
+            If you haven't opened Cipherwill within 3 days of your trigger, we
             will send this reminder to inform you that you need to access
             Cipherwill to avoid will execution event.
           </div>
@@ -68,15 +72,15 @@ export default function WillExecutionTimeline() {
           <div className="flex items-center justify-between text-lg font-bold">
             <h2>Second Reminder</h2>
             <div className="py-2 px-4 text-sm rounded-full bg-sky-50">
-              After 30 Days of Your Birthday
+              After 30 Days
             </div>
           </div>
           <div className="bg-slate-100 p-2 rounded-md font-semibold text-sm">
             We will only send this reminder if you haven't opened Cipherwill
-            within 30 days of your birthday
+            within 30 days of your trigger
           </div>
           <div>
-            If you haven't opened Cipherwill within 30 days of your birthday and
+            If you haven't opened Cipherwill within 30 days of your trigger and
             27 days after the first reminder, we will send another reminder to
             warn you about the seriousness of your inaction.
           </div>
@@ -85,15 +89,15 @@ export default function WillExecutionTimeline() {
           <div className="flex items-center justify-between text-lg font-bold">
             <h2>Third Reminder</h2>
             <div className="py-2 px-4 text-sm rounded-full bg-sky-50">
-              After 90 Days of Your Birthday
+              After 90 Days
             </div>
           </div>
           <div className="bg-slate-100 p-2 rounded-md font-semibold text-sm">
             We will only send this reminder if you haven't opened Cipherwill
-            within 90 days of your birthday
+            within 90 days of your trigger
           </div>
           <div>
-            If you haven't opened Cipherwill within 90 days of your birthday and
+            If you haven't opened Cipherwill within 90 days of your trigger and
             60 days after the second reminder, we'll send you another gentle
             nudge, just to make sure you're aware of how important this is.
           </div>
@@ -102,16 +106,22 @@ export default function WillExecutionTimeline() {
           <div className="flex items-center justify-between text-lg font-bold">
             <h2>Will Execution</h2>
             <div className="py-2 px-4 text-sm rounded-full bg-sky-50">
-              After 100 Days of Your Birthday
+              After 100 Days
             </div>
           </div>
           <div>
             At this point, we will send you a message informing you that, since
-            you did not respond to the previous 4 reminders from Cipherwill, the
-            "time capsule" encryption keys have been released to your
-            beneficiaries on their Cipherwill dashboard. We will also notify
-            your beneficiaries that they now have access to a special dashboard
-            for next 100 days containing the data you have uploaded for them.
+            you did not respond to the previous 3 reminders from Cipherwill, the{" "}
+            <Link
+              href={`/i/time-capsule-encryption`}
+              className="text-blue-600 hover:underline"
+            >
+              "time capsule" encryption
+            </Link>{" "}
+            keys have been released to your beneficiaries on their Cipherwill
+            dashboard. We will also notify your beneficiaries that they now have
+            access to a special dashboard for next 100 days containing the data
+            you have uploaded for them.
           </div>
         </div>
         <div className="flex flex-col gap-2">
