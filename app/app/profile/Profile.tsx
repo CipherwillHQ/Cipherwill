@@ -9,6 +9,7 @@ import getAllCountryCodes from "../../../common/country/getAllCountryCodes";
 import toast from "react-hot-toast";
 import CountryRestrictionPopup from "../../../components/app/popups/CountryRestrictionPopup";
 import SimpleButton from "@/components/common/SimpleButton";
+import Select from "@/components/ui/Select";
 
 export default function Profile() {
   const [email, setEmail] = useState("");
@@ -69,9 +70,7 @@ export default function Profile() {
           currentCountry={ProfileData.me.country}
         />
       )}
-      <div className="text-lg font-medium pb-2">
-        Profile Information
-      </div>
+      <div className="text-lg font-medium pb-2">Profile Information</div>
       <label className="py-3 px-1 font-semibold text-sm">Email</label>
       <label className="p-2 bg-slate-100 dark:bg-neutral-900 border border-default text-slate-500 dark:text-slate-300 rounded-md">
         {email}
@@ -87,7 +86,9 @@ export default function Profile() {
         />
         {firstName === "" && <BiErrorCircle className="text-red-500 m-1" />}
       </div>
-      <label className="mt-2 py-3 px-1 font-semibold text-sm">Middle Name</label>
+      <label className="mt-2 py-3 px-1 font-semibold text-sm">
+        Middle Name
+      </label>
       <div className="flex justify-between items-center">
         <input
           type="text"
@@ -107,7 +108,9 @@ export default function Profile() {
           onChange={(e) => setLastName(e.target.value)}
         />
       </div>
-      <label className="mt-2 py-3 px-1 font-semibold text-sm">Date of Birth</label>
+      <label className="mt-2 py-3 px-1 font-semibold text-sm">
+        Date of Birth
+      </label>
       <div className="flex justify-between items-center">
         <input
           data-cy="dob-input"
@@ -134,46 +137,33 @@ export default function Profile() {
 
       <label className="mt-2 py-3 px-1 font-semibold text-sm">Gender</label>
       <div className="flex justify-between items-center">
-        <select
+        <Select
           value={gender}
-          onChange={(e) => setGender(e.target.value)}
-          className="rounded-md mb-2 w-full p-2 bg-neutral-100 dark:bg-neutral-800"
-        >
-          <option value="" className="py-1">
-            Select Gender
-          </option>
-          <option value="male" className="py-1">
-            Male
-          </option>
-          <option value="female" className="py-1">
-            Female
-          </option>
-          <option value="other" className="py-1">
-            Other
-          </option>
-          <option value="na" className="py-1">
-            Do not specify
-          </option>
-        </select>
+          onChange={(val) => setGender(val)}
+          placeholder="Select Gender"
+          className="w-full bg-neutral-100 dark:bg-neutral-800"
+          options={[
+            { value: "male", label: "Male" },
+            { value: "female", label: "Female" },
+            { value: "other", label: "Other" },
+            { value: "na", label: "Do not specify" },
+          ]}
+        />
       </div>
       <label className="mt-2 py-3 px-1 font-semibold text-sm">Country</label>
       <div className="flex justify-between items-center w-full">
-        <select
+        <Select
           value={country}
-          onChange={(e) => setCountry(e.target.value)}
-          className="rounded-md mb-2 w-full p-2 bg-neutral-100 dark:bg-neutral-800"
-        >
-          <option value="" className="py-1">
-            Select Country
-          </option>
-          {getAllCountryCodes().map((country) => {
-            return (
-              <option key={country.code} value={country.code} className="py-1">
-                {country.name}
-              </option>
-            );
+          onChange={(val) => setCountry(val)}
+          className="w-full bg-neutral-100 dark:bg-neutral-800"
+          placeholder="Select Country"
+          options={getAllCountryCodes().map((country) => {
+            return {
+              value: country.code,
+              label: country.name,
+            };
           })}
-        </select>
+        />
         {country === "" && <BiErrorCircle className="text-red-500 m-1" />}
       </div>
       <div className="pt-2 text-right">

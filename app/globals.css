@@ -43,44 +43,6 @@ body {
   background: transparent;
 }
 
-@layer components {
-  /* React Select dark  */
-  /* .my-react-select-container {
-  } */
-  .my-react-select-container .my-react-select__control {
-    @apply bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 hover:border-neutral-400 dark:hover:border-neutral-500;
-  }
-
-  .my-react-select-container .my-react-select__control--is-focused {
-    @apply border-neutral-500 hover:border-neutral-500 dark:border-neutral-400 dark:hover:border-neutral-400 shadow-none;
-  }
-
-  .my-react-select-container .my-react-select__menu {
-    @apply bg-white dark:bg-gray-700;
-  }
-
-  .my-react-select-container .my-react-select__option {
-    @apply text-neutral-600 dark:text-neutral-200 bg-white hover:bg-neutral-200 dark:bg-gray-700 dark:hover:bg-neutral-800;
-  }
-  /* .my-react-select-container .my-react-select__option--is-focused {
-    @apply bg-neutral-200 dark:bg-neutral-800;
-  } */
-
-  .my-react-select-container .my-react-select__indicator-separator {
-    @apply bg-neutral-400;
-  }
-
-  .my-react-select-container .my-react-select__input-container,
-  .my-react-select-container .my-react-select__placeholder,
-  .my-react-select-container .my-react-select__single-value {
-    @apply text-neutral-600 dark:text-neutral-200;
-  }
-}
-
-iframe#illow-banner-widget {
-  @apply hidden;
-}
-
 @layer utilities {
   /* Hide scrollbar for Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
