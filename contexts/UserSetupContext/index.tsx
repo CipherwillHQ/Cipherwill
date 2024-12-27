@@ -34,6 +34,7 @@ type UserResponse = {
   gender: string;
   country: string;
   plan: string;
+  last_accessed: string;
   created_at: string;
   updated_at: string;
 };
@@ -56,43 +57,48 @@ export function UserSetupProvider({ children }: Props) {
     if (mixpanel) mixpanel.track("signup");
     posthog.capture("signup");
   }, [mixpanel]);
-  const [setupPreferences, { data: preferences_data, loading:loading_preferences }] =
-    useLazyQuery(GET_PREFERENCES);
-  const [setupUser, { data: user_data, loading:loading_user }] = useLazyQuery(ME, {
-    onCompleted(data) {
-      const user_data = data.me;
-      logger.info("User setup", user_data);
-      if (user_data) {
-        logger.info("Setting user preferences");
-        setupPreferences();
-      }
-      const user_analytics_data = {
-        name: user_data.first_name,
-        gender: user_data.gender,
-        plan: user_data.plan,
-        country: user_data.country,
-      };
-      mixpanel.identify(user_data.id);
-      mixpanel.people.set(user_analytics_data);
-      posthog.identify(user_data.id, user_analytics_data);
-      if (user_data.country === null) {
-        // This is a new user, add their country
-        signup_conversion();
-        const country = getLocalCountry();
-        const countryName = getCountryNameByCode(country);
-        toast.success(`Added ${countryName} as your country`);
-        setupCountry({
-          variables: {
-            data: {
-              country,
+  const [
+    setupPreferences,
+    { data: preferences_data, loading: loading_preferences },
+  ] = useLazyQuery(GET_PREFERENCES);
+  const [setupUser, { data: user_data, loading: loading_user }] = useLazyQuery(
+    ME,
+    {
+      onCompleted(data) {
+        const user_data = data.me;
+        logger.info("User setup", user_data);
+        if (user_data) {
+          logger.info("Setting user preferences");
+          setupPreferences();
+        }
+        const user_analytics_data = {
+          name: user_data.first_name,
+          gender: user_data.gender,
+          plan: user_data.plan,
+          country: user_data.country,
+        };
+        mixpanel.identify(user_data.id);
+        mixpanel.people.set(user_analytics_data);
+        posthog.identify(user_data.id, user_analytics_data);
+        if (user_data.country === null) {
+          // This is a new user, add their country
+          signup_conversion();
+          const country = getLocalCountry();
+          const countryName = getCountryNameByCode(country);
+          toast.success(`Added ${countryName} as your country`);
+          setupCountry({
+            variables: {
+              data: {
+                country,
+              },
             },
-          },
-        });
-      } else {
-        // This is an existing user, logging in
-      }
-    },
-  });
+          });
+        } else {
+          // This is an existing user, logging in
+        }
+      },
+    }
+  );
 
   const [setupCountry] = useMutation(UPDATE_USER);
 
@@ -105,7 +111,7 @@ export function UserSetupProvider({ children }: Props) {
   return (
     <UserSetupContext.Provider
       value={{
-        loading : loading_user || loading_preferences,
+        loading: loading_user || loading_preferences,
         user: user_data ? (user_data.me as UserResponse) : null,
         preferences: preferences_data?.getPreferences || {},
       }}
@@ -118,7 +124,7 @@ export function UserSetupProvider({ children }: Props) {
 export function useUserContext(): {
   loading: boolean;
   user: UserResponse | null;
-  preferences: Record<string, string|boolean>;
+  preferences: Record<string, string | boolean | number>;
 } {
   return useContext(UserSetupContext);
 }
