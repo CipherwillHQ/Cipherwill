@@ -4,9 +4,9 @@ import Header from "@/components/Header";
 import CTA from "@/components/public/CTA";
 import Link from "next/link";
 
-const title = "Commutative Encryption - Cipherwill";
+const title = "Cascade Encryption - Cipherwill";
 const description =
-  "Learn about Cipherwill's Commutative Encryption, a secure encryption method enabling seamless data transfer while maintaining privacy through advanced cryptographic techniques.";
+  "Learn about Cipherwill's Cascade Encryption, a secure encryption method enabling seamless data transfer while maintaining privacy through advanced cryptographic techniques.";
 
 export const metadata = {
   title,
@@ -16,39 +16,39 @@ export const metadata = {
     title,
     description,
     images: ["/og-img.png"],
-    url: `${FULL_HOSTNAME}/i/commutative-encryption`,
+    url: `${FULL_HOSTNAME}/i/cascade-encryption`,
   },
 };
 
-export default function CommutativeEncryotionDetails() {
+export default function CascadeEncryotionDetails() {
   return (
     <div>
       <Header />
       <div className="mts-28 mbs-6 px-4 pt-28 pb-12 flex flex-col gap-2 items-center justify-center text-center bg-gradient-to-b from-sky-50 to-sky-100">
         <div className="py-20">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">
-            Commutative Encryption Explained
+            Cascade Encryption Explained
           </h1>
           <p className="pt-8 max-w-md mx-auto font-medium">{description}</p>
         </div>
       </div>
       <div className="flex flex-col gap-8 w-full max-w-3xl mx-auto p-4 font-medium">
         <div>
-          This page breaks down commutative encryption, showing how its layered
+          This page breaks down Cascade encryption, showing how its layered
           approach keeps your data extra secure.
         </div>
         <div className="flex flex-col gap-2">
           <h2 className="text-2xl font-bold">
-            Cipherwill's Implementation of Commutative Encryption
+            Cipherwill's Implementation of Cascade Encryption
           </h2>
           <div className="border p-2 rounded-md bg-blue-50 text-blue-900 font-semibold">
-            Cipherwill uses ordered commutative encryption to ensure that data
+            Cipherwill uses ordered cascade encryption to ensure that data
             cannot be decrypted without first using the beneficiary's private
             key.
           </div>
           <p>
-            In Cipherwill's system, commutative encryption involves encrypting
-            data in multiple steps to ensure it remains secure. First, the user
+            In Cipherwill's system, cascade encryption involves encrypting data
+            in multiple steps to ensure it remains secure. First, the user
             encrypts their data with a time capsule key provided by Cipherwill.
             This key locks the data for future use, but it cannot be used to
             decrypt the information directly until another layer of encryption
@@ -79,40 +79,47 @@ export default function CommutativeEncryotionDetails() {
           </p>
         </div>
         <div className="flex flex-col gap-2">
-          <h2 className="text-2xl font-bold">
-            What is Commutative Encryption?
-          </h2>
+          <h2 className="text-2xl font-bold">What is Cascade Encryption?</h2>
           <div className="border p-2 rounded-md bg-blue-50 text-blue-900 font-semibold">
-            A commutative encryption is a kind of an encryption system that
-            enables a plaintext to be encrypted more than once using different
-            users' public keys.
+            Cascade encryption is a method of securing data by applying multiple
+            layers of encryption sequentially, often using different encryption
+            keys or algorithms at each layer.
           </div>
           <p>
-            Commutative encryption is a cryptographic technique where the order
-            in which encryption operations are applied doesn't affect the final
-            result. In simpler terms, you can encrypt data using multiple keys,
-            and regardless of the sequence in which the keys are applied, the
-            outcome will be the same. This is unlike traditional encryption,
-            where the order of operations matters. Commutative encryption is
-            particularly useful in situations where multiple parties need to
-            apply their own encryption layers without needing to trust or share
-            keys with each other.
+            Each layer in cascade encryption acts as an additional safeguard,
+            ensuring that even if one layer is compromised, the remaining layers
+            protect the data. This technique is particularly useful in scenarios
+            requiring high levels of security, such as safeguarding sensitive
+            digital assets or confidential communications. By combining
+            different encryption algorithms or key structures, cascade
+            encryption mitigates vulnerabilities associated with any single
+            encryption method, offering robust and layered protection.
           </p>
         </div>
         <div className="flex flex-col gap-2">
-          <h2 className="text-2xl font-bold">
-            How Commutative Encryption Works?
-          </h2>
-          <p>
-            Commutative encryption relies on the concept that the order of
-            encryption steps doesn't change the final outcome. It allows
-            multiple keys to encrypt the same piece of data in any sequence,
-            without impacting its ability to be decrypted in reverse order. For
-            example, if data is first encrypted with Key A and then Key B,
-            decrypting it with Key B first and then Key A will yield the
-            original data. This property is what makes commutative encryption
-            unique and highly versatile in secure systems.
-          </p>
+          <h2 className="text-2xl font-bold">How Cascade Encryption Works?</h2>
+          <div>
+            Cascade encryption works by encrypting data multiple times in
+            sequential layers, each using a different encryption algorithm or
+            key. This multi-layer approach enhances data security, ensuring that
+            breaking one layer does not compromise the overall encryption.
+            <ul className="list-disc list-inside mt-2">
+              <li>
+                First Layer Encryption: The data is encrypted using a specific
+                algorithm and key.
+              </li>
+              <li>
+                Subsequent Layers: The already-encrypted data is encrypted again
+                with a new algorithm or key, repeating this process for as many
+                layers as needed.
+              </li>
+              <li>
+                Decryption Process: To decrypt the data, the layers are removed
+                in reverse order, using the corresponding decryption keys for
+                each layer.
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
       <CTA />

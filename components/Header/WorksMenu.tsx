@@ -29,11 +29,11 @@ export function WorksMenuDesktop() {
           </div>
         </div>
       </Link>
-      <Link href={"/i/commutative-encryption"}>
+      <Link href={"/i/cascade-encryption"}>
         <div className="w-80 hover:bg-orange-100 rounded-md p-4">
           <div className="font-semibold text-lg">Encryption Layers</div>
           <div className="text-sm">
-          Breaks down Cipherwill's Implementation of Commutative Encryption
+            Breaks down Cipherwill's Implementation of Cascade Encryption
           </div>
         </div>
       </Link>
@@ -41,7 +41,7 @@ export function WorksMenuDesktop() {
         <div className="w-80 hover:bg-orange-100 rounded-md p-4">
           <div className="font-semibold text-lg">Time Capsule Encryption</div>
           <div className="text-sm">
-          Understand Time Based Encryption Used in Cipherwill
+            Understand Time Based Encryption Used in Cipherwill
           </div>
         </div>
       </Link>
@@ -55,7 +55,7 @@ export function WorksMenuMobile() {
       <Link href={"/how-it-works"}>Platform Overview</Link>
       <Link href={"/i/how-execution-timeline-works"}>Will Execution</Link>
       <Link href={"/how-factors-work"}>Security Factors</Link>
-      <Link href={"/i/commutative-encryption"}>Encryption Layers</Link>
+      <Link href={"/i/cascade-encryption"}>Encryption Layers</Link>
       <Link href={"/i/time-capsule-encryption"}>Time Capsule Encryption</Link>
     </div>
   );

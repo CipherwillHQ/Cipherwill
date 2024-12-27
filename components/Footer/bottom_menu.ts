@@ -41,7 +41,7 @@ const menu = [
       },
       {
         title: "Encryption Layers",
-        path: "/i/commutative-encryption",
+        path: "/i/cascade-encryption",
       },
       {
         title: "Time Capsule",

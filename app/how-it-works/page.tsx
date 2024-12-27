@@ -56,11 +56,11 @@ export default function HowItWorks() {
             </div>
           </div>
         </Link>
-        <Link href={"/i/commutative-encryption"}>
+        <Link href={"/i/cascade-encryption"}>
           <div className="bg-orange-50 hover:bg-orange-100 rounded-md p-4">
             <div className="font-semibold text-lg">Encryption Layers</div>
             <div className="text-sm">
-              Breaks down implementation of Commutative Encryption
+              Breaks down implementation of Cascade Encryption
             </div>
           </div>
         </Link>

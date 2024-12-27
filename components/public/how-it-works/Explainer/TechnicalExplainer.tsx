@@ -1,9 +1,7 @@
 export default function TechnicalExplainer() {
   return (
     <div className="flex flex-col gap-2 font-medium max-w-4xl mx-auto px-4">
-      <h2 className="text-xl font-bold py-4">
-        A Detailed Overview
-      </h2>
+      <h2 className="text-xl font-bold py-4">A Detailed Overview</h2>
       <p>
         Cipherwill provides a secure and comprehensive platform for managing and
         transferring digital assets through encrypted digital wills. Here's a
@@ -103,15 +101,14 @@ export default function TechnicalExplainer() {
       <h3 className="text-xl font-bold">Time Capsule Encryption</h3>
       <ul className="list-disc list-inside">
         <li>
-          <b>Commutative Encryption:</b> Cipherwill uses commutative encryption
-          to encrypt data pods again, creating a "time capsule" key. This key
-          ensures that the data remains encrypted and inaccessible until a
-          specified time.
-        </li>
-        <li>
           <b>Time Capsule Key Creation:</b> The time capsule key is created and
           securely stored by Cipherwill for each user-beneficiary pair, ensuring
           that the data can only be decrypted in the future.
+        </li>
+        <li>
+          <b>Cascade Encryption:</b> Cipherwill uses cascade encryption and
+          incorporates the "time capsule" key as one of the layers in the
+          cascading encryption process while storing data.
         </li>
       </ul>
       <h3 className="text-xl font-bold">Will Execution and Data Access</h3>
@@ -169,9 +166,10 @@ export default function TechnicalExplainer() {
           smaller key sizes.
         </li>
         <li>
-          <b>Commutative Encryption:</b> Time capsule keys are encrypted using
-          Commutative encryption techniques, which allow data to remain
-          encrypted even during re-encryption process.
+          <b>Cascade Encryption:</b> Cascade encryption is a multi-layered
+          encryption method where data is encrypted sequentially using multiple
+          keys or algorithms. Each layer adds an additional level of security,
+          making it harder to decrypt without all required keys.
         </li>
         {/* <li>
           <b>Zero Knowledge Encryption:</b> Cipherwill has developed its

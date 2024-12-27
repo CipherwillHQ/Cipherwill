@@ -96,10 +96,10 @@ export default function TimeCapsuleEncryption() {
         <div className="text-xl font-bold">
           How Time Capsule Encryption Works in Cipherwill's{" "}
           <Link
-            href="/i/commutative-encryption"
+            href="/i/cascade-encryption"
             className="text-blue-600 hover:text-blue-800 hover:underline"
           >
-            commutative encryption
+            Cascade Encryption
           </Link>
         </div>
         <div className="flex flex-col gap-2">
@@ -182,10 +182,10 @@ export default function TimeCapsuleEncryption() {
           <div className="">
             Read more about{" "}
             <Link
-              href="/i/commutative-encryption"
+              href="/i/cascade-encryption"
               className="text-blue-600 hover:text-blue-800 hover:underline"
             >
-              commutative encryption in Cipherwill
+              Cascade encryption in Cipherwill
             </Link>
           </div>
           {/* <div className="">
