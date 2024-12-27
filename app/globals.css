@@ -43,6 +43,10 @@ body {
   background: transparent;
 }
 
+iframe#illow-banner-widget {
+  @apply hidden;
+}
+
 @layer utilities {
   /* Hide scrollbar for Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
