@@ -13,9 +13,9 @@ import dynamic from "next/dynamic";
 // This works with dynamic imports to lower LCP
 const CSSImporter = dynamic(() => import("@/components/CSSImporter"));
 
-const title = "Cipherwill - Your Digital Will";
+const title = "Cipherwill - Dead Man's Switch for Digital Assets";
 const description =
-  "Protect your digital legacy. Securely store and manage your digital assets, create a digital will, and ensure your data is passed on to your loved ones.";
+  "Secure your digital assets with Cipherwill's Dead Man's Switch. Ensure seamless transfer of critical information to your beneficiaries. Protect your legacy today!";
 export const metadata: Metadata = {
   title,
   description,
@@ -122,19 +122,19 @@ export default function RootLayout({ children }) {
             </div>
           )}
         <Toaster position="top-right" />
-          <MixpanelProvider>
-            <AuthProvider>
-              <CSPostHogProvider>
-                <ApolloContext>
-                  <UserSetupProvider>
-                    {/* <StripeContext> */}
-                    {children}
-                    {/* </StripeContext> */}
-                  </UserSetupProvider>
-                </ApolloContext>
-              </CSPostHogProvider>
-            </AuthProvider>
-          </MixpanelProvider>
+        <MixpanelProvider>
+          <AuthProvider>
+            <CSPostHogProvider>
+              <ApolloContext>
+                <UserSetupProvider>
+                  {/* <StripeContext> */}
+                  {children}
+                  {/* </StripeContext> */}
+                </UserSetupProvider>
+              </ApolloContext>
+            </CSPostHogProvider>
+          </AuthProvider>
+        </MixpanelProvider>
       </body>
     </html>
   );
