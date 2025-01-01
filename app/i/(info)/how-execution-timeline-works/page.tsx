@@ -37,7 +37,7 @@ export default function WillExecutionTimeline() {
           <div className="flex items-center justify-between text-lg font-bold">
             <h2>Trigger</h2>
             <div className="py-2 px-4 text-sm rounded-full bg-sky-50">
-              Default 1 Year
+              Default 3 Months
             </div>
           </div>
           <div className="bg-slate-100 p-2 rounded-md font-semibold text-sm">
@@ -46,7 +46,7 @@ export default function WillExecutionTimeline() {
           </div>
           <div>
             We check if you've logged in to Cipherwill within the trigger period
-            you've selected (default 1 year). If you have not done any activity
+            you've selected (default 3 months). If you have not done any activity
             for the trigger period. we will start sending reminders and
             described below.
           </div>
