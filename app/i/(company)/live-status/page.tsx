@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Link from "next/link";
 import { FaRegArrowAltCircleUp } from "react-icons/fa";
+import ClientButton from "./ClientButton";
 
 const title = "Live Status | Cipherwill";
 const description =
@@ -41,17 +42,10 @@ export default async function LiveStatus() {
               <div key={index} className="flex items-center justify-between">
                 <div>
                   <h3>{client.name}</h3>
-                  <Link
-                    href={client.url}
-                    target="_blank"
-                    className="hover:underline text-blue-600 font-medium text-sm"
-                    rel="noreferrer"
-                  >
-                    {client.url}
-                  </Link>
+                  <ClientButton url={client.url} />
                 </div>
                 {client.status ? (
-                  <div className="text-green-700 flex items-center gap-2 font-semibold">
+                  <div className="text-green-700 flex items-center gap-2 font-semibold animate-pulse">
                     <FaRegArrowAltCircleUp />
                     <span>UP</span>
                   </div>
@@ -73,7 +67,7 @@ export default async function LiveStatus() {
               <div key={backend.name} className="flex justify-between">
                 <div>{backend.name}</div>
                 {backend.status ? (
-                  <div className="text-green-700 flex items-center gap-2 font-semibold">
+                  <div className="text-green-700 flex items-center gap-2 font-semibold animate-pulse">
                     <FaRegArrowAltCircleUp />
                     <span>UP</span>
                   </div>
