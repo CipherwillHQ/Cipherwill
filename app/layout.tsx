@@ -5,7 +5,7 @@ import { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { UserSetupProvider } from "../contexts/UserSetupContext";
 import { gilroy, PlayfairDisplay } from "./font";
-import { FULL_HOSTNAME } from "@/common/constant";
+import { FULL_HOSTNAME, IS_PRODUCTION } from "@/common/constant";
 import { MixpanelProvider } from "@/contexts/MixpanelContext";
 import { CSPostHogProvider } from "@/contexts/CSPostHogProvider";
 import dynamic from "next/dynamic";
@@ -30,6 +30,9 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     title: "Cipherwill",
+  },
+  robots: {
+    index: IS_PRODUCTION,
   },
   metadataBase: new URL("https://www.cipherwill.com"),
 };
