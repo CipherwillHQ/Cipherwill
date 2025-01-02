@@ -30,7 +30,7 @@ export async function generateMetadata({
 export default function Home() {
   return (
     <div className="w-full flex flex-col">
-      <Header expandedClassOverride="bg-white" />
+      <Header />
       <CenterHero />
       {/* <div className="bg-red-400 my-12 py-8">
         <h2 className="text-xl font-bold text-center py-8">
