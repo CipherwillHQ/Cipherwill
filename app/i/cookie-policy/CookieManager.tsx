@@ -2,6 +2,7 @@
 
 import SimpleButton from "@/components/common/SimpleButton";
 import { useEffect, useState } from "react";
+import { c } from "react-notion-x/build/context-CjLVO7h1";
 
 export default function CookieManager() {
   const [isAdOptAvailable, setisAdOptAvailable] = useState(false);
@@ -31,11 +32,13 @@ export default function CookieManager() {
             "div#adopt-controller-button"
           );
           if (control_btn) {
+            control_btn.style.removeProperty("display");
             control_btn.style.display = "block";
           }
           const cookie_popup: HTMLDivElement =
             document.querySelector("div#cookie-banner");
           if (cookie_popup) {
+            cookie_popup.style.removeProperty("display");
             cookie_popup.style.display = "block";
           }
         }}
