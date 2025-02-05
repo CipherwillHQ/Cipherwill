@@ -44,10 +44,10 @@ body {
 }
 
 div#adopt-controller-button {
-  @apply hidden;
+  @apply !hidden;
 }
 div#cookie-banner {
-  @apply hidden;
+  @apply !hidden;
 }
 
 @layer utilities {
