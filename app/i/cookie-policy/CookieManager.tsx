@@ -32,14 +32,12 @@ export default function CookieManager() {
             "div#adopt-controller-button"
           );
           if (control_btn) {
-            control_btn.style.removeProperty("display");
-            control_btn.style.display = "block";
+            control_btn.style.setProperty("display", "block", "important");
           }
           const cookie_popup: HTMLDivElement =
             document.querySelector("div#cookie-banner");
           if (cookie_popup) {
-            cookie_popup.style.removeProperty("display");
-            cookie_popup.style.display = "block";
+            cookie_popup.style.setProperty("display", "block", "important");
           }
         }}
       >
