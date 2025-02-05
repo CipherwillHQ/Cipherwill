@@ -43,12 +43,12 @@ body {
   background: transparent;
 }
 
-div#adopt-controller-button {
+/* div#adopt-controller-button {
   @apply !hidden;
 }
 div#cookie-banner {
   @apply !hidden;
-}
+} */
 
 @layer utilities {
   /* Hide scrollbar for Chrome, Safari and Opera */

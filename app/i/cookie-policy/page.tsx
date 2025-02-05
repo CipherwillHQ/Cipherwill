@@ -28,10 +28,10 @@ export default function PrivacyPolicy() {
     <div className="w-full">
       <Header />
       <PolicyPageHeader title={`Cookie\nPolicy`} />
-      <div className="flex flex-col md:flex-row justify-center items-center gap-2 my-10 max-w-4xl mx-auto">
+      {/* <div className="flex flex-col md:flex-row justify-center items-center gap-2 my-10 max-w-4xl mx-auto">
         <CookieManagerWrapper />
-        {/* <CookieViewer /> */}
-      </div>
+        <CookieViewer />
+      </div> */}
       <div className="w-full max-w-4xl mx-auto my-10 p-4 font-medium text-lg">
         <p className="mb-6">
           At Cipherwill, we are committed to protecting your privacy and

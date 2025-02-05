@@ -50,10 +50,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <meta name="theme-color" content="#FFFFFF" />
-      <meta
+      {/* <meta
         name="adopt-website-id"
         content="b339be64-92db-44ef-a97a-bb6470fbd9f5"
-      />
+      /> */}
       {process.env.NEXT_PUBLIC_BUILD_ENV === "production" && (
         <>
           {/* globalThis is not defined polyfill */}
@@ -91,12 +91,12 @@ export default function RootLayout({ children }) {
         `}
           </Script>
           {/* AdOpt Cookie Manager */}
-          <Script
+          {/* <Script
             id="cookie-manager"
             src="//tag.goadopt.io/injector.js?website_code=b339be64-92db-44ef-a97a-bb6470fbd9f5"
             className="adopt-injector"
             defer
-          ></Script>
+          ></Script> */}
           {/* Microsoft Ads */}
           {/* <Script id="ms-ads" strategy="lazyOnload">
             {`
