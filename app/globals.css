@@ -43,7 +43,10 @@ body {
   background: transparent;
 }
 
-iframe#illow-banner-widget {
+div#adopt-controller-button {
+  @apply hidden;
+}
+div#cookie-banner {
   @apply hidden;
 }
 

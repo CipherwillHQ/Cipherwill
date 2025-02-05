@@ -2,7 +2,7 @@ import { FULL_HOSTNAME } from "@/common/constant";
 import Footer from "../../../components/Footer";
 import Header from "../../../components/Header";
 import Link from "next/link";
-import CookieViewer from "./CookieViewer";
+// import CookieViewer from "./CookieViewer";
 import PolicyPageHeader from "@/components/public/i/PolicyPageHeader";
 import CookieManagerWrapper from "./CookieManagerWrapper";
 
@@ -30,7 +30,7 @@ export default function PrivacyPolicy() {
       <PolicyPageHeader title={`Cookie\nPolicy`} />
       <div className="flex flex-col md:flex-row justify-center items-center gap-2 my-10 max-w-4xl mx-auto">
         <CookieManagerWrapper />
-        <CookieViewer />
+        {/* <CookieViewer /> */}
       </div>
       <div className="w-full max-w-4xl mx-auto my-10 p-4 font-medium text-lg">
         <p className="mb-6">

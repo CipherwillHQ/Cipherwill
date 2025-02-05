@@ -4,35 +4,39 @@ import SimpleButton from "@/components/common/SimpleButton";
 import { useEffect, useState } from "react";
 
 export default function CookieManager() {
-  const [isIllowAvailable, setisIllowAvailable] = useState(
-    (window as any).illow ? true : false
-  );
+  const [isAdOptAvailable, setisAdOptAvailable] = useState(false);
 
   useEffect(() => {
-    if (isIllowAvailable) {
+    if (isAdOptAvailable) {
       return;
     }
-    // if isIllowAvailable is false, set interval to check again every 3s
+    // if isAdOptAvailable is false, set interval to check again every 3s
 
     const interval = setInterval(() => {
-      setisIllowAvailable((window as any).illow ? true : false);
+      setisAdOptAvailable(
+        document.querySelector("div#adopt-controller-button") ? true : false
+      );
     }, 3000);
     return () => clearInterval(interval);
-  }, [isIllowAvailable]);
+  }, [isAdOptAvailable]);
 
-  if (!isIllowAvailable) {
+  if (!isAdOptAvailable) {
     return null;
   }
   return (
     <div className="w-full text-center">
       <SimpleButton
         onClick={() => {
-          (window as any).illow.showWidget();
-          const banner: any = document.querySelector(
-            "iframe#illow-banner-widget"
+          const control_btn: HTMLDivElement = document.querySelector(
+            "div#adopt-controller-button"
           );
-          if (banner) {
-            banner.style.display = "block";
+          if (control_btn) {
+            control_btn.style.display = "block";
+          }
+          const cookie_popup: HTMLDivElement =
+            document.querySelector("div#cookie-banner");
+          if (cookie_popup) {
+            cookie_popup.style.display = "block";
           }
         }}
       >
