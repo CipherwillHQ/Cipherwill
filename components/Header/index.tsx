@@ -51,7 +51,7 @@ export default function Header({
           ${
             expanded
               ? twMerge(
-                  `h-16 bg-black/5 dark:bg-white/5 backdrop-blur-md`,
+                  `h-16 bg-white/75 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.1)]`,
                   expandedClassOverride
                 )
               : twMerge(`h-20`, nonExpandedClassOverride)

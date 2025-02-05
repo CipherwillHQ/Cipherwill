@@ -6,7 +6,7 @@ export default function BottomRow() {
   return (
     <div className="flex flex-col sm:flex-row items-start justify-between pb-6">
       <div
-        className={`flex flex-col sm:flex-row gap-3 sm:gap-2 items-start text-sm font-playfair`}
+        className={`flex flex-col sm:flex-row gap-3 sm:gap-2 items-start text-sm`}
       >
         <div className="text-center">
           Copyright © {new Date().getFullYear()} Zetapad Technologies
@@ -33,7 +33,7 @@ export default function BottomRow() {
           <Link
             href="mailto:support@cipherwill.com"
             target="_blank"
-            className="flex items-center justify-center border border-white/25 rounded-full w-7 h-7"
+            className="flex items-center justify-center border border-black/25 rounded-full w-7 h-7"
           >
             <BiSupport />
           </Link>
@@ -42,7 +42,7 @@ export default function BottomRow() {
           <Link
             href="https://x.com/CipherwillHQ"
             target="_blank"
-            className="flex items-center justify-center border border-white/25 rounded-full w-7 h-7"
+            className="flex items-center justify-center border border-black/25 rounded-full w-7 h-7"
           >
             <FaXTwitter />
           </Link>
@@ -51,7 +51,7 @@ export default function BottomRow() {
           <Link
             href="https://www.youtube.com/@CipherwillHQ"
             target="_blank"
-            className="flex items-center justify-center text-red-600 border border-white/25 rounded-full w-7 h-7"
+            className="flex items-center justify-center text-red-600 border border-black/25 rounded-full w-7 h-7"
           >
             <BiLogoYoutube />
           </Link>

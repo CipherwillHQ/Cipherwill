@@ -10,7 +10,7 @@ export default function SecurityInfo() {
         <TbLockBolt className="text-blue-600" size={23} />
         <div className="font-semibold">Your data is secured with</div>
       </div>
-      <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-neutral-300">
+      <div className="flex flex-wrap items-center gap-2 text-sm font-medium">
         <Link
           href={"https://en.wikipedia.org/wiki/Advanced_Encryption_Standard"}
           className={`${common_style}`}
