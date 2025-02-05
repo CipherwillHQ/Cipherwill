@@ -54,7 +54,6 @@ export default function RootLayout({ children }) {
         name="adopt-website-id"
         content="b339be64-92db-44ef-a97a-bb6470fbd9f5"
       />
-      <Head>
       {process.env.NEXT_PUBLIC_BUILD_ENV === "production" && (
         <>
           {/* globalThis is not defined polyfill */}
@@ -120,7 +119,6 @@ export default function RootLayout({ children }) {
           </Script> */}
         </>
       )}
-      </Head>
       <body
         className={`${gilroy.className} ${PlayfairDisplay.variable} bg-white text-black customScrollbar`}
       >
