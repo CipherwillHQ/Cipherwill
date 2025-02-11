@@ -26,7 +26,7 @@ export default function DefaultSettings() {
           Backup Now
         </Link>
       </div>
-      <div className="flex items-center justify-between bg-secondary p-4 w-full max-w-2xl rounded-md border border-default">
+      {/* <div className="flex items-center justify-between bg-secondary p-4 w-full max-w-2xl rounded-md border border-default">
         <div className="flex items-center gap-2">
           <MdOutlineSdStorage size={22} />
           Cipherwill Storage Usage
@@ -35,7 +35,7 @@ export default function DefaultSettings() {
         <Link href="/app/usage" className="text-sm hover:underline">
           See Usage
         </Link>
-      </div>
+      </div> */}
       <Appearance />
     </div>
   );
