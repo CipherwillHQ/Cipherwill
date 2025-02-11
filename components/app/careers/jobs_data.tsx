@@ -1,6 +1,8 @@
 const jobs = [
   {
     id: "50123abcde01",
+    datePosted: "2024-01-25",
+    validThrough: "2028-01-01",
     title: "Software Engineer",
     division: "Engineering",
     location: "Bangalore, India",
@@ -42,6 +44,8 @@ const jobs = [
   },
   {
     id: "50123abcde02",
+    datePosted: "2024-01-25",
+    validThrough: "2028-01-01",
     title: "Full-Stack Developer",
     division: "Engineering",
     location: "Bangalore, India",
@@ -81,6 +85,8 @@ const jobs = [
   },
   {
     id: "50123abcde03",
+    datePosted: "2024-01-25",
+    validThrough: "2028-01-01",
     title: "Back-End Developer",
     division: "Engineering",
     location: "Bangalore, India",
@@ -120,6 +126,8 @@ const jobs = [
   },
   {
     id: "50123abcde04",
+    datePosted: "2024-01-25",
+    validThrough: "2028-01-01",
     title: "Senior Software Engineer",
     division: "Engineering",
     location: "Bangalore, India",
@@ -160,6 +168,8 @@ const jobs = [
   },
   {
     id: "50123abcde05",
+    datePosted: "2024-01-25",
+    validThrough: "2028-01-01",
     title: "DevOps Engineer",
     division: "Engineering",
     location: "Bangalore, India",
@@ -198,6 +208,8 @@ const jobs = [
   },
   {
     id: "50123abcde06",
+    datePosted: "2024-01-25",
+    validThrough: "2028-01-01",
     title: "Product Manager",
     division: "Product",
     location: "Bangalore, India",
@@ -237,6 +249,8 @@ const jobs = [
   },
   {
     id: "50123abcde07",
+    datePosted: "2024-01-25",
+    validThrough: "2028-01-01",
     title: "Associate Product Manager",
     division: "Product",
     location: "Bangalore, India",
@@ -275,6 +289,8 @@ const jobs = [
   },
   {
     id: "50123abcde08",
+    datePosted: "2024-01-25",
+    validThrough: "2028-01-01",
     title: "UI/UX Designer",
     division: "Design",
     location: "Bangalore, India",
@@ -314,6 +330,8 @@ const jobs = [
   },
   {
     id: "50123abcde09",
+    datePosted: "2024-01-25",
+    validThrough: "2028-01-01",
     title: "Graphic Designer",
     division: "Design",
     location: "Bangalore, India",
@@ -352,6 +370,8 @@ const jobs = [
   },
   {
     id: "50123abcde10",
+    datePosted: "2024-01-25",
+    validThrough: "2028-01-01",
     title: "HR and Legal Associate",
     division: "HR and Legal",
     location: "Bangalore, India",

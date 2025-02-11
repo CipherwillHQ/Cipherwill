@@ -4,6 +4,8 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import Script from "next/script";
+import reactElementToJSXString from "react-element-to-jsx-string";
 import { LuBriefcaseBusiness, LuBuilding2, LuMapPin } from "react-icons/lu";
 
 const title = "Careers";
@@ -35,9 +37,42 @@ export default async function JobDetails({ params }) {
   if (!job) {
     return redirect("/careers");
   }
+  const jsonLd = {
+    "@context": "https://schema.org/",
+    "@type": "JobPosting",
+    title: job.title,
+    description: reactElementToJSXString(job.about),
+    datePosted: job.datePosted,
+    validThrough: job.validThrough,
+    employmentType: "FULL_TIME",
+    hiringOrganization: {
+      "@type": "Organization",
+      name: "Cipherwill",
+      sameAs: "https://www.cipherwill.com",
+      logo: "https://media.cipherwill.com/hq/images/mkLkn23z_ur7AFekgITAL.png",
+    },
+    jobLocation: {
+      "@type": "Place",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "The Estate, Sivanchetti Gardens",
+        addressLocality: "Bangalore",
+        addressRegion: "KA",
+        postalCode: "560038",
+        addressCountry: "IN",
+      },
+    },
+  };
   return (
     <div className="w-full">
       <Header />
+      <Script
+        id="job-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd),
+        }}
+      />
       <div className="mt-40 mb-6 p-4 text-center">
         <div className="py-2 font-semibold">Job ID: {job.id.toUpperCase()}</div>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold py-4">
