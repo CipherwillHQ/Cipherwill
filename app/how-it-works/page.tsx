@@ -5,6 +5,7 @@ import CTA from "@/components/public/CTA";
 import FAQs from "@/components/public/FAQs";
 import Explainer from "@/components/public/how-it-works/Explainer";
 import Link from "next/link";
+import Simple from "./Simple";
 
 const title = "How it works";
 const description =
@@ -26,7 +27,7 @@ export default function HowItWorks() {
   return (
     <div className="w-full flex flex-col ">
       <Header />
-      <div className="mt-40 p-4 text-center">
+      <div className="mt-40 px-4 py-12 text-center">
         <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-center font-playfair italic whitespace-pre-line">
           See How It’s Done
         </h1>
@@ -37,7 +38,7 @@ export default function HowItWorks() {
           loved ones.
         </p>
       </div>
-      <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 text-center gap-2">
+      {/* <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 text-center gap-2">
         <Link href={"/i/how-execution-timeline-works"}>
           <div className="bg-orange-50 hover:bg-orange-100 rounded-md p-4">
             <div className="font-semibold text-lg">Will Execution</div>
@@ -72,11 +73,12 @@ export default function HowItWorks() {
             </div>
           </div>
         </Link>
-      </div>
-      <Explainer />
+      </div> */}
+      {/* <Explainer /> */}
       {/* <section className="my-10">
         <InfoSection />
       </section> */}
+      <Simple/>
       <FAQs />
       <CTA />
       <Footer />
