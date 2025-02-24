@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { LuGithub } from "react-icons/lu";
-import open_bg from "./open-bg.png";
 
 export default function OpenSourceSection() {
   return (
-    <section className="bg-black text-white bg-fixed bg-no-repeat bg-center bg-cover relative my-20"
-    style={{backgroundImage: `url(${open_bg.src})`}}
+    <section className="bg-black text-white my-20"
     >
       <div className="w-full max-w-7xl mx-auto px-4 py-24 text-center flex flex-col items-center">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center font-playfair italic whitespace-pre-line">
