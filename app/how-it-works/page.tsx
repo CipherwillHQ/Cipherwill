@@ -6,6 +6,7 @@ import FAQs from "@/components/public/FAQs";
 import Explainer from "@/components/public/how-it-works/Explainer";
 import Link from "next/link";
 import Simple from "./Simple";
+import OpenSourceSection from "./OpenSourceSection";
 
 const title = "How it works";
 const description =
@@ -79,6 +80,7 @@ export default function HowItWorks() {
         <InfoSection />
       </section> */}
       <Simple/>
+      <OpenSourceSection />
       <FAQs />
       <CTA />
       <Footer />
