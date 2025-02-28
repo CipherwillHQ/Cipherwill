@@ -4,7 +4,7 @@ export default function Simple() {
       <h2 className="text-5xl font-bold text-center">
         It's simple to get started
       </h2>
-      <div className="flex flex-col sm:flex-row items-center justify-around gap-4 px-4 py-8 xl:px-0">
+      <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4 px-4 py-8 xl:px-0">
         <div className="border border-[#F1F1F1] bg-gradient-to-b from-white to-[#F4F4F4] p-2 rounded-lg">
           <div className="font-bold">1.</div>
           <h3 className="font-bold py-2 text-lg">Signup</h3>

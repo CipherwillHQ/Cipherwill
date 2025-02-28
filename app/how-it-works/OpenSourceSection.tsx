@@ -3,8 +3,8 @@ import { LuGithub } from "react-icons/lu";
 
 export default function OpenSourceSection() {
   return (
-    <section className="bg-black text-white my-20">
-      <div className="w-full max-w-7xl mx-auto px-4 py-24 text-center flex flex-col items-center">
+    <section className="my-20 px-4">
+      <div className="bg-black text-white rounded-3xl w-full max-w-7xl mx-auto px-4 py-24 text-center flex flex-col items-center">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center font-playfair italic whitespace-pre-line">
           Open Source & Transparent
         </h2>
