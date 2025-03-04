@@ -17,13 +17,12 @@ export default function FAQs() {
               frequently asked questions page.
             </div>
           </div>
-          <SimpleButton
+          <Link
             href="/i/frequently-asked-questions"
-            link_className="hidden md:block"
-            className="bg-white text-black hover:underline hover:bg-white"
+            className="font-semibold text-center text-sm hidden md:block hover:underline hover:bg-grad"
           >
-            Go to FAQ Page
-          </SimpleButton>
+            View more
+          </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
           {questions.General.slice(0, 6).map((question, index) => (

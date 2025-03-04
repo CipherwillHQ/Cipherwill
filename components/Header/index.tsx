@@ -88,7 +88,7 @@ export default function Header({
                   className={`mx-1 hover:text-neutral-500 p-1 font-medium
                   ${
                     pathname === item.path &&
-                    "underline decoration-2 underline-offset-8 decoration-orange-500"
+                    "underline decoration-2 underline-offset-8 decoration-primary"
                   }
                   content-center ${expanded ? "h-16" : "h-20"}
                   `}
@@ -116,7 +116,7 @@ export default function Header({
               ${
                 // final_state === "dark"
                 //   ? "bg-white text-black":
-                "bg-black text-white"
+                "bg-gradient-to-r from-primary-700 to-primary text-white hover:shadow-md"
               }
               font-semibold transition-colors duration-300 px-4 py-2 rounded-full text-xs m-2`}
             >
