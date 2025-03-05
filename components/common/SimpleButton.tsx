@@ -17,7 +17,7 @@ export default function SimpleButton({
   const button = (
     <button
       className={twMerge(
-        "rounded-md px-4 py-1 bg-gradient-to-r from-primary-700 to-primary text-white",
+        "rounded-full px-4 py-1 bg-gradient-to-r from-primary-700 to-primary text-white",
         className
       )}
       onClick={onClick}
