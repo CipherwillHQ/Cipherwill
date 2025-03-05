@@ -8,7 +8,7 @@ export default function Simple() {
         Getting started is simple
       </h2>
       <div className="grid md:grid-cols-3 gap-4 px-4 py-8 xl:px-0 text-lg">
-        <div className="border border-[#F1F1F1] bg-gradient-to-b from-white to-[#F4F4F4] p-5 rounded-lg">
+        <div className="border border-[#F1F1F1] bg-white p-5 rounded-lg">
           <div className="font-bold">1.</div>
           <h3 className="font-bold py-2 text-2xl">Signup & add data</h3>
           <p>
@@ -16,7 +16,7 @@ export default function Simple() {
             and more
           </p>
         </div>
-        <div className="border border-[#F1F1F1] bg-gradient-to-b from-white to-[#F4F4F4] p-5 rounded-lg">
+        <div className="border border-[#F1F1F1] p-5 rounded-lg">
           <div className="font-bold">2.</div>
           <h3 className="font-bold py-2 text-2xl">Add beneficiary</h3>
           <p>
@@ -24,7 +24,7 @@ export default function Simple() {
             to you
           </p>
         </div>
-        <div className="border border-[#F1F1F1] bg-gradient-to-b from-white to-[#F4F4F4] p-5 rounded-lg">
+        <div className="border border-[#F1F1F1] p-5 rounded-lg">
           <div className="font-bold">3.</div>
           <h3 className="font-bold py-2 text-2xl">All set & done</h3>
           <p>

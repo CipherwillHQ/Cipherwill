@@ -1,12 +1,7 @@
 import Image from "next/image";
 import placeholder_img from "./placeholder.png";
-import SimpleButton from "@/components/common/SimpleButton";
 import Link from "next/link";
-import {
-  MdEnhancedEncryption,
-  MdNoEncryption,
-  MdSecurity,
-} from "react-icons/md";
+import { MdSecurity } from "react-icons/md";
 import { GrSecure } from "react-icons/gr";
 import { BiNotepad } from "react-icons/bi";
 import { GiTimeTrap } from "react-icons/gi";
@@ -32,7 +27,7 @@ function InfoButton({
 
 export default function Lifecycle() {
   return (
-    <section className="max-w-7xl w-full mx-auto p-4 mt-28 flex flex-col gap-32 font-medium">
+    <section className="max-w-7xl w-full mx-auto p-4 mt-28 flex flex-col gap-40 font-medium md:text-lg">
       <div className="flex flex-col md:flex-row justify-evenly gap-12 items-center">
         <div className="w-full md:w-1/2">
           <Image
@@ -47,7 +42,7 @@ export default function Lifecycle() {
           <h2 className="font-bold text-4xl md:text-5xl py-4">
             Your First Steps with Cipherwill
           </h2>
-          <ul className="list-disc list-inside space-y-1 text-lg">
+          <ul className="list-disc list-inside space-y-1">
             <li>First, sign up using your email address.</li>
             <li>Next, verify your email if not already verified.</li>
             <li>
