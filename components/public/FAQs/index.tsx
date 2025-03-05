@@ -25,7 +25,7 @@ export default function FAQs() {
           </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
-          {questions.General.slice(0, 6).map((question, index) => (
+          {questions.Important.slice(0, 4).map((question, index) => (
             <div key={index} className="flex gap-2">
               <div className="border p-2 h-fit w-fit rounded-md text-xl">
                 {question.icon}
@@ -42,7 +42,7 @@ export default function FAQs() {
       <div
         className="block relative
          bg-gradient-to-b from-white/5  via-white/75 via-30% to-white to-90% 
-         px-2 py-10 text-center -mt-40 w-full max-w-7xl mx-auto"
+         px-2 py-12 text-center -mt-40 w-full max-w-7xl mx-auto"
       >
         <h2 className="text-3xl font-semibold pt-14 mb-8">
           Have more questions?

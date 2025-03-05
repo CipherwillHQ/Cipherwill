@@ -2,11 +2,38 @@ import Image from "next/image";
 import placeholder_img from "./placeholder.png";
 import SimpleButton from "@/components/common/SimpleButton";
 import Link from "next/link";
+import {
+  MdEnhancedEncryption,
+  MdNoEncryption,
+  MdSecurity,
+} from "react-icons/md";
+import { GrSecure } from "react-icons/gr";
+import { BiNotepad } from "react-icons/bi";
+import { GiTimeTrap } from "react-icons/gi";
+
+function InfoButton({
+  href,
+  icon,
+  title,
+}: {
+  href: string;
+  icon: React.ReactNode;
+  title: string;
+}) {
+  return (
+    <Link href={href}>
+      <button className="flex gap-2 hover:gap-3 items-center bg-primary hover:bg-primary-900 transition-all text-white px-8 py-2 rounded-full mt-4 w-full justify-center sm:w-fit">
+        {icon}
+        <span>{title}</span>
+      </button>
+    </Link>
+  );
+}
 
 export default function Lifecycle() {
   return (
     <section className="max-w-7xl w-full mx-auto p-4 mt-28 flex flex-col gap-32 font-medium">
-      <div className="flex flex-col md:flex-row justify-evenly gap-12">
+      <div className="flex flex-col md:flex-row justify-evenly gap-12 items-center">
         <div className="w-full md:w-1/2">
           <Image
             alt="image of onbaording and profile creation"
@@ -16,8 +43,11 @@ export default function Lifecycle() {
           />
         </div>
         <div className="w-full md:w-1/2 p-2">
-          <h2 className="font-semibold text-xl py-2">Onboarding</h2>
-          <ul className="list-disc list-inside space-y-2">
+          <div className="font-bold text-primary text-lg">Onboarding</div>
+          <h2 className="font-bold text-4xl md:text-5xl py-4">
+            Your First Steps with Cipherwill
+          </h2>
+          <ul className="list-disc list-inside space-y-1 text-lg">
             <li>First, sign up using your email address.</li>
             <li>Next, verify your email if not already verified.</li>
             <li>
@@ -35,9 +65,12 @@ export default function Lifecycle() {
           </ul>
         </div>
       </div>
-      <div className="flex flex-col-reverse md:flex-row justify-evenly gap-12">
+      <div className="flex flex-col-reverse md:flex-row justify-evenly gap-12 items-center">
         <div className="w-full md:w-1/2 p-2">
-          <h2 className="font-semibold text-xl py-2">Data</h2>
+          <div className="font-bold text-primary text-lg">Data</div>
+          <h2 className="font-bold text-4xl md:text-5xl py-4">
+            How Your Data is Organized?
+          </h2>
           <div>
             <ul className="list-disc list-inside space-y-2">
               <li>
@@ -71,7 +104,7 @@ export default function Lifecycle() {
           />
         </div>
       </div>
-      <div className="flex flex-col md:flex-row justify-evenly gap-12">
+      <div className="flex flex-col md:flex-row justify-evenly gap-12 items-center">
         <div className="w-full md:w-1/2">
           <Image
             alt="image of factors choices"
@@ -81,11 +114,14 @@ export default function Lifecycle() {
           />
         </div>
         <div className="w-full md:w-1/2 p-2">
-          <h2 className="font-semibold text-xl py-2">Security</h2>
+          <div className="font-bold text-primary text-lg">Security</div>
+          <h2 className="font-bold text-4xl md:text-5xl py-4">
+            Your Keys, Your Control: Security Factors in Cipherwill
+          </h2>
           <div>
             <ul className="list-disc list-inside space-y-2">
               <li>
-                Think of security factors as different ways to lock up your data
+                Think of security factors as different ways to encrypt your data
                 and keep it safe.
               </li>
               <li>
@@ -101,22 +137,25 @@ export default function Lifecycle() {
               <li>
                 Essentially, these security measures create a pair of keys - a
                 public one and a private one - from random data. The private key
-                is your secret passcode to unlock your data, while the public
-                key helps to lock it securely.
+                is your secret passcode to decrypt your data, while the public
+                key helps to encrypt it securely.
               </li>
             </ul>
-            <Link href={"/how-factors-work"}>
-              <button className="bg-primary text-white px-4 py-1 rounded-full mt-4">
-                Learn more about security factors
-              </button>
-            </Link>
+            <InfoButton
+              href={"/how-factors-work"}
+              icon={<MdSecurity />}
+              title="More about Security factors"
+            />
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col-reverse md:flex-row justify-evenly gap-12">
+      <div className="flex flex-col-reverse md:flex-row justify-evenly gap-12 items-center">
         <div className="w-full md:w-1/2 p-2">
-          <h2 className="font-semibold text-xl py-2">Encryption</h2>
+          <div className="font-bold text-primary text-lg">Encryption</div>
+          <h2 className="font-bold text-4xl md:text-5xl py-4">
+            How Cipherwill Uses Cascade Encryption?
+          </h2>
           <div>
             <ul className="list-disc list-inside space-y-2">
               <li>
@@ -155,11 +194,11 @@ export default function Lifecycle() {
               </li>
             </ul>
 
-            <Link href={"/i/cascade-encryption"}>
-              <button className="bg-primary text-white px-4 py-1 rounded-full mt-4">
-                Learn more about cascade encryption
-              </button>
-            </Link>
+            <InfoButton
+              href={"/i/cascade-encryption"}
+              icon={<GrSecure />}
+              title="Learn more about Encryption"
+            />
           </div>
         </div>
         <div className="w-full md:w-1/2">
@@ -172,7 +211,7 @@ export default function Lifecycle() {
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row justify-evenly gap-12">
+      <div className="flex flex-col md:flex-row justify-evenly gap-12 items-center">
         <div className="w-full md:w-1/2">
           <Image
             alt="will execuion schedule image"
@@ -182,7 +221,10 @@ export default function Lifecycle() {
           />
         </div>
         <div className="w-full md:w-1/2 p-2">
-          <h2 className="font-semibold text-xl py-2">Schedule</h2>
+          <div className="font-bold text-primary text-lg">Schedule</div>
+          <h2 className="font-bold text-4xl md:text-5xl py-4">
+            How Cipherwill Knows When to Act?
+          </h2>
           <div>
             <ul className="list-disc list-inside space-y-2">
               <li>
@@ -207,32 +249,35 @@ export default function Lifecycle() {
               </li>
             </ul>
 
-            <Link href={"/i/how-execution-timeline-works"}>
-              <button className="bg-primary text-white px-4 py-1 rounded-full mt-4">
-                Learn more about will execution schedule
-              </button>
-            </Link>
+            <InfoButton
+              href={"/i/how-execution-timeline-works"}
+              icon={<BiNotepad />}
+              title="See how will execution works"
+            />
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col-reverse md:flex-row justify-evenly gap-12">
+      <div className="flex flex-col-reverse md:flex-row justify-evenly gap-12 items-center">
         <div className="w-full md:w-1/2 p-2">
-          <h2 className="font-semibold text-xl py-2">Activity</h2>
+          <div className="font-bold text-primary text-lg">Activity</div>
+          <h2 className="font-bold text-4xl md:text-5xl py-4">
+            Communication is Key: Avoid Missed Check-Ins
+          </h2>
           <div>
             <ul className="list-disc list-inside space-y-2">
               <li>
-                Communication is key with a dead man&apos;s switch, so it&apos;s super
-                important to keep your email address updated.
+                Communication is key with a dead man&apos;s switch, so it&apos;s
+                super important to keep your email address updated.
               </li>
               <li>
-                Don&apos;t rely on just one method - add multiple ways to be reached,
-                like SMS, push notifications, and phone calls, to make sure you
-                never miss a reminder.
+                Don&apos;t rely on just one method - add multiple ways to be
+                reached, like SMS, push notifications, and phone calls, to make
+                sure you never miss a reminder.
               </li>
               <li>
-                Cipherwill checks your activity on the platform to see if you&apos;re
-                still around.
+                Cipherwill checks your activity on the platform to see if
+                you&apos;re still around.
               </li>
               <li>
                 This activity includes logging in, updating your profile, adding
@@ -254,7 +299,7 @@ export default function Lifecycle() {
           />
         </div>
       </div>
-      <div className="flex flex-col md:flex-row justify-evenly gap-12">
+      <div className="flex flex-col md:flex-row justify-evenly gap-12 items-center">
         <div className="w-full md:w-1/2">
           <Image
             alt="onion layer with emphasis on time enc layer"
@@ -264,7 +309,10 @@ export default function Lifecycle() {
           />
         </div>
         <div className="w-full md:w-1/2 p-2">
-          <h2 className="font-semibold text-xl py-2">Timelock</h2>
+          <div className="font-bold text-primary text-lg">Timelock</div>
+          <h2 className="font-bold text-4xl md:text-5xl py-4">
+            Keeping Your Digital Will Secure Until It's Needed
+          </h2>
           <div>
             <ul className="list-disc list-inside space-y-2">
               <li>
@@ -290,18 +338,20 @@ export default function Lifecycle() {
                 can unlock it at the right time.
               </li>
             </ul>
-
-            <Link href={"/i/time-capsule-encryption"}>
-              <button className="bg-primary text-white px-4 py-1 rounded-full mt-4">
-                Learn more about time capsule encryption
-              </button>
-            </Link>
+            <InfoButton
+              href={"/i/time-capsule-encryption"}
+              icon={<GiTimeTrap />}
+              title="Time Capsule Encryption"
+            />
           </div>
         </div>
       </div>
-      <div className="flex flex-col-reverse md:flex-row justify-evenly gap-12">
+      <div className="flex flex-col-reverse md:flex-row justify-evenly gap-12 items-center">
         <div className="w-full md:w-1/2 p-2">
-          <h2 className="font-semibold text-xl py-2">Beneficiry</h2>
+          <div className="font-bold text-primary text-lg">Beneficiry</div>
+          <h2 className="font-bold text-4xl md:text-5xl py-4">
+            Managing Beneficiary Access and Data Lifespan
+          </h2>
           <div>
             <ul className="list-disc list-inside space-y-2">
               <li>
@@ -321,8 +371,9 @@ export default function Lifecycle() {
                 access a special dashboard to view and download your data.
               </li>
               <li>
-                They can only see what you&apos;ve allowed, and their access lasts
-                for about 100 days before your data is permanently deleted.
+                They can only see what you&apos;ve allowed, and their access
+                lasts for about 100 days before your data is permanently
+                deleted.
               </li>
             </ul>
           </div>
@@ -335,41 +386,6 @@ export default function Lifecycle() {
             src={placeholder_img}
           />
         </div>
-      </div>
-      <div>
-        <h2 className="text-2xl font-semibold py-4">Important facts</h2>
-        <ul className="list-disc list-inside text-lg space-y-4">
-          <li>
-            <b>Public/Private Cryptography:</b> Cipherwill uses public/private
-            key cryptography to ensure secure communication and data transfer
-            between you and your beneficiaries.
-          </li>
-          <li>
-            <b>AES Encryption:</b> Data pods are encrypted using 256 AES
-            encryption, providing robust security against unauthorized access.
-          </li>
-          <li>
-            <b>Secure Key Exchange:</b> A secure key exchange algorithm is used
-            to create unique relationship key pairs for encryption, ensuring
-            that keys are safely generated and distributed.
-          </li>
-          <li>
-            <b>Elliptic Curve Cryptography:</b> Relationship keys are encrypted
-            using Elliptic Curve Cryptography (ECC), offering strong security
-            with smaller key sizes.
-          </li>
-          <li>
-            <b>Cascade Encryption:</b> Cascade encryption is a multi-layered
-            encryption method where data is encrypted sequentially using
-            multiple keys or algorithms. Each layer adds an additional level of
-            security, making it harder to decrypt without all required keys.
-          </li>
-          <li>
-            <b>Security Factor Protection:</b> If you and your beneficiaries
-            have security factors enabled, it is impossible for anyone,
-            including Cipherwill, to access or decrypt your data.
-          </li>
-        </ul>
       </div>
     </section>
   );

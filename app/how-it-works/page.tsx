@@ -9,6 +9,7 @@ import Simple from "./Simple";
 import OpenSourceSection from "./OpenSourceSection";
 import Lifecycle from "./Lifecyle";
 import Hero from "./Hero";
+import ImportantPoints from "./ImportantPoints";
 
 const title = "How it works";
 const description =
@@ -29,8 +30,12 @@ export const metadata = {
 export default function HowItWorks() {
   return (
     <div className="w-full flex flex-col ">
-      <Header />
-      <Hero/>
+      <Header
+        expandedClassOverride="bg-white"
+        nonExpandedClassOverride="text-white"
+        nonExpandedLogo="white"
+      />
+      <Hero />
       {/* <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 text-center gap-2">
         <Link href={"/i/how-execution-timeline-works"}>
           <div className="bg-orange-50 hover:bg-orange-100 rounded-md p-4">
@@ -71,9 +76,10 @@ export default function HowItWorks() {
       {/* <section className="my-10">
         <InfoSection />
       </section> */}
-      <Simple/>
+      <Simple />
       <OpenSourceSection />
-      <Lifecycle/>
+      <Lifecycle />
+      <ImportantPoints/>
       <FAQs />
       <CTA />
       <Footer />
