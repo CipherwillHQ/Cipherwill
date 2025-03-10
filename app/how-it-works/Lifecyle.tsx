@@ -6,6 +6,10 @@ import { GrSecure } from "react-icons/gr";
 import { BiNotepad } from "react-icons/bi";
 import { GiTimeTrap } from "react-icons/gi";
 
+import onboarding_img from "./lifecycle_assets/onboarding.png";
+import data_img from "./lifecycle_assets/data.png";
+import security_img from "./lifecycle_assets/security.png";
+
 function InfoButton({
   href,
   icon,
@@ -34,7 +38,7 @@ export default function Lifecycle() {
             alt="image of onbaording and profile creation"
             width={1000}
             height={1000}
-            src={placeholder_img}
+            src={onboarding_img}
           />
         </div>
         <div className="w-full md:w-1/2 p-2">
@@ -95,7 +99,7 @@ export default function Lifecycle() {
             alt="segments snapshot"
             width={1000}
             height={1000}
-            src={placeholder_img}
+            src={data_img}
           />
         </div>
       </div>
@@ -105,7 +109,7 @@ export default function Lifecycle() {
             alt="image of factors choices"
             width={1000}
             height={1000}
-            src={placeholder_img}
+            src={security_img}
           />
         </div>
         <div className="w-full md:w-1/2 p-2">
