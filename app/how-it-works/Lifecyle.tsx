@@ -9,6 +9,11 @@ import { GiTimeTrap } from "react-icons/gi";
 import onboarding_img from "./lifecycle_assets/onboarding.png";
 import data_img from "./lifecycle_assets/data.png";
 import security_img from "./lifecycle_assets/security.png";
+import encryption_img from "./lifecycle_assets/encryption.png";
+import schedule_img from "./lifecycle_assets/schedule.png";
+import activity_img from "./lifecycle_assets/activity.png";
+import time_capsule_img from "./lifecycle_assets/timelock.png";
+import beneficiary_img from "./lifecycle_assets/beneficiary.png";
 
 function InfoButton({
   href,
@@ -205,7 +210,7 @@ export default function Lifecycle() {
             alt="will execuion schedule image"
             width={1000}
             height={1000}
-            src={placeholder_img}
+            src={encryption_img}
           />
         </div>
       </div>
@@ -216,7 +221,7 @@ export default function Lifecycle() {
             alt="will execuion schedule image"
             width={1000}
             height={1000}
-            src={placeholder_img}
+            src={schedule_img}
           />
         </div>
         <div className="w-full md:w-1/2 p-2">
@@ -294,7 +299,7 @@ export default function Lifecycle() {
             alt="notification image"
             width={1000}
             height={1000}
-            src={placeholder_img}
+            src={activity_img}
           />
         </div>
       </div>
@@ -304,7 +309,7 @@ export default function Lifecycle() {
             alt="onion layer with emphasis on time enc layer"
             width={1000}
             height={1000}
-            src={placeholder_img}
+            src={time_capsule_img}
           />
         </div>
         <div className="w-full md:w-1/2 p-2">
@@ -382,7 +387,7 @@ export default function Lifecycle() {
             alt="beneficiary dashboard image"
             width={1000}
             height={1000}
-            src={placeholder_img}
+            src={beneficiary_img}
           />
         </div>
       </div>
