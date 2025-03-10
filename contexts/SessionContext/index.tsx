@@ -75,7 +75,7 @@ export function SessionProvider({ children }) {
 
   if (session_token === null && available_methods.length !== 0) {
     return (
-      <div className="flex flex-col h-screen bg-primary">
+      <div className="flex flex-col h-screen bg-dark-50 dark:bg-dark">
         <div className="flex flex-col sm:flex-row items-center justify-between px-4 py-2 border-b sm:border-b-0">
           <Link href={"/"}>
             <Image
