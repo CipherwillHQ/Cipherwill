@@ -64,7 +64,7 @@
     "@types/mixpanel-browser": "^2.50.2",
     "@types/node": "^22.10.1",
     "@types/react": "^18.3.12",
-    "autoprefixer": "^10.4.19",
+    "autoprefixer": "^10.4.21",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.16",
     "tsx": "^4.19.3",
