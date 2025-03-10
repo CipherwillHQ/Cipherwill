@@ -117,23 +117,38 @@ export default function DeadMansSwitch() {
           <p className="text-justify">
             To store your data in Cipherwill and keep it updated each year,
             follow these steps: <br />
-            <b>1. Sign up and log in:</b> Create your account on Cipherwill and
-            log in to access your dashboard. <br />
-            <b>2. Add important data:</b> Input key details like bank info,
-            passwords, investments, digital assets, and any other data you want
-            secured. <br />
-            <b>3. Choose beneficiaries:</b> Select who should receive the data
-            when you're no longer around. <br />
-            <b>4. Set reminders:</b> Cipherwill will remind you to log in and
+            <b>1. Sign up:</b> Create your account on Cipherwill and log in to
+            access your dashboard. <br />
+            <b>2. Add data:</b> Input key details like bank info, passwords,
+            investments, digital assets, and any other data you want secured.{" "}
+            <br />
+            <b>3. Add beneficiaries:</b> Select who should receive the data when
+            you're no longer around. <br />
+            <b>4. Set preferences:</b> Cipherwill will remind you to log in and
             update your data at least once a year to ensure everything stays
             current and secure. <br />
-            <b>5. Update yearly:</b> Every year, review and update any changes
-            to your information (like new accounts or passwords). <br />
+            <b>5. Update regularly:</b> Every couple of months (according to
+            your{" "}
+            <Link
+              href={"/i/how-execution-timeline-works"}
+              className="text-blue-700 hover:text-blue-900 underline"
+            >
+              Check In Interval
+            </Link>
+            ), review and update any changes to your information (like new
+            accounts, assets or passwords). <br />
             <br />
             This keeps your data active and ensures nothing gets lost. By
             updating yearly, you keep your data safe and ready to be passed on
             when needed.
           </p>
+
+          <Link
+            href={"/how-it-works"}
+            className="text-blue-700 hover:text-blue-900 underline"
+          >
+            Read more about How Cipherwill works
+          </Link>
         </div>
       </div>
       <CTA />

@@ -145,7 +145,7 @@ export default function Segments() {
                 <div className="flex items-center gap-2">
                   <div className="w-full">
                     {user_preference === null ? (
-                      <div className="p-2 text-xs font-bold text-neutral-500 text-center rounded-md bg-primary w-full">
+                      <div className="p-2 text-xs font-bold text-center rounded-md bg-primary text-white w-full">
                         Enabled by default
                       </div>
                     ) : (
@@ -188,7 +188,7 @@ export default function Segments() {
               ) : (
                 <Popup
                   trigger={
-                    <button className="border border-default rounded-md p-2 text-sm bg-primary">
+                    <button className="border border-default rounded-md p-2 text-sm bg-primary text-white">
                       Segment is not available in your plan
                     </button>
                   }
