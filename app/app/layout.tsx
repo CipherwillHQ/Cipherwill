@@ -34,10 +34,10 @@ export default function AppLayout({ children }) {
                 <SessionProvider>
                   <PaymentGatewayProvider>
                     <div className="flex flex-col sm:flex-row sm:items-center overflow-hidden h-screen w-screen">
-                      <div className="flex sm:h-full bg-secondary">
+                      <div className="flex sm:h-full bg-white dark:bg-dark">
                         <Sidebar />
                       </div>
-                      <div className="flex flex-col h-full w-full bg-primary">
+                      <div className="flex flex-col h-full w-full dark:bg-black/95 bg-dark-50">
                         {/* <div className="bg-red-400 p-4">Top Bar</div> */}
                         <div className="flex flex-col pb-40 flex-1 h-full overflow-y-auto customScrollbar">
                           {children}

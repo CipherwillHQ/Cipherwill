@@ -34,7 +34,7 @@ export default function FrequentlyAskedQuestions() {
       <Suspense fallback={<div></div>}>
         <ScrollToSec />
       </Suspense>
-      <div className="bg-purple-100 py-20 px-4">
+      <div className="bg-primary-100 py-20 px-4">
         <div className="max-w-7xl mx-auto h-[30vh] flex flex-col justify-center items-center">
           <h1 className="text-4xl font-semibold text-center">
             Frequently Asked Questions
@@ -43,7 +43,7 @@ export default function FrequentlyAskedQuestions() {
       </div>
 
       <div className="flex flex-col gap-2 w-full max-w-5xl mx-auto py-20 px-4">
-        <div className="w-full p-4 flex flex-col sm:flex-row items-center sm:items-start justify-between bg-purple-100 rounded-xl">
+        <div className="w-full p-4 flex flex-col sm:flex-row items-center sm:items-start justify-between border rounded-xl">
           <h2 className="text-3xl md:text-4xl font-semibold py-4 px-2">
             We're here,
             <br />
@@ -67,7 +67,7 @@ export default function FrequentlyAskedQuestions() {
                       <div>
                         <Link
                           href={`/i/frequently-asked-questions/${question.slug}`}
-                          className="text-indigo-500 hover:underline"
+                          className="text-primary hover:underline"
                         >
                           <h3 className="font-semibold">{question.title}</h3>
                         </Link>
