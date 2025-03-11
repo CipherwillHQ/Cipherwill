@@ -6,7 +6,7 @@ export default function PriceTeaser() {
   return (
     <div className="flex flex-col sm:flex-row justify-center gap-2 my-16 items-center sm:items-start">
       <div className="p-2 w-full max-w-md border rounded-lg">
-        <div className="px-4 py-1 w-fit rounded-full bg-orange-200 text-neutral-800 font-semibold">
+        <div className="px-6 py-1 w-fit rounded-full bg-orange-100 text-dark font-semibold">
           Lifetime free
         </div>
         <h2 className="text-4xl font-extrabold text-center my-6">
@@ -14,7 +14,7 @@ export default function PriceTeaser() {
           <span className="text-lg">/Lifetime</span>
         </h2>
         <Link href={"/app/billing"}>
-          <button className="p-2 w-full bg-orange-600 hover:bg-orange-700 text-white rounded-md transition-colors duration-300 ease-in-out">
+          <button className="p-2 w-full border border-primary-100 hover:bg-primary-50 text-primary-950 rounded-md transition-colors duration-300 ease-in-out">
             Get Started
           </button>
         </Link>
@@ -39,7 +39,7 @@ export default function PriceTeaser() {
       </div>
       <div className="p-2 w-full max-w-md border rounded-lg">
         <div className="flex items-center gap-2 justify-between">
-          <div className="px-4 py-1 w-fit rounded-full bg-green-200 text-neutral-800  font-semibold">
+          <div className="px-6 py-1 w-fit rounded-full bg-orange-300 text-orange-950  font-semibold">
             Premium
           </div>
           <div className="text-sm font-bold text-right">
@@ -60,7 +60,7 @@ export default function PriceTeaser() {
           <span className="text-lg">/Year</span>
         </h2>
         <Link href={"/app/billing"}>
-          <button className="p-2 w-full bg-orange-600 hover:bg-orange-700 text-white rounded-md transition-colors duration-300 ease-in-out">
+          <button className="p-2 w-full bg-primary hover:bg-primary-900 text-white rounded-md transition-colors duration-300 ease-in-out">
             Get Started
           </button>
         </Link>
