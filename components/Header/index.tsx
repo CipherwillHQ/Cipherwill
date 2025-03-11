@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import logoBlack from "../../assets/name-black.png";
+import logoWhite from "../../assets/name-white.png";
 import { useAuth } from "@/contexts/AuthContext";
 import menu from "./menu";
 import MobileHeader from "./MobileHeader";
@@ -16,11 +17,15 @@ export default function Header({
   backdropClassOverride = "",
   nonExpandedClassOverride = "",
   expandedClassOverride = "",
+  nonExpandedLogo = "black",
+  expandedLogo = "black"
 }: {
   classOverride?: string;
   backdropClassOverride?: string;
   nonExpandedClassOverride?: string;
   expandedClassOverride?: string;
+  nonExpandedLogo?: string;
+  expandedLogo?: string;
 }) {
   const { user } = useAuth();
   const pathname = usePathname();
@@ -71,8 +76,9 @@ export default function Header({
             data-cy="logo"
             alt={`cipherwill logo`}
             src={
-              // final_state === "dark" ? logoWhite :
-              logoBlack
+              expanded?
+              expandedLogo === "black" ? logoBlack : logoWhite:
+              nonExpandedLogo === "black" ? logoBlack : logoWhite
             }
             width={150}
             height={100}
@@ -88,7 +94,7 @@ export default function Header({
                   className={`mx-1 hover:text-neutral-500 p-1 font-medium
                   ${
                     pathname === item.path &&
-                    "underline decoration-2 underline-offset-8 decoration-orange-500"
+                    "font-semibold"
                   }
                   content-center ${expanded ? "h-16" : "h-20"}
                   `}
@@ -116,7 +122,7 @@ export default function Header({
               ${
                 // final_state === "dark"
                 //   ? "bg-white text-black":
-                "bg-black text-white"
+                "bg-gradient-to-r from-primary-700 to-primary text-white hover:shadow-md"
               }
               font-semibold transition-colors duration-300 px-4 py-2 rounded-full text-xs m-2`}
             >

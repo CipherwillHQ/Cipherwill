@@ -3,8 +3,11 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import CTA from "@/components/public/CTA";
 import FAQs from "@/components/public/FAQs";
-import Explainer from "@/components/public/how-it-works/Explainer";
-import Link from "next/link";
+// import Simple from "./Simple";
+// import OpenSourceSection from "./OpenSourceSection";
+// import Lifecycle from "./Lifecyle";
+import Hero from "./Hero";
+// import ImportantPoints from "./ImportantPoints";
 
 const title = "How it works";
 const description =
@@ -25,19 +28,13 @@ export const metadata = {
 export default function HowItWorks() {
   return (
     <div className="w-full flex flex-col ">
-      <Header />
-      <div className="mt-40 p-4 text-center">
-        <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-center font-playfair italic whitespace-pre-line">
-          See How It’s Done
-        </h1>
-
-        <p className="max-w-xl mx-auto py-4 text-center  sm:text-lg font-medium dark:font-normal">
-          Let understand how to put your digital legacy on autopilot with
-          encryption, so when the time comes, your data is delivered to your
-          loved ones.
-        </p>
-      </div>
-      <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 text-center gap-2">
+      <Header
+        expandedClassOverride="bg-white"
+        nonExpandedClassOverride="text-white"
+        nonExpandedLogo="white"
+      />
+      <Hero />
+      {/* <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 text-center gap-2">
         <Link href={"/i/how-execution-timeline-works"}>
           <div className="bg-orange-50 hover:bg-orange-100 rounded-md p-4">
             <div className="font-semibold text-lg">Will Execution</div>
@@ -72,11 +69,15 @@ export default function HowItWorks() {
             </div>
           </div>
         </Link>
-      </div>
-      <Explainer />
+      </div> */}
+      {/* <Explainer /> */}
       {/* <section className="my-10">
         <InfoSection />
       </section> */}
+      {/* <Simple /> */}
+      {/* <OpenSourceSection /> */}
+      {/* <Lifecycle /> */}
+      {/* <ImportantPoints/> */}
       <FAQs />
       <CTA />
       <Footer />
