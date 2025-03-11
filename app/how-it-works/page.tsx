@@ -36,7 +36,7 @@ export default function HowItWorks() {
       <Hero />
       <Simple />
       <OpenSourceSection />
-      {/* <Lifecycle /> */}
+      <Lifecycle />
       <ImportantPoints/>
       <FAQs />
       <CTA />
