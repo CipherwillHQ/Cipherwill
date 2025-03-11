@@ -7,7 +7,7 @@ import Simple from "./Simple";
 import OpenSourceSection from "./OpenSourceSection";
 // import Lifecycle from "./Lifecyle";
 import Hero from "./Hero";
-// import ImportantPoints from "./ImportantPoints";
+import ImportantPoints from "./ImportantPoints";
 
 const title = "How it works";
 const description =
@@ -37,7 +37,7 @@ export default function HowItWorks() {
       <Simple />
       <OpenSourceSection />
       {/* <Lifecycle /> */}
-      {/* <ImportantPoints/> */}
+      <ImportantPoints/>
       <FAQs />
       <CTA />
       <Footer />
