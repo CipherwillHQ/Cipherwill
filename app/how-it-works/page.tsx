@@ -5,7 +5,7 @@ import CTA from "@/components/public/CTA";
 import FAQs from "@/components/public/FAQs";
 import Simple from "./Simple";
 import OpenSourceSection from "./OpenSourceSection";
-// import Lifecycle from "./Lifecyle";
+import Lifecycle from "./Lifecycle";
 import Hero from "./Hero";
 import ImportantPoints from "./ImportantPoints";
 
