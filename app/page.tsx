@@ -9,7 +9,9 @@ import WhyChooseCipherwill from "@/components/public/landing/WhyChooseCipherwill
 import FAQs from "@/components/public/FAQs";
 import CTA from "@/components/public/CTA";
 import Footer from "@/components/Footer";
-import VideoHero from "@/components/landing/VideoHero";
+import BoxHero from "@/components/landing/BoxHero";
+import StatsOfBenefit from "@/components/public/landing/StatsOfBenefit";
+import RatingsAndUsers from "@/components/landing/RatingsAndUsers";
 
 export async function generateMetadata({
   params,
@@ -31,13 +33,9 @@ export async function generateMetadata({
 export default function Home() {
   return (
     <div className="w-full flex flex-col">
-      <Header
-        expandedClassOverride="bg-white"
-        nonExpandedClassOverride="text-white"
-        nonExpandedLogo="white"
-      />
-
-      <VideoHero />
+      <Header />
+      <BoxHero />
+      <RatingsAndUsers/>
       {/* <CenterHero /> */}
       {/* <div className="bg-red-400 my-12 py-8">
         <h2 className="text-xl font-bold text-center py-8">
@@ -53,11 +51,11 @@ export default function Home() {
         </div>
       </div> */}
       {/* <ScreenshotDemo/> -------------------*/}
-      {/* <DeadManSwitchExplainer /> */}
-      {/* <StatsOfBenefit/> -------------------*/}
-      {/* <WhyYouNeedCipherwill /> */}
-      {/* <WhatIsCipherwill /> */}
-      {/* <WhyChooseCipherwill /> */}
+      <DeadManSwitchExplainer />
+      {/* <StatsOfBenefit/> */}
+      <WhyYouNeedCipherwill />
+      <WhatIsCipherwill />
+      <WhyChooseCipherwill />
       <FAQs />
       <CTA />
       <Footer />
