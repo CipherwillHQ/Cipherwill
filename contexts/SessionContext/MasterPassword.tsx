@@ -47,7 +47,7 @@ export default function MasterPassword({
     <>
       <div
         data-cy="master-password-box"
-        className="border border-default rounded p-2 m-1 cursor-pointer w-80 bg-secondary"
+        className="border border-default rounded-sm p-2 m-1 cursor-pointer w-80 bg-secondary"
         onClick={async () => {
           setIsOpen(true);
         }}
@@ -83,7 +83,7 @@ export default function MasterPassword({
         />
         <button
         data-cy="master-password-submit"
-          className="bg-blue-500 text-white p-2 rounded mt-2 w-full"
+          className="bg-blue-500 text-white p-2 rounded-sm mt-2 w-full"
           onClick={() => handleSubmit(method.nonce)}
         >
           Submit

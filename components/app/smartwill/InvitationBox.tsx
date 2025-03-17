@@ -31,7 +31,7 @@ export default function InvitationBox({
           setName(e.target.value);
         }}
         placeholder="First name of the person"
-        className="bg-white dark:bg-gray-800 text-black dark:text-white border p-1 rounded"
+        className="bg-white dark:bg-gray-800 text-black dark:text-white border p-1 rounded-sm"
       />
       <SimpleButton
         onClick={() => {

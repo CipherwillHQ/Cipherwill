@@ -2,7 +2,7 @@ import { IoClose } from "react-icons/io5";
 
 export default function BillingPopup() {
   return (
-    <div className="flex flex-col w-full max-w-4xl max-h-[80vh] bg-white text-black rounded px-4 py-2 shadow">
+    <div className="flex flex-col w-full max-w-4xl max-h-[80vh] bg-white text-black rounded-sm px-4 py-2 shadow-sm">
       <div className="w-[5000px]" />
       <div className="w-full flex justify-between items-center">
         <div className="text-xl font-semibold">++</div>

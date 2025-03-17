@@ -130,7 +130,7 @@ export default function EmailLogin({
           >
             {/* @ts-ignore */}
             {(close) => (
-              <div className="max-w-md bg-white px-4 pt-2 pb-6 rounded flex flex-col gap-2">
+              <div className="max-w-md bg-white px-4 pt-2 pb-6 rounded-sm flex flex-col gap-2">
                 <h2 className="text-xl py-2 font-bold text-gray-900 mb-2 w-[50vw]">
                   Reset password
                 </h2>
@@ -139,14 +139,14 @@ export default function EmailLogin({
                   id="forgot-email"
                   defaultValue={email}
                   type="email"
-                  className="p-2 border rounded"
+                  className="p-2 border rounded-sm"
                   placeholder="Enter your email"
                 />
                 <div className="text-gray-600 my-4 font-medium">
                   You will receive an email with a link to reset your password.
                 </div>
                 <button
-                  className="bg-gray-900 hover:bg-black text-white p-2 rounded font-semibold"
+                  className="bg-gray-900 hover:bg-black text-white p-2 rounded-sm font-semibold"
                   onClick={async () => {
                     const email = (
                       document.getElementById(

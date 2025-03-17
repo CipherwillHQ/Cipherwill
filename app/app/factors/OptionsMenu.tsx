@@ -41,7 +41,7 @@ export default function OptionsMenu({
       }
       modal
     >
-      <div className="bg-white dark:bg-neutral-800 text-black dark:text-white rounded w-screen max-w-sm p-2">
+      <div className="bg-white dark:bg-neutral-800 text-black dark:text-white rounded-sm w-screen max-w-sm p-2">
         <h2 className="text-sm font-semibold mb-2">
           Factor : {getShortKey(factor_publicKey)}
         </h2>

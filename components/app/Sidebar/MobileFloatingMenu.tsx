@@ -19,7 +19,7 @@ export default function MobileFloatingMenu() {
       </button>
 
       <div
-        className={`absolute backdrop-blur-sm top-0 left-0 bottom-0 right-0 z-50 overflow-hidden transition-all duration-300 ease-in-out  
+        className={`absolute backdrop-blur-xs top-0 left-0 bottom-0 right-0 z-50 overflow-hidden transition-all duration-300 ease-in-out  
   ${open ? "w-full" : "w-0"}
   `}
         onClick={(e) => {

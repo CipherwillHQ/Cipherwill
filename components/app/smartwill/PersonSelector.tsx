@@ -96,7 +96,7 @@ function SeachAndList({
 
       <input
         data-cy="search-person-email-input"
-        className="w-full border p-1 mb-2 rounded bg-white dark:bg-gray-800"
+        className="w-full border p-1 mb-2 rounded-sm bg-white dark:bg-gray-800"
         placeholder="Search"
         type="email"
         value={inputEmail}
@@ -118,7 +118,7 @@ function SeachAndList({
               return (
                 <div
                   key={person.id}
-                  className="bg-slate-100 dark:bg-gray-800 py-1 px-2 rounded my-2 hover:bg-slate-200 cursor-pointer"
+                  className="bg-slate-100 dark:bg-gray-800 py-1 px-2 rounded-sm my-2 hover:bg-slate-200 cursor-pointer"
                   onClick={() => {
                     response({
                       person: person.id,
@@ -137,7 +137,7 @@ function SeachAndList({
 
           {valid_email && (!peoples || peoples.searchPerson.length === 0) && (
             <div
-              className="bg-slate-100 dark:bg-gray-800 py-1 px-2 rounded my-2 hover:bg-slate-200 cursor-pointer"
+              className="bg-slate-100 dark:bg-gray-800 py-1 px-2 rounded-sm my-2 hover:bg-slate-200 cursor-pointer"
               onClick={() => {
                 setInvitationMode(inputEmail);
               }}

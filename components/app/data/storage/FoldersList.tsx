@@ -39,7 +39,7 @@ export default function FoldersList({ folder_id }: { folder_id?: string }) {
       </div>
       {data.getFolders.has_more && (
         <button
-          className="my-2 p-1 border rounded hover:bg-slate-100"
+          className="my-2 p-1 border rounded-sm hover:bg-slate-100"
           onClick={() => {
             fetchMore({
               variables: {

@@ -32,7 +32,7 @@ export default function Metamask({
     <>
       <div
         data-cy="metamask-box"
-        className="border border-default rounded p-2 m-1 cursor-pointer w-80 bg-secondary"
+        className="border border-default rounded-sm p-2 m-1 cursor-pointer w-80 bg-secondary"
       >
         <div>
           Name: <span data-cy="master-password-name">{method.name}</span>

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 import hero_bg from "./hero_bg.jpeg";
 import Image from "next/image";
-// bg-gradient-to-br from-primary-50 to-primary-100
+// bg-linear-to-br from-primary-50 to-primary-100
 
 export default function Hero() {
   return (
@@ -18,7 +18,7 @@ export default function Hero() {
         placeholder="blur"
         className="absolute inset-0 z-0"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-black to-black/60"></div>
+      <div className="absolute inset-0 bg-linear-to-b from-black to-black/60"></div>
 
       <div className="relative flex items-center justify-center h-screen overflow-hidden">
         {/* Floating Pills */}

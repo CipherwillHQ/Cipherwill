@@ -122,7 +122,7 @@ export default function Header({
               ${
                 // final_state === "dark"
                 //   ? "bg-white text-black":
-                "bg-gradient-to-r from-primary-700 to-primary text-white hover:shadow-md"
+                "bg-linear-to-r from-primary-700 to-primary text-white hover:shadow-md"
               }
               font-semibold transition-colors duration-300 px-4 py-2 rounded-full text-xs m-2`}
             >

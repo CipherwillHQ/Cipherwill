@@ -97,7 +97,7 @@ export default function PodDetails({
       />
       {/* {initialValue !== newValue && (
         <button
-          className="flex items-center justify-center bg-black text-white font-bold py-2 px-4 rounded"
+          className="flex items-center justify-center bg-black text-white font-bold py-2 px-4 rounded-sm"
           onClick={() => {
             const updateData = editor.getHTML();
             updatePod({

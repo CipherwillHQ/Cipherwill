@@ -37,7 +37,7 @@ export default function GrantedNotes() {
         </div>
         {data.getGrantedMetamodels.has_more && (
           <button
-            className="my-2 p-1 border rounded hover:bg-slate-100"
+            className="my-2 p-1 border rounded-sm hover:bg-slate-100"
             onClick={() => {
               fetchMore({
                 variables: {

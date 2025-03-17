@@ -27,7 +27,7 @@ export default function WillEvents() {
         </div>
         <ConfirmationButton
           data-cy="trigger-button"
-          className="bg-red-500 hover:bg-red-700 text-white px-2 rounded"
+          className="bg-red-500 hover:bg-red-700 text-white px-2 rounded-sm"
           onConfirm={async () => {
             await forceTriggerNextWillEvent();
             window.location.reload();
@@ -46,7 +46,7 @@ export default function WillEvents() {
         </div>
         <ConfirmationButton
           data-cy="reset-events-button"
-          className="bg-red-500 hover:bg-red-700 text-white px-2 rounded"
+          className="bg-red-500 hover:bg-red-700 text-white px-2 rounded-sm"
           onConfirm={async () => {
             await resetWillEvents();
             window.location.reload();

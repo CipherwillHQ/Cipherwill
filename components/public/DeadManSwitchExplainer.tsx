@@ -7,7 +7,7 @@ import { GiPadlock } from "react-icons/gi";
 export default function DeadManSwitchExplainer() {
   return (
     <>
-      <div className="bg-gradient-to-b from-neutral-800 to-black text-white font-black py-10 overflow-hidden">
+      <div className="bg-linear-to-b from-neutral-800 to-black text-white font-black py-10 overflow-hidden">
         <div className="flex flex-col gap-2 text-2xl sm:text-5xl md:text-6xl xl:text-7xl w-full max-w-7xl mx-auto p-2">
           <div className="flex items-center gap-2">
             <RiOpenSourceFill className="scale-75" />
@@ -33,7 +33,7 @@ export default function DeadManSwitchExplainer() {
               }
               modal
             >
-              <div className="bg-white p-4 rounded shadow-lg max-w-lg">
+              <div className="bg-white p-4 rounded-sm shadow-lg max-w-lg">
                 <h2 className="font-semibold text-xl mb-4">
                   Dead man's switch from wikipedia
                 </h2>

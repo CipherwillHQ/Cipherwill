@@ -16,7 +16,7 @@ export default function Options({ model }: { model: any }) {
       {/* @ts-ignore */}
       {(close) => {
         return (
-          <div className="bg-white dark:bg-gray-700 text-black dark:text-white rounded shadow-lg w-full">
+          <div className="bg-white dark:bg-gray-700 text-black dark:text-white rounded-sm shadow-lg w-full">
             <button
               className="p-2 w-full text-left"
               onClick={() => {

@@ -93,14 +93,14 @@ export default function ActiveSubscription() {
           <DevOnly>
             <div className="flex gap-2">
               <button
-                className="border p-2 rounded"
+                className="border p-2 rounded-sm"
                 onClick={upgradeUsingPaddle}
               >
                 Checkout using Paddle
               </button>
 
               <button
-                className="border p-2 rounded"
+                className="border p-2 rounded-sm"
                 onClick={async () => {
                   toast.success("Coming soon");
                 }}

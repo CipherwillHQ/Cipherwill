@@ -11,7 +11,7 @@ export default function BasicPopup({ open, setOpen, children }) {
           onClick={(e) => {
             e.stopPropagation();
           }}
-          className="bg-white dark:bg-neutral-900 p-2 rounded shadow-md w-full max-w-sm"
+          className="bg-white dark:bg-neutral-900 p-2 rounded-sm shadow-md w-full max-w-sm"
         >
           {children}
         </div>

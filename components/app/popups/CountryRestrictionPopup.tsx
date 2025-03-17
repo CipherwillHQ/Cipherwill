@@ -13,7 +13,7 @@ export default function CountryRestrictionPopup({
 }) {
   return (
     <Popup open={open} closeOnDocumentClick onClose={closeModal}>
-      <div className="max-w-md bg-white p-2 rounded">
+      <div className="max-w-md bg-white p-2 rounded-sm">
         <h2
         className="text-lg font-bold text-gray-900 mb-2"
         >Country Restriction</h2>

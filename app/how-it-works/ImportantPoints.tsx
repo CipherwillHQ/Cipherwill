@@ -13,7 +13,7 @@ export default function ImportantPoints() {
         placeholder="blur"
         className="absolute inset-0"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-black/60"></div>
+      <div className="absolute inset-0 bg-linear-to-b from-black/80 to-black/60"></div>
 
       <div className="w-full max-w-7xl mx-auto px-4 py-20 text-lg relative text-white">
         <h2 className="text-6xl font-bold py-12">Important facts</h2>

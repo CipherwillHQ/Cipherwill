@@ -46,29 +46,29 @@ export default function AboutUs() {
           </div>
           <div className="flex flex-col w-full sm:w-fit sm:max-w-fit pt-8 gap-2 text-sm">
             <Link href={"/"}>
-              <button className="font-medium shadow-sm hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
+              <button className="font-medium shadow-xs hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
                 Go back to website
               </button>
             </Link>
             <Link href={"/i/live-status"}>
-              <button className="font-medium shadow-sm hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
+              <button className="font-medium shadow-xs hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
                 Servers & Status
               </button>
             </Link>
 
             <Link href={"/i/third-party-processors"}>
-              <button className="font-medium shadow-sm hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
+              <button className="font-medium shadow-xs hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
                 Third Party Processors
               </button>
             </Link>
             <Link href={"/i/shard-switch"}>
-              <button className="font-medium shadow-sm hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
+              <button className="font-medium shadow-xs hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
                 Shard Switch
               </button>
             </Link>
           </div>
         </div>
-        <div className="w-full bg-gradient-to-b from-transparent to-black/5 border-b border-black/20 rounded-b-full h-8"></div>
+        <div className="w-full bg-linear-to-b from-transparent to-black/5 border-b border-black/20 rounded-b-full h-8"></div>
         <h1 className="text-5xl sm:text-7xl font-black p-4 mt-12">
           about Cipherwill
         </h1>

@@ -91,7 +91,7 @@ export default function FactorsList() {
                     Name:{" "}
                     <div
                       id="factor-name"
-                      className="inline-block outline-none"
+                      className="inline-block outline-hidden"
                       contentEditable
                       suppressContentEditableWarning
                       onBlur={(e) => {
@@ -139,7 +139,7 @@ export default function FactorsList() {
                 </div>
                 <button
                   data-cy="remove-factor"
-                  className="flex items-center border border-red-700 hover:bg-red-200 text-red-500 p-1 rounded px-2 text-sm mt-2"
+                  className="flex items-center border border-red-700 hover:bg-red-200 text-red-500 p-1 rounded-sm px-2 text-sm mt-2"
                   onClick={async () => {
                     const cnf = confirm(
                       "Are you sure you want to remove this factor?"

@@ -41,7 +41,7 @@ export default function FAQs() {
 
       <div
         className="block relative
-         bg-gradient-to-b from-white/5  via-white/75 via-30% to-white to-90% 
+         bg-linear-to-b from-white/5  via-white/75 via-30% to-white to-90% 
          px-2 py-12 text-center -mt-40 w-full max-w-7xl mx-auto"
       >
         <h2 className="text-3xl font-semibold pt-14 mb-8">

@@ -71,7 +71,7 @@ export default function PodDetails({ id }) {
       />
       <div className="flex flex-col sm:flex-row items-center gap-2">
         <button
-          className="flex items-center justify-center gap-2 bg-black text-white font-bold py-2 px-4 rounded w-full"
+          className="flex items-center justify-center gap-2 bg-black text-white font-bold py-2 px-4 rounded-sm w-full"
           onClick={() => {
             updatePod({
               password: data.password,

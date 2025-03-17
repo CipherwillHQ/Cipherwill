@@ -7,7 +7,7 @@ import herograd from "@/assets/images/hero-grad.png";
 export default function TwoColumnHero() {
   return (
     <section
-      className="bg-gradient-to-b from-white to-yellow-100 text-black py-20"
+      className="bg-linear-to-b from-white to-yellow-100 text-black py-20"
       // style={{
       //   backgroundImage: `url('${herograd.src}')`,
         // backgroundImage: `url('https://i.pinimg.com/originals/19/a1/b2/19a1b216f31a5d18a054aef242ccacab.jpg')`,

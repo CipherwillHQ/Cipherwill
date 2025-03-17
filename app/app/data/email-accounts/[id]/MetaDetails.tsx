@@ -36,7 +36,7 @@ export default function MetaDetails({ id }) {
       <div className="flex gap-2 items-center">
         <div
           id="email-account-name"
-          className="text-xl outline-none"
+          className="text-xl outline-hidden"
           contentEditable
           suppressContentEditableWarning
           onBlur={(e) => {
