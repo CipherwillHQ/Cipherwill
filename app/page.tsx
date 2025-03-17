@@ -9,6 +9,7 @@ import WhyChooseCipherwill from "@/components/public/landing/WhyChooseCipherwill
 import FAQs from "@/components/public/FAQs";
 import CTA from "@/components/public/CTA";
 import Footer from "@/components/Footer";
+import VideoHero from "@/components/landing/VideoHero";
 
 export async function generateMetadata({
   params,
@@ -30,8 +31,14 @@ export async function generateMetadata({
 export default function Home() {
   return (
     <div className="w-full flex flex-col">
-      <Header />
-      <CenterHero />
+      <Header
+        expandedClassOverride="bg-white"
+        nonExpandedClassOverride="text-white"
+        nonExpandedLogo="white"
+      />
+
+      <VideoHero />
+      {/* <CenterHero /> */}
       {/* <div className="bg-red-400 my-12 py-8">
         <h2 className="text-xl font-bold text-center py-8">
           Cipherwill supports multiple encryption methods
@@ -46,11 +53,11 @@ export default function Home() {
         </div>
       </div> */}
       {/* <ScreenshotDemo/> -------------------*/}
-      <DeadManSwitchExplainer />
+      {/* <DeadManSwitchExplainer /> */}
       {/* <StatsOfBenefit/> -------------------*/}
-      <WhyYouNeedCipherwill />
-      <WhatIsCipherwill />
-      <WhyChooseCipherwill />
+      {/* <WhyYouNeedCipherwill /> */}
+      {/* <WhatIsCipherwill /> */}
+      {/* <WhyChooseCipherwill /> */}
       <FAQs />
       <CTA />
       <Footer />
