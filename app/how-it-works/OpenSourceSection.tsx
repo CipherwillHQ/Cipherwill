@@ -33,7 +33,7 @@ export default function OpenSourceSection() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <button className="bg-white text-black px-4 py-2 rounded-full flex flex-row items-center">
+            <button className="bg-white text-black px-4 py-2 rounded-full flex flex-row items-center hover:cursor-pointer">
               <LuGithub />
               <span className="ml-2">Visit Github</span>
             </button>

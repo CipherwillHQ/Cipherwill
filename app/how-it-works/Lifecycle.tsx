@@ -25,7 +25,7 @@ function InfoButton({
 }) {
   return (
     <Link href={href}>
-      <button className="flex gap-2 hover:gap-3 items-center bg-primary hover:bg-primary-900 transition-all text-white px-8 py-2 rounded-full mt-4 w-full justify-center sm:w-fit">
+      <button className="flex gap-2 hover:gap-3 items-center bg-primary hover:cursor-pointer hover:bg-primary-900 transition-all text-white px-8 py-2 rounded-full mt-4 w-full justify-center sm:w-fit">
         {icon}
         <span>{title}</span>
       </button>

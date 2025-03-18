@@ -2,6 +2,7 @@
 
 import logger from "@/common/debug/logger";
 import AnonymousChatBox from "@/components/app/AnonymousChatBox";
+import SimpleButton from "@/components/common/SimpleButton";
 import { useUserContext } from "@/contexts/UserSetupContext";
 import SEND_FEEDBACK from "@/graphql/ops/generic/mutations/SEND_FEEDBACK";
 import { useMutation } from "@apollo/client";
@@ -15,7 +16,7 @@ export default function ContactForm() {
     <section className="relative py-12 overflow-hidden sm:py-16 lg:py-20 xl:py-24 mt-20">
       <div className="relative px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">
             Need help? Get in touch
           </h1>
           <p className="mt-4 text-base font-normal text-gray-400 sm:text-lg">
@@ -43,7 +44,7 @@ export default function ContactForm() {
                 We're always available to help you with any questions or
                 concerns. Just click on the start chat button below.
               </p>
-              <AnonymousChatBox/>
+              <AnonymousChatBox />
             </div>
           </div>
           <div className="lg:col-span-4">
@@ -110,8 +111,7 @@ export default function ContactForm() {
                 </div>
               </div>
               <div className="sm:col-span-2">
-                <button
-                  className="bg-black text-white py-2 px-4 rounded-full text-sm"
+                <SimpleButton
                   onClick={async (e) => {
                     e.preventDefault();
                     const email = (document.getElementById("email") as any)
@@ -144,7 +144,7 @@ export default function ContactForm() {
                   }}
                 >
                   Send Message
-                </button>
+                </SimpleButton>
               </div>
             </form>
           </div>

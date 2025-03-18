@@ -14,7 +14,7 @@ export default function PriceTeaser() {
           <span className="text-lg">/Lifetime</span>
         </h2>
         <Link href={"/app/billing"}>
-          <button className="p-2 w-full border border-primary-100 hover:bg-primary-50 text-primary-950 rounded-md transition-colors duration-300 ease-in-out">
+          <button className="p-2 w-full border hover:cursor-pointer border-primary-100 hover:bg-primary-50 text-primary-950 rounded-md transition-colors duration-300 ease-in-out">
             Get Started
           </button>
         </Link>
@@ -60,7 +60,7 @@ export default function PriceTeaser() {
           <span className="text-lg">/Year</span>
         </h2>
         <Link href={"/app/billing"}>
-          <button className="p-2 w-full bg-primary hover:bg-primary-900 text-white rounded-md transition-colors duration-300 ease-in-out">
+          <button className="p-2 w-full bg-primary hover:cursor-pointer hover:bg-primary-900 text-white rounded-md transition-colors duration-300 ease-in-out">
             Get Started
           </button>
         </Link>
