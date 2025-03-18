@@ -5239,6 +5239,11 @@ language-tags@^1.0.9:
   dependencies:
     language-subtag-registry "^0.3.20"
 
+lenis@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/lenis/-/lenis-1.2.3.tgz#7fa22af6e58ba1aa3229712214b63e640a2444f1"
+  integrity sha512-H3VUn62jvQPfyxGW2F0STJPhP1VzX5r05KtiZ0uxHYD9xtbfTvj2eX/Km26+x13zlaKfHacEe1DTC3ouFrxw+g==
+
 level-blobs@^0.1.7:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/level-blobs/-/level-blobs-0.1.7.tgz#9ab9b97bb99f1edbf9f78a3433e21ed56386bdaf"

@@ -3,6 +3,7 @@ import Footer from "../../../components/Footer";
 import Header from "../../../components/Header";
 import PolicyPageHeader from "@/components/public/i/PolicyPageHeader";
 import Link from "next/link";
+import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
 
 const title = "Privacy Policy";
 const description =
@@ -23,23 +24,24 @@ export const metadata = {
 export default function PrivacyPolicy() {
   return (
     <div className="w-full">
+      <SmoothPageScroll />
       <Header />
       <PolicyPageHeader title={`Privacy\nPolicy`} />
+
       <div className="max-w-4xl mx-auto py-10 text-justify p-4 font-medium text-lg">
         <div className="py-2">Last updated on December 3, 2024</div>
         <br />
         <div>
-          This Privacy Policy describes how CipherWill ("we,"
-          "us," or "our") collects, uses, shares, discloses,
-          manages and protects the personal information of individuals
-          ("you" or "users") who utilize our digital estate
-          planning services and will management platform. Protecting your
+          This Privacy Policy describes how CipherWill ("we," "us," or "our")
+          collects, uses, shares, discloses, manages and protects the personal
+          information of individuals ("you" or "users") who utilize our digital
+          estate planning services and will management platform. Protecting your
           privacy and the confidentiality of your personal information is of
           utmost importance to us. Please read this Privacy Policy carefully to
           understand how we handle your personal information.
         </div>
         <div className="py-12">
-          <b className="py-4 text-red-700">
+          <b className="py-4 text-red-900">
             Cipherwill cannot access or view encrypted data you store on the
             platform.
           </b>
