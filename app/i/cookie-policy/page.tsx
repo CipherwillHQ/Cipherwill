@@ -5,7 +5,7 @@ import Link from "next/link";
 // import CookieViewer from "./CookieViewer";
 import PolicyPageHeader from "@/components/public/i/PolicyPageHeader";
 import CookieManagerWrapper from "./CookieManagerWrapper";
-
+import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
 
 const title = "Cookie Policy";
 const description =
@@ -26,6 +26,7 @@ export const metadata = {
 export default function PrivacyPolicy() {
   return (
     <div className="w-full">
+      <SmoothPageScroll />
       <Header />
       <PolicyPageHeader title={`Cookie\nPolicy`} />
       {/* <div className="flex flex-col md:flex-row justify-center items-center gap-2 my-10 max-w-4xl mx-auto">
