@@ -11,14 +11,14 @@ export default function ScreenshotDemo() {
         alt="Screenshot of Cipherwill"
         width={1400}
         height={1400}
-        className="hidden sm:block rounded-t-md sm:rounded-t-xl outline outline-4 outline-lime-500 outline-offset-4"
+        className="hidden sm:block rounded-t-md sm:rounded-t-xl outline-4 outline-lime-500 outline-offset-4"
       />
       <Image
         src={darkSSMobile.src}
         alt="Screenshot of Cipherwill"
         width={600}
         height={20000}
-        className="sm:hidden rounded-t-md sm:rounded-t-xl outline outline-4 outline-lime-500 outline-offset-4"
+        className="sm:hidden rounded-t-md sm:rounded-t-xl outline-4 outline-lime-500 outline-offset-4"
       />
     </div>
   );

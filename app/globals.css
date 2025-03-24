@@ -51,6 +51,17 @@
     border-radius: 20px; /* roundness of the scroll thumb */
   }
 
+  /* Tiptap Styles */
+
+  .tiptap p.is-editor-empty:first-child::before {
+    color: #adb5bd;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }
+  
+
   /* Popup styles*/
 
   .popup-content {

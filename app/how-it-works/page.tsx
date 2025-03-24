@@ -29,8 +29,7 @@ export const metadata = {
 export default function HowItWorks() {
   return (
     <div className="w-full flex flex-col ">
-      
-            <SmoothPageScroll/>
+      <SmoothPageScroll />
       <Header
         expandedClassOverride="bg-white"
         nonExpandedClassOverride="text-white"
@@ -40,7 +39,7 @@ export default function HowItWorks() {
       <Simple />
       <OpenSourceSection />
       <Lifecycle />
-      <ImportantPoints/>
+      <ImportantPoints />
       <FAQs />
       <CTA />
       <Footer />

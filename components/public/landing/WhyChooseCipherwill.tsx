@@ -86,7 +86,7 @@ export default function WhyChooseCipherwill() {
         </div>
         <div className="flex items-center justify-center gap-4 mt-6">
           <button
-            className="border border-neutral-600 hover:bg-neutral-900 rounded-full h-12 w-12 flex items-center justify-center"
+            className="border border-neutral-600 hover:cursor-pointer hover:bg-neutral-900 rounded-full h-12 w-12 flex items-center justify-center"
             onClick={() => {
               scrollRef.current.scrollTo({
                 left: (scrollRef.current as Element).scrollLeft - 300,
@@ -97,7 +97,7 @@ export default function WhyChooseCipherwill() {
             <FiChevronLeft size={22} />
           </button>
           <button
-            className="border border-neutral-600 hover:bg-neutral-900 rounded-full h-12 w-12 flex items-center justify-center"
+            className="border border-neutral-600 hover:cursor-pointer hover:bg-neutral-900 rounded-full h-12 w-12 flex items-center justify-center"
             onClick={() => {
               // scroll 300 px to the right
               scrollRef.current.scrollTo({

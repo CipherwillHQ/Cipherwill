@@ -5,6 +5,7 @@ import CTA from "@/components/public/CTA";
 import SimplePricing from "@/components/pricing/SimplePricing";
 import FAQs from "@/components/public/FAQs";
 import { PaymentGatewayProvider } from "@/contexts/PaymentGatewayContext";
+import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
 
 const title = "Pricing";
 const description =
@@ -25,6 +26,7 @@ export const metadata = {
 export default function Pricing() {
   return (
     <div className="w-full">
+      <SmoothPageScroll/>
       <Header />
       <div className="mt-40 mb-6 p-4">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center">

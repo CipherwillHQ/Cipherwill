@@ -12,6 +12,9 @@ import Footer from "@/components/Footer";
 import BoxHero from "@/components/landing/BoxHero";
 import StatsOfBenefit from "@/components/public/landing/StatsOfBenefit";
 import RatingsAndUsers from "@/components/landing/RatingsAndUsers";
+import ScreenshotDemo from "@/components/public/landing/ScreenshotDemo";
+import FactorsListView from "@/components/landing/FactorsListView";
+import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
 
 export async function generateMetadata({
   params,
@@ -33,9 +36,11 @@ export async function generateMetadata({
 export default function Home() {
   return (
     <div className="w-full flex flex-col">
+      <SmoothPageScroll/>
       <Header />
       <BoxHero />
       <RatingsAndUsers/>
+      <FactorsListView/>
       {/* <CenterHero /> */}
       {/* <div className="bg-red-400 my-12 py-8">
         <h2 className="text-xl font-bold text-center py-8">
@@ -50,8 +55,8 @@ export default function Home() {
           <div>Yubikeys</div>
         </div>
       </div> */}
-      {/* <ScreenshotDemo/> -------------------*/}
-      <DeadManSwitchExplainer />
+      {/* <ScreenshotDemo/>  */}
+      {/* <DeadManSwitchExplainer /> */}
       {/* <StatsOfBenefit/> */}
       <WhyYouNeedCipherwill />
       <WhatIsCipherwill />

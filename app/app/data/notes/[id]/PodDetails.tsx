@@ -5,6 +5,7 @@ import { usePod } from "@/contexts/PodHelper";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useState } from "react";
+import Placeholder from '@tiptap/extension-placeholder';
 
 const NOTE_SAMPLE: NOTE_TYPE = {
   content: "Sample Note",
@@ -33,7 +34,11 @@ export default function PodDetails({
     }
   );
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit,
+      Placeholder.configure({
+        placeholder:'Write something...'
+      })
+    ],
     content: "",
     onCreate: async ({ editor }) => {
       const data = await loadPod();

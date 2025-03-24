@@ -89,7 +89,6 @@ export default function HowFactorsWork() {
         </ol>
       </div>
       <EncryptionMetrix />
-      <FAQs />
       <CTA />
       <Footer />
     </div>

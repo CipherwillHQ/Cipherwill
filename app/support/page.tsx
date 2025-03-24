@@ -4,6 +4,7 @@ import Header from "../../components/Header";
 import ContactForm from "./ContactForm";
 import CTA from "@/components/public/CTA";
 import FAQs from "@/components/public/FAQs";
+import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
 
 const title = "CipherWill Help Center";
 const description =
@@ -24,6 +25,7 @@ export const metadata = {
 export default function Support() {
   return (
     <div className="w-full">
+      <SmoothPageScroll/>
       <Header />
       <ContactForm />
       <FAQs/>

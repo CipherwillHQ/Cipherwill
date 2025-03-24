@@ -22,8 +22,8 @@ export default function Select({
       defaultValue={value ? undefined : defaultValue}
       value={value || undefined}
       className={twMerge(
-      "bg-primary border border-default p-2 rounded-md",
-      className
+        "border text-black dark:text-white bg-white dark:bg-dark border-default p-2 rounded-md",
+        className
       )}
       onChange={(e) => onChange(e.target.value)}
       disabled={disabled}
