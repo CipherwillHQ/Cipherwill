@@ -1,11 +1,9 @@
 import Link from "next/link";
 import questions from "./questions";
-import ComeupTransition from "@/components/animated/transitions/ComeUp";
-import SimpleButton from "@/components/common/SimpleButton";
 
 export default function FAQs() {
   return (
-    <ComeupTransition>
+    <section>
       <div className="w-full max-w-7xl mx-auto p-4">
         <div className="flex flex-col gap-4 sm:flex-row items-center justify-between py-20">
           <div className="flex flex-col gap-2">
@@ -54,6 +52,6 @@ export default function FAQs() {
           Look at more questions or ask your own
         </Link>
       </div>
-    </ComeupTransition>
+    </section>
   );
 }
