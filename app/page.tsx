@@ -42,19 +42,6 @@ export default function Home() {
       <RatingsAndUsers/>
       <FactorsListView/>
       {/* <CenterHero /> */}
-      {/* <div className="bg-red-400 my-12 py-8">
-        <h2 className="text-xl font-bold text-center py-8">
-          Cipherwill supports multiple encryption methods
-        </h2>
-        <div className="flex items-center gap-2 justify-evenly">
-          <div>Master Password</div>
-          <div>Metamask</div>
-          <div>Ledger Device</div>
-          <div>Trezor Device</div>
-          <div>FIDO U2F Keys</div>
-          <div>Yubikeys</div>
-        </div>
-      </div> */}
       {/* <ScreenshotDemo/>  */}
       {/* <DeadManSwitchExplainer /> */}
       {/* <StatsOfBenefit/> */}
