@@ -4,6 +4,7 @@ import EncryptionMetrix from "./EncryptionMetrix";
 import CTA from "@/components/public/CTA";
 import FAQs from "@/components/public/FAQs";
 import { FULL_HOSTNAME } from "@/common/constant";
+import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
 
 const title = "How Security Factors work?";
 const description =
@@ -24,6 +25,7 @@ export const metadata = {
 export default function HowFactorsWork() {
   return (
     <div>
+      <SmoothPageScroll />
       <Header />
       <div className="mts-28 mbs-6 px-4 pt-28 pb-12 flex flex-col gap-2 items-center justify-center text-center bg-linear-to-b from-sky-50 to-sky-100">
         <div className="py-20">

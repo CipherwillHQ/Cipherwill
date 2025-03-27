@@ -94,7 +94,7 @@ export default function CompareTable() {
         <div className="flex flex-1 p-3 min-w-60">
           <span className="opacity-0">Feature</span>
         </div>
-        <div className="flex flex-1 justify-center min-w-60 border-neutral-900 border-dashed border-x px-3 py-8 text-xl font-semibold bg-white">
+        <div className="flex flex-1 justify-center min-w-60 border-neutral-300 border-dashed border-x px-3 py-8 text-xl font-semibold bg-white">
           Free
         </div>
         <div className="flex flex-1 justify-center min-w-60 rounded-tr-lg px-3 py-8 text-xl font-semibold bg-white">
@@ -119,10 +119,10 @@ export default function CompareTable() {
             <div className="flex flex-1 min-w-60 border-neutral-200 font-semibold border-dashed border-r p-2">
               {item.name}
             </div>
-            <div className="flex flex-1 justify-center min-w-60 border-neutral-200 border-dashed border-r p-2 text-center">
+            <div className="flex flex-1 justify-center min-w-60 text-gray-700 font-medium border-neutral-200 border-dashed border-r p-2 text-center">
               {item.free}
             </div>
-            <div className="flex flex-1 justify-center min-w-60 p-2 text-center">
+            <div className="flex flex-1 justify-center min-w-60 text-gray-700 font-medium p-2 text-center">
               {item.premium}
             </div>
           </div>

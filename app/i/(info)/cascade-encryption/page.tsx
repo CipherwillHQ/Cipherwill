@@ -1,4 +1,5 @@
 import { FULL_HOSTNAME } from "@/common/constant";
+import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import CTA from "@/components/public/CTA";
@@ -23,6 +24,7 @@ export const metadata = {
 export default function CascadeEncryotionDetails() {
   return (
     <div>
+      <SmoothPageScroll />
       <Header />
       <div className="mts-28 mbs-6 px-4 pt-28 pb-12 flex flex-col gap-2 items-center justify-center text-center bg-linear-to-b from-sky-50 to-sky-100">
         <div className="py-20">
