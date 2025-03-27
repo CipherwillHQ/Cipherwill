@@ -5,6 +5,7 @@ import Link from "next/link";
 import EncryptionDetails from "./EncryptionDetails";
 import SymbolicLogo from "@/components/public/logo/SymbolicLogo";
 import { IoIosHeart } from "react-icons/io";
+import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
 
 const title = "About us";
 const description =
@@ -25,6 +26,7 @@ export const metadata = {
 export default function AboutUs() {
   return (
     <div className="w-full">
+      <SmoothPageScroll/>
       <div className="pt-12 sm:pt-40 max-w-4xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between px-4 pb-8">
           <div className="flex grow flex-col gap-2">
@@ -46,29 +48,29 @@ export default function AboutUs() {
           </div>
           <div className="flex flex-col w-full sm:w-fit sm:max-w-fit pt-8 gap-2 text-sm">
             <Link href={"/"}>
-              <button className="font-medium shadow-sm hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
+              <button className="hover:cursor-pointer font-medium shadow-xs hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
                 Go back to website
               </button>
             </Link>
             <Link href={"/i/live-status"}>
-              <button className="font-medium shadow-sm hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
+              <button className="hover:cursor-pointer font-medium shadow-xs hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
                 Servers & Status
               </button>
             </Link>
 
             <Link href={"/i/third-party-processors"}>
-              <button className="font-medium shadow-sm hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
+              <button className="hover:cursor-pointer font-medium shadow-xs hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
                 Third Party Processors
               </button>
             </Link>
             <Link href={"/i/shard-switch"}>
-              <button className="font-medium shadow-sm hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
+              <button className="hover:cursor-pointer font-medium shadow-xs hover:shadow-md transition-all border border-gray-100 py-2 px-4 rounded-full w-full">
                 Shard Switch
               </button>
             </Link>
           </div>
         </div>
-        <div className="w-full bg-gradient-to-b from-transparent to-black/5 border-b border-black/20 rounded-b-full h-8"></div>
+        <div className="w-full bg-linear-to-b from-transparent to-black/5 border-b border-black/20 rounded-b-full h-8"></div>
         <h1 className="text-5xl sm:text-7xl font-black p-4 mt-12">
           about Cipherwill
         </h1>
@@ -84,8 +86,7 @@ export default function AboutUs() {
           The Inspiration Behind Cipherwill
         </h3>
         <div>
-          Cipherwill was inspired by a news story that deeply moved our founder,
-          Shivam. A man had millions in digital assets, including
+          Cipherwill was inspired by a news story, A man had millions in digital assets, including
           cryptocurrency, domain names, and a YouTube brand. After his sudden
           passing, his loved ones couldn't access these assets, resulting
           in a significant loss.
@@ -97,7 +98,7 @@ export default function AboutUs() {
           digital information and ensure its seamless transfer to loved ones.
         </div>
         <h3 className="text-xl py-2 font-semibold mt-4">Our Mission</h3>
-        <div className="border p-4 my-2 rounded-md bg-black text-white">
+        <div className="border p-4 my-2 rounded-md">
           To provide a secure, user-friendly platform that empowers individuals
           to manage and transfer their digital assets with confidence and peace
           of mind.
@@ -114,7 +115,7 @@ export default function AboutUs() {
           for.
         </div>
         <h3 className="text-xl py-2 font-semibold mt-4">Our Vision</h3>
-        <div className="border p-4 my-2 rounded-md bg-black text-white">
+        <div className="border p-4 my-2 rounded-md">
           To manage a billion digital wills, ensuring secure and seamless
           transfer of digital assets to loved ones around the world, creating a
           future where everyone's legacy is protected and honored.

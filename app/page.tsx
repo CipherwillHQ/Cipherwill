@@ -9,6 +9,12 @@ import WhyChooseCipherwill from "@/components/public/landing/WhyChooseCipherwill
 import FAQs from "@/components/public/FAQs";
 import CTA from "@/components/public/CTA";
 import Footer from "@/components/Footer";
+import BoxHero from "@/components/landing/BoxHero";
+import StatsOfBenefit from "@/components/public/landing/StatsOfBenefit";
+import RatingsAndUsers from "@/components/landing/RatingsAndUsers";
+import ScreenshotDemo from "@/components/public/landing/ScreenshotDemo";
+import FactorsListView from "@/components/landing/FactorsListView";
+import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
 
 export async function generateMetadata({
   params,
@@ -30,24 +36,15 @@ export async function generateMetadata({
 export default function Home() {
   return (
     <div className="w-full flex flex-col">
+      <SmoothPageScroll/>
       <Header />
-      <CenterHero />
-      {/* <div className="bg-red-400 my-12 py-8">
-        <h2 className="text-xl font-bold text-center py-8">
-          Cipherwill supports multiple encryption methods
-        </h2>
-        <div className="flex items-center gap-2 justify-evenly">
-          <div>Master Password</div>
-          <div>Metamask</div>
-          <div>Ledger Device</div>
-          <div>Trezor Device</div>
-          <div>FIDO U2F Keys</div>
-          <div>Yubikeys</div>
-        </div>
-      </div> */}
-      {/* <ScreenshotDemo/> -------------------*/}
-      <DeadManSwitchExplainer />
-      {/* <StatsOfBenefit/> -------------------*/}
+      <BoxHero />
+      <RatingsAndUsers/>
+      <FactorsListView/>
+      {/* <CenterHero /> */}
+      {/* <ScreenshotDemo/>  */}
+      {/* <DeadManSwitchExplainer /> */}
+      {/* <StatsOfBenefit/> */}
       <WhyYouNeedCipherwill />
       <WhatIsCipherwill />
       <WhyChooseCipherwill />

@@ -23,7 +23,7 @@ export default function Invoices() {
           return (
             <div
               key={invoice.id}
-              className="border border-default bg-secondary rounded my-2 p-2"
+              className="border border-default bg-secondary rounded-sm my-2 p-2"
             >
               <div className="flex gap-2 items-center justify-between mb-2">
                 <div>

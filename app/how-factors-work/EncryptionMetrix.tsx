@@ -40,7 +40,7 @@ const table_data = [
 ];
 export default function EncryptionMetrix() {
   return (
-    <div className="w-full max-w-7xl mx-auto p-4">
+    <div className="w-full max-w-3xl mx-auto p-4">
       <div className="flex flex-col gap-2 py-8">
         <h2 className="font-semibold text-2xl text-center">
           Encryption Status Metrix

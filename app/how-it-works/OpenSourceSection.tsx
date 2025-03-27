@@ -16,7 +16,7 @@ export default function OpenSourceSection() {
           placeholder="blur"
           className="absolute inset-0"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-black/60"></div>
+        <div className="absolute inset-0 bg-linear-to-b from-black/80 to-black/60"></div>
 
         <div className="text-center flex flex-col items-center relative">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center font-playfair italic whitespace-pre-line">
@@ -33,7 +33,7 @@ export default function OpenSourceSection() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <button className="bg-white text-black px-4 py-2 rounded-full flex flex-row items-center">
+            <button className="bg-white text-black px-4 py-2 rounded-full flex flex-row items-center hover:cursor-pointer">
               <LuGithub />
               <span className="ml-2">Visit Github</span>
             </button>

@@ -16,7 +16,7 @@ export default function CookieViewer() {
         }
         modal
       >
-        <div className="w-full max-w-7xl mx-auto bg-white rounded p-2">
+        <div className="w-full max-w-7xl mx-auto bg-white rounded-sm p-2">
           <iframe
             src="https://platform.illow.io/#/policy/cookie/691133b5-f0e8-475e-ae1d-18d2832ecb66"
             className="w-full h-[80vh]"

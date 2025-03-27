@@ -8,9 +8,8 @@ export default function Simple() {
         Getting started is simple
       </h2>
       <p className="text-center text-base sm:text-xl p-4 max-w-2xl mx-auto">
-        As easy as saving a password - just add your
-        important details, add who will receive the data, and rest knowing
-        your data is protected.
+        As easy as saving a password - just add your important details, add who
+        will receive the data, and rest knowing your data is protected.
       </p>
       <div className="grid md:grid-cols-3 gap-4 px-4 py-8 xl:px-0 text-lg">
         <div className="border border-[#F1F1F1] bg-white p-2 rounded-lg shadow-[0_4px_20px_rgb(0,0,0,0.07)] hover:shadow-lg hover:-translate-y-2 transition-all">
@@ -56,7 +55,9 @@ export default function Simple() {
         className="flex items-center gap-4 mx-auto mt-8"
       >
         <GrDown className="animate-bounce text-sm" />
-        <span className="text-lg">Scroll down to know more</span>
+        <span className="text-lg hover:cursor-pointer">
+          Scroll down to know more
+        </span>
         <GrDown className="animate-bounce text-sm" />
       </button>
     </section>

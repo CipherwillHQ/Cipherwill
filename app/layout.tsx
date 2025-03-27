@@ -124,7 +124,7 @@ export default function RootLayout({ children }) {
       >
         {process.env.NEXT_PUBLIC_BUILD_ENV !== "production" &&
           process.env.NEXT_PUBLIC_BUILD_ENV !== "development" && (
-            <div className="bg-yellow-500/80 fixed top-6 -left-32 p-1 -rotate-45 z-[9999] text-white text-xs uppercase w-80 text-center">
+            <div className="bg-yellow-500/80 fixed top-6 -left-32 p-1 -rotate-45 z-9999 text-white text-xs uppercase w-80 text-center">
               {process.env.NEXT_PUBLIC_BUILD_ENV === "preview"
                 ? "BETA"
                 : process.env.NEXT_PUBLIC_BUILD_ENV}

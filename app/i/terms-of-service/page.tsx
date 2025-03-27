@@ -2,6 +2,7 @@ import { FULL_HOSTNAME } from "@/common/constant";
 import Footer from "../../../components/Footer";
 import Header from "../../../components/Header";
 import PolicyPageHeader from "@/components/public/i/PolicyPageHeader";
+import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
 
 const title = "Terms of Service";
 const description =
@@ -22,16 +23,16 @@ export const metadata = {
 export default function TOS() {
   return (
     <div className="w-full">
+      <SmoothPageScroll />
       <Header />
       <PolicyPageHeader title={`Terms of\nService`} />
       <div className="max-w-4xl mx-auto py-10 text-justify p-4 font-medium text-lg">
         <div className="py-4">Last updated on December 3, 2024</div>
         <div>
-          These Terms of Use ("Terms") govern your access to and use
-          of the CipherWill platform and services ("Services"). By
-          accessing or using our Services, you agree to be bound by these Terms.
-          If you do not agree to these Terms, please refrain from using our
-          Services.
+          These Terms of Use ("Terms") govern your access to and use of the
+          CipherWill platform and services ("Services"). By accessing or using
+          our Services, you agree to be bound by these Terms. If you do not
+          agree to these Terms, please refrain from using our Services.
         </div>
 
         <h2 className="pt-12 pb-4 font-semibold">1. Eligibility</h2>
@@ -90,23 +91,29 @@ export default function TOS() {
           <br />
           <br />
           3.2 Prohibited Conduct: You agree not to engage in any of the
-          following prohibited activities:
-          br
-          <br />3.2.1{")"} Distributing, modifying, or using our open-source code
-          for commercial purposes is strictly prohibited. The code may only be
-          used for personal, non-commercial purposes, and may not be sold,
+          following prohibited activities: br
+          <br />
+          3.2.1{")"} Distributing, modifying, or using our open-source code for
+          commercial purposes is strictly prohibited. The code may only be used
+          for personal, non-commercial purposes, and may not be sold,
           redistributed, or altered for commercial gain.
-          <br />3.2.2{")"} Violating any applicable laws, regulations, or
-          third-party rights;
-          <br />3.2.3{")"} Using our Services for any unlawful, fraudulent, or
+          <br />
+          3.2.2{")"} Violating any applicable laws, regulations, or third-party
+          rights;
+          <br />
+          3.2.3{")"} Using our Services for any unlawful, fraudulent, or
           malicious purposes;
-          <br />3.2.4{")"} Interfering with or disrupting the integrity, security,
-          or performance of our Services;
-          <br />3.2.5{")"} Accessing or attempting to access the accounts, systems,
-          or networks of other users without authorization;
-          <br />3.2.6{")"} Uploading, transmitting, or distributing any viruses,
+          <br />
+          3.2.4{")"} Interfering with or disrupting the integrity, security, or
+          performance of our Services;
+          <br />
+          3.2.5{")"} Accessing or attempting to access the accounts, systems, or
+          networks of other users without authorization;
+          <br />
+          3.2.6{")"} Uploading, transmitting, or distributing any viruses,
           malware, or other harmful content;
-          <br />3.2.7{")"} Engaging in any activity that could damage our reputation
+          <br />
+          3.2.7{")"} Engaging in any activity that could damage our reputation
           or the reputation of our Services.
           <br />
           <br />
@@ -143,9 +150,9 @@ export default function TOS() {
           You agree to indemnify and hold CipherWill and its affiliates,
           directors, officers, employees, agents, and licensors harmless from
           any claims, losses, damages, liabilities, costs, and expenses,
-          including reasonable attorneys' fees, arising out of or in
-          connection with your use of our Services, your violation of these
-          Terms, or your violation of any rights.
+          including reasonable attorneys' fees, arising out of or in connection
+          with your use of our Services, your violation of these Terms, or your
+          violation of any rights.
         </div>
       </div>
       <Footer />

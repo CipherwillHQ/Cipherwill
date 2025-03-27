@@ -10,7 +10,7 @@ export default function BlogAd() {
         width={500}
         height={500}
         alt="Cipherwill Promo Image"
-        className="rounded"
+        className="rounded-sm"
       />
       <div className="text-lg font-bold w-full">
         Hey, we've written this blog post. <br />

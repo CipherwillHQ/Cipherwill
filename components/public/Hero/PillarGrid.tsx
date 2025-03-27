@@ -9,7 +9,7 @@ export default function PillarGrid() {
     "
     >
       <div className="flex flex-col w-full gap-2">
-        <div className="bg-gradient-to-bl from-red-900 to-red-950 p-2 rounded-lg">
+        <div className="bg-linear-to-bl from-red-900 to-red-950 p-2 rounded-lg">
           <div className="text-white/50">We use </div>
           <h2 className="font-bold text-xl pb-2">E2E Encryption</h2>
           <div className="text-white/50">
@@ -18,12 +18,12 @@ export default function PillarGrid() {
             leaves.
           </div>
         </div>
-        <div className="bg-gradient-to-bl from-orange-900 to-orange-950 p-2 rounded-lg">
+        <div className="bg-linear-to-bl from-orange-900 to-orange-950 p-2 rounded-lg">
           <div>We aim to protect</div>
           <div className="font-bold text-xl">Digital Legacies Globally</div>
         </div>
       </div>
-      <div className="w-full bg-gradient-to-b from-yellow-900 to-yellow-950 md:mt-24 p-2 rounded-lg">
+      <div className="w-full bg-linear-to-b from-yellow-900 to-yellow-950 md:mt-24 p-2 rounded-lg">
         <h2 className="font-bold text-3xl pb-2">
           $200B <span className="text-xl">in lost bitcoins</span>
         </h2>
@@ -53,7 +53,7 @@ export default function PillarGrid() {
           Get Started
         </SimpleButton>
       </div>
-      <div className="w-full bg-gradient-to-b from-indigo-600 to-indigo-700 md:mt-24 p-2 rounded-lg">
+      <div className="w-full bg-linear-to-b from-indigo-600 to-indigo-700 md:mt-24 p-2 rounded-lg">
         <div className="text-white/50">Average person have </div>
         <h2 className="font-bold text-3xl pb-2">
           168 <span className="text-xl">Passwords</span>
@@ -74,7 +74,7 @@ export default function PillarGrid() {
         </Link>
       </div>
       <div className="flex flex-col w-full gap-2">
-        <div className="bg-gradient-to-br from-green-900 to-green-950 p-2 rounded-lg">
+        <div className="bg-linear-to-br from-green-900 to-green-950 p-2 rounded-lg">
           <h2 className="font-bold text-xl pb-2">Carl said:</h2>
           <div className="text-white/50">
             I have peace of mind knowing my digital assets are safe and will
@@ -82,7 +82,7 @@ export default function PillarGrid() {
             made for my family's future.
           </div>
         </div>
-        <div className="bg-gradient-to-br from-green-900 to-green-950 p-2 rounded-lg">
+        <div className="bg-linear-to-br from-green-900 to-green-950 p-2 rounded-lg">
           <div>Cipherwill is popular for</div>
           <div className="font-bold text-xl">Security & User-Friendliness</div>
         </div>

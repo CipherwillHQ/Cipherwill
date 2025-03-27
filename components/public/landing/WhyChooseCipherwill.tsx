@@ -56,7 +56,7 @@ const reasons = [
 export default function WhyChooseCipherwill() {
   const scrollRef = useRef(null);
   return (
-    <ComeupTransition className="bg-gradient-to-b from-neutral-900 to-black text-white py-20">
+    <ComeupTransition className="bg-linear-to-b from-neutral-900 to-black text-white py-20">
       <div className="w-full max-w-7xl mx-auto p-4">
         <h2 className="text-4xl md:text-5xl font-semibold pb-8 text-center">
           We bring something{" "}
@@ -74,7 +74,7 @@ export default function WhyChooseCipherwill() {
           {reasons.map((reason, index) => (
             <div
               key={index}
-              className="flex flex-col gap-2 border border-neutral-600 bg-gradient-to-bl from-neutral-900 to-black p-4 rounded-xl min-w-80 max-w-80"
+              className="flex flex-col gap-2 border border-neutral-600 bg-linear-to-bl from-neutral-900 to-black p-4 rounded-xl min-w-80 max-w-80"
             >
               <div className="p-2 h-fit w-fit text-4xl">{reason.icon}</div>
               <div>
@@ -86,7 +86,7 @@ export default function WhyChooseCipherwill() {
         </div>
         <div className="flex items-center justify-center gap-4 mt-6">
           <button
-            className="border border-neutral-600 hover:bg-neutral-900 rounded-full h-12 w-12 flex items-center justify-center"
+            className="border border-neutral-600 hover:cursor-pointer hover:bg-neutral-900 rounded-full h-12 w-12 flex items-center justify-center"
             onClick={() => {
               scrollRef.current.scrollTo({
                 left: (scrollRef.current as Element).scrollLeft - 300,
@@ -97,7 +97,7 @@ export default function WhyChooseCipherwill() {
             <FiChevronLeft size={22} />
           </button>
           <button
-            className="border border-neutral-600 hover:bg-neutral-900 rounded-full h-12 w-12 flex items-center justify-center"
+            className="border border-neutral-600 hover:cursor-pointer hover:bg-neutral-900 rounded-full h-12 w-12 flex items-center justify-center"
             onClick={() => {
               // scroll 300 px to the right
               scrollRef.current.scrollTo({

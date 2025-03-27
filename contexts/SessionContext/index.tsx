@@ -100,7 +100,7 @@ export function SessionProvider({ children }) {
 
             <button
               data-cy="logout-btn"
-              className="text-red-700 hover:text-red-900 font-semibold rounded p-1 m-1 text-sm"
+              className="text-red-700 hover:text-red-900 font-semibold rounded-sm p-1 m-1 text-sm"
               onClick={() => {
                 logout();
               }}

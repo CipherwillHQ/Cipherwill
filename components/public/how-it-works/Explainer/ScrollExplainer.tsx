@@ -51,7 +51,7 @@ export default function ScrollExplainer() {
         </div>
       </div>
       <div className="relative max-lg:row-start-1 px-0 lg:px-10">
-        <div className="sticky inset-x-0 top-14 bg-gradient-to-b from-white from-30% to-transparent max-lg:hidden lg:h-[16vw]"></div>
+        <div className="sticky inset-x-0 top-14 bg-linear-to-b from-white from-30% to-transparent max-lg:hidden lg:h-[16vw]"></div>
         <ol className="flex flex-col max-lg:divide-y">
           {items.map((item, index) => (
             <li
@@ -67,7 +67,7 @@ export default function ScrollExplainer() {
             </li>
           ))}
         </ol>
-        <div className="sticky inset-x-0 bottom-0 bg-gradient-to-t from-white from-30% to-transparent max-lg:hidden lg:h-[17vw]"></div>
+        <div className="sticky inset-x-0 bottom-0 bg-linear-to-t from-white from-30% to-transparent max-lg:hidden lg:h-[17vw]"></div>
       </div>
     </section>
   );

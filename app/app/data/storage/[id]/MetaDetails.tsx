@@ -52,7 +52,7 @@ export default function MetaDetails({ id }) {
             id="file-title"
             contentEditable
             suppressContentEditableWarning
-            className="text-xl outline-none"
+            className="text-xl outline-hidden"
             onBlur={(e) => {
               const new_name = e.target.innerText;
               if (new_name.length === 0) {

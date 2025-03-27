@@ -14,7 +14,7 @@ export default function PriceTeaser() {
           <span className="text-lg">/Lifetime</span>
         </h2>
         <Link href={"/app/billing"}>
-          <button className="p-2 w-full border border-primary-100 hover:bg-primary-50 text-primary-950 rounded-md transition-colors duration-300 ease-in-out">
+          <button className="p-2 w-full border hover:cursor-pointer border-primary-100 hover:bg-primary-50 text-primary-950 rounded-md transition-colors duration-300 ease-in-out">
             Get Started
           </button>
         </Link>
@@ -50,7 +50,7 @@ export default function PriceTeaser() {
 
         {/* <div className="flex items-center gap-2 justify-center">
           <div className="line-through text-xl">$60.00</div>
-          <div className="bg-yellow-500 rounded p-1 text-xs font-semibold text-black">-33%</div>
+          <div className="bg-yellow-500 rounded-sm p-1 text-xs font-semibold text-black">-33%</div>
         </div> */}
         <h2 className="text-4xl font-extrabold text-center my-6">
           <span className="mr-2 line-through text-neutral-700">
@@ -60,7 +60,7 @@ export default function PriceTeaser() {
           <span className="text-lg">/Year</span>
         </h2>
         <Link href={"/app/billing"}>
-          <button className="p-2 w-full bg-primary hover:bg-primary-900 text-white rounded-md transition-colors duration-300 ease-in-out">
+          <button className="p-2 w-full bg-primary hover:cursor-pointer hover:bg-primary-900 text-white rounded-md transition-colors duration-300 ease-in-out">
             Get Started
           </button>
         </Link>

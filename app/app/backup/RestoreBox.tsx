@@ -48,7 +48,7 @@ export default function RestoreBox() {
       )}
       {status !== "Not started" && (
         <div
-          className="bg-slate-100 p-2 my-4 rounded text-center"
+          className="bg-slate-100 p-2 my-4 rounded-sm text-center"
           data-cy="restore-status"
         >
           Status: {status}

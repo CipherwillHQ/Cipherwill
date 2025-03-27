@@ -8,6 +8,7 @@ import OpenSourceSection from "./OpenSourceSection";
 import Lifecycle from "./Lifecycle";
 import Hero from "./Hero";
 import ImportantPoints from "./ImportantPoints";
+import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
 
 const title = "How it works";
 const description =
@@ -28,6 +29,7 @@ export const metadata = {
 export default function HowItWorks() {
   return (
     <div className="w-full flex flex-col ">
+      <SmoothPageScroll />
       <Header
         expandedClassOverride="bg-white"
         nonExpandedClassOverride="text-white"
@@ -37,7 +39,7 @@ export default function HowItWorks() {
       <Simple />
       <OpenSourceSection />
       <Lifecycle />
-      <ImportantPoints/>
+      <ImportantPoints />
       <FAQs />
       <CTA />
       <Footer />

@@ -2,6 +2,7 @@ import { FULL_HOSTNAME } from "@/common/constant";
 import Footer from "../../../components/Footer";
 import Header from "../../../components/Header";
 import PolicyPageHeader from "@/components/public/i/PolicyPageHeader";
+import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
 
 const title = "Refund Policy";
 const description =
@@ -22,6 +23,7 @@ export const metadata = {
 export default function RefundPolicy() {
   return (
     <div className="w-full">
+      <SmoothPageScroll />
       <Header />
       <PolicyPageHeader title={`Refund\nPolicy`} />
       <div className="max-w-4xl mx-auto py-10 text-justify p-4 font-medium text-lg">

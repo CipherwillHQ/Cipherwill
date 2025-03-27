@@ -36,7 +36,7 @@ export default function AddMasterPassword({ continuous }) {
       <input
         type="text"
         data-cy="meta-password-name-input"
-        className="border p-2 rounded bg-white dark:bg-neutral-800"
+        className="border p-2 rounded-sm bg-white dark:bg-neutral-800"
         placeholder="Enter a name for this factor"
         value={name}
         onChange={(e) => {
@@ -46,7 +46,7 @@ export default function AddMasterPassword({ continuous }) {
       <input
         type="password"
         data-cy="meta-password-input"
-        className="border p-2 rounded bg-white dark:bg-neutral-800"
+        className="border p-2 rounded-sm bg-white dark:bg-neutral-800"
         placeholder="Enter Master Password"
         value={password}
         onChange={(e) => {

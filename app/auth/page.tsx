@@ -26,7 +26,7 @@ export default function Login({ params }) {
   return (
     <div className="flex flex-col w-full items-center justify-between h-screen overflow-hidden">
       <div className="flex w-full h-full">
-        <div className="hidden md:flex flex-col justify-between flex-1 dark:bg-gradient-to-r from-[#0E0E0E] via-[#1A1A1A] to-[#0E0E0E] bg-slate-100">
+        <div className="hidden md:flex flex-col justify-between flex-1 dark:bg-linear-to-r from-[#0E0E0E] via-[#1A1A1A] to-[#0E0E0E] bg-slate-100">
           <LogoHeader />
           <div className="text-3xl font-bold pb-6 text-center">
             Your Digital Will

@@ -49,7 +49,7 @@ export default function AddPasskey({ continuous }) {
 
       <input
         type="text"
-        className="border p-2 rounded bg-white dark:bg-neutral-800"
+        className="border p-2 rounded-sm bg-white dark:bg-neutral-800"
         placeholder="Enter a name for this factor"
         value={name}
         onChange={(e) => {

@@ -19,7 +19,7 @@ export default function DeleteButton({ id }) {
   });
   return (
     <ConfirmationButton
-      className="text-red-500 hover:underline font-medium py-2 px-4 rounded w-full"
+      className="text-red-500 hover:underline font-medium py-2 px-4 rounded-sm w-full"
       onConfirm={async () => {
         await deletePassword({
           variables: {

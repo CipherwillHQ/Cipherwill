@@ -46,7 +46,7 @@ export default function KeyCount() {
   if (error) return <div>Error: {error.message}</div>;
 
   return (
-    <div className="border border-default p-2 my-2 rounded flex items-center justify-between bg-secondary">
+    <div className="border border-default p-2 my-2 rounded-sm flex items-center justify-between bg-secondary">
       <div className="flex items-center justify-between w-full">
         <div className="">
           Total data count (not encrypted)

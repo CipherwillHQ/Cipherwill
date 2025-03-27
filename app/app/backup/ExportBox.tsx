@@ -48,7 +48,7 @@ export default function ExportBox() {
         {/* @ts-ignore */}
         {(close) => {
           return (
-            <div className="bg-secondary text-black dark:text-white p-2 rounded w-screen max-w-sm">
+            <div className="bg-secondary text-black dark:text-white p-2 rounded-sm w-screen max-w-sm">
               <div className="flex items-center justify-between">
                 <h2>Progress</h2>
                 <button

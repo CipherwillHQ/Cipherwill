@@ -23,7 +23,7 @@ export default function ApplicationSettings() {
         </div>
         <button
           data-cy="reset-account-button"
-          className="bg-red-500 hover:bg-red-700 text-white px-2 rounded"
+          className="bg-red-500 hover:bg-red-700 text-white px-2 rounded-sm"
           onClick={async () => {
             const cnf = confirm("Are you sure you want to delete all data");
             if (cnf) {
@@ -47,7 +47,7 @@ export default function ApplicationSettings() {
         </div>
         <button
           data-cy="remove-account-button"
-          className="bg-red-500 hover:bg-red-700 text-white px-2 rounded"
+          className="bg-red-500 hover:bg-red-700 text-white px-2 rounded-sm"
           onClick={async () => {
             const cnf = confirm("Are you sure you want to delete your account");
             if (cnf) {
