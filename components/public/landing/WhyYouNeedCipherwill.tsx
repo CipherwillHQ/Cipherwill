@@ -2,8 +2,8 @@ import ComeupTransition from "@/components/animated/transitions/ComeUp";
 
 export default function WhyYouNeedCipherwill() {
   return (
-    <ComeupTransition>
-      <div className="bg-neutral-50 py-32">
+    <section>
+      <div className="bg-[#F9F9F9] py-32">
         <div className="w-full max-w-7xl mx-auto p-4">
           <h3 className="text-lg font-semibold pb-8">
             Have you ever wondered!
@@ -76,6 +76,6 @@ export default function WhyYouNeedCipherwill() {
           </div>
         </div>
       </div>
-    </ComeupTransition>
+    </section>
   );
 }

@@ -15,6 +15,8 @@ import RatingsAndUsers from "@/components/landing/RatingsAndUsers";
 import ScreenshotDemo from "@/components/public/landing/ScreenshotDemo";
 import FactorsListView from "@/components/landing/FactorsListView";
 import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
+import CipherwillIntroScroller from "@/components/public/landing/CipherwillIntroScroller";
+import CipherwillIntroBox from "@/components/public/landing/CipherwillIntroBox";
 
 export async function generateMetadata({
   params,
@@ -46,7 +48,9 @@ export default function Home() {
       {/* <DeadManSwitchExplainer /> */}
       {/* <StatsOfBenefit/> */}
       <WhyYouNeedCipherwill />
-      <WhatIsCipherwill />
+      {/* <WhatIsCipherwill /> */}
+      <CipherwillIntroBox/>
+      <CipherwillIntroScroller/>
       <WhyChooseCipherwill />
       <FAQs />
       <CTA />

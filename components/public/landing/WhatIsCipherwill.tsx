@@ -9,7 +9,7 @@ import { GrDeliver, GrSecure, GrWorkshop } from "react-icons/gr";
 
 export default function WhatIsCipherwill() {
   return (
-    <ComeupTransition>
+    <section>
       <div className="w-full max-w-7xl mx-auto text-center p-4 my-20">
         <div className="flex flex-col sm:flex-row items-start md:items-end">
           {/* <Lottie
@@ -73,6 +73,6 @@ export default function WhatIsCipherwill() {
           </div>
         </div>
       </div>
-    </ComeupTransition>
+    </section>
   );
 }
