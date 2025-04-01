@@ -56,7 +56,7 @@ const reasons = [
 export default function WhyChooseCipherwill() {
   const scrollRef = useRef(null);
   return (
-    <ComeupTransition className="bg-linear-to-b from-neutral-900 to-black text-white py-20">
+    <section className="bg-linear-to-b from-neutral-900 to-black text-white py-20">
       <div className="w-full max-w-7xl mx-auto p-4">
         <h2 className="text-4xl md:text-5xl font-semibold pb-8 text-center">
           We bring something{" "}
@@ -110,6 +110,6 @@ export default function WhyChooseCipherwill() {
           </button>
         </div>
       </div>
-    </ComeupTransition>
+    </section>
   );
 }
