@@ -78,7 +78,7 @@ export default function StickyImageScroll() {
             <div className="p-2 rounded-full w-fit mt-8 uppercase text-black/50 font-bold mx-4">
               {section.capsule}
             </div>
-            <h2 className="text-4xl md:text-7xl font-bold py-4 sm:py-6 px-4">
+            <h2 className="text-4xl md:text-5xl xl:text-7xl font-bold py-4 sm:py-6 px-4">
               {section.heading}
             </h2>
             <ul className="text-lg md:text-xl px-4 font-medium text-black/75">
