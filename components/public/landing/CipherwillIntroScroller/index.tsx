@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import delivery_img from "./delivery.png";
+import e2e_img from "./e2e.png";
+import beyond from "./beyond.png";
 
 const sections = [
   {
@@ -22,8 +24,7 @@ const sections = [
       "Only you - and the people you choose - can access your information.",
       "Your privacy is 100% in your control, ensuring complete security and peace of mind.",
     ],
-    image:
-      "https://images.pexels.com/photos/18715887/pexels-photo-18715887/free-photo-of-close-up-of-pouring-coffee-to-cup.jpeg",
+    image: e2e_img.src,
   },
   {
     heading: "Beyond just a software",
@@ -33,8 +34,7 @@ const sections = [
       "If needed, we manually step in to inform your beneficiaries and guide them on accessing your information.",
       "Your peace of mind is our top priority.",
     ],
-    image:
-      "https://images.pexels.com/photos/30170452/pexels-photo-30170452/free-photo-of-colorful-houses-and-boats-at-nyhavn-copenhagen.jpeg",
+    image: beyond.src,
   },
 ];
 
@@ -73,7 +73,7 @@ export default function StickyImageScroll() {
             <img
               src={section.image}
               alt={`Image ${index + 1}`}
-              className="md:hidden max-h-[400px] object-cover p-4"
+              className="md:hidden object-cover p-4"
             />
             <div className="p-2 rounded-full w-fit mt-8 uppercase text-black/50 font-bold mx-4">
               {section.capsule}
@@ -83,7 +83,7 @@ export default function StickyImageScroll() {
             </h2>
             <ul className="text-lg md:text-xl px-4 font-medium text-black/75">
               {section.points.map((point, pointIndex) => (
-                <li key={pointIndex} className="list-disc list-inside py-2">
+                <li key={pointIndex} className="list-disc list-inside py-1">
                   {point}
                 </li>
               ))}
@@ -98,7 +98,7 @@ export default function StickyImageScroll() {
               key={sections[activeIndex].image}
               src={sections[activeIndex].image}
               alt={`Image ${activeIndex + 1}`}
-              className="absolute w-full h-full object-cover"
+              className="absolute w-full"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
