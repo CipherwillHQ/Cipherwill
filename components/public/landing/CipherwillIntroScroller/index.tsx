@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import delivery_img from "./delivery.png";
-import e2e_img from "./e2e.png";
-import beyond from "./beyond.png";
+import delivery_img from "./delivery.webp";
+import e2e_img from "./e2e.webp";
+import beyond from "./beyond.webp";
 
 const sections = [
   {

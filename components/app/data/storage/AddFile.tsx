@@ -43,7 +43,10 @@ export default function AddFile({ folder_id }: { folder_id?: string }) {
         return (
           <div className="flex flex-col gap-2 bg-white dark:bg-neutral-800 text-black dark:text-white p-4">
             Upload file
-            <input type="file" id="file-upload" />
+            <input type="file"
+            placeholder="Choose file"
+            accept="*"
+            id="file-upload" className="border p-2 my-4 hover:cursor-pointer"/>
             <SimpleButton
               onClick={async () => {
                 if (isUploading) {
