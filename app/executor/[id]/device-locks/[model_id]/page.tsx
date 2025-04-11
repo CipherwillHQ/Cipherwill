@@ -6,7 +6,7 @@ import { useState } from "react";
 import GET_GRANTED_METAMODEL from "../../../../../graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODEL";
 import { useParams } from "next/navigation";
 import useDecryptedPod from "@/common/executor/hooks/useDecryptedPod";
-import { DEVICE_LOCK_TYPE } from "@/types/pods/DEVICE_LOCK_TYPE";
+import { DEVICE_LOCK } from "@/types/pods/DEVICE_LOCK";
 
 export default function DonorNoteView() {
   const params = useParams();
@@ -14,7 +14,7 @@ export default function DonorNoteView() {
   const device_lock_id: string = params.model_id as string;
 
   const [decryptedValue, setDecryptedValue] =
-    useState<DEVICE_LOCK_TYPE | null>(null);
+    useState<DEVICE_LOCK | null>(null);
 
   const [keyMetadata, setKeyMetadata] = useState(null);
   useDecryptedPod({

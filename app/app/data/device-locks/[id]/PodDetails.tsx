@@ -3,17 +3,17 @@ import { useState } from "react";
 import { usePod } from "@/contexts/PodHelper";
 import DeleteButton from "./DeleteButton";
 import LoadingIndicator from "@/components/common/LoadingIndicator";
-import { DEVICE_LOCK_TYPE } from "@/types/pods/DEVICE_LOCK_TYPE";
+import { DEVICE_LOCK } from "@/types/pods/DEVICE_LOCK";
 
-const DEVICE_LOCK_SAMPLE: DEVICE_LOCK_TYPE = {
+const DEVICE_LOCK_SAMPLE: DEVICE_LOCK = {
   password: "123456",
   pin: "123456",
   note: "Sample Note",
 };
 
 export default function PodDetails({ id }) {
-  const [data, setData] = useState<DEVICE_LOCK_TYPE>({});
-  const { loading, error, updatePod, is_updating } = usePod<DEVICE_LOCK_TYPE>(
+  const [data, setData] = useState<DEVICE_LOCK>({});
+  const { loading, error, updatePod, is_updating } = usePod<DEVICE_LOCK>(
     {
       TYPE: "device_lock",
       VERSION: "0.0.1",
@@ -21,7 +21,7 @@ export default function PodDetails({ id }) {
       DATA_SAMPLE: DEVICE_LOCK_SAMPLE,
     },
     {
-      onComplete: (data: null | DEVICE_LOCK_TYPE) => {
+      onComplete: (data: null | DEVICE_LOCK) => {
         if (data) setData(data);
       },
     }

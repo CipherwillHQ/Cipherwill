@@ -6,7 +6,7 @@ import { useState } from "react";
 import GET_GRANTED_METAMODEL from "../../../../../graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODEL";
 import { useParams } from "next/navigation";
 import useDecryptedPod from "@/common/executor/hooks/useDecryptedPod";
-import { DEFI_STACKING_TYPE } from "@/types/pods/DEFI_STACKING";
+import { DEFI_STACKING } from "@/types/pods/DEFI_STAKING";
 
 export default function DonorNoteView() {
   const params = useParams();
@@ -14,7 +14,7 @@ export default function DonorNoteView() {
   const defi_stacking_id: string = params.model_id as string;
 
   const [decryptedValue, setDecryptedValue] =
-    useState<DEFI_STACKING_TYPE | null>(null);
+    useState<DEFI_STACKING | null>(null);
 
   const [keyMetadata, setKeyMetadata] = useState(null);
   useDecryptedPod({
