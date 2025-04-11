@@ -1,12 +1,13 @@
 "use client";
 import { useQuery } from "@apollo/client";
 import Link from "next/link";
-import GET_GRANTED_METAMODELS from "../../../../graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODELS";
 import { useParams } from "next/navigation";
+import GrantedFolderList from "./GrantedFolderList";
+import GET_GRANTED_METAMODELS from "@/graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODELS";
 
 export default function DataPodView() {
   const params = useParams();
-  const id = params.id;
+  const id:string = params.id as string;
 
   const { loading, error, data, fetchMore } = useQuery(GET_GRANTED_METAMODELS, {
     variables: {
@@ -19,7 +20,9 @@ export default function DataPodView() {
   if (error) return <div>Error : {JSON.stringify(error)}</div>;
   return (
     <div className="w-full">
-      <h1 className="text-xl font-semibold">Files</h1>
+      <h2 className="text-xl font-semibold">Folders</h2>
+      <GrantedFolderList access_id={id}/>
+      <h2 className="text-xl font-semibold">Files</h2>
       <div className="flex flex-col gap-2" data-cy="donor-models">
         {data.getGrantedMetamodels.models.length === 0 && (
           <div className="py-2 opacity-50">No Files Found</div>
