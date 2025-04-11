@@ -11,7 +11,7 @@ export default function DataPodView() {
   const { loading, error, data, fetchMore } = useQuery(GET_GRANTED_METAMODELS, {
     variables: {
       access_id: id,
-      type: "EMAIL_ACCOUNT",
+      type: "SEED_PHRASE",
     },
   });
 
@@ -19,17 +19,17 @@ export default function DataPodView() {
   if (error) return <div>Error : {JSON.stringify(error)}</div>;
   return (
     <div className="w-full">
-      <h1 className="text-xl font-semibold">Email Accounts</h1>
+      <h1 className="text-xl font-semibold">Seed Phrases</h1>
       <div className="flex flex-col gap-2" data-cy="donor-models">
         {data.getGrantedMetamodels.models.length === 0 && (
-          <div className="py-2 opacity-50">No Email Accounts Found</div>
+          <div className="py-2 opacity-50">No Seed Phrases Found</div>
         )}
         {data.getGrantedMetamodels.models.map((model: any) => {
           const parsed_data = JSON.parse(model.metadata);
           return (
             <Link
               key={model.id}
-              href={`/executor/${id}/email-accounts/${model.id}`}
+              href={`/executor/${id}/seed-phrases/${model.id}`}
               className="bg-secondary p-2 border border-default rounded-md hover:underline"
             >
               {parsed_data.name || "Untitled"}
