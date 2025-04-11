@@ -19,8 +19,7 @@ export default function GrantedNotes() {
   if (error) return <div>Error : {JSON.stringify(error)}</div>;
   return (
     <div className="w-full">
-      <div className="p-2">
-        <h1 className="text-xl font-semibold">Notes</h1>
+       <h1 className="text-xl font-semibold">Notes</h1>
         <div className="flex flex-col gap-2" data-cy="donor-models">
           {data.getGrantedMetamodels.models.map((model: any) => {
             const parsed_data = JSON.parse(model.metadata);
@@ -64,6 +63,5 @@ export default function GrantedNotes() {
           </button>
         )}
       </div>
-    </div>
   );
 }

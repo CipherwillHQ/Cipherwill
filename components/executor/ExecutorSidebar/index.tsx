@@ -11,7 +11,7 @@ export default function ExecutorSidebar() {
   const exeutorId = pathname.split("/")[2];
 
   return (
-    <div className="flex flex-col h-full w-min sm:w-60 justify-between bg-primary-action/10 p-1 sm:p-2 border-r border-default">
+    <div className="flex flex-col h-full w-min sm:w-60 justify-between bg-white dark:bg-dark p-1 sm:p-2 border-r border-default">
       <div>
         <SidebarLogo />
 

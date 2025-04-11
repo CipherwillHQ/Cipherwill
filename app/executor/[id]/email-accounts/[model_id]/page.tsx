@@ -14,6 +14,7 @@ import GET_POD from "../../../../../graphql/ops/app/pod/queries/GET_POD";
 import GET_GRANTED_METAMODEL from "../../../../../graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODEL";
 import { BANK_ACCOUNT_TYPE } from "../../../../../types/pods/BANK_ACCOUNT";
 import { useParams } from "next/navigation";
+import { EMAIL_ACCOUNT_TYPE } from "@/types/pods/EMAIL_ACCOUNT";
 
 export default function DonorNoteView() {
   const params = useParams();
@@ -23,7 +24,7 @@ export default function DonorNoteView() {
   const { session } = useSession();
   const client = useApolloClient();
   const [decryptedValue, setDecryptedValue] =
-    useState<BANK_ACCOUNT_TYPE | null>(null);
+    useState<EMAIL_ACCOUNT_TYPE | null>(null);
 
   const { loading, error, data } = useQuery(GET_GRANTED_METAMODEL, {
     variables: {
@@ -42,8 +43,6 @@ export default function DonorNoteView() {
       publicKey: session ? session.publicKey : null,
     },
     onCompleted: async (data) => {
-      console.log("data", data);
-      
       if (data && data.getKeyByRefId) {
         // get private key to decrypt data
         const { data: beneficairy_encryption_key } = await client.query({
@@ -84,7 +83,7 @@ export default function DonorNoteView() {
             CryptoJS.enc.Utf8
           )
         );
-        if (final_content.type === "bank_account") {
+        if (final_content.type === "email_account") {
           setDecryptedValue(final_content.data);
         }
       } else {
@@ -183,9 +182,7 @@ export default function DonorNoteView() {
             className="whitespace-pre-line bg-secondary p-2"
             data-cy="donor-note-content"
           >
-            Account Number : {decryptedValue.account_number}
-            <br />
-            Bank Name : {decryptedValue.bank_name}
+            {JSON.stringify(decryptedValue, null, 2)}
           </div>
         )}
       </div>
