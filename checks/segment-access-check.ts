@@ -1,6 +1,7 @@
 import segments_list from "@/app/app/segments/raw_segments_list";
 import { Raw_Segment } from "@/types/Segments";
 
+
 // check-folders.js
 const fs = require("fs");
 const path = require("path");
