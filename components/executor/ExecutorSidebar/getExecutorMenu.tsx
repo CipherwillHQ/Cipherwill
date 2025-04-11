@@ -1,3 +1,5 @@
+import segments from "@/app/app/segments/segments";
+import { Segment } from "@/types/Segments";
 import { AiOutlineHome } from "react-icons/ai";
 import { TbApiApp, TbHomeShield, TbNotes, TbSignLeft } from "react-icons/tb";
 
@@ -15,16 +17,19 @@ function getExecutorMenu(pathname: string) {
     menu.push({
       donor: true,
     });
-    
-    menu.push({
-      icon: <TbNotes />,
-      title: "Bank Accounts",
-      path: `/executor/${exeutorId}/bank-accounts`,
-    });
-    menu.push({
-      icon: <TbNotes />,
-      title: "Notes",
-      path: `/executor/${exeutorId}/notes`,
+  
+    segments.forEach((segment) => {
+      if ('divider' in segment && segment.divider) {
+        menu.push({
+          divider: true,
+        });
+        return;
+      }
+      menu.push({
+        icon: (segment as Segment).icon,
+        title: (segment as Segment).title,
+        path: `/executor/${exeutorId}/${(segment as Segment).slug}`,
+      });
     });
   }
   menu.push({
