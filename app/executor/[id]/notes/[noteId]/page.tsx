@@ -4,16 +4,15 @@ import { useApolloClient, useQuery } from "@apollo/client";
 import getTimeAgo from "../../../../../common/time/getTimeAgo";
 import { useSession } from "../../../../../contexts/SessionContext";
 import { useState } from "react";
-import decrypt from "../../../../../crypto/e0/decrypt";
 import toast from "react-hot-toast";
 import GET_BENEFICIARY_ENCRYPTION_KEY from "../../../../../graphql/ops/app/executor/access/queries/GET_BENEFICIARY_ENCRYPTION_KEY";
-import logger from "../../../../../common/debug/logger";
 import GET_KEY_BY_REF_ID from "../../../../../graphql/ops/app/key/Queries/GET_KEY_BY_REF_ID";
 import CryptoJS from "crypto-js";
 import GET_POD from "../../../../../graphql/ops/app/pod/queries/GET_POD";
 import GET_GRANTED_METAMODEL from "../../../../../graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODEL";
 import { NOTE_TYPE } from "../../../../../types/pods/NOTE";
 import { useParams } from "next/navigation";
+import get_pod_decryption_key from "@/common/executor/data/get_pod_decryption_key";
 
 export default function DonorNoteView() {
   const params = useParams();
@@ -44,7 +43,7 @@ export default function DonorNoteView() {
     },
     onCompleted: async (data) => {
       if (data && data.getKeyByRefId) {
-        // get private key to decrypt data
+        // get time capsule private key to decrypt data
         const { data: beneficairy_encryption_key } = await client.query({
           query: GET_BENEFICIARY_ENCRYPTION_KEY,
           variables: {
@@ -55,11 +54,13 @@ export default function DonorNoteView() {
           toast.error("You do not have access key to decrypt this data");
           return;
         }
-        const encrypted_key = data.getKeyByRefId.key;
-        const decrypted_key = await decrypt_value(
-          encrypted_key,
-          beneficairy_encryption_key.getBeneficiaryEncryptionKey
-        );
+        const encrypted_nonce_key = data.getKeyByRefId.key;
+        const pod_decryption_key = await get_pod_decryption_key({
+          encrypted_key: encrypted_nonce_key,
+          time_capsule_private_key:
+            beneficairy_encryption_key.getBeneficiaryEncryptionKey,
+          current_session_private_key: session.privateKey,
+        });
         let pod;
         try {
           pod = await client.query({
@@ -79,7 +80,7 @@ export default function DonorNoteView() {
         if (!pod) return;
         const content = pod.data.getPod.content;
         const final_content = JSON.parse(
-          CryptoJS.AES.decrypt(content, decrypted_key).toString(
+          CryptoJS.AES.decrypt(content, pod_decryption_key).toString(
             CryptoJS.enc.Utf8
           )
         );
@@ -94,59 +95,6 @@ export default function DonorNoteView() {
       }
     },
   });
-
-  async function decrypt_value(data: string, accessPrivateKey: string) {
-    const initial_parsed = JSON.parse(data);
-
-    switch (initial_parsed.type) {
-      case "E0":
-        const e0_value = JSON.parse(
-          await decrypt(
-            session.privateKey,
-            Buffer.from(initial_parsed.ciphertext, "base64"),
-            Buffer.from(initial_parsed.ephemPublicKey, "base64"),
-            Buffer.from(initial_parsed.iv, "base64"),
-            Buffer.from(initial_parsed.mac, "base64")
-          )
-        );
-        if (!e0_value) {
-          toast.error("Decryption failed by session key");
-        }
-
-        if (e0_value.type === "E1") {
-          const e1_value = await decrypt(
-            accessPrivateKey,
-            Buffer.from(e0_value.ciphertext, "base64"),
-            Buffer.from(e0_value.ephemPublicKey, "base64"),
-            Buffer.from(e0_value.iv, "base64"),
-            Buffer.from(e0_value.mac, "base64")
-          );
-          if (!e1_value) {
-            toast.error("Decryption failed by session key");
-            throw new Error("Decryption failed by session key");
-          }
-          return e1_value;
-        }
-        break;
-      case "E1":
-        const e1_value = await decrypt(
-          accessPrivateKey,
-          Buffer.from(initial_parsed.ciphertext, "base64"),
-          Buffer.from(initial_parsed.ephemPublicKey, "base64"),
-          Buffer.from(initial_parsed.iv, "base64"),
-          Buffer.from(initial_parsed.mac, "base64")
-        );
-        if (!e1_value) {
-          toast.error("Decryption failed by session key");
-          throw new Error("Decryption failed by session key");
-        }
-        return e1_value;
-        break;
-      default:
-        logger.error("decryption failed", initial_parsed);
-        return "xxx-xxx";
-    }
-  }
 
   if (loading || data_loading) return <p>Loading...</p>;
   if (error || data_error)

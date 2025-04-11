@@ -35,7 +35,9 @@ export default function ExecutorPanel() {
           {segments.map((segment: Segment) => {
             if ("divider" in segment && segment.divider)
               return (
-                <div className="w-full">{(segment as Divider).divider}</div>
+                <div key={(segment as Divider).divider} className="w-full">
+                  {(segment as Divider).divider}
+                </div>
               );
 
             return (
