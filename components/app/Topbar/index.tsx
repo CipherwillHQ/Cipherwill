@@ -23,7 +23,7 @@ function ProfilePopup() {
   return (
     <Popup
       trigger={
-        <button className="flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-md hover:bg-gray-100">
+        <button className="flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-md hover:bg-gray-100 hover:cursor-pointer">
           <AiOutlineUser size={24} />
         </button>
       }

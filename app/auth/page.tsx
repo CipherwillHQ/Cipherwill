@@ -1,10 +1,11 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import logoBlack from "../../assets/name-black.png";
-import logoWhite from "../../assets/name-white.png";
+import logoBlack from "../../assets/logo-black.png";
 import LoginSection from "./LoginSection";
 import { FULL_HOSTNAME } from "@/common/constant";
+import { BiCheckCircle } from "react-icons/bi";
+import bg from "./bg.webp";
 
 const title = "Log in • Cipherwill";
 const description =
@@ -24,40 +25,57 @@ export const metadata = {
 
 export default function Login({ params }) {
   return (
-    <div className="flex flex-col w-full items-center justify-between h-screen overflow-hidden">
-      <div className="flex w-full h-full">
-        <div className="hidden md:flex flex-col justify-between flex-1 dark:bg-linear-to-r from-[#0E0E0E] via-[#1A1A1A] to-[#0E0E0E] bg-slate-100">
+    <div
+      className="flex items-start w-full h-screen p-8 gap-8 overflow-hidden"
+      style={{
+        backgroundImage: `url(${bg.src})`,
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "bottom",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      <div className="flex flex-col justify-evenly flex-1 gap-8 w-full h-full overflow-auto">
+        <div className="py-8 bg-white w-full max-w-lg mx-auto p-8 rounded-3xl">
           <LogoHeader />
-          <div className="text-3xl font-bold pb-6 text-center">
-            Your Digital Will
-          </div>
-          <div />
+          <h1 className="hidden text-xl font-bold pb-6">
+            Log in to your Cipherwill account or create a new one
+          </h1>
+          <Suspense
+            fallback={
+              <div className="py-6 max-w-md w-full mx-auto animate-pulse">
+                Loading Authentication...
+              </div>
+            }
+          >
+            <LoginSection />
+          </Suspense>
         </div>
-
-        <div className="flex flex-col flex-1 justify-between">
-          <div className="flex w-full justify-between md:justify-end">
-            <div className="md:hidden">
-              <LogoHeader />
+      </div>
+      <div className="hidden md:flex flex-col justify-center items-center flex-1 h-full">
+        <div className="flex flex-col justify-center w-full h-full rounded-xl p-8">
+          <div className="flex flex-col gap-8 text-white">
+            <h2 className="text-4xl font-semibold">
+              Built on Trust. Backed by Thousands. <br />
+              Designed with Security in Mind.
+            </h2>
+            <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 font-semibold">
+              <div className="flex items-center gap-1 whitespace-nowrap">
+                <BiCheckCircle className="text-xl" />
+                End-to-End Encrypted
+              </div>
+              <div className="flex items-center gap-1 whitespace-nowrap">
+                <BiCheckCircle className="text-xl" />
+                Peace of Mind
+              </div>
+              <div className="flex items-center gap-1 whitespace-nowrap">
+                <BiCheckCircle className="text-xl" />
+                Start with $0
+              </div>
             </div>
-            <div className="pt-4 pr-2">{/* <SwitchThemeIcon /> */}</div>
           </div>
-          <div>
-            {/* h1 for seo */}
-            <h1 className="hidden text-xl font-bold pb-6 text-center">
-              Log in to your Cipherwill account or create a new one
-            </h1>
-            <Suspense
-              fallback={
-                <div className="text-center p-2">Authentication Loading...</div>
-              }
-            >
-              <LoginSection />
-            </Suspense>
-          </div>
-          {/* <Footer /> */}
-          {/* empty div to make flex works */}
-          <div></div>
         </div>
+        <div />
       </div>
     </div>
   );
@@ -65,25 +83,10 @@ export default function Login({ params }) {
 
 function LogoHeader() {
   return (
-    <div className="flex items-center justify-between w-full px-3 py-4">
-      <div>
-        <Link href="/">
-          <Image
-            alt="cipherwill logo"
-            src={logoBlack}
-            width={150}
-            height={150}
-            className="block dark:hidden"
-          />
-          <Image
-            alt="cipherwill logo"
-            src={logoWhite}
-            width={150}
-            height={150}
-            className="hidden dark:block"
-          />
-        </Link>
-      </div>
+    <div className="flex items-center w-full max-w-md mx-auto">
+      <Link href="/">
+        <Image alt="cipherwill logo" src={logoBlack} width={35} height={35} />
+      </Link>
     </div>
   );
 }

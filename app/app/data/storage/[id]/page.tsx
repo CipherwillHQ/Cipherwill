@@ -1,13 +1,13 @@
 import MetaDetails from "./MetaDetails";
-import DeleteButton from "./DeleteButton";
 import PodDetails from "./PodDetails";
 
-export default function FileViewer({ params }) {
+export default async function FileViewer({ params }) {
+  const { id } = await params;
   return (
     <div className="w-full">
-      <MetaDetails id={params.id} />
+      <MetaDetails id={id} />
       <div className="px-4">
-        <PodDetails id={params.id} />
+        <PodDetails id={id} />
       </div>
     </div>
   );

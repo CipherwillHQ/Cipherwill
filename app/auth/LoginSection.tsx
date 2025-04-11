@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 export default function LoginSection() {
   const searchParams = useSearchParams();
   const { user, googleLogin, isGoogleLoading } = useAuth();
-  const [method, setMethod] = useState<null | "email" | "google">(null);
 
   useEffect(() => {
     if (user && user.uid) {
@@ -17,13 +16,18 @@ export default function LoginSection() {
     }
   }, [user, searchParams]);
   return (
-    <div className="p-4 max-w-xl w-full mx-auto">
-      <EmailLogin method={method} setMethod={setMethod} />
-      {/* <hr className="my-4" /> */}
-      {method === null && (
-        <button
+    <div className="max-w-md w-full mx-auto">
+      <EmailLogin />
+
+      <div className="flex items-center justify-between w-full my-6">
+        <div className="h-[1px] bg-gray-300 w-full" />
+        <div className="text-gray-400 px-4 whitespace-nowrap">or continue with</div>
+        <div className="h-[1px] bg-gray-300 w-full" />
+      </div>
+      
+      <button
           className="flex items-center bg-white border p-2 rounded-full
-       min-w-[150px] w-full justify-center hover:border-gray-400 transition-all duration-300 ease-in-out"
+       min-w-[150px] w-full justify-center hover:border-gray-400 transition-all duration-300 ease-in-out hover:cursor-pointer"
           onClick={() => {
             googleLogin();
           }}
@@ -63,7 +67,6 @@ export default function LoginSection() {
             <div className="font-semibold text-black">Continue with Google</div>
           )}
         </button>
-      )}
     </div>
   );
 }
