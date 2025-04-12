@@ -1,12 +1,12 @@
 "use client";
 
 import { useQuery } from "@apollo/client";
-import getTimeAgo from "../../../../../common/time/getTimeAgo";
 import { useState } from "react";
-import GET_GRANTED_METAMODEL from "../../../../../graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODEL";
 import { useParams } from "next/navigation";
 import useDecryptedPod from "@/common/executor/hooks/useDecryptedPod";
 import { PASSWORD } from "@/types/pods/PASSWORD";
+import GET_GRANTED_METAMODEL from "@/graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODEL";
+import getTimeAgo from "@/common/time/getTimeAgo";
 
 export default function DonorNoteView() {
   const params = useParams();
