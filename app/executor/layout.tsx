@@ -14,7 +14,7 @@ export default function ExecutorLayout({ children }) {
                 <div className="flex h-full bg-secondary">
                   <ExecutorSidebar />
                 </div>
-                <div className="flex flex-1 h-full overflow-y-auto bg-primary">
+                <div className="flex flex-1 h-full overflow-y-auto dark:bg-black/95 bg-dark-50 p-4">
                   {children}
                 </div>
               </div>

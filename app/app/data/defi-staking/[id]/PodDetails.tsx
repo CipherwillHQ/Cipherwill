@@ -3,10 +3,10 @@ import { useState } from "react";
 import { usePod } from "@/contexts/PodHelper";
 import DeleteButton from "./DeleteButton";
 import LoadingIndicator from "@/components/common/LoadingIndicator";
-import { DEFI_STACKING_TYPE } from "@/types/pods/DEFI_STACKING";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
+import { DEFI_STACKING } from "@/types/pods/DEFI_STAKING";
 
-const DEFI_STACKING_SAMPLE: DEFI_STACKING_TYPE = {
+const DEFI_STACKING_SAMPLE: DEFI_STACKING = {
   platform: "AAVE",
   asset_amount: "100",
   asset_name: "USDC",
@@ -18,10 +18,10 @@ const DEFI_STACKING_SAMPLE: DEFI_STACKING_TYPE = {
 };
 
 export default function PodDetails({ id }) {
-  const [data, setData] = useState<DEFI_STACKING_TYPE>({});
+  const [data, setData] = useState<DEFI_STACKING>({});
   const [showPassword, setShowPassword] = useState(false);
 
-  const { loading, error, updatePod, is_updating } = usePod<DEFI_STACKING_TYPE>(
+  const { loading, error, updatePod, is_updating } = usePod<DEFI_STACKING>(
     {
       TYPE: "defi_staking",
       VERSION: "0.0.1",
@@ -29,7 +29,7 @@ export default function PodDetails({ id }) {
       DATA_SAMPLE: DEFI_STACKING_SAMPLE,
     },
     {
-      onComplete: (data: null | DEFI_STACKING_TYPE) => {
+      onComplete: (data: null | DEFI_STACKING) => {
         if (data) setData(data);
       },
     }

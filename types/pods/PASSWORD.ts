@@ -1,5 +1,5 @@
 // 0.0.1
-export type PASSWORD_TYPE = {
+export type PASSWORD = {
   username?: string;
   password?: string;
   totp_secret?: string;

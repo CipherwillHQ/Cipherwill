@@ -5,17 +5,8 @@ import GET_ACCESS_DETAILS from "../../../graphql/ops/app/executor/access/queries
 import getTimeRemaining from "../../../common/time/getTimeRemaining";
 import DonorDetails from "./DonorDetails";
 import { useParams } from "next/navigation";
-
-const metamodels = [
-  {
-    title: "Bank Accounts",
-    path: "/bank-accounts",
-  },
-  {
-    title: "Notes",
-    path: "/notes",
-  },
-];
+import segments from "@/app/app/segments/segments";
+import { Divider, Segment } from "@/types/Segments";
 
 export default function ExecutorPanel() {
   const params = useParams();
@@ -33,7 +24,7 @@ export default function ExecutorPanel() {
 
   return (
     <div className="w-full">
-      <div className="flex flex-col gap-2 p-2">
+      <div className="flex flex-col gap-2">
         <h2>Execution Panel for</h2>
         {data && data.getAccessDetails && (
           <DonorDetails id={data.getAccessDetails.user} />
@@ -41,14 +32,18 @@ export default function ExecutorPanel() {
         Valid Until:{" "}
         {getTimeRemaining(parseInt(data.getAccessDetails.expire_at))}
         <div className="flex flex-wrap gap-2">
-          {metamodels.map((metamodel) => {
+          {segments.map((segment: Segment) => {
+            if ("divider" in segment && segment.divider)
+              return (
+                <div key={(segment as Divider).divider} className="w-full">
+                  {(segment as Divider).divider}
+                </div>
+              );
+
             return (
-              <Link
-                href={`/executor/${id}${metamodel.path}`}
-                key={metamodel.path}
-              >
-                <button className="border border-default w-60 bg-secondary p-2 rounded-md hover:underline">
-                  {metamodel.title}
+              <Link href={`/executor/${id}/${segment.slug}`} key={segment.slug}>
+                <button className="border border-default w-60 bg-white hover:bg-primary-50 dark:bg-dark dark:hover:bg-dark-900 transition-colors duration-300 p-2 rounded-md hover:cursor-pointer">
+                  {segment.title}
                 </button>
               </Link>
             );

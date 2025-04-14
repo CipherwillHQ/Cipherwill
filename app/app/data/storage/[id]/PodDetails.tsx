@@ -33,7 +33,7 @@ export default function PodDetails({ id }) {
                 },
           });
           let random_key = "";
-          
+
           if (
             encryption_key.data &&
             encryption_key.data.getKeyByRefId &&
@@ -70,7 +70,7 @@ export default function PodDetails({ id }) {
             toast.error("No key found");
             return;
           }
-          if(random_key.length < 16) {
+          if (random_key.length < 16) {
             toast.error("Invalid encryption key");
             return;
           }
@@ -129,6 +129,9 @@ export default function PodDetails({ id }) {
           const blob = new Blob([decrypted], { type: parsed_metadata.type });
           let suffix;
           switch (parsed_metadata.type) {
+            case "text/plain":
+              suffix = ".txt";
+              break;
             case "image/png":
               suffix = ".png";
               break;

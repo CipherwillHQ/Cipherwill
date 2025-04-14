@@ -1,5 +1,5 @@
 import DesktopAndMobilePageHeader from "@/components/app/common/page/DesktopAndMobilePageHeader";
-import DeviceLocksList from "./BankAccountsList";
+import DeviceLocksList from "./DeviceLocksList";
 import CreateDeviceLock from "./CreateDeviceLock";
 
 export default function DeviceLocks() {

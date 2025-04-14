@@ -9,8 +9,20 @@ type Segment = {
   title: string;
   description: string;
   path: string;
+  slug: string;
+  metamodel_type: string;
   plan_required: string;
   preference_key: string | null;
 };
 
-export type { Divider, Segment };
+type Raw_Segment = {
+  title: string;
+  description: string;
+  path: string;
+  slug: string;
+  metamodel_type: string;
+  plan_required: string;
+  preference_key: string | null;
+};
+
+export type { Divider, Segment, Raw_Segment };

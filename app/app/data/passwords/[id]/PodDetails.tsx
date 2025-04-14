@@ -5,10 +5,9 @@ import DeleteButton from "./DeleteButton";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { TbTrash } from "react-icons/tb";
 import LoadingIndicator from "@/components/common/LoadingIndicator";
-import { PASSWORD_TYPE } from "@/types/pods/PASSWORD_TYPE";
-import toast from "react-hot-toast";
+import { PASSWORD } from "@/types/pods/PASSWORD";
 
-const PASSWORD_SAMPLE: PASSWORD_TYPE = {
+const PASSWORD_SAMPLE: PASSWORD = {
   username: "john@example.com",
   password: "password",
   totp_secret: "123456",
@@ -17,8 +16,8 @@ const PASSWORD_SAMPLE: PASSWORD_TYPE = {
 };
 
 export default function PodDetails({ id }) {
-  const [data, setData] = useState<PASSWORD_TYPE>({});
-  const { loading, error, updatePod, is_updating } = usePod<PASSWORD_TYPE>(
+  const [data, setData] = useState<PASSWORD>({});
+  const { loading, error, updatePod, is_updating } = usePod<PASSWORD>(
     {
       TYPE: "password",
       VERSION: "0.0.1",
@@ -26,7 +25,7 @@ export default function PodDetails({ id }) {
       DATA_SAMPLE: PASSWORD_SAMPLE,
     },
     {
-      onComplete: (data: null | PASSWORD_TYPE) => {
+      onComplete: (data: null | PASSWORD) => {
         if (data) setData(data);
       },
     }

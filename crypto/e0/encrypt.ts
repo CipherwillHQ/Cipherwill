@@ -1,5 +1,9 @@
 import * as torusecc from "@toruslabs/eccrypto"; // Only secp256k1 curve is supported
 
+// Every datapod is encrypted with E1 encryption as this is the time capsule encryption
+// Only if beneficiary has factors then we encrypt with E0 encryption
+// E0 is used for encrypting the key for the beneficiary factors
+
 export default async function encrypt(
   public_key: string,
   data: Buffer,
