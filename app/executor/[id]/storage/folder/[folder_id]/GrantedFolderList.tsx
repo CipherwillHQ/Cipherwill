@@ -11,12 +11,15 @@ export default function GrantedFolderList({
   folder_id?: string;
   access_id: string;
 }) {
-  const { data, loading, error } = useQuery(GET_GRANTED_STORAGE_FOLDERS, {
-    variables: {
-      access_id,
-      folder_id,
-    },
-  });
+  const { data, loading, error, fetchMore } = useQuery(
+    GET_GRANTED_STORAGE_FOLDERS,
+    {
+      variables: {
+        access_id,
+        folder_id,
+      },
+    }
+  );
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error : {JSON.stringify(error)}</div>;
   return (
@@ -39,6 +42,35 @@ export default function GrantedFolderList({
         </div>
       ) : (
         <div className="py-2 opacity-50">No Folders Found</div>
+      )}
+
+      {data.getGrantedStorageFolders.has_more && (
+        <button
+          className="my-2 p-1 border rounded-sm hover:cursor-pointer w-full"
+          onClick={() => {
+            fetchMore({
+              variables: {
+                cursor:
+                  data.getGrantedStorageFolders.folders[
+                    data.getGrantedStorageFolders.folders.length - 1
+                  ].id,
+              },
+              updateQuery: (prev, { fetchMoreResult }) => {
+                return {
+                  getGrantedStorageFolders: {
+                    folders: [
+                      ...prev.getGrantedStorageFolders.folders,
+                      ...fetchMoreResult.getGrantedStorageFolders.folders,
+                    ],
+                    has_more: fetchMoreResult.getGrantedStorageFolders.has_more,
+                  },
+                };
+              },
+            });
+          }}
+        >
+          Load more
+        </button>
       )}
     </section>
   );

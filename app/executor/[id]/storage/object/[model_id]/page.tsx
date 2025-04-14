@@ -7,7 +7,7 @@ import GET_GRANTED_METAMODEL from "@/graphql/ops/app/executor/metamodels/GET_GRA
 import getTimeAgo from "@/common/time/getTimeAgo";
 import DownloadGrantedObject from "./DownloadGrantedObject";
 
-export default function DonorNoteView() {
+export default function DonorObjectView() {
   const params = useParams();
   const access_id: string = params.id as string;
   const object_id: string = params.model_id as string;

@@ -58,7 +58,6 @@ export default function DownloadGrantedObject({
             beneficairy_encryption_key.getBeneficiaryEncryptionKey,
           current_session_private_key: session.privateKey,
         });
-        console.log("pod_decryption_key", pod_decryption_key);
 
         if (pod_decryption_key.length < 16) {
           toast.error("Invalid encryption key");
@@ -121,6 +120,9 @@ export default function DownloadGrantedObject({
         const blob = new Blob([decrypted], { type: parsed_metadata.type });
         let suffix;
         switch (parsed_metadata.type) {
+          case "text/plain":
+            suffix = ".txt";
+            break;
           case "image/png":
             suffix = ".png";
             break;
