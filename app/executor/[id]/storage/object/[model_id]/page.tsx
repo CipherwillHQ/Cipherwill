@@ -3,35 +3,27 @@
 import { useQuery } from "@apollo/client";
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import useDecryptedPod from "@/common/executor/hooks/useDecryptedPod";
-import { PASSWORD } from "@/types/pods/PASSWORD";
 import GET_GRANTED_METAMODEL from "@/graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODEL";
 import getTimeAgo from "@/common/time/getTimeAgo";
+import DownloadGrantedObject from "./DownloadGrantedObject";
 
 export default function DonorNoteView() {
   const params = useParams();
   const access_id: string = params.id as string;
-  const password_id: string = params.model_id as string;
-
-  const [decryptedValue, setDecryptedValue] =
-    useState<PASSWORD | null>(null);
+  const object_id: string = params.model_id as string;
 
   const [keyMetadata, setKeyMetadata] = useState(null);
-  useDecryptedPod({
-    access_id,
-    metamodel_id: password_id,
-    setData(data) {
-      setDecryptedValue(data);
-    },
-    setKeyMetadata(data) {
-      setKeyMetadata(data);
-    },
-  });
+
 
   const { data: granted_metamodel } = useQuery(GET_GRANTED_METAMODEL, {
     variables: {
       access_id,
-      model_id: password_id,
+      model_id: object_id,
+    },
+    onCompleted(data) {
+      const keyMetadata = data?.getGrantedMetamodel;
+      if (!keyMetadata) return;
+      setKeyMetadata(keyMetadata);
     },
   });
   if (!granted_metamodel) return <div>Loading Granted Models...</div>;
@@ -43,7 +35,9 @@ export default function DonorNoteView() {
   return (
     <div className="w-full">
       <div className="p-2">
-        Title : {parsed_data.name || "Untitled"}
+        Title : {parsed_data.title || "Untitled"}
+        <br />
+        Type: {parsed_data.type || "Untyped"}
         <br />
         {keyMetadata && (
           <div>
@@ -55,11 +49,7 @@ export default function DonorNoteView() {
         <div className="border-b my-2" />
         Content :
         <br />
-        {decryptedValue != null && (
-          <div className="whitespace-pre-line bg-secondary p-2">
-            {JSON.stringify(decryptedValue, null, 2)}
-          </div>
-        )}
+        <DownloadGrantedObject ref_id={object_id} access_id={access_id}/>
       </div>
     </div>
   );

@@ -22,6 +22,7 @@ export default async function useDecryptedPod({
   const { session } = useSession();
   const client = useApolloClient();
   useQuery(GET_KEY_BY_REF_ID, {
+    fetchPolicy: "network-only",
     variables: {
       ref_id: metamodel_id,
       publicKey: session ? session.publicKey : null,
