@@ -11,7 +11,7 @@ export default async function e0_to_e1_decryption({
     mac: string;
     ephemPublicKey: string;
   };
-  beneficiary_factor_private_key: string;
+  beneficiary_factor_private_key: string | null;
 }) {
   const encrypted_e1 = JSON.parse(
     await decrypt(

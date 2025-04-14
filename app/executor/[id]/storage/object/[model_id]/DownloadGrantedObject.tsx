@@ -56,7 +56,7 @@ export default function DownloadGrantedObject({
           encrypted_key: encryption_key.data.getKeyByRefId.key,
           time_capsule_private_key:
             beneficairy_encryption_key.getBeneficiaryEncryptionKey,
-          current_session_private_key: session.privateKey,
+          current_session_private_key: session?session.privateKey:null,
         });
 
         if (pod_decryption_key.length < 16) {

@@ -9,7 +9,7 @@ export default async function get_pod_decryption_key({
 }: {
   encrypted_key: string;
   time_capsule_private_key: string;
-  current_session_private_key: string;
+  current_session_private_key: string | null;
 }) {
   const initial_parsed = JSON.parse(encrypted_key);
 
@@ -17,7 +17,9 @@ export default async function get_pod_decryption_key({
     case "E0":
       const encrypted_e1_key = await e0_to_e1_decryption({
         e0_encrypted_data: initial_parsed,
-        beneficiary_factor_private_key: current_session_private_key,
+        beneficiary_factor_private_key: current_session_private_key
+          ? current_session_private_key
+          : null,
       });
       if (encrypted_e1_key.type === "E1") {
         return await decrypt_e1_value({

@@ -46,7 +46,7 @@ export default async function useDecryptedPod({
           encrypted_key: encrypted_nonce_key,
           time_capsule_private_key:
             beneficairy_encryption_key.getBeneficiaryEncryptionKey,
-          current_session_private_key: session.privateKey,
+          current_session_private_key: session ?session.privateKey : null,
         });
         let pod;
         try {
