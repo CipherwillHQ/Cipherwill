@@ -1,11 +1,12 @@
 "use client";
 
-import { usePostHog } from "posthog-js/react";
+import { useFeatureFlagVariantKey, usePostHog } from "posthog-js/react";
+import { useEffect, useState } from "react";
 
 export default function PricingABTest() {
-  const posthog = usePostHog();
+  const current_variant = useFeatureFlagVariantKey('pricing-page-conversion')
 
-  if (posthog.getFeatureFlag('pricing-page-conversion') === "monthly") {
+  if (current_variant === "monthly") {
     return (
       <h2 className="text-center my-6">
         <div className="text-4xl font-extrabold ">
@@ -17,7 +18,7 @@ export default function PricingABTest() {
         </div>
       </h2>
     );
-  } else if (posthog.getFeatureFlag('pricing-page-conversion') === "yearly") {
+  } else if (current_variant === "yearly") {
     return (
       <h2 className="text-5xl font-extrabold text-center my-8">
         <span className="mr-2 line-through text-neutral-700">$60</span>
