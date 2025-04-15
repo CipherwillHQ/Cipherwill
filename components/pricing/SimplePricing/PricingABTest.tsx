@@ -4,8 +4,8 @@ import { usePostHog } from "posthog-js/react";
 
 export default function PricingABTest() {
   const posthog = usePostHog();
-  //   const current_variant = posthog.getFeatureFlag("pricing-page-conversion");
-  const current_variant = "monthly"; // For testing purposes, set to "monthly" or "yearly"
+    const current_variant = posthog.getFeatureFlag("pricing-page-conversion");
+  // const current_variant = "monthly"; // For testing purposes, set to "monthly" or "yearly"
 
   if (current_variant === "monthly") {
     return (
