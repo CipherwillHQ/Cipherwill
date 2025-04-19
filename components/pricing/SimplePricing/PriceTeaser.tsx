@@ -49,12 +49,12 @@ export default function PriceTeaser() {
             Period
           </div>
         </div>
-        {/* <h2 className="text-5xl font-extrabold text-center my-8">
+        <h2 className="text-5xl font-extrabold text-center my-8">
           <span className="mr-2 line-through text-neutral-700">$60</span>
           <span>$40</span>
           <span className="text-lg">/Year</span>
-        </h2> */}
-        <PricingABTest/>
+        </h2>
+        {/* <PricingABTest/> */}
         <Link href={"/app/billing"}>
           <button className="p-2 w-full bg-primary hover:cursor-pointer hover:bg-primary-900 text-white rounded-md transition-colors duration-300 ease-in-out">
             Get Started
