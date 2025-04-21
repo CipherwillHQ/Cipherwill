@@ -21,7 +21,7 @@ export default function PriceTeaser() {
           </button>
         </Link>
         <h3 className="text-gray-500 text-sm font-semibold py-4 text-center">
-          Get started with cipherwill and create you digital will
+          Get started with cipherwill and create your digital will
           <br />
           <span className="opacity-0">Getting started is easy</span>
         </h3>
