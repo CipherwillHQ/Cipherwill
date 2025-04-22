@@ -15,7 +15,13 @@ export default function CycleDescription({
   const birthDate = new Date(parseInt(birth_stamp));
 
   const today = new Date();
-  const age = today.getFullYear() - birthDate.getFullYear();
+  const age =
+    today.getFullYear() -
+    birthDate.getFullYear() -
+    (today <
+    new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate())
+      ? 1
+      : 0);
 
   const upcomingBday = new Date(
     today.getFullYear(),
