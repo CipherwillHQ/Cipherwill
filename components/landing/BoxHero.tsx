@@ -9,7 +9,7 @@ export default function BoxHero() {
         <h1 className="text-5xl md:text-7xl font-extrabold text-center">Encrypted Dead Man&apos;s Switch</h1>
         <p className="text-xl max-w-3xl text-center">
           When you pass away, we make sure your data (such as bank details,
-          investments, properties, digital assets, etc.) get's to right people.
+          investments, properties, digital assets, etc.) get's to the right people.
         </p>
         <div className="flex flex-col sm:flex-row gap-2 items-center">
           <SimpleButton
