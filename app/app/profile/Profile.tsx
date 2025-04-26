@@ -10,6 +10,10 @@ import toast from "react-hot-toast";
 import CountryRestrictionPopup from "../../../components/app/popups/CountryRestrictionPopup";
 import SimpleButton from "@/components/common/SimpleButton";
 import Select from "@/components/ui/Select";
+import Country from "./Country";
+import Gender from "./Gender";
+import DateOfBirth from "./DateOfBirth";
+import Name from "./Name";
 
 export default function Profile() {
   const [email, setEmail] = useState("");
@@ -23,7 +27,7 @@ export default function Profile() {
   const [countryRestrictionMessage, setCountryRestrictionMessage] =
     useState(false);
 
-  const [fetchProfile, { data: ProfileData }] = useLazyQuery(ME, {
+  const [fetchProfile, { data: ProfileData, loading:profile_loading }] = useLazyQuery(ME, {
     onCompleted: (data) => {
       if (data && data.me) {
         setEmail(data.me.email || "");
@@ -56,7 +60,6 @@ export default function Profile() {
       },
     }
   );
-  var tzoffset = new Date().getTimezoneOffset() * 60000; //offset in milliseconds
 
   useEffect(() => {
     fetchProfile();
@@ -75,97 +78,17 @@ export default function Profile() {
       <label className="p-2 bg-slate-100 dark:bg-neutral-900 border border-default text-slate-500 dark:text-slate-300 rounded-md">
         {email}
       </label>
-      <label className="mt-2 py-3 px-1 font-semibold text-sm">First Name</label>
-      <div className="flex justify-between items-center">
-        <input
-          type="text"
-          placeholder="First Name"
-          className="flex flex-1 p-2 bg-neutral-100 dark:bg-neutral-800 rounded-md"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-        />
-        {firstName === "" && <BiErrorCircle className="text-red-500 m-1" />}
-      </div>
-      <label className="mt-2 py-3 px-1 font-semibold text-sm">
-        Middle Name
-      </label>
-      <div className="flex justify-between items-center">
-        <input
-          type="text"
-          placeholder="Middle Name (optional)"
-          className="flex flex-1 p-2 bg-neutral-100 dark:bg-neutral-800 rounded-md"
-          value={middleName}
-          onChange={(e) => setMiddleName(e.target.value)}
-        />
-      </div>
-      <label className="mt-2 py-3 px-1 font-semibold text-sm">Last Name</label>
-      <div className="flex justify-between items-center">
-        <input
-          type="text"
-          placeholder="Last Name (optional)"
-          className="flex flex-1 p-2 bg-neutral-100 dark:bg-neutral-800 rounded-md"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-        />
-      </div>
-      <label className="mt-2 py-3 px-1 font-semibold text-sm">
-        Date of Birth
-      </label>
-      <div className="flex justify-between items-center">
-        <input
-          data-cy="dob-input"
-          type="date"
-          placeholder="Date of Birth"
-          className="flex flex-1 p-2 bg-neutral-100 dark:bg-neutral-800 rounded-md"
-          value={
-            dob === 0
-              ? ""
-              : new Date(dob - tzoffset).toISOString().split("T")[0]
-          }
-          onChange={(e) => {
-            if (
-              e.target.value.length > 0 &&
-              e.target.value !== undefined &&
-              e.target.value !== null
-            ) {
-              setDob(+new Date(e.target.value));
-            }
-          }}
-        />
-        {dob === 0 && <BiErrorCircle className="text-red-500 m-1" />}
-      </div>
-
-      <label className="mt-2 py-3 px-1 font-semibold text-sm">Gender</label>
-      <div className="flex justify-between items-center">
-        <Select
-          value={gender}
-          onChange={(val) => setGender(val)}
-          placeholder="Select Gender"
-          className="w-full bg-neutral-100 dark:bg-neutral-800"
-          options={[
-            { value: "male", label: "Male" },
-            { value: "female", label: "Female" },
-            { value: "other", label: "Other" },
-            { value: "na", label: "Do not specify" },
-          ]}
-        />
-      </div>
-      <label className="mt-2 py-3 px-1 font-semibold text-sm">Country</label>
-      <div className="flex justify-between items-center w-full">
-        <Select
-          value={country}
-          onChange={(val) => setCountry(val)}
-          className="w-full bg-neutral-100 dark:bg-neutral-800"
-          placeholder="Select Country"
-          options={getAllCountryCodes().map((country) => {
-            return {
-              value: country.code,
-              label: country.name,
-            };
-          })}
-        />
-        {country === "" && <BiErrorCircle className="text-red-500 m-1" />}
-      </div>
+      <Name
+        firstName={firstName}
+        setFirstName={setFirstName}
+        middleName={middleName}
+        setMiddleName={setMiddleName}
+        lastName={lastName}
+        setLastName={setLastName}
+      />
+      {<DateOfBirth dob={dob} setDob={setDob} />}
+      <Gender gender={gender} setGender={setGender} />
+      <Country country={country} setCountry={setCountry} />
       <div className="pt-2 text-right">
         <SimpleButton
           onClick={() => {
