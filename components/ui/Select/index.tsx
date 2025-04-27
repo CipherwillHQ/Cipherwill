@@ -21,10 +21,10 @@ export default function Select({
     <select
       defaultValue={value ? undefined : defaultValue}
       value={value || undefined}
-      className={twMerge(
+      className={`${twMerge(
         "border text-black dark:text-white bg-white dark:bg-dark border-default p-2 rounded-md",
         className
-      )}
+      )} minimal customScrollbar`}
       onChange={(e) => onChange(e.target.value)}
       disabled={disabled}
     >
