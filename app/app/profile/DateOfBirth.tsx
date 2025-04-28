@@ -3,7 +3,6 @@ import { BiErrorCircle } from "react-icons/bi";
 
 export default function DateOfBirth({ dob, setDob }) {
   const monthIndex = new Date(dob).getMonth() + 1; // Months are zero-based in JavaScript
-  console.log("dob", dob);
 
   return (
     <>
