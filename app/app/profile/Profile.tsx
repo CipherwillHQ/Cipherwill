@@ -22,7 +22,7 @@ export default function Profile() {
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
   const [country, setCountry] = useState("");
-  const [dob, setDob] = useState(0);
+  const [dob, setDob] = useState(null);
 
   const [countryRestrictionMessage, setCountryRestrictionMessage] =
     useState(false);
@@ -36,7 +36,7 @@ export default function Profile() {
         setLastName(data.me.last_name || "");
         setGender(data.me.gender || "");
         setCountry(data.me.country || "");
-        setDob(data.me.birth_date === "0" ? 0 : parseInt(data.me.birth_date));
+        setDob(data.me.birth_date === null ? null : parseInt(data.me.birth_date));
       }
     },
   });

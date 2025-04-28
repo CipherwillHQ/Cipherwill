@@ -3,6 +3,7 @@ import { BiErrorCircle } from "react-icons/bi";
 
 export default function DateOfBirth({ dob, setDob }) {
   const monthIndex = new Date(dob).getMonth() + 1; // Months are zero-based in JavaScript
+  console.log("dob", dob);
 
   return (
     <>
@@ -31,7 +32,7 @@ export default function DateOfBirth({ dob, setDob }) {
               }}
             /> */}
         <Select
-          value={dob === 0 ? "" : monthIndex.toString()}
+          value={dob === null ? "" : monthIndex.toString()}
           placeholder="Month"
           options={[
             {
@@ -91,7 +92,7 @@ export default function DateOfBirth({ dob, setDob }) {
           className="w-full bg-neutral-100 dark:bg-neutral-800 rounded-md"
         />
         <Select
-          value={dob === 0 ? "" : new Date(dob).getDate().toString()}
+          value={dob === null ? "" : new Date(dob).getDate().toString()}
           placeholder="Day"
           options={[...Array(31)].map((_, i) => ({
             value: (i + 1).toString(),
@@ -101,24 +102,24 @@ export default function DateOfBirth({ dob, setDob }) {
             const newDate = new Date(dob);
             newDate.setDate(parseInt(val));
             setDob(+newDate);
-            }}
-            className="w-full bg-neutral-100 dark:bg-neutral-800 rounded-md"
-          />
-          <Select
-            value={dob === 0 ? "" : new Date(dob).getFullYear().toString()}
-            placeholder="Year"
-            options={[...Array(150)].map((_, i) => ({
+          }}
+          className="w-full bg-neutral-100 dark:bg-neutral-800 rounded-md"
+        />
+        <Select
+          value={dob === null ? "" : new Date(dob).getFullYear().toString()}
+          placeholder="Year"
+          options={[...Array(150)].map((_, i) => ({
             value: (new Date().getFullYear() - (149 - i)).toString(),
             label: (new Date().getFullYear() - (149 - i)).toString(),
-            }))}
-            onChange={(val) => {
+          }))}
+          onChange={(val) => {
             const newDate = new Date(dob);
             newDate.setFullYear(parseInt(val));
             setDob(+newDate);
           }}
           className="w-full bg-neutral-100 dark:bg-neutral-800 rounded-md"
         />
-        {dob === 0 && <BiErrorCircle className="text-red-500 m-1 min-w-fit" />}
+        {dob === null && <BiErrorCircle className="text-red-500 m-1 min-w-fit" />}
       </div>
     </>
   );
