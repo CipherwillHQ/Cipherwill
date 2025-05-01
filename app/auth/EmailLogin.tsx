@@ -17,7 +17,7 @@ export default function EmailLogin() {
 
   return (
     <>
-      <h1 className="text-xl font-semibold py-8">Welcome to Cipherwill</h1>
+      <h1 className="text-2xl font-semibold py-8">Welcome to Cipherwill</h1>
       <form
         onSubmit={(e) => {
           e.preventDefault();

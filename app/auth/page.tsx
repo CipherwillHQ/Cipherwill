@@ -35,12 +35,9 @@ export default function Login({ params }) {
         backgroundAttachment: "fixed",
       }}
     >
-      <div className="flex flex-col justify-evenly flex-1 gap-8 w-full h-full overflow-auto">
+      <div className="flex flex-col justify-evenly flex-1 gap-8 w-full h-full overflow-auto customScrollbar">
         <div className="py-8 bg-white w-full max-w-lg mx-auto p-8 rounded-3xl">
           <LogoHeader />
-          <h1 className="hidden text-xl font-bold pb-6">
-            Log in to your Cipherwill account or create a new one
-          </h1>
           <Suspense
             fallback={
               <div className="py-6 max-w-md w-full mx-auto animate-pulse">
