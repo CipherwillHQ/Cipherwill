@@ -29,7 +29,9 @@ export default function CTA() {
         </div>
         <div className="flex flex-col items-center justify-center gap-4 w-full md:w-1/3">
           <Link href={"/app"}>
-            <SimpleButton>Sign up with Cipherwill</SimpleButton>
+            <button className="rounded-full px-4 py-2 bg-linear-to-r from-primary-700 to-primary text-white hover:cursor-pointer hover:shadow-lg">
+              Get Started in 3 Minutes
+            </button>
           </Link>
           <Link href={"/"} className="hover:underline text-sm font-medium">
             Learn more about Cipherwill

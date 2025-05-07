@@ -16,7 +16,7 @@ export default function BoxHero() {
             className="flex items-center gap-2 hover:cursor-pointer hover:gap-3 transition-all duration-200 ease-in-out rounded-full px-8 py-2"
             href="/app"
           >
-            <span>Get Started </span>
+            <span>Set Up in 3 Minutes</span>
             <BiRightArrowAlt />
           </SimpleButton>
           <Link href={"/how-it-works"}>

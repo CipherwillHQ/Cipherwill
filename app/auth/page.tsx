@@ -6,6 +6,7 @@ import LoginSection from "./LoginSection";
 import { FULL_HOSTNAME } from "@/common/constant";
 import { BiCheckCircle } from "react-icons/bi";
 import bg from "./bg.webp";
+import { IoChevronBackOutline } from "react-icons/io5";
 
 const title = "Log in • Cipherwill";
 const description =
@@ -80,7 +81,7 @@ export default function Login({ params }) {
 
 function LogoHeader() {
   return (
-    <div className="flex items-center w-full max-w-md mx-auto">
+    <div className="flex items-center justify-between w-full max-w-md mx-auto">
       <Link href="/">
         <Image alt="cipherwill logo" src={logoBlack} width={35} height={35} />
       </Link>
