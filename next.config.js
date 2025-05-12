@@ -21,11 +21,6 @@ const nextConfig = {
             value: "strict-origin-when-cross-origin",
           },
           {
-            key: "Content-Security-Policy",
-            value:
-              "default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none';",
-          },
-          {
             key: "Permissions-Policy",
             value: "geolocation=()", // Or relevant to your app
           },
