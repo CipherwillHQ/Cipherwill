@@ -18,7 +18,20 @@ const nextConfig = {
           },
           {
             key: "Referrer-Policy",
-            value: "no-referrer",
+            value: "strict-origin-when-cross-origin",
+          },
+          {
+            key: "Content-Security-Policy",
+            value:
+              "default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none';",
+          },
+          {
+            key: "Permissions-Policy",
+            value: "geolocation=()", // Or relevant to your app
+          },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
           },
         ],
       },
