@@ -26,7 +26,7 @@ export const metadata = {
 export default function AboutUs() {
   return (
     <div className="w-full">
-      <SmoothPageScroll/>
+      <SmoothPageScroll />
       <div className="pt-12 sm:pt-40 max-w-4xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between px-4 pb-8">
           <div className="flex grow flex-col gap-2">
@@ -36,13 +36,14 @@ export default function AboutUs() {
               by
             </h3>
             <div>
-              Zetapad Technologies Inc.
+              Zetapad Technologies
               <br />
-              <div className="text-sm">
-                registered in the U.S. and other countries.
+              <div className="text-sm max-w-sm">
+                Operating address:
                 <br />
-                Cipherwill is developed by a team of engineers, lawyers,
-                designers and security experts.
+                01, Sanskruti Vandan Apartment, Lane No. 2, Near Hiteshkumar
+                Jain English Medium School, Niphad, Nashik, Maharashtra, India -
+                422303
               </div>
             </div>
           </div>
@@ -86,10 +87,10 @@ export default function AboutUs() {
           The Inspiration Behind Cipherwill
         </h3>
         <div>
-          Cipherwill was inspired by a news story, A man had millions in digital assets, including
-          cryptocurrency, domain names, and a YouTube brand. After his sudden
-          passing, his loved ones couldn't access these assets, resulting
-          in a significant loss.
+          Cipherwill was inspired by a news story, A man had millions in digital
+          assets, including cryptocurrency, domain names, and a YouTube brand.
+          After his sudden passing, his loved ones couldn't access these assets,
+          resulting in a significant loss.
           <br />
           <br />
           This incident highlighted the urgent need for managing digital
@@ -123,13 +124,12 @@ export default function AboutUs() {
         <div>
           Our vision is to manage a billion digital wills, providing a secure
           and seamless transfer of digital assets to loved ones globally. We aim
-          to create a future where everyone's legacy is protected and
-          honored, ensuring that valuable information and assets are passed on
-          with ease and security. By leveraging cutting-edge encryption and
-          user-friendly design, we strive to empower individuals worldwide to
-          manage their digital estates with confidence, fostering a world where
-          the transition of digital legacies is a smooth and trustworthy
-          process.
+          to create a future where everyone's legacy is protected and honored,
+          ensuring that valuable information and assets are passed on with ease
+          and security. By leveraging cutting-edge encryption and user-friendly
+          design, we strive to empower individuals worldwide to manage their
+          digital estates with confidence, fostering a world where the
+          transition of digital legacies is a smooth and trustworthy process.
         </div>
         <h2 className="text-2xl py-2 font-semibold mt-4">What We Do</h2>
         <h3 className="text-xl py-2 font-semibold mt-2">Platform Overview</h3>
@@ -157,11 +157,10 @@ export default function AboutUs() {
           chosen beneficiaries.
           <br />
           <br />
-          Cipherwill's encryption is so robust that even our team cannot
-          access or view user data. This commitment provides complete peace of
-          mind, ensuring personal information and digital assets are securely
-          managed and transferred according to the user's explicit
-          instructions.
+          Cipherwill's encryption is so robust that even our team cannot access
+          or view user data. This commitment provides complete peace of mind,
+          ensuring personal information and digital assets are securely managed
+          and transferred according to the user's explicit instructions.
         </div>
         <EncryptionDetails />
 
@@ -169,11 +168,11 @@ export default function AboutUs() {
         <h3 className="text-xl py-2 font-semibold mt-2">Dedicated Experts</h3>
         <div>
           Our core team consists of dedicated experts who collectively ensure
-          the platform's reliability and user satisfaction. They bring
-          diverse expertise to uphold the highest standards of security and
-          operational excellence. Led by our founder, our team is committed to
-          providing a secure, user-friendly platform that empowers individuals
-          to manage their digital legacies with confidence and peace of mind.
+          the platform's reliability and user satisfaction. They bring diverse
+          expertise to uphold the highest standards of security and operational
+          excellence. Led by our founder, our team is committed to providing a
+          secure, user-friendly platform that empowers individuals to manage
+          their digital legacies with confidence and peace of mind.
         </div>
         <h3 className="text-xl py-2 font-semibold mt-2">Our Values</h3>
         <div>
