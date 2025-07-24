@@ -1,8 +1,6 @@
 "use client";
-
 import { useEffect, useState } from "react";
-import ME from "../../../graphql/ops/auth/queries/ME";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import ADD_SMARTWILL_BENEFICIARY from "../../../graphql/ops/app/smartwill/mutations/ADD_SMARTWILL_BENEFICIARY";
 import BeneficiaryList from "../../../components/app/smartwill/BeneficiaryList";
 import PersonSelector from "../../../components/app/smartwill/PersonSelector";
