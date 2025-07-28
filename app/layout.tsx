@@ -1,4 +1,4 @@
-import { Toaster } from "react-hot-toast";
+
 import { AuthProvider } from "../contexts/AuthContext";
 import { ApolloContext } from "../contexts/ApolloContext";
 import { Metadata, Viewport } from "next";
@@ -10,6 +10,7 @@ import { MixpanelProvider } from "@/contexts/MixpanelContext";
 import { CSPostHogProvider } from "@/contexts/CSPostHogProvider";
 import dynamic from "next/dynamic";
 import Head from "next/head";
+import DynamicToaster from "@/components/common/DynamicToaster";
 
 // This works with dynamic imports to lower LCP
 const CSSImporter = dynamic(() => import("@/components/CSSImporter"));
@@ -130,7 +131,7 @@ export default function RootLayout({ children }) {
                 : process.env.NEXT_PUBLIC_BUILD_ENV}
             </div>
           )}
-        <Toaster position="top-right" />
+        <DynamicToaster position="top-right" />
         <MixpanelProvider>
           <AuthProvider>
             <CSPostHogProvider>

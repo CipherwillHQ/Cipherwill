@@ -83,6 +83,7 @@ export default function Header({
             width={150}
             height={100}
             priority
+            suppressHydrationWarning
           />
         </Link>
 
