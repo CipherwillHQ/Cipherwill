@@ -57,9 +57,7 @@ export default function PodDetails({ id }) {
 
             setData({
               ...data,
-              phrase: Array.from(
-                new Set([...(data.phrase || []), ...newCodes])
-              ),
+              phrase: [...(data.phrase || []), ...newCodes],
             });
             // clear the input
             (
@@ -82,14 +80,14 @@ export default function PodDetails({ id }) {
             className="flex items-center gap-2 border border-default rounded-md p-2 "
           >
             <div>
-              {index + 1}. {phrase_word}
+              {index + 1}:{" "}{phrase_word}
             </div>
             <button
               onClick={() => {
                 setData({
                   ...data,
                   phrase: (data.phrase || []).filter(
-                    (code) => code !== phrase_word
+                    (_, i) => i !== index
                   ),
                 });
               }}
