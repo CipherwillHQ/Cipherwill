@@ -64,7 +64,10 @@ export default function MasterPassword({
           setIsOpen(false);
         }}
       >
-        <h2 className="py-2 text-xl font-semibold">
+       <div
+       className="w-full max-w-xl"
+       >
+         <h2 className="py-2 text-xl font-semibold">
           Enter your Master Password
         </h2>
         <input
@@ -88,6 +91,7 @@ export default function MasterPassword({
         >
           Submit
         </button>
+       </div>
       </BasicPopup>
     </>
   );

@@ -9,6 +9,7 @@ import { useSession } from "../../../contexts/SessionContext";
 import { useState } from "react";
 import perform_migrate_in from "../../../common/factor/perform_migrate_in";
 import GET_BENEFICIARY_KEY_COUNT from "../../../graphql/ops/auth/queries/GET_BENEFICIARY_KEY_COUNT";
+import CustomMessage from "./CustomMessage";
 
 export default function BeneficiaryList({ max_key_count, max_publicKey }) {
   const { loading, data, error } = useQuery(GET_SMARTWILL_BENEFICIARY);
@@ -201,29 +202,36 @@ function PersonTile({
           {minimum_count})
         </button>
       )}
-      <button
-        data-cy="remove-beneficiary-button"
-        className="flex items-center px-2 py-1 text-xs rounded-full border border-red-400 bg-red-100 hover:bg-red-200 text-black m-1 transition-colors"
-        onClick={() => {
-          const cnf = confirm(
-            "Are you sure you want to remove this beneficiary?"
-          );
-          if (cnf) {
-            deleteBeneficiary({
-              variables: {
-                id: person.id,
-              },
-              refetchQueries: [
-                {
-                  query: GET_SMARTWILL_BENEFICIARY,
+
+      <div className="flex sm:flex-col items-start sm:items-end justify-center text-xs sm:text-sm gap-2">
+        <CustomMessage
+          beneficiary_id={beneficiary.id}
+          custom_message={beneficiary.custom_message}
+        />
+        <button
+          data-cy="remove-beneficiary-button"
+          className="flex items-center px-2 py-1 text-sm rounded-full border border-red-400 bg-red-100 hover:bg-red-200 text-black transition-colors"
+          onClick={() => {
+            const cnf = confirm(
+              "Are you sure you want to remove this beneficiary?"
+            );
+            if (cnf) {
+              deleteBeneficiary({
+                variables: {
+                  id: person.id,
                 },
-              ],
-            });
-          }
-        }}
-      >
-        Remove
-      </button>
+                refetchQueries: [
+                  {
+                    query: GET_SMARTWILL_BENEFICIARY,
+                  },
+                ],
+              });
+            }
+          }}
+        >
+          Remove
+        </button>
+      </div>
     </div>
   );
 }

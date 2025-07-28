@@ -7,6 +7,7 @@ const GET_SMARTWILL_BENEFICIARY = gql`
       user_id
       person_id
       publicKey
+      custom_message
     }
   }
 `;

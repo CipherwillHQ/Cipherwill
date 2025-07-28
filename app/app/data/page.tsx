@@ -61,7 +61,7 @@ export default function Data() {
             return null;
           }
           return (
-            <div key={index} className="border border-default p-2 rounded-md bg-secondary max-w-sm">
+            <div key={index} className="border border-default p-2 rounded-md bg-secondary w-full">
               <Link
                 href={item.path}
                 className="flex items-center gap-2"
