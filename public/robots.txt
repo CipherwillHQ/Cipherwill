@@ -10,3 +10,4 @@ Sitemap: https://www.cipherwill.com/sitemap.xml
 Sitemap: https://www.cipherwill.com/blogs-sitemap.xml
 Sitemap: https://www.cipherwill.com/i/frequently-asked-questions/sitemap.xml
 Sitemap: https://www.cipherwill.com/i/personas/sitemap.xml
+Sitemap: https://www.cipherwill.com/careers/sitemap.xml
