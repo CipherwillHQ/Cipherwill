@@ -19,8 +19,8 @@ export default function PodDetails({
   id: string;
   setSaveStatus: (status: "SAVED" | "NOT_SAVED" | "ERROR" | "LOADING") => void;
 }) {
-  const [initialValue, setinitialValue] = useState(null);
-  const [newValue, setNewValue] = useState(null);
+  const [initialValue, setinitialValue] = useState<string|null>(null);
+  const [newValue, setNewValue] = useState<string|null>(null);
 
   const { loading, error, updatePod, is_updating, loadPod } = usePod<NOTE_TYPE>(
     {
@@ -68,6 +68,7 @@ export default function PodDetails({
       clearTimeout(debounceTimer);
     }
     debounceTimer = setTimeout(() => {
+      if (!editor) return;
       const updateData = editor.getHTML();
       updatePod({
         content: updateData,

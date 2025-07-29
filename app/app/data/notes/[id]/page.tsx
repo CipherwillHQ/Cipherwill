@@ -16,10 +16,10 @@ export default function NoteViewer() {
       <MobilePageHeader path="/app/data/notes" />
 
       <div className="px-4 w-full">
-        <MetaDetails id={params.id as string}
+        <MetaDetails id={params?.id as string}
         saveStatus={saveStatus}
         />
-        <PodDetails id={params.id as string}
+        <PodDetails id={params?.id as string}
         setSaveStatus={setSaveStatus}
         />
       </div>

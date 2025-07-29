@@ -15,7 +15,7 @@ export default function StorageFolderPage({ params }) {
       id,
     },
     onError(error) {
-      const error_code = error.graphQLErrors[0].extensions.code;
+      const error_code = error.graphQLErrors[0].extensions?.code;
       if (error_code === "FOLDER_NOT_FOUND") {
         window.location.href = "/app/data/storage";
       }

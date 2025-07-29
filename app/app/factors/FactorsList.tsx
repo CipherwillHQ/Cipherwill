@@ -98,8 +98,10 @@ export default function FactorsList() {
                         const new_name = e.target.innerText;
 
                         if (new_name.length === 0) {
-                          document.getElementById("factor-name").innerText =
-                            factor.name;
+                          const nameElem = document.getElementById("factor-name");
+                          if (nameElem) {
+                            nameElem.innerText = factor.name;
+                          }
                         }
                         if (new_name.length > 0 && new_name !== factor.name) {
                           updateFactor({

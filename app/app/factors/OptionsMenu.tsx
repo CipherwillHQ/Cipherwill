@@ -3,7 +3,6 @@ import { useSession } from "../../../contexts/SessionContext";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import DELETE_FACTOR from "../../../graphql/ops/auth/mutations/DELETE_FACTOR";
-import { AiOutlineClose } from "react-icons/ai";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import perform_migrate_out from "../../../common/factor/perform_migrate_out";
 import perform_migrate_in from "../../../common/factor/perform_migrate_in";

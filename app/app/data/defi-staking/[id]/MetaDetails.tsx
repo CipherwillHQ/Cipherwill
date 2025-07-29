@@ -44,7 +44,10 @@ export default function MetaDetails({ id }) {
           onBlur={(e) => {
             const new_name = e.target.innerText;
             if (new_name.length === 0) {
-              document.getElementById("stacking-account-name").innerText = parsedData.name;
+              const nameElem = document.getElementById("stacking-account-name");
+              if (nameElem) {
+                nameElem.innerText = parsedData.name;
+              }
             }
             if (new_name.length > 0 && new_name !== parsedData.name) {
               update_metamodel({

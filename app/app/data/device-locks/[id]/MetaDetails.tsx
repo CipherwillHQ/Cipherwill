@@ -15,7 +15,7 @@ export default function MetaDetails({ id }) {
         error &&
         error.graphQLErrors &&
         error.graphQLErrors[0] &&
-        error.graphQLErrors[0].extensions.code === "MODEL_NOT_FOUND"
+        error.graphQLErrors[0].extensions?.code === "MODEL_NOT_FOUND"
       ) {
         window.location.href = "/app/data/device-locks";
       }
@@ -42,7 +42,10 @@ export default function MetaDetails({ id }) {
           onBlur={(e) => {
             const new_name = e.target.innerText;
             if (new_name.length === 0) {
-              document.getElementById("device-lock-name").innerText = parsedData.name;
+              const nameElement = document.getElementById("device-lock-name");
+              if (nameElement) {
+                nameElement.innerText = parsedData.name;
+              }
             }
             if (new_name.length > 0 && new_name !== parsedData.name) {
               update_metamodel({

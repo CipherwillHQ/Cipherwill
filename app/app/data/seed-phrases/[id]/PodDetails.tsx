@@ -97,7 +97,7 @@ export default function PodDetails({ id }) {
           </div>
         ))}
       </div>
-      {data.phrase?.length > 0 && (
+      {data && data.phrase && data.phrase.length > 0 && (
         <div className="flex gap-2">
           <SimpleButton
             onClick={() => {
@@ -111,7 +111,7 @@ export default function PodDetails({ id }) {
           </SimpleButton>
           <SimpleButton
             onClick={() => {
-              navigator.clipboard.writeText(data.phrase?.join(" "));
+              navigator.clipboard.writeText((data.phrase ?? []).join(" "));
               toast.success("Seed phrase copied to clipboard");
             }}
           >
