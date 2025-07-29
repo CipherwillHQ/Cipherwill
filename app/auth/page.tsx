@@ -6,7 +6,6 @@ import LoginSection from "./LoginSection";
 import { FULL_HOSTNAME } from "@/common/constant";
 import { BiCheckCircle } from "react-icons/bi";
 import bg from "./bg.webp";
-import { IoChevronBackOutline } from "react-icons/io5";
 
 const title = "Log in • Cipherwill";
 const description =

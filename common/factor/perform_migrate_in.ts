@@ -21,7 +21,7 @@ export default async function perform_migrate_in(
   max_public_key: string,
   client: ApolloClient<any>,
   encrypt_for_public_key: string,
-  privateKey: string,
+  privateKey: string | null,
   beneficiary_id?: string
 ) {
   logger.info(
@@ -33,7 +33,7 @@ export default async function perform_migrate_in(
   );
   let cursor = undefined;
   let has_more = true;
-  let beneficiary_factors = undefined;
+  let beneficiary_factors: any = undefined;
   if (beneficiary_id) {
     beneficiary_factors = await client.query({
       query: GET_BENEFICIARY_FACTORS,
@@ -97,7 +97,7 @@ export default async function perform_migrate_in(
 
     const all_data = res.data.getKeyItemsByPublicKey.items;
     // decrypt each one with current privatekey
-    const all_decrypted = [];
+    const all_decrypted:any[] = [];
     for await (const item of all_data) {
       if (item.publicKey !== "null") {
         if (privateKey === null) {

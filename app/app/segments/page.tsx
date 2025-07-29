@@ -93,7 +93,7 @@ export default function Segments() {
           const user_preference =
             (segment as Segment).preference_key === null
               ? null
-              : preferences[(segment as Segment).preference_key];
+              : preferences[(segment as Segment).preference_key as string];
 
           const is_available_to_user =
             current_user_plan === (segment as Segment).plan_required ||

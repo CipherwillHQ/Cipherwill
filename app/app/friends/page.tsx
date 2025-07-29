@@ -7,7 +7,6 @@ import FriendList from "../../../components/app/smartwill/FriendList";
 import PersonSelector from "../../../components/app/smartwill/PersonSelector";
 import toast from "react-hot-toast";
 import GET_SMARTWILL_FRIENDS from "../../../graphql/ops/app/smartwill/queries/GET_SMARTWILL_FRIENDS";
-import MobilePageHeader from "@/components/mobile/MobilePageHeader";
 import logger from "@/common/debug/logger";
 import SimpleButton from "@/components/common/SimpleButton";
 import DesktopAndMobilePageHeader from "@/components/app/common/page/DesktopAndMobilePageHeader";

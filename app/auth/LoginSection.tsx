@@ -12,7 +12,7 @@ export default function LoginSection() {
   useEffect(() => {
     if (user && user.uid) {
       window.location.href =
-        window.location.origin + (searchParams.get("redirect") || "/");
+        window.location.origin + (searchParams?.get("redirect") || "/");
     }
   }, [user, searchParams]);
   return (

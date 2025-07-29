@@ -1,4 +1,3 @@
-import MobilePageHeader from "@/components/mobile/MobilePageHeader";
 import AddFactor from "../../../components/app/factors/AddFactor";
 import DevOnly from "../../../components/debug/DevOnly";
 import FactorsList from "./FactorsList";

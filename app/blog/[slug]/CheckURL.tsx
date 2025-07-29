@@ -8,7 +8,7 @@ export default function CheckURL({ slug, id }) {
   const router = useRouter();
 
   useEffect(() => {
-    if (!slug || !id) return;
+    if (!slug || !id || !pathname) return;
     if (!pathname.includes(`-${id}`)) {
       router.replace(`/blog/${slug}-${id}`);
     }

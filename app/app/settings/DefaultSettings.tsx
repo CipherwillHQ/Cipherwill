@@ -3,7 +3,6 @@ import Appearance from "./Appearance";
 import { TiDownloadOutline } from "react-icons/ti";
 import { BiUserCircle } from "react-icons/bi";
 import Link from "next/link";
-import { MdOutlineSdStorage } from "react-icons/md";
 
 export default function DefaultSettings() {
   return (

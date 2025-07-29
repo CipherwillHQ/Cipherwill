@@ -4,12 +4,9 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { useEffect, useState } from "react";
 import UPDATE_USER from "../../../graphql/ops/auth/mutations/UPDATE_USER";
 import ME from "../../../graphql/ops/auth/queries/ME";
-import { BiErrorCircle } from "react-icons/bi";
-import getAllCountryCodes from "../../../common/country/getAllCountryCodes";
 import toast from "react-hot-toast";
 import CountryRestrictionPopup from "../../../components/app/popups/CountryRestrictionPopup";
 import SimpleButton from "@/components/common/SimpleButton";
-import Select from "@/components/ui/Select";
 import Country from "./Country";
 import Gender from "./Gender";
 import DateOfBirth from "./DateOfBirth";
@@ -22,7 +19,7 @@ export default function Profile() {
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
   const [country, setCountry] = useState("");
-  const [dob, setDob] = useState(null);
+  const [dob, setDob] = useState<(null | number)>(null);
 
   const [countryRestrictionMessage, setCountryRestrictionMessage] =
     useState(false);
@@ -50,7 +47,7 @@ export default function Profile() {
         if (
           error.graphQLErrors !== null &&
           error.graphQLErrors.length > 0 &&
-          error.graphQLErrors[0].extensions.code ===
+          error.graphQLErrors[0].extensions?.code ===
             "COUNTRY_RESTRICTED_ACCORDING_TO_SUBSCRIPTION"
         ) {
           fetchProfile(); // reset the country to default one
@@ -93,7 +90,7 @@ export default function Profile() {
         <SimpleButton
           onClick={() => {
             let data_to_update = {};
-            const new_stamp = (new Date(dob).getTime() || 0).toString();
+            const new_stamp = dob !== null ? (new Date(dob).getTime() || 0).toString() : "";
 
             if (ProfileData.me.first_name !== firstName)
               data_to_update["first_name"] = firstName;

@@ -13,6 +13,11 @@ export async function getNotionPosts({
   size?: number;
   databaseId?: string;
 }) {
+  if (!databaseId) return {
+    pages: [],
+    has_more: false,
+    next_cursor: null,
+  };
   const response = await notion.databases.query({
     database_id: databaseId,
     page_size: size,
@@ -41,5 +46,7 @@ export async function getNotionPosts({
 
   return {
     pages: [],
+    has_more: false,
+    next_cursor: null,
   };
 }
