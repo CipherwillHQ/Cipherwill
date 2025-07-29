@@ -6,8 +6,8 @@ import SEARCH_PERSON from "../../../graphql/ops/app/people/queries/SEARCH_PERSON
 import validate_email from "../../../common/validators/validate_email";
 import BasicPopup from "../../BasicPopup";
 import InvitationBox from "./InvitationBox";
+import { PersonRef } from "@/types/Will";
 
-declare type PersonRef = { person: string; field: string };
 let timeout: any;
 
 export default function PersonSelector({
@@ -15,7 +15,7 @@ export default function PersonSelector({
   onClose,
   response,
 }: {
-  isOpen: string;
+  isOpen: string | null;
   onClose: () => void;
   response: (response: PersonRef) => void;
 }) {
@@ -42,7 +42,7 @@ function SeachAndList({
   onClose,
   response,
 }: {
-  field: string;
+  field: string | null;
   onClose: () => void;
   response: (response: PersonRef) => void;
 }) {

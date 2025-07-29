@@ -17,7 +17,7 @@ export default function MetaDetails({ id }) {
         error &&
         error.graphQLErrors &&
         error.graphQLErrors[0] &&
-        error.graphQLErrors[0].extensions.code === "MODEL_NOT_FOUND"
+        error.graphQLErrors[0].extensions?.code === "MODEL_NOT_FOUND"
       ) {
         window.location.href = "/app/data/defi-staking";
       }

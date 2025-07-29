@@ -1,8 +1,8 @@
 import SimpleButton from "@/components/common/SimpleButton";
 import INVITE_USER from "@/graphql/ops/app/people/mutations/INVITE_USER";
+import { PersonRef } from "@/types/Will";
 import { useMutation } from "@apollo/client";
 import { useState } from "react";
-declare type PersonRef = { person: string; field: string };
 
 export default function InvitationBox({
   inputEmail,
@@ -11,7 +11,7 @@ export default function InvitationBox({
   onClose,
 }: {
   inputEmail: string;
-  field: string;
+  field: string | null;
   response: (response: PersonRef) => void;
   onClose: () => void;
 }) {
