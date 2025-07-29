@@ -17,7 +17,10 @@ const getPost = cache(async (slug: string) => {
         : {},
     }
   );
-  const json = await data.json();
+  const json = await data.json().catch((err) => {
+    logger.error("Error fetching post data:", err);
+    return { error: "Failed to fetch post data" };
+  });
   return json;
 });
 

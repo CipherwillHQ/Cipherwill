@@ -1,6 +1,8 @@
 import { NotionAPI } from "notion-client";
 import { NextResponse } from "next/server";
 
+export const runtime = "nodejs"
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const slug = searchParams.get("slug");
@@ -8,7 +10,8 @@ export async function GET(request: Request) {
   const notion = new NotionAPI();
   const id = slug.split("-").pop();
   if(id.length <  10) return NextResponse.json({error: "Invalid blog id"});
-  
+    // console.log(`Fetching blog post with id: ${id}`);
+    
   const recordMap = await notion.getPage(id);
   const formated_id = Object.keys(recordMap.block)[0];
   const title = recordMap.block[formated_id].value.properties.title[0][0];
