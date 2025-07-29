@@ -5,6 +5,10 @@ export default function MobilePageHeader({
   title = null,
   path = "/app",
   children = null,
+}:{
+  title?: string | null;
+  path?: string;
+  children?: React.ReactNode;
 }) {
   return (
     <div className="sm:hidden sticky top-0 z-10 p-4 w-screen bg-secondary border-b border-default">

@@ -10,13 +10,13 @@ import { DEFI_STACKING } from "@/types/pods/DEFI_STAKING";
 
 export default function DonorNoteView() {
   const params = useParams();
-  const access_id: string = params.id as string;
-  const defi_stacking_id: string = params.model_id as string;
+  const access_id: string = params?.id as string;
+  const defi_stacking_id: string = params?.model_id as string;
 
   const [decryptedValue, setDecryptedValue] =
     useState<DEFI_STACKING | null>(null);
 
-  const [keyMetadata, setKeyMetadata] = useState(null);
+  const [keyMetadata, setKeyMetadata] = useState<any|null>(null);
   useDecryptedPod({
     access_id,
     metamodel_id: defi_stacking_id,

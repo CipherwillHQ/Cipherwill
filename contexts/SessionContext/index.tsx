@@ -19,7 +19,7 @@ const SessionContext = createContext<any>({});
 
 export function SessionProvider({ children }) {
   const { user, logout } = useAuth();
-  const [available_methods, set_available_methods] = useState(null);
+  const [available_methods, set_available_methods] = useState<any|null>(null);
   const [inactive_user, set_inactive_user] = useState<false | string>(false);
   const [session_token, set_session_token] = useState<null | {
     publicKey: string;

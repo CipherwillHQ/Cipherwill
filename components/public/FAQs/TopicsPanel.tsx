@@ -18,8 +18,7 @@ export default function TopicsPanel() {
                 const heading = document.getElementById(`q:${category}`);
                 if (heading) {
                   window.scrollTo({
-                    top:
-                      document.getElementById(`q:${category}`).offsetTop - 200,
+                    top: heading.offsetTop - 200,
                     behavior: "smooth",
                   });
                 }

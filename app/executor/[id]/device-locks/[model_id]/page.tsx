@@ -10,13 +10,13 @@ import { DEVICE_LOCK } from "@/types/pods/DEVICE_LOCK";
 
 export default function DonorNoteView() {
   const params = useParams();
-  const access_id: string = params.id as string;
-  const device_lock_id: string = params.model_id as string;
+  const access_id: string = params?.id as string;
+  const device_lock_id: string = params?.model_id as string;
 
   const [decryptedValue, setDecryptedValue] =
     useState<DEVICE_LOCK | null>(null);
 
-  const [keyMetadata, setKeyMetadata] = useState(null);
+  const [keyMetadata, setKeyMetadata] = useState<any|null>(null);
   useDecryptedPod({
     access_id,
     metamodel_id: device_lock_id,

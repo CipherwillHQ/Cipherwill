@@ -16,8 +16,8 @@ interface Props {
 }
 
 const ENVIROMENT = BUILD_ENV === "production" ? "production" : "sandbox";
-const PADDLE_TOKEN = process.env.NEXT_PUBLIC_PADDLE_TOKEN;
-export const PADDLE_PRICE_ID = process.env.NEXT_PUBLIC_PADDLE_PRICE_ID;
+const PADDLE_TOKEN = process.env.NEXT_PUBLIC_PADDLE_TOKEN ?? "";
+export const PADDLE_PRICE_ID = process.env.NEXT_PUBLIC_PADDLE_PRICE_ID ?? "";
 
 
 const PaymentGatewayContext = createContext<{

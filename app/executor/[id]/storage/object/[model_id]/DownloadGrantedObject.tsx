@@ -59,7 +59,7 @@ export default function DownloadGrantedObject({
           current_session_private_key: session?session.privateKey:null,
         });
 
-        if (pod_decryption_key.length < 16) {
+        if (!pod_decryption_key || pod_decryption_key.length < 16) {
           toast.error("Invalid encryption key");
           return;
         }

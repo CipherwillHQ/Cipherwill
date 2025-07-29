@@ -11,7 +11,7 @@ function arrayBufferToStr(buf) {
   }
   
 export default function PassTest() {
-  const [registrationId, setRegistrationId] = useState(null)
+  const [registrationId, setRegistrationId] = useState<any | null>(null);
   const challenge = new Uint8Array([
     38, 254, 37, 187, 58, 230, 37, 216, 101, 199, 26, 200,
   ]);

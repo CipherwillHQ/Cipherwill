@@ -110,23 +110,25 @@ export default function ThirdPartyProcessors() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 ">
-            {processors.map((processor, index) => (
-              <tr key={index}>
-                <td className="p-2">{processor.name}</td>
-                <td className="p-2">{processor.service}</td>
-                <td className="p-2 hidden sm:block">{processor.location}</td>
-                <td className="p-2">
-                  <Link
-                    href={processor.privacyPolicy}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:underline"
-                  >
-                    Privacy Policy
-                  </Link>
-                </td>
-              </tr>
-            ))}
+            {processors.map((processor, index) =>
+              processor ? (
+                <tr key={index}>
+                  <td className="p-2">{processor.name}</td>
+                  <td className="p-2">{processor.service}</td>
+                  <td className="p-2 hidden sm:block">{processor.location}</td>
+                  <td className="p-2">
+                    <Link
+                      href={processor.privacyPolicy}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="hover:underline"
+                    >
+                      Privacy Policy
+                    </Link>
+                  </td>
+                </tr>
+              ) : null
+            )}
           </tbody>
         </table>
       </section>

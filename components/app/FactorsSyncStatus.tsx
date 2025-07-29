@@ -18,7 +18,7 @@ export default function FactorsSyncStatus() {
   const [isMigrating, setIsMigrating] = useState(false);
 
   const [unencrypted_keys_count, set_unencrypted_data_count] = useState(0);
-  const [maxPublicKeysList, setMaxPublicKeysList] = useState([]);
+  const [maxPublicKeysList, setMaxPublicKeysList] = useState<any[]>([]);
   const [max_keys, set_max_keys] = useState({
     count: 0,
     publicKey: "null",
@@ -36,7 +36,7 @@ export default function FactorsSyncStatus() {
 
           let maxCount = 0;
           let maxPublicKey = "null";
-          let maxKeyList = [];
+          let maxKeyList:any[] = [];
           for await (const c of data.getAllKeyCount) {
             if (c.count >= maxCount) {
               maxCount = c.count;

@@ -88,7 +88,8 @@ export default function WhyChooseCipherwill() {
           <button
             className="border border-neutral-600 hover:cursor-pointer hover:bg-neutral-900 rounded-full h-12 w-12 flex items-center justify-center"
             onClick={() => {
-              scrollRef.current.scrollTo({
+              if(!scrollRef.current) return;
+              (scrollRef.current as any).scrollTo({
                 left: (scrollRef.current as Element).scrollLeft - 300,
                 behavior: "smooth",
               });
@@ -99,8 +100,9 @@ export default function WhyChooseCipherwill() {
           <button
             className="border border-neutral-600 hover:cursor-pointer hover:bg-neutral-900 rounded-full h-12 w-12 flex items-center justify-center"
             onClick={() => {
+              if(!scrollRef.current) return;
               // scroll 300 px to the right
-              scrollRef.current.scrollTo({
+              (scrollRef.current as any).scrollTo({
                 left: (scrollRef.current as Element).scrollLeft + 300,
                 behavior: "smooth",
               });

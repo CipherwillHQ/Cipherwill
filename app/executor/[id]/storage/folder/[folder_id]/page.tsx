@@ -7,8 +7,8 @@ import Link from "next/link";
 
 export default function GrantedFolderView() {
   const params = useParams();
-  const id: string = params.id as string;
-  const folder_id: string = params.folder_id as string;
+  const id: string = params?.id as string;
+  const folder_id: string = params?.folder_id as string;
 
   const { loading, error, data, fetchMore } = useQuery(GET_GRANTED_METAMODELS, {
     variables: {

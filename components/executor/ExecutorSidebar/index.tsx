@@ -8,7 +8,7 @@ import SwitchThemeButton from "@/components/app/Sidebar/SwitchThemeButton";
 
 export default function ExecutorSidebar() {
   const pathname = usePathname();
-  const exeutorId = pathname.split("/")[2];
+  const exeutorId = pathname?.split("/")[2];
 
   return (
     <div className="flex flex-col h-full w-min sm:w-60 justify-between bg-white dark:bg-dark p-1 sm:p-2 border-r border-default">
@@ -16,7 +16,7 @@ export default function ExecutorSidebar() {
         <SidebarLogo />
 
         <div className="w-full flex flex-1 flex-col overflow-auto">
-          {getExecutorMenu(pathname).map((item, index) => {
+          {pathname && exeutorId && getExecutorMenu(pathname).map((item, index) => {
             if (item.divider) {
               return (
                 <div

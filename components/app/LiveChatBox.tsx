@@ -8,7 +8,7 @@ import { CRISP_TOKEN } from "@/common/constant";
 import SidebarItem from "./Sidebar/SidebarItem";
 import { twMerge } from "tailwind-merge";
 
-Crisp.configure(CRISP_TOKEN, {
+Crisp.configure(CRISP_TOKEN ?? "", {
   lockFullview: true,
   autoload: false,
   sessionMerge: true,
@@ -16,7 +16,7 @@ Crisp.configure(CRISP_TOKEN, {
 
 function user_session_attach(data) {
   if (data?.me) {
-    if (Crisp.isCrispInjected) {
+    if (Crisp.isCrispInjected()) {
       Crisp.setTokenId(data.me.id);
       Crisp.user.setEmail(data.me.email);
     }
@@ -60,7 +60,7 @@ export default function LiveChatBox({ className }: { className?: string }) {
     <div
       className={twMerge("flex items-center cursor-pointer", className)}
       onClick={() => {
-        if (Crisp.chat.isVisible) {
+        if (Crisp.chat.isVisible()) {
           Crisp.chat.show();
         }
         Crisp.chat.open();

@@ -2,7 +2,6 @@
 
 import SimpleButton from "@/components/common/SimpleButton";
 import { useEffect, useState } from "react";
-import { c } from "react-notion-x/build/context-CjLVO7h1";
 
 export default function CookieManager() {
   const [isAdOptAvailable, setisAdOptAvailable] = useState(false);
@@ -28,13 +27,13 @@ export default function CookieManager() {
     <div className="w-full text-center">
       <SimpleButton
         onClick={() => {
-          const control_btn: HTMLDivElement = document.querySelector(
+          const control_btn: HTMLDivElement|null = document.querySelector(
             "div#adopt-controller-button"
           );
           if (control_btn) {
             control_btn.style.setProperty("display", "block", "important");
           }
-          const cookie_popup: HTMLDivElement =
+          const cookie_popup: HTMLDivElement|null =
             document.querySelector("div#cookie-banner");
           if (cookie_popup) {
             cookie_popup.style.setProperty("display", "block", "important");

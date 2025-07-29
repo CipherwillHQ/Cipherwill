@@ -12,7 +12,7 @@ export default function SimpleButton({
   link_className?: string;
   onClick?: (event) => void;
   children: React.ReactNode;
-  href?: string;
+  href?: string | null;
 }) {
   const button = (
     <button

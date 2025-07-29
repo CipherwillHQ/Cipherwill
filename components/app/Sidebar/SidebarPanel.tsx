@@ -25,7 +25,7 @@ export default function SidebarPanel() {
             // if all segments are disabled then don't show the divider
             if (
               (item as Divider).segment_group &&
-              (item as Divider).segment_group.every((segment_key) => {
+              (item as Divider).segment_group?.every((segment_key) => {
                 return !preferences[segment_key];
               })
             ) {
@@ -37,7 +37,7 @@ export default function SidebarPanel() {
                 className="text-sm text-neutral-700 dark:text-neutral-300 font-semibold mt-3 px-2 py-1"
               >
                 {(item as Divider).path ? (
-                  <Link href={(item as Divider).path}>
+                  <Link href={(item as Divider).path ?? ""}>
                     {(item as Divider).divider}
                   </Link>
                 ) : (
@@ -48,8 +48,8 @@ export default function SidebarPanel() {
           }
           if (
             (item as Segment).preference_key &&
-            (preferences[(item as Segment).preference_key] === undefined ||
-              preferences[(item as Segment).preference_key] === false)
+            (preferences[(item as Segment).preference_key as string] === undefined ||
+              preferences[(item as Segment).preference_key as string] === false)
           ) {
             return null;
           }
@@ -65,7 +65,7 @@ export default function SidebarPanel() {
                 (
                   (item as Segment).path === "/app"
                     ? (item as Segment).path === pathname
-                    : pathname.startsWith((item as Segment).path)
+                    : pathname?.startsWith((item as Segment).path)
                 )
                   ? "bg-slate-100 dark:bg-slate-800 border-l-4 border-black dark:border-white"
                   : ""

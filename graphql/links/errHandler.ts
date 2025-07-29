@@ -16,7 +16,7 @@ const errHandler = onError((err) => {
       err.graphQLErrors.forEach((gqlError) => {
         if (
           ErrorsToHide.includes(
-            gqlError.extensions.code
+            gqlError.extensions?.code
               ? (gqlError.extensions.code as string)
               : "NA"
           )

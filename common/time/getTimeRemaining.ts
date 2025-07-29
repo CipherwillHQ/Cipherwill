@@ -36,6 +36,6 @@ export default function getTimeRemaining(
   } else if (seconds > 0) {
     return `${seconds} second${seconds > 1 ? "s" : ""}`;
   } else {
-    return DateTime.fromMillis(endTime).toRelative();
+    return DateTime.fromMillis(endTime).toRelative() ?? "unknown";
   }
 }

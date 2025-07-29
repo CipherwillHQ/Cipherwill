@@ -42,7 +42,7 @@ export default async function useDecryptedPod({
           return;
         }
         const encrypted_nonce_key = data.getKeyByRefId.key;
-        const pod_decryption_key = await get_pod_decryption_key({
+        const pod_decryption_key:any = await get_pod_decryption_key({
           encrypted_key: encrypted_nonce_key,
           time_capsule_private_key:
             beneficairy_encryption_key.getBeneficiaryEncryptionKey,

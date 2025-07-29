@@ -193,7 +193,7 @@ export function usePod<POD_DATA_TYPE>(
   async function updatePod(upated_data: POD_DATA_TYPE) {
     // strip out all fields that are not in the type
     let final_data = {};
-    for await (const key of Object.keys(config.DATA_SAMPLE)) {
+    for await (const key of Object.keys(config.DATA_SAMPLE as any)) {
       if (upated_data[key]) {
         final_data[key] = upated_data[key];
       }

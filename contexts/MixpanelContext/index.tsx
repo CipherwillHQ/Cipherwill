@@ -11,7 +11,7 @@ const DEBUG_MIXPANEL = false;
 
 export function MixpanelProvider({ children }: Props) {
   useEffect(() => {
-    mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN, {
+    mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN ?? "", {
       api_host: process.env.NEXT_PUBLIC_MIXPANEL_HOST,
       track_pageview: "url-with-path",
       debug:

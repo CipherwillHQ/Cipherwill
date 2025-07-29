@@ -10,7 +10,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import menu from "./menu";
 import MobileHeader from "./MobileHeader";
 import { twMerge } from "tailwind-merge";
-import { WorksMenuDesktop } from "./WorksMenu";
 
 export default function Header({
   classOverride = "",
@@ -30,7 +29,7 @@ export default function Header({
   const { user } = useAuth();
   const pathname = usePathname();
   const [expanded, setExpanded] = useState(false);
-  const [hoverMenu, setHoverMenu] = useState(null);
+  const [hoverMenu, setHoverMenu] = useState<any | null>(null);
 
   const handleScroll = () => {
     const position = window.scrollY;

@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 
 export default function GrantedBankAccounts() {
   const params = useParams();
-  const id = params.id;
+  const id = params?.id;
 
   const { loading, error, data, fetchMore } = useQuery(GET_GRANTED_METAMODELS, {
     variables: {

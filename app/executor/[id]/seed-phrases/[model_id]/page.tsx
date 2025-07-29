@@ -10,13 +10,13 @@ import { SEED_PHRASE_TYPE } from "@/types/pods/SEED_PHRASE";
 
 export default function DonorNoteView() {
   const params = useParams();
-  const access_id: string = params.id as string;
-  const seed_phrase_id: string = params.model_id as string;
+  const access_id: string = params?.id as string;
+  const seed_phrase_id: string = params?.model_id as string;
 
   const [decryptedValue, setDecryptedValue] =
     useState<SEED_PHRASE_TYPE | null>(null);
 
-  const [keyMetadata, setKeyMetadata] = useState(null);
+  const [keyMetadata, setKeyMetadata] = useState<any|null>(null);
   useDecryptedPod({
     access_id,
     metamodel_id: seed_phrase_id,

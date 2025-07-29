@@ -10,13 +10,13 @@ import { EMAIL_ACCOUNT_TYPE } from "@/types/pods/EMAIL_ACCOUNT";
 
 export default function DonorNoteView() {
   const params = useParams();
-  const access_id: string = params.id as string;
-  const email_account_id: string = params.model_id as string;
+  const access_id: string = params?.id as string;
+  const email_account_id: string = params?.model_id as string;
 
   const [decryptedValue, setDecryptedValue] =
     useState<EMAIL_ACCOUNT_TYPE | null>(null);
 
-  const [keyMetadata, setKeyMetadata] = useState(null);
+  const [keyMetadata, setKeyMetadata] = useState<any|null>(null);
   useDecryptedPod({
     access_id,
     metamodel_id: email_account_id,

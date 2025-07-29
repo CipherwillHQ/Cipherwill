@@ -15,7 +15,7 @@ export default function MobileHeader() {
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const [hoverMenu, setHoverMenu] = useState(null);
+  const [hoverMenu, setHoverMenu] = useState<any | null>(null);
 
   return (
     <div className="sm:hidden">

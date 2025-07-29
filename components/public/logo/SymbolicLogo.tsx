@@ -2,8 +2,9 @@ import whiteLogo from "@/assets/logo-white.png";
 import blackLogo from "@/assets/logo-black.png";
 import Image from "next/image";
 import { twMerge } from "tailwind-merge";
+
 export default function SymbolicLogo({
-  overrideTheme = null,
+  overrideTheme = "dark",
   className = "",
   size = 100,
 }: {

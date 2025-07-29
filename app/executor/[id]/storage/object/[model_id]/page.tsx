@@ -9,11 +9,10 @@ import DownloadGrantedObject from "./DownloadGrantedObject";
 
 export default function DonorObjectView() {
   const params = useParams();
-  const access_id: string = params.id as string;
-  const object_id: string = params.model_id as string;
+  const access_id: string = params?.id as string;
+  const object_id: string = params?.model_id as string;
 
-  const [keyMetadata, setKeyMetadata] = useState(null);
-
+  const [keyMetadata, setKeyMetadata] = useState<any | null>(null);
 
   const { data: granted_metamodel } = useQuery(GET_GRANTED_METAMODEL, {
     variables: {

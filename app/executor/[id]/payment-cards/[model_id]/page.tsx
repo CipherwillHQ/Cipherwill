@@ -10,13 +10,13 @@ import { PAYMENT_CARD_TYPE } from "@/types/pods/PAYMENT_CARD";
 
 export default function DonorNoteView() {
   const params = useParams();
-  const access_id: string = params.id as string;
-  const payment_card_id: string = params.model_id as string;
+  const access_id: string = params?.id as string;
+  const payment_card_id: string = params?.model_id as string;
 
   const [decryptedValue, setDecryptedValue] =
     useState<PAYMENT_CARD_TYPE | null>(null);
 
-  const [keyMetadata, setKeyMetadata] = useState(null);
+  const [keyMetadata, setKeyMetadata] = useState<any|null>(null);
   useDecryptedPod({
     access_id,
     metamodel_id: payment_card_id,

@@ -69,6 +69,10 @@ export default function AddPasskey({ continuous }) {
       <SimpleButton
         onClick={async () => {
           if (isMigrating || loading) return;
+          if(!user || !user.id) {
+            toast.error("User not found. Please log in again.");
+            return;
+          }
           const domain = extractDomainName(window.location.href);
           logger.info("domain", domain);
           if (domain !== "localhost" && domain !== "cipherwill.com") {

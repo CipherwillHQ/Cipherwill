@@ -4,7 +4,7 @@ import { Raw_Segment } from "@/types/Segments";
 const fs = require("fs");
 const path = require("path");
 
-const requiredFolders = [];
+const requiredFolders: string[] = [];
 segments_list.forEach((segment) => {
   const metamodel_type = (segment as Raw_Segment).metamodel_type;
   if (metamodel_type) {

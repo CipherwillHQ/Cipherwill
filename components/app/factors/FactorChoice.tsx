@@ -6,7 +6,7 @@ import AddMetamask from "./add/AddMetamask";
 import AddPasskey from "./add/AddPasskey";
 
 export default function FactorChoice({ continuous }) {
-  const [choice, setChoice] = useState(null);
+  const [choice, setChoice] = useState<string | null>(null);
   return (
     <div className="bg-secondary p-4 rounded-md text-black dark:text-white w-full max-w-sm">
       {choice === null && (

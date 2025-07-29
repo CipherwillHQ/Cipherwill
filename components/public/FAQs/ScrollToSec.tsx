@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 
 export default function ScrollToSec() {
   const searchParams = useSearchParams();
-  const topic = searchParams.get("topic");
+  const topic = searchParams?.get("topic");
   const router = useRouter();
   useEffect(() => {
     if (topic) {

@@ -5,7 +5,7 @@ import { DateTime } from "luxon";
 export async function GET(request: Request) {
   const faqs = questions;
   const lastmod = DateTime.now().startOf("month").toISO();
-  const urls = [];
+  const urls: { loc: string; lastmod: string }[] = [];
   for await (const [key, value] of Object.entries(faqs)) {
     for await (const [_, faq] of Object.entries(value)) {
       urls.push({

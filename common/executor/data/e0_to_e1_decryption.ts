@@ -15,6 +15,8 @@ export default async function e0_to_e1_decryption({
 }) {
   const encrypted_e1 = JSON.parse(
     await decrypt(
+      //TODO: Fix this type
+      //@ts-ignore
       beneficiary_factor_private_key,
       Buffer.from(e0_encrypted_data.ciphertext, "base64"),
       Buffer.from(e0_encrypted_data.ephemPublicKey, "base64"),

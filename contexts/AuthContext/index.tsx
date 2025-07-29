@@ -104,7 +104,7 @@ function handle_firebase_error(error) {
 export function AuthProvider({ children }: Props) {
   const pathname = usePathname();
   const IsPrivateRoute = privateRoutes.some((path) =>
-    pathname.startsWith(path)
+    pathname?.startsWith(path)
   );
 
   const mixpanel = useMixpanel();
@@ -141,7 +141,7 @@ export function AuthProvider({ children }: Props) {
 
   async function loadAuth() {
     authApp.onIdTokenChanged(async (user) => {
-      if (user) {
+      if (user && user.email) {
         setUser({
           uid: user.uid,
           email: user.email,
@@ -190,6 +190,7 @@ export function AuthProvider({ children }: Props) {
       }
     },
     sendEmailVerification: async () => {
+      if (!authApp || !authApp.currentUser) return;
       try {
         return await sendEmailVerification(authApp.currentUser);
       } catch (error) {
@@ -240,6 +241,7 @@ export function AuthProvider({ children }: Props) {
       // window.location.reload();
     },
     getIdToken: async (force = false) => {
+      if (!authApp || !authApp.currentUser) return;
       return await getIdToken(authApp.currentUser, force);
     },
   };

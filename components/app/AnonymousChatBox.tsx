@@ -4,7 +4,7 @@ import { Crisp } from "crisp-sdk-web";
 import { useEffect } from "react";
 import { IoChatbubblesOutline } from "react-icons/io5";
 
-Crisp.configure(CRISP_TOKEN, {
+Crisp.configure(CRISP_TOKEN ?? "", {
   lockFullview: true,
   autoload: false,
   sessionMerge: true,
@@ -18,7 +18,7 @@ export default function AnonymousChatBox() {
     <div
       className="flex items-center py-2 px-6 cursor-pointer border rounded-md bg-black text-white max-w-fit"
       onClick={() => {
-        if (Crisp.chat.isVisible) {
+        if (Crisp.chat.isVisible()) {
           Crisp.chat.show();
         }
         Crisp.chat.open();

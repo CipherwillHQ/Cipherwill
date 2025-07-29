@@ -21,7 +21,7 @@ export default function MobileMenu({ home = false }: { home?: boolean }) {
             className={`flex flex-col items-center justify-center text-accent-500 px-2`}
             onClick={() => {
               // mobile-menu-btn
-              document.getElementById("mobile-menu-btn").click();
+              document.getElementById("mobile-menu-btn")?.click();
             }}
           >
             <GrAppsRounded size={23} />

@@ -10,13 +10,13 @@ import useDecryptedPod from "@/common/executor/hooks/useDecryptedPod";
 
 export default function DonorNoteView() {
   const params = useParams();
-  const access_id: string = params.id as string;
-  const note_id: string = params.noteId as string;
+  const access_id: string = params?.id as string;
+  const note_id: string = params?.noteId as string;
 
   const [decryptedValue, setDecryptedValue] = useState<NOTE_TYPE | string>(
     "loading..."
   );
-  const [keyMetadata, setKeyMetadata] = useState(null);
+  const [keyMetadata, setKeyMetadata] = useState<any|null>(null);
   useDecryptedPod({
     access_id,
     metamodel_id: note_id,
@@ -61,7 +61,7 @@ export default function DonorNoteView() {
           ) : (
             <div
               dangerouslySetInnerHTML={{
-                __html: decryptedValue.content,
+                __html: decryptedValue.content ?? "",
               }}
             ></div>
           )}
