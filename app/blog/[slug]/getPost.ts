@@ -7,8 +7,8 @@ const getPost = cache(async (slug: string) => {
   const data = await fetch(
     // IS_PRODUCTION
     //   ?
-    `https://www.cipherwill.com/blog/fetchPostApi?slug=${slug}`,
-    // : `http://localhost:3000/blog/fetchPostApi?slug=${slug}`,
+    `https://www.cipherwill.com/api/fetchNotionPostApi?slug=${slug}`,
+    //  `http://localhost:3000/api/fetchNotionPostApi?slug=${slug}`,
     {
       next: IS_PRODUCTION
         ? {
