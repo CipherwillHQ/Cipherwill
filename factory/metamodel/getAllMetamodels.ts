@@ -9,7 +9,7 @@ export default async function getAllMetamodels({
   client: ApolloClient<any>;
   type?: string;
 }) {
-  let metamodels = [];
+  let metamodels:any[] = [];
   let cursor = undefined;
   let has_more = true;
   while (has_more) {

@@ -46,7 +46,7 @@ export default function Smartwill() {
   const [addBeneficiary] = useMutation(ADD_SMARTWILL_BENEFICIARY);
 
   if (user_loading) return <div>Loading...</div>;
-  if (user.birth_date === "0") return <IncompleteProfile />;
+  if (user?.birth_date === "0") return <IncompleteProfile />;
 
   return (
     <div className="w-full">

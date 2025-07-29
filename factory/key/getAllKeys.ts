@@ -9,7 +9,7 @@ export default async function getAllKeys({
   client: ApolloClient<any>;
   maxPublicKey: string;
 }) {
-  let data = [];
+  let data:any[] = [];
   let cursor = undefined;
   let has_more = true;
   while (has_more) {

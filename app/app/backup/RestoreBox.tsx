@@ -13,6 +13,7 @@ export default function RestoreBox() {
   const handleFileSelected = async (
     e: React.ChangeEvent<HTMLInputElement>
   ): Promise<void> => {
+    if (!e.target.files) return;
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
     setBackupFile(files[0]);
