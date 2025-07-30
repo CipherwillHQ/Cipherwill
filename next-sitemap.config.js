@@ -2,6 +2,9 @@
 module.exports = {
   siteUrl: "https://www.cipherwill.com",
   generateRobotsTxt: true,
+  additionalPaths: async (config) => [
+    await config.transform(config, "/"),
+  ],
   exclude: [
     "/manifest.webmanifest",
     "/i",
