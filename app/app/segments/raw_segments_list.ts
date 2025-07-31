@@ -6,8 +6,7 @@ const segments_list: (Divider | Raw_Segment)[] = [
   },
   {
     title: "Notes",
-    description:
-      "Write important notes, thoughts, and personal messages and data segments that aren't part of Cipherwill",
+    description: "Write down important notes, thoughts, personal life messages, and meaningful reflections.",
     path: "/app/data/notes",
     slug: "notes",
     metamodel_type: "NOTE",
