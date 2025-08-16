@@ -7,7 +7,7 @@ export default function TopRow() {
     <section className="pt-10 font-medium">
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-12 gap-y-12 gap-x-8 xl:gap-x-12">
         <div className="col-span-2 md:col-span-4 xl:pr-8">
-          <SymbolicLogo size={30} />
+          <SymbolicLogo size={30} overrideTheme="light" />
           <p className={`my-4`}>
             We ensure secure and seamless transfer of your data to loved ones
             around the world, creating a future where everyone's legacy is
