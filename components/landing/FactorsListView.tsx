@@ -30,7 +30,7 @@ export default function FactorsListView() {
   return (
     <section
       ref={sectionRef}
-      className="w-full max-w-7xl mx-auto mb-20 flex flex-col rounded-md p-4 pb-10 relative"
+      className="w-full max-w-7xl mx-auto mb-20 flex flex-col rounded-md p-4 py-20 relative"
     >
       {/* <div className="absolute top-0 left-0 right-0 bottom-0 z-20 text-black">
         {[

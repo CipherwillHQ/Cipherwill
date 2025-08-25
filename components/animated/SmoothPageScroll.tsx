@@ -1,27 +1,29 @@
 "use client";
-import Lenis from "lenis";
 import { useEffect } from "react";
-
-//TODO: Removed lenis to avoid issue with Scroll Position in Link component
+import Lenis from "lenis";
 
 export default function SmoothPageScroll() {
-  // useEffect(() => {
-  //   const lenis = new Lenis({
-  //     duration: 1.5, // adjust as needed
-  //     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-  //   });
+  useEffect(() => {
+    const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
-  //   function raf(time: number) {
-  //     lenis.raf(time);
-  //     requestAnimationFrame(raf);
-  //   }
+    const lenis = new Lenis({
+      smoothWheel: true,
+      // Use either lerp or duration. Lerp ~0.07-0.12 is a good desktop baseline.
+      lerp: prefersReduced ? 1 : 0.08,
+    });
 
-  //   requestAnimationFrame(raf);
+    let rafId: number | null = null;
+    const raf = (time: number) => {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    };
+    rafId = requestAnimationFrame(raf);
 
-  //   return () => {
-  //     lenis.destroy();
-  //   };
-  // }, []);
+    return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
+  }, []);
 
   return null;
 }

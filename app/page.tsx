@@ -17,6 +17,7 @@ import FactorsListView from "@/components/landing/FactorsListView";
 import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
 import CipherwillIntroScroller from "@/components/public/landing/CipherwillIntroScroller";
 import CipherwillIntroBox from "@/components/public/landing/CipherwillIntroBox";
+import AsSeenIn from "@/components/landing/AsSeenIn";
 
 export async function generateMetadata({
   params,
@@ -42,6 +43,7 @@ export default function Home() {
       <Header />
       <BoxHero />
       <RatingsAndUsers/>
+      <AsSeenIn/>
       <FactorsListView/>
       {/* <CenterHero /> */}
       {/* <ScreenshotDemo/>  */}
