@@ -7,8 +7,8 @@ import PricingABTest from "./PricingABTest";
 export default function PriceTeaser() {
   return (
     <div className="flex flex-col sm:flex-row justify-evenly gap-4 my-16 items-center sm:items-start">
-      <div className="p-2 w-full max-w-md border rounded-lg">
-        <div className="px-6 py-1 w-fit rounded-full bg-orange-100 text-dark font-semibold">
+      <div className="p-2 w-full border rounded-lg">
+        <div className="px-6 py-1 w-fit rounded-full bg-orange-100 text-orange-900/75 font-semibold">
           Lifetime free
         </div>
         <h2 className="text-5xl font-extrabold text-center my-8">
@@ -39,7 +39,7 @@ export default function PriceTeaser() {
           </li>
         </ul>
       </div>
-      <div className="p-2 w-full max-w-md border rounded-lg">
+      <div className="p-2 w-full border rounded-lg">
         <div className="flex items-center gap-2 justify-between">
           <div className="px-6 py-1 w-fit rounded-full bg-orange-300 text-orange-950  font-semibold">
             Premium
@@ -49,10 +49,10 @@ export default function PriceTeaser() {
             Period
           </div>
         </div>
-        <h2 className="text-5xl font-extrabold text-center my-8">
-          <span className="mr-2 line-through text-neutral-700">$60</span>
-          <span>$40</span>
-          <span className="text-lg">/Year</span>
+        <h2 className="text-5xl text-center my-8">
+          <span className="mr-2 line-through text-neutral-500 font-bold">$60</span>
+          <span className="font-extrabold">$40</span>
+          <span className="text-lg font-extrabold">/Year</span>
         </h2>
         {/* <PricingABTest/> */}
         <Link href={"/app/billing"}>

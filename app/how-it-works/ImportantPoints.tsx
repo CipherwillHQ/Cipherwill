@@ -25,7 +25,7 @@ export default function ImportantPoints() {
           </li>
           <li className="bg-black/5 backdrop-blur-md rounded-xl p-6 border border-white/25">
             <b>AES Encryption</b>
-            <br /> Data pods are encrypted using 256 AES encryption, providing
+            <br /> Data pods are encrypted using AES-256 encryption, providing
             robust security against unauthorized access.
           </li>
           <li className="bg-black/5 backdrop-blur-md rounded-xl p-6 border border-white/25">
