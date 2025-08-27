@@ -92,6 +92,7 @@ export function UserSetupProvider({ children }: Props) {
                 country,
               },
             },
+            refetchQueries: [{ query: ME }],
           });
         } else {
           // This is an existing user, logging in

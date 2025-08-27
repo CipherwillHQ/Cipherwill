@@ -37,6 +37,7 @@ export default async function perform_migrate_in(
   if (beneficiary_id) {
     beneficiary_factors = await client.query({
       query: GET_BENEFICIARY_FACTORS,
+      fetchPolicy: "network-only"
     });
     if (!beneficiary_factors) {
       toast.error("Invalid beneficiary");
@@ -131,6 +132,8 @@ export default async function perform_migrate_in(
     // encrypt for this one
     for await (const item of all_decrypted) {
       if (beneficiary_id && beneficiary_factors) {
+        console.log("*****", beneficiary_factors.data);
+        
         const beneficiary = beneficiary_factors.data.getBeneficiaryFactors.find(
           (x) => x.beneficiary_id === beneficiary_id
         );

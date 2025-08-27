@@ -49,6 +49,9 @@ export default function ProfilePage() {
               This will delete all your account data and log you out. You will
               need to log in again to access your account. Are you sure you want
               to delete all your account data?
+              <span className="block mt-2 font-semibold">
+                Note: The reset process take up to 24 hours to complete.
+              </span>
             </div>
             <ConfirmationButton
               onConfirm={() => {

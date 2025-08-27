@@ -10,6 +10,7 @@ import { useState } from "react";
 import perform_migrate_in from "../../../common/factor/perform_migrate_in";
 import GET_BENEFICIARY_KEY_COUNT from "../../../graphql/ops/auth/queries/GET_BENEFICIARY_KEY_COUNT";
 import CustomMessage from "./CustomMessage";
+import SimpleButton from "@/components/common/SimpleButton";
 
 export default function BeneficiaryList({ max_key_count, max_publicKey }) {
   const { loading, data, error } = useQuery(GET_SMARTWILL_BENEFICIARY);
@@ -122,12 +123,12 @@ function PersonTile({
     });
   }
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center my-1 bg-secondary rounded-md p-2 border border-default">
-      <div className="p-1">
+    <div className="flex flex-col gap-2 md:flex-row justify-between items-start md:items-center my-1 bg-secondary rounded-md p-2 border border-default">
+      <div className="py-1">
         <div>
           {person.first_name} {person.last_name}
         </div>
-        <div data-cy="beneficiary-email" className="text-xs sm:text-sm">
+        <div data-cy="beneficiary-email" className="text-sm md:text-base">
           {person.email}
         </div>
       </div>
@@ -140,77 +141,89 @@ function PersonTile({
         </div>
       )}
       {max_key_count !== minimum_count && (
-        <button
-          data-cy="requires-migration-button"
-          className="flex items-center p-2 text-xs rounded-full border border-red-400 bg-red-100 hover:bg-red-200 text-black m-1 transition-colors"
-          onClick={async () => {
-            if (isMigrating) return;
+        <>
+          <div className="text-xs text-red-700">
+            <span className="font-bold">Requires Migration</span>
+            <br />
+            My data count: {max_key_count} <br /> Beneficiary data count:{" "}
+            {minimum_count}
+          </div>
+          <SimpleButton
+            variant="danger"
+            data-cy="requires-migration-button"
+            onClick={async () => {
+              if (isMigrating) return;
 
-            if (
-              max_publicKey !== "null" &&
-              session.publicKey !== max_publicKey
-            ) {
-              toast.error(
-                "You need to login session with key " + max_publicKey.slice(-8)
-              );
-              return;
-            }
-            setIsMigrating(true);
-            if (
-              max_publicKey === "null" ||
-              max_publicKey === session.publicKey
-            ) {
-              toast.success(
-                `Migration Started from -> ${
-                  max_publicKey === "null" ? "Unencrypted vault" : max_publicKey
-                }`
-              );
-              await perform_migrate_in(
-                max_publicKey,
-                client,
-                "dosent-matter-its-a-beneficiary-id-migration",
-                session ? session.privateKey : null,
-                beneficiary.id
-              );
+              if (
+                max_publicKey !== "null" &&
+                session.publicKey !== max_publicKey
+              ) {
+                toast.error(
+                  "You need to login session with key " +
+                    max_publicKey.slice(-8)
+                );
+                return;
+              }
+              setIsMigrating(true);
+              if (
+                max_publicKey === "null" ||
+                max_publicKey === session.publicKey
+              ) {
+                toast.success(
+                  `Migration Started from -> ${
+                    max_publicKey === "null"
+                      ? "Unencrypted vault"
+                      : max_publicKey
+                  }`
+                );
+                await perform_migrate_in(
+                  max_publicKey,
+                  client,
+                  "dosent-matter-its-a-beneficiary-id-migration",
+                  session ? session.privateKey : null,
+                  beneficiary.id
+                );
 
-              // refetch query
-              await client.query({
-                query: GET_BENEFICIARY_KEY_COUNT,
-                fetchPolicy: "network-only",
-              });
-              toast.success(
-                `Migration Completed from -> ${
-                  max_publicKey === "null" ? "Unencrypted vault" : max_publicKey
-                }`
-              );
-              setIsMigrating(false);
-            } else {
-              toast.error(
-                `You need to login with factor key: ${max_publicKey}`
-              );
-              setIsMigrating(false);
-            }
-          }}
-        >
-          {isMigrating && (
-            <div
-              data-cy="sync-status"
-              className="w-4 h-4 border-2 border-dashed rounded-full animate-spin border-blue-500 mr-2"
-            />
-          )}
-          Requires Migration (My count: {max_key_count} | Beneficiary count:{" "}
-          {minimum_count})
-        </button>
+                // refetch query
+                await client.query({
+                  query: GET_BENEFICIARY_KEY_COUNT,
+                  fetchPolicy: "network-only",
+                });
+                toast.success(
+                  `Migration Completed from -> ${
+                    max_publicKey === "null"
+                      ? "Unencrypted vault"
+                      : max_publicKey
+                  }`
+                );
+                setIsMigrating(false);
+              } else {
+                toast.error(
+                  `You need to login with factor key: ${max_publicKey}`
+                );
+                setIsMigrating(false);
+              }
+            }}
+          >
+            {isMigrating && (
+              <div
+                data-cy="sync-status"
+                className="w-4 h-4 border-2 border-dashed rounded-full animate-spin border-white mr-2"
+              />
+            )}
+            Click to Migrate
+          </SimpleButton>
+        </>
       )}
 
-      <div className="flex sm:flex-col items-start sm:items-end justify-center text-xs sm:text-sm gap-2">
+      <div className="flex md:flex-col items-center md:items-end justify-center gap-2">
         <CustomMessage
           beneficiary_id={beneficiary.id}
           custom_message={beneficiary.custom_message}
         />
         <button
           data-cy="remove-beneficiary-button"
-          className="flex items-center px-2 py-1 text-sm rounded-full border border-red-400 bg-red-100 hover:bg-red-200 text-black transition-colors"
+          className="flex items-center hover:cursor-pointer px-2 py-1 text-sm rounded-full border border-red-400 bg-red-100 hover:bg-red-200 text-black transition-colors"
           onClick={() => {
             const cnf = confirm(
               "Are you sure you want to remove this beneficiary?"

@@ -79,15 +79,15 @@ export default function CustomMessage({
 
   return (
     <>
-      <button
+      <SimpleButton
+      variant="secondary"
         onClick={() => {
           setMessage(custom_message || "");
           setShowModal(true);
         }}
-        className="flex items-center px-4 py-1 text-sm rounded-full border border-default bg-secondary hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
       >
         {custom_message ? "Update Message" : "Create Message"}
-      </button>
+      </SimpleButton>
 
       <BasicPopup open={showModal} setOpen={setShowModal}>
         <div className="w-full max-w-2xl">
