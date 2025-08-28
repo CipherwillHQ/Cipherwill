@@ -6,6 +6,7 @@ type ButtonVariant = "primary" | "secondary" | "danger";
 export default function SimpleButton({
   className,
   link_className,
+  disabled,
   onClick,
   children,
   href = null,
@@ -13,6 +14,7 @@ export default function SimpleButton({
 }: {
   className?: string;
   link_className?: string;
+  disabled?: boolean;
   onClick?: (event) => void;
   children: React.ReactNode;
   href?: string | null;
@@ -35,17 +37,25 @@ export default function SimpleButton({
   const button = (
     <button
       className={twMerge(
-        "flex flex-row items-center rounded-full px-4 py-1 transition-colors duration-200 hover:cursor-pointer",
+        "flex flex-row items-center justify-center rounded-full px-4 py-1 transition-colors duration-200 hover:cursor-pointer",
         getVariantStyles(variant),
         className
       )}
       onClick={onClick}
+      disabled={disabled}
     >
       {children}
     </button>
   );
 
   if (href) {
+    if(disabled) {
+      return (
+        <span className={link_className}>
+          {button}
+        </span>
+      );
+    }
     return (
       <Link href={href} className={link_className}>
         {button}

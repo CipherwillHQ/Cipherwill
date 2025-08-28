@@ -14,12 +14,13 @@ import ResetFactor from "./ResetFactor";
 import Metamask from "./Metamask";
 import { MetaMaskProvider } from "@metamask/sdk-react";
 import Passkey from "./Passkey";
+import DeactivatedUserWarning from "./DeactivatedUserWarning";
 
 const SessionContext = createContext<any>({});
 
 export function SessionProvider({ children }) {
   const { user, logout } = useAuth();
-  const [available_methods, set_available_methods] = useState<any|null>(null);
+  const [available_methods, set_available_methods] = useState<any | null>(null);
   const [inactive_user, set_inactive_user] = useState<false | string>(false);
   const [session_token, set_session_token] = useState<null | {
     publicKey: string;
@@ -42,23 +43,10 @@ export function SessionProvider({ children }) {
       getAuthFactors();
     }
   }, [user, getAuthFactors]);
+  
   if (inactive_user) {
     return (
-      <div className="flex flex-col p-4 gap-2 items-center justify-center h-screen bg-white text-black">
-        <h2 className="text-lg font-bold">Inactive User Account</h2>
-        <div className="text-center">
-          Your account has a status "{inactive_user}". Please contact support at
-          support@cipherwill.com. This happens when your Cipherwill has
-          triggered all the events in your will and all your account data has
-          been removed from the system.
-        </div>
-        <button
-        className="text-red-700 hover:underline"
-        onClick={logout}
-        >
-          Logout
-        </button>
-      </div>
+      <DeactivatedUserWarning inactive_user={inactive_user} logout={logout} />
     );
   }
 
