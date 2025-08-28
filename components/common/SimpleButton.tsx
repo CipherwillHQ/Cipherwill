@@ -37,7 +37,7 @@ export default function SimpleButton({
   const button = (
     <button
       className={twMerge(
-        "flex flex-row items-center justify-center rounded-full px-4 py-1 transition-colors duration-200 hover:cursor-pointer",
+        "flex flex-row items-center justify-center rounded-md px-4 py-1 transition-colors duration-200 hover:cursor-pointer",
         getVariantStyles(variant),
         className
       )}

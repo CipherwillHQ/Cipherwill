@@ -35,7 +35,7 @@ export default function ProfilePage() {
             </div>
             <button
               onClick={logout}
-              className="border border-red-500 hover:bg-red-100 text-red-500 hover:text-red-700 px-8 py-1 rounded-md"
+              className="border hover:cursor-pointer border-red-500 hover:bg-red-100 text-red-500 hover:text-red-700 px-8 py-1 rounded-md"
             >
               Logout
             </button>

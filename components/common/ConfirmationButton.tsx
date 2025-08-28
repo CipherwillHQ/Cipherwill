@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { twMerge } from "tailwind-merge";
 
 export default function ConfirmationButton({
   children,
@@ -42,7 +43,7 @@ export default function ConfirmationButton({
           setUnderConfirmation(true);
         }
       }}
-      className={className}
+      className={twMerge("hover:cursor-pointer", className)}
       {...props}
     >
       {isProcessing ? (
