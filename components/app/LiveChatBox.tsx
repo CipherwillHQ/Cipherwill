@@ -8,14 +8,24 @@ import { CRISP_TOKEN } from "@/common/constant";
 import SidebarItem from "./Sidebar/SidebarItem";
 import { twMerge } from "tailwind-merge";
 
-Crisp.configure(CRISP_TOKEN ?? "", {
-  lockFullview: true,
-  autoload: false,
-  sessionMerge: true,
-});
+// Only configure Crisp on client side
+if (typeof window !== "undefined" && CRISP_TOKEN) {
+  Crisp.configure(CRISP_TOKEN, {
+    lockFullview: true,
+    autoload: false,
+    sessionMerge: true,
+  });
+}
 
-function user_session_attach(data) {
-  if (data?.me) {
+interface UserData {
+  me?: {
+    id: string;
+    email: string;
+  };
+}
+
+function user_session_attach(data: UserData) {
+  if (data?.me && typeof window !== "undefined") {
     if (Crisp.isCrispInjected()) {
       Crisp.setTokenId(data.me.id);
       Crisp.user.setEmail(data.me.email);
@@ -24,47 +34,72 @@ function user_session_attach(data) {
 }
 
 export default function LiveChatBox({ className }: { className?: string }) {
-  const [unreadCount, setUnreadCount] = useState(
-    window.$crisp?.get ? Crisp.chat.unreadCount() : 0
-  );
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [isCrispLoaded, setIsCrispLoaded] = useState(false);
 
   useQuery(ME, {
     onCompleted: (data) => {
+      if (typeof window === "undefined" || !CRISP_TOKEN) return;
+      
       user_session_attach(data);
       Crisp.load();
-      Crisp.session.onLoaded((e) => {
+      Crisp.session.onLoaded(() => {
+        setIsCrispLoaded(true);
         Crisp.chat.hide();
-        // get initial count after 5 seconds
+        // get initial count after 2 seconds to ensure Crisp is fully loaded
         setTimeout(() => {
-          setUnreadCount(Crisp.chat.unreadCount());
-        }, 5000);
+          try {
+            setUnreadCount(Crisp.chat.unreadCount() || 0);
+          } catch (error) {
+            console.warn("Failed to get unread count:", error);
+          }
+        }, 2000);
       });
       Crisp.chat.onChatOpened(() => {
         setUnreadCount(0);
       });
       Crisp.message.onMessageReceived(() => {
-        setUnreadCount(Crisp.chat.unreadCount());
+        try {
+          setUnreadCount(Crisp.chat.unreadCount() || 0);
+        } catch (error) {
+          console.warn("Failed to update unread count:", error);
+        }
       });
       Crisp.chat.onChatClosed(() => {
         Crisp.chat.hide();
       });
     },
   });
+
   useEffect(() => {
-    if (window.$crisp?.get) {
-      setUnreadCount(Crisp.chat.unreadCount());
+    // Only run on client side and if Crisp is available
+    if (typeof window !== "undefined" && window.$crisp?.get && isCrispLoaded) {
+      try {
+        setUnreadCount(Crisp.chat.unreadCount() || 0);
+      } catch (error) {
+        console.warn("Failed to get initial unread count:", error);
+      }
     }
-  }, []);
+  }, [isCrispLoaded]);
+
+  const handleChatClick = () => {
+    if (typeof window === "undefined" || !isCrispLoaded) return;
+    
+    try {
+      // If chat is hidden, show it first, then open
+      if (!Crisp.chat.isVisible()) {
+        Crisp.chat.show();
+      }
+      Crisp.chat.open();
+    } catch (error) {
+      console.warn("Failed to open chat:", error);
+    }
+  };
 
   return (
     <div
       className={twMerge("flex items-center cursor-pointer", className)}
-      onClick={() => {
-        if (Crisp.chat.isVisible()) {
-          Crisp.chat.show();
-        }
-        Crisp.chat.open();
-      }}
+      onClick={handleChatClick}
     >
       {unreadCount === 0 ? (
         <SidebarItem
@@ -73,9 +108,9 @@ export default function LiveChatBox({ className }: { className?: string }) {
         />
       ) : (
         <div className="flex items-center">
-          <div className="bg-black dark:bg-white text-white dark:text-black  mr-2 h-5 w-5 text-sm text-center rounded-full">
-            <div className="bg-yellow-500 h-2 w-2 rounded-full overflow-hidden animate-ping float-right -mr-2" />
-            <span className="text-sm font-bold">{unreadCount || "0"}</span>
+          <div className="relative bg-black dark:bg-white text-white dark:text-black mr-2 h-5 w-5 text-sm text-center rounded-full flex items-center justify-center">
+            <div className="absolute -top-1 -right-1 bg-yellow-500 h-2 w-2 rounded-full animate-ping" />
+            <span className="text-xs font-bold">{unreadCount > 99 ? "99+" : unreadCount}</span>
           </div>
           <span className="text-lg sm:text-sm font-medium">
             Live Chat with Team
