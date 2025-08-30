@@ -6,23 +6,31 @@ import DeleteFolder from "@/components/app/data/storage/DeleteFolder";
 import FileList from "@/components/app/data/storage/FileList";
 import FoldersList from "@/components/app/data/storage/FoldersList";
 import GET_FOLDER from "@/graphql/ops/app/storage/queries/GET_FOLDER";
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
+import { GetFolderQuery, GetFolderVariables } from "@/types/interfaces";
+import { useParams } from "next/navigation";
 
-export default function StorageFolderPage({ params }) {
-  const { id } = params;
-  const { data, loading, error, fetchMore } = useQuery(GET_FOLDER, {
+export default function StorageFolderPage() {
+  const params = useParams();
+  const id = params?.id as string;
+  const { data, loading, error, fetchMore } = useQuery<GetFolderQuery, GetFolderVariables>(GET_FOLDER, {
     variables: {
       id,
     },
-    onError(error) {
-      const error_code = error.graphQLErrors[0].extensions?.code;
-      if (error_code === "FOLDER_NOT_FOUND") {
-        window.location.href = "/app/data/storage";
-      }
-    },
   });
+
+  // Handle folder not found error
+  if (error && 'graphQLErrors' in error && error.graphQLErrors && error.graphQLErrors[0]) {
+    const error_code = error.graphQLErrors[0].extensions?.code;
+    if (error_code === "FOLDER_NOT_FOUND") {
+      window.location.href = "/app/data/storage";
+    }
+  }
+
   if (loading) return null;
   if (error) return <div>{JSON.stringify(error)}</div>;
+  if (!data) return <div>No data found</div>;
+
   const folder_details = data.getFolder;
   return (
     <div className="w-full">

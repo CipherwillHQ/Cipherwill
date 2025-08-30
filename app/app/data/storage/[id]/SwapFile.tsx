@@ -3,7 +3,7 @@ import logger from "@/common/debug/logger";
 import SimpleButton from "@/components/common/SimpleButton";
 import { useSession } from "@/contexts/SessionContext";
 import UPDATE_METAMODEL from "@/graphql/ops/app/metamodel/mutations/UPDATE_METAMODEL";
-import { useApolloClient, useMutation } from "@apollo/client";
+import { useApolloClient, useMutation } from "@apollo/client/react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import Popup from "reactjs-popup";

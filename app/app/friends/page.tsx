@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import ADD_SMARTWILL_FRIEND from "../../../graphql/ops/app/smartwill/mutations/ADD_SMARTWILL_FRIEND";
 import FriendList from "../../../components/app/smartwill/FriendList";
 import PersonSelector from "../../../components/app/smartwill/PersonSelector";

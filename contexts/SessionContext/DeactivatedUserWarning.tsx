@@ -1,10 +1,11 @@
 import { TbAlertTriangle, TbRefresh } from "react-icons/tb";
 import SwitchThemeButton from "@/components/app/Sidebar/SwitchThemeButton";
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import REQUEST_ACCOUNT_REACTIVATION from "@/graphql/ops/auth/mutations/REQUEST_ACCOUNT_REACTIVATION";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import SimpleButton from "@/components/common/SimpleButton";
+import type { RequestAccountReactivationMutation } from "@/types/interfaces/metamodel";
 
 export default function DeactivatedUserWarning({
   inactive_user,
@@ -15,27 +16,20 @@ export default function DeactivatedUserWarning({
 }) {
   const [isRequesting, setIsRequesting] = useState(false);
 
-  const [requestReactivation] = useMutation(REQUEST_ACCOUNT_REACTIVATION, {
-    onCompleted: () => {
-      setTimeout(() => {
-        setIsRequesting(false);
-        window.location.reload();
-      }, 3000);
-    },
-    onError: (error) => {
-      setIsRequesting(false);
-      toast.error(`Failed to submit reactivation request: ${error.message}`);
-    },
-  });
+  const [requestReactivation] = useMutation<RequestAccountReactivationMutation>(REQUEST_ACCOUNT_REACTIVATION);
 
   const handleReactivationRequest = async () => {
     setIsRequesting(true);
     try {
       toast.loading("Reactivating account...");
       await requestReactivation();
-    } catch (error) {
+      setTimeout(() => {
+        setIsRequesting(false);
+        window.location.reload();
+      }, 3000);
+    } catch (error: any) {
       setIsRequesting(false);
-      toast.error("Failed to submit reactivation request");
+      toast.error(`Failed to submit reactivation request: ${error.message}`);
     }
   };
 

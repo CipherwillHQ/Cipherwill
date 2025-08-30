@@ -8,17 +8,24 @@ import recurring_upload from "../data/recurring_upload";
 import DELETE_KEY_BY_PUBLIC_KEY from "../../graphql/ops/app/key/Mutations/DELETE_KEY_BY_PUBLIC_KEY";
 import GET_KEY_ITEMS_BY_PUBLIC_KEY from "../../graphql/ops/app/key/Queries/GET_KEY_ITEMS_BY_PUBLIC_KEY";
 import { Key } from "../data/types";
+import { GetFactorsQuery } from "../../types/interfaces/metamodel";
 
 export default async function perform_migrate_out(
-  client: ApolloClient<any>,
+  client: ApolloClient,
   publicKey: string,
   privateKey: string
 ) {
   // get factors count
-  const factors = await client.query({
+  const factors = await client.query<GetFactorsQuery>({
     fetchPolicy: "network-only",
     query: GET_FACTORS,
   });
+  
+  if (!factors.data) {
+    toast.error("Failed to fetch factors");
+    return;
+  }
+  
   const all_factors = factors.data.getFactors;
 
   if (all_factors.length > 1) {

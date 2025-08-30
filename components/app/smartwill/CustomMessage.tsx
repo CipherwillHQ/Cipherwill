@@ -1,5 +1,5 @@
 import UPDATE_CUSTOM_MESSAGE_FOR_BENEFICIARY from "@/graphql/ops/app/smartwill/mutations/UPDATE_CUSTOM_MESSAGE";
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import toast from "react-hot-toast";
 import React, { useState } from "react";
 import SimpleButton from "@/components/common/SimpleButton";

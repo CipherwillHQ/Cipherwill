@@ -5,7 +5,7 @@ import DesktopAndMobilePageHeader from "@/components/app/common/page/DesktopAndM
 import MobileMenu from "@/components/app/Sidebar/MobileMenu";
 import DELETE_DATA from "@/graphql/ops/auth/mutations/DELETE_DATA";
 import DELETE_ACCOUNT from "@/graphql/ops/auth/mutations/DELETE_ACCOUNT";
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import ConfirmationButton from "@/components/common/ConfirmationButton";
 
 export default function ProfilePage() {

@@ -1,14 +1,18 @@
 "use client";
 
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import getTimeAgo from "../../../../../common/time/getTimeAgo";
 import { useState } from "react";
 import GET_GRANTED_METAMODEL from "../../../../../graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODEL";
 import { NOTE_TYPE } from "../../../../../types/pods/NOTE";
 import { useParams } from "next/navigation";
 import useDecryptedPod from "@/common/executor/hooks/useDecryptedPod";
+import type { 
+  GetGrantedMetamodelQuery, 
+  GetGrantedMetamodelVariables 
+} from "@/types/interfaces/metamodel";
 
-export default function DonorNoteView() {
+export default function ExecutorNoteView() {
   const params = useParams();
   const access_id: string = params?.id as string;
   const note_id: string = params?.noteId as string;
@@ -28,12 +32,16 @@ export default function DonorNoteView() {
     },
   });
 
-  const { data: granted_metamodel } = useQuery(GET_GRANTED_METAMODEL, {
-    variables: {
-      access_id,
-      model_id: note_id,
-    },
-  });
+  const { data: granted_metamodel } = useQuery<GetGrantedMetamodelQuery, GetGrantedMetamodelVariables>(
+    GET_GRANTED_METAMODEL, 
+    {
+      variables: {
+        access_id,
+        model_id: note_id,
+      },
+    }
+  );
+  
   if (!granted_metamodel) return <div>Loading Granted Models...</div>;
 
   const parsed_data = JSON.parse(

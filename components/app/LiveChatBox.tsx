@@ -1,12 +1,13 @@
 "use client";
 import { Crisp } from "crisp-sdk-web";
 import { useState, useEffect } from "react";
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import ME from "@/graphql/ops/auth/queries/ME";
 import { IoChatbubblesOutline } from "react-icons/io5";
 import { CRISP_TOKEN } from "@/common/constant";
 import SidebarItem from "./Sidebar/SidebarItem";
 import { twMerge } from "tailwind-merge";
+import { MeData } from "@/types/interfaces";
 
 // Only configure Crisp on client side
 if (typeof window !== "undefined" && CRISP_TOKEN) {
@@ -17,14 +18,7 @@ if (typeof window !== "undefined" && CRISP_TOKEN) {
   });
 }
 
-interface UserData {
-  me?: {
-    id: string;
-    email: string;
-  };
-}
-
-function user_session_attach(data: UserData) {
+function user_session_attach(data: MeData) {
   if (data?.me && typeof window !== "undefined") {
     if (Crisp.isCrispInjected()) {
       Crisp.setTokenId(data.me.id);
@@ -37,8 +31,10 @@ export default function LiveChatBox({ className }: { className?: string }) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isCrispLoaded, setIsCrispLoaded] = useState(false);
 
-  useQuery(ME, {
-    onCompleted: (data) => {
+  const { data, loading, error } = useQuery<MeData>(ME);
+
+  useEffect(() => {
+    if (data && !loading && !error) {
       if (typeof window === "undefined" || !CRISP_TOKEN) return;
       
       user_session_attach(data);
@@ -68,8 +64,8 @@ export default function LiveChatBox({ className }: { className?: string }) {
       Crisp.chat.onChatClosed(() => {
         Crisp.chat.hide();
       });
-    },
-  });
+    }
+  }, [data, loading, error]);
 
   useEffect(() => {
     // Only run on client side and if Crisp is available

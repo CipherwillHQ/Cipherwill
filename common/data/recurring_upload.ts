@@ -7,7 +7,7 @@ export default async function recurring_upload({
   client,
   key_cluster,
 }: {
-  client: ApolloClient<any>;
+  client: ApolloClient;
   key_cluster: Key[];
 }) {
   logger.info(`Starting recurring upload of ${key_cluster.length} items`);

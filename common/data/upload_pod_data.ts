@@ -12,7 +12,7 @@ export default async function upload_pod_data({
   client,
 }: {
   data_items: DataItem[];
-  client: ApolloClient<any>;
+  client: ApolloClient;
 }) {
   logger.info(`Uploading ${data_items.length} data items`);
   // generate random key for each data item

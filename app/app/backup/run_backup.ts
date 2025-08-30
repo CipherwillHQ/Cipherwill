@@ -11,7 +11,6 @@ import { POSSIBLE_STATUS } from "./types";
 import getMyKeyCount from "../../../factory/key/getMyKeyCount";
 import CryptoJS from "crypto-js";
 import getAllMetamodels from "../../../factory/metamodel/getAllMetamodels";
-import logger from "../../../common/debug/logger";
 
 export default async function run_backup({
   status,
@@ -26,7 +25,7 @@ export default async function run_backup({
   setStatus: (status: POSSIBLE_STATUS) => void;
   setProgress: (progress: number) => void;
   session: any;
-  client: ApolloClient<any>;
+  client: ApolloClient;
   setDataPoints: (count: number) => void;
   close: () => void;
 }) {

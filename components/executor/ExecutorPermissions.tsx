@@ -1,13 +1,14 @@
 "use client";
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import GET_ALL_BENEFICIARY_ACCESS from "../../graphql/ops/app/executor/access/queries/GET_ALL_BENEFICIARY_ACCESS";
+import { GetAllBeneficiaryAccessQuery } from "../../types/interfaces/metamodel";
 import getTimeRemaining from "../../common/time/getTimeRemaining";
 import Link from "next/link";
 import { UserById } from "../app/UserById";
 import DevOnly from "../debug/DevOnly";
 
 export default function ExecutorPermissions() {
-  const { loading, error, data } = useQuery(GET_ALL_BENEFICIARY_ACCESS);
+  const { loading, error, data } = useQuery<GetAllBeneficiaryAccessQuery>(GET_ALL_BENEFICIARY_ACCESS);
 
   if (loading) return null;
   if (error) return <div>Error : {JSON.stringify(error)}</div>;

@@ -1,7 +1,7 @@
 "use client";
 import ConfirmationButton from "@/components/common/ConfirmationButton";
 import REQUEST_ACCOUNT_RESET from "@/graphql/ops/auth/mutations/REQUEST_ACCOUNT_RESET";
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import toast from "react-hot-toast";
 import Popup from "reactjs-popup";
 

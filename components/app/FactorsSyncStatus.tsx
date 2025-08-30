@@ -1,6 +1,6 @@
 "use client";
 
-import { useApolloClient, useLazyQuery, useMutation } from "@apollo/client";
+import { useApolloClient, useLazyQuery, useMutation } from "@apollo/client/react";
 import { useEffect, useState } from "react";
 import { useSession } from "../../contexts/SessionContext";
 import toast from "react-hot-toast";
@@ -11,6 +11,12 @@ import { BiCheckShield } from "react-icons/bi";
 import DELETE_KEY_BY_PUBLIC_KEY from "../../graphql/ops/app/key/Mutations/DELETE_KEY_BY_PUBLIC_KEY";
 import GET_ALL_KEY_COUNT from "../../graphql/ops/app/key/Queries/GET_ALL_KEY_COUNT";
 import DevOnly from "../debug/DevOnly";
+import { GetAllKeyCountQuery, DeleteKeyByPublicKeyVariables } from "../../types/interfaces";
+
+// Simple interface for deletion mutation response
+interface DeleteKeyMutationResponse {
+  deleteKeyForPublicKey: boolean;
+}
 
 export default function FactorsSyncStatus() {
   const { session, lock } = useSession();
@@ -24,45 +30,49 @@ export default function FactorsSyncStatus() {
     publicKey: "null",
   });
 
-  const [getKeyCount, { data, loading, error }] = useLazyQuery(
-    GET_ALL_KEY_COUNT,
-    {
-      onCompleted: async (data) => {
-        if (data && data.getAllKeyCount) {
-          const current = data.getAllKeyCount.find(
-            (c) => c.publicKey === "null"
-          );
-          set_unencrypted_data_count(current ? current.count : 0);
-
-          let maxCount = 0;
-          let maxPublicKey = "null";
-          let maxKeyList:any[] = [];
-          for await (const c of data.getAllKeyCount) {
-            if (c.count >= maxCount) {
-              maxCount = c.count;
-              maxPublicKey = c.publicKey;
-              maxKeyList.push(c.publicKey);
-            }
-          }
-          set_max_keys({
-            count: maxCount,
-            publicKey: maxPublicKey,
-          });
-          setMaxPublicKeysList(maxKeyList);
-        }
-      },
-    }
+  const [getKeyCount, { data, loading, error }] = useLazyQuery<GetAllKeyCountQuery>(
+    GET_ALL_KEY_COUNT
   );
-  const [deleteDataForPublicKey] = useMutation(DELETE_KEY_BY_PUBLIC_KEY, {
-    onCompleted(data, clientOptions) {
-      toast.success("Delete all unencrypted data!!!");
-    },
+
+  // Handle data processing when query completes
+  useEffect(() => {
+    if (data && data.getAllKeyCount) {
+      const current = data.getAllKeyCount.find(
+        (c) => c.publicKey === "null"
+      );
+      set_unencrypted_data_count(current ? current.count : 0);
+
+      let maxCount = 0;
+      let maxPublicKey = "null";
+      let maxKeyList: any[] = [];
+      for (const c of data.getAllKeyCount) {
+        if (c.count >= maxCount) {
+          maxCount = c.count;
+          maxPublicKey = c.publicKey;
+          maxKeyList.push(c.publicKey);
+        }
+      }
+      set_max_keys({
+        count: maxCount,
+        publicKey: maxPublicKey,
+      });
+      setMaxPublicKeysList(maxKeyList);
+    }
+  }, [data]);
+  const [deleteDataForPublicKey, { data: deleteData, loading: deleteLoading, error: deleteError }] = useMutation<DeleteKeyMutationResponse, DeleteKeyByPublicKeyVariables>(DELETE_KEY_BY_PUBLIC_KEY, {
     refetchQueries: [
       {
         query: GET_ALL_KEY_COUNT,
       },
     ],
   });
+
+  // Handle deletion completion
+  useEffect(() => {
+    if (deleteData) {
+      toast.success("Delete all unencrypted data!!!");
+    }
+  }, [deleteData]);
 
   useEffect(() => {
     getKeyCount();

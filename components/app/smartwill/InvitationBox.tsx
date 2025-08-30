@@ -1,7 +1,8 @@
 import SimpleButton from "@/components/common/SimpleButton";
 import INVITE_USER from "@/graphql/ops/app/people/mutations/INVITE_USER";
 import { PersonRef } from "@/types/Will";
-import { useMutation } from "@apollo/client";
+import { InviteUserData, InviteUserVariables } from "@/types/interfaces/people";
+import { useMutation } from "@apollo/client/react";
 import { useState } from "react";
 
 export default function InvitationBox({
@@ -16,7 +17,7 @@ export default function InvitationBox({
   onClose: () => void;
 }) {
   const [name, setName] = useState("");
-  const [inviteUser] = useMutation(INVITE_USER);
+  const [inviteUser] = useMutation<InviteUserData, InviteUserVariables>(INVITE_USER);
 
   return (
     <div className="flex flex-col gap-2">

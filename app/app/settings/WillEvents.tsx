@@ -1,15 +1,20 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client/react";
 import ConfirmationButton from "../../../components/common/ConfirmationButton";
 import GET_NEXT_WILL_EVENT from "../../../graphql/ops/app/smartwill/queries/GET_NEXT_WILL_EVENT";
 import getTimeRemaining from "../../../common/time/getTimeRemaining";
 import FORCE_TRIGGER_NEXT_WILL_EVENT from "../../../graphql/ops/app/smartwill/mutations/FORCE_TRIGGER_NEXT_WILL_EVENT";
 import RESET_WILL_EVENTS from "../../../graphql/ops/app/smartwill/mutations/RESET_WILL_EVENTS";
+import type { 
+  GetNextWillEventQuery, 
+  ForceTriggerNextWillEventMutation, 
+  ResetWillEventsMutation 
+} from "@/types/interfaces/metamodel";
 
 export default function WillEvents() {
-  const [forceTriggerNextWillEvent] = useMutation(
+  const [forceTriggerNextWillEvent] = useMutation<ForceTriggerNextWillEventMutation>(
     FORCE_TRIGGER_NEXT_WILL_EVENT
   );
-  const [resetWillEvents] = useMutation(RESET_WILL_EVENTS);
+  const [resetWillEvents] = useMutation<ResetWillEventsMutation>(RESET_WILL_EVENTS);
   return (
     <div className="w-full max-w-2xl m-auto flex flex-col justify-center px-2">
       <h2 className="text-2xl font-semibold py-4">Will Events</h2>
@@ -29,8 +34,12 @@ export default function WillEvents() {
           data-cy="trigger-button"
           className="bg-red-500 hover:bg-red-700 text-white px-2 rounded-sm"
           onConfirm={async () => {
-            await forceTriggerNextWillEvent();
-            window.location.reload();
+            try {
+              await forceTriggerNextWillEvent();
+              window.location.reload();
+            } catch (error) {
+              console.error('Failed to trigger next will event:', error);
+            }
           }}
         >
           Trigger
@@ -48,8 +57,12 @@ export default function WillEvents() {
           data-cy="reset-events-button"
           className="bg-red-500 hover:bg-red-700 text-white px-2 rounded-sm"
           onConfirm={async () => {
-            await resetWillEvents();
-            window.location.reload();
+            try {
+              await resetWillEvents();
+              window.location.reload();
+            } catch (error) {
+              console.error('Failed to reset will events:', error);
+            }
           }}
         >
           Reset
@@ -60,10 +73,10 @@ export default function WillEvents() {
 }
 
 function NextWillEvent() {
-  const { loading, data, error } = useQuery(GET_NEXT_WILL_EVENT);
+  const { loading, data, error } = useQuery<GetNextWillEventQuery>(GET_NEXT_WILL_EVENT);
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
-  if (data.getNextWillEvent === null) return <div>No upcoming events</div>;
+  if (!data?.getNextWillEvent) return <div>No upcoming events</div>;
   const event = data.getNextWillEvent;
   return (
     <div className="border p-2 my-2" data-cy="next-will-event">
@@ -72,7 +85,7 @@ function NextWillEvent() {
         Type: <span>{event.type}</span>
       </div>
       <div className="text-sm text-gray-500" data-cy="execution-time">
-        Date: <span>{getTimeRemaining(event.execution_time)}</span>
+        Date: <span>{getTimeRemaining(parseInt(event.execution_time))}</span>
       </div>
       <div className="text-sm text-gray-500" data-cy="created-at">
         Created:{" "}

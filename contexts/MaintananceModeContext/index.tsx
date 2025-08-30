@@ -5,12 +5,9 @@ import { DateTime } from "luxon";
 import { usePostHog } from "posthog-js/react";
 import { ReactNode, useEffect, useState } from "react";
 import { HiOutlineWrenchScrewdriver } from "react-icons/hi2";
+import { ComponentProps } from "@/types/interfaces";
 
-interface Props {
-  children?: ReactNode;
-}
-
-export function MaintananceModeProvider({ children }: Props) {
+export function MaintananceModeProvider({ children }: ComponentProps) {
   const posthog = usePostHog();
   const [under_maintanance, set_under_maintanance] = useState<
     | false

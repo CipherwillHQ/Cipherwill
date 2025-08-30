@@ -1,6 +1,7 @@
 import { ApolloClient } from "@apollo/client";
 import { EncryptionKeys, Key } from "./types";
 import GET_BENEFICIARY_FACTORS from "@/graphql/ops/auth/queries/GET_BENEFICIARY_FACTORS";
+import { GetBeneficiaryFactorsQuery } from "@/types/interfaces/metamodel";
 import encrypt from "@/crypto/e0/encrypt";
 
 async function encrypt_for_time_capsule(
@@ -25,13 +26,18 @@ export default async function generate_keys_for_beneficiaries({
 }: {
   key_cluster: Key[];
   encryption_keys: EncryptionKeys;
-  client: ApolloClient<any>;
+  client: ApolloClient;
 }) {
   // get all beneficiary factors
-  const beneficiary_factors = await client.query({
+  const beneficiary_factors = await client.query<GetBeneficiaryFactorsQuery>({
     query: GET_BENEFICIARY_FACTORS,
     fetchPolicy: "network-only",
   });
+  
+  if (!beneficiary_factors.data) {
+    throw new Error("Failed to fetch beneficiary factors");
+  }
+  
   const all_beneficiary_factors =
     beneficiary_factors.data.getBeneficiaryFactors;
 

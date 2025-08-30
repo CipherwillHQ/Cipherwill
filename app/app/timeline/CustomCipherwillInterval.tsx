@@ -1,7 +1,7 @@
 "use client";
 import Select from "@/components/ui/Select";
 import UPDATE_PREFERENCES from "@/graphql/ops/auth/mutations/UPDATE_PREFERENCES";
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 
 const options = [
   {

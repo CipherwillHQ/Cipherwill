@@ -1,22 +1,31 @@
 "use client";
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import Link from "next/link";
 import GET_GRANTED_METAMODELS from "../../../../graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODELS";
 import { useParams } from "next/navigation";
+import type { 
+  GetGrantedMetamodelsQuery, 
+  GetGrantedMetamodelsVariables,
+  GrantedMetamodel 
+} from "@/types/interfaces/metamodel";
 
-export default function DataPodView() {
-  const params = useParams();
+export default function GrantedPaymentCards() {
+  const params = useParams() as { id: string };
   const id = params?.id;
 
-  const { loading, error, data, fetchMore } = useQuery(GET_GRANTED_METAMODELS, {
-    variables: {
-      access_id: id,
-      type: "PAYMENT_CARD",
-    },
-  });
+  const { loading, error, data, fetchMore } = useQuery<GetGrantedMetamodelsQuery, GetGrantedMetamodelsVariables>(
+    GET_GRANTED_METAMODELS, 
+    {
+      variables: {
+        access_id: id,
+        type: "PAYMENT_CARD",
+      },
+    }
+  );
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <div>Error : {JSON.stringify(error)}</div>;
+  if (error) return <div>Error : {error.message}</div>;
+  if (!data) return <div>No data available</div>;
   return (
     <div className="w-full">
       <h1 className="text-xl font-semibold">Payment Cards</h1>
@@ -24,7 +33,7 @@ export default function DataPodView() {
         {data.getGrantedMetamodels.models.length === 0 && (
           <div className="py-2 opacity-50">No Payment Cards Found</div>
         )}
-        {data.getGrantedMetamodels.models.map((model: any) => {
+        {data.getGrantedMetamodels.models.map((model: GrantedMetamodel) => {
           const parsed_data = JSON.parse(model.metadata);
           return (
             <Link
@@ -48,7 +57,8 @@ export default function DataPodView() {
                     data.getGrantedMetamodels.models.length - 1
                   ].id,
               },
-              updateQuery: (prev, { fetchMoreResult }) => {
+              updateQuery: (prev: GetGrantedMetamodelsQuery, { fetchMoreResult }: { fetchMoreResult: GetGrantedMetamodelsQuery }) => {
+                if (!fetchMoreResult) return prev;
                 return {
                   getGrantedMetamodels: {
                     models: [
