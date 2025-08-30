@@ -1,36 +1,19 @@
 "use client";
 
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import DELETE_KEY_BY_PUBLIC_KEY from "../../../graphql/ops/app/key/Mutations/DELETE_KEY_BY_PUBLIC_KEY";
 import GET_ALL_KEY_COUNT from "../../../graphql/ops/app/key/Queries/GET_ALL_KEY_COUNT";
+import { GetAllKeyCountQuery, DeleteKeyByPublicKeyMutation, DeleteKeyByPublicKeyVariables } from "../../../types/interfaces";
 
 export default function KeyCount() {
   const [unencrypted_key_count, set_unencrypted_key_count] = useState(0);
   const [max_key_count, set_max_key_count] = useState(0);
 
-  const [getKeyCount, { data, loading, error }] = useLazyQuery(GET_ALL_KEY_COUNT, {
-    onCompleted: async (data) => {
-      if (data && data.getAllKeyCount) {
-        const current = data.getAllKeyCount.find((c) => c.publicKey === "null");
-        set_unencrypted_key_count(current ? current.count : 0);
+  const [getKeyCount, { data, loading, error }] = useLazyQuery<GetAllKeyCountQuery>(GET_ALL_KEY_COUNT);
 
-        let maxCount = 0;
-        for await (const c of data.getAllKeyCount) {
-          if (c.count >= maxCount && c.publicKey !== "null") {
-            maxCount = c.count;
-          }
-        }
-        set_max_key_count(maxCount);
-      }
-    },
-  });
-
-  const [deleteKeyForPublicKey] = useMutation(DELETE_KEY_BY_PUBLIC_KEY, {
-    onCompleted(data, clientOptions) {
-      toast.success("Delete all unencrypted keys!!!");
-    },
+  const [deleteKeyForPublicKey] = useMutation<DeleteKeyByPublicKeyMutation, DeleteKeyByPublicKeyVariables>(DELETE_KEY_BY_PUBLIC_KEY, {
     refetchQueries: [
       {
         query: GET_ALL_KEY_COUNT,
@@ -38,8 +21,26 @@ export default function KeyCount() {
     ],
   });
 
+  // Handle key count data processing
   useEffect(() => {
-    getKeyCount();
+    if (data && data.getAllKeyCount) {
+      const current = data.getAllKeyCount.find((c) => c.publicKey === "null");
+      set_unencrypted_key_count(current ? current.count : 0);
+
+      let maxCount = 0;
+      for (const c of data.getAllKeyCount) {
+        if (c.count >= maxCount && c.publicKey !== "null") {
+          maxCount = c.count;
+        }
+      }
+      set_max_key_count(maxCount);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    getKeyCount().catch((error) => {
+      console.error('Failed to get key count:', error);
+    });
   }, [getKeyCount]);
 
   if (loading) return <div>Loading...</div>;
@@ -67,6 +68,11 @@ export default function KeyCount() {
                 variables: {
                   publicKey: "null",
                 },
+              }).then(() => {
+                toast.success("Delete all unencrypted keys!!!");
+              }).catch((error) => {
+                console.error('Failed to delete keys:', error);
+                toast.error("Failed to delete keys");
               });
             }
           }}

@@ -1,4 +1,5 @@
-import { onError } from "@apollo/client/link/error";
+import { ErrorLink } from "@apollo/client/link/error";
+import { CombinedGraphQLErrors } from "@apollo/client/errors";
 import logger from "../../common/debug/logger";
 import toast from "react-hot-toast";
 
@@ -11,10 +12,10 @@ const ErrorsToHide = [
   "USER_DEACTIVATED"
 ] as string[]; // handled by application
 
-const errHandler = onError((err) => {
-  if (err.graphQLErrors !== null && err.graphQLErrors !== undefined) {
-    if (err.graphQLErrors.length > 0) {
-      err.graphQLErrors.forEach((gqlError) => {
+const errHandler = new ErrorLink(({ error, operation, forward }) => {
+  if (CombinedGraphQLErrors.is(error)) {
+    if (error.errors.length > 0) {
+      error.errors.forEach((gqlError) => {
         if (
           ErrorsToHide.includes(
             gqlError.extensions?.code

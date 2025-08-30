@@ -1,10 +1,11 @@
 "use client";
 import GET_METAMODELS from "@/graphql/ops/app/metamodel/queries/GET_METAMODELS";
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import FileTile from "./FileTile";
+import { GetMetamodelsQuery, GetMetamodelsVariables } from "@/types/interfaces";
 
 export default function FileList({ folder_id }: { folder_id?: string }) {
-  const { data, loading, error, fetchMore } = useQuery(GET_METAMODELS, {
+  const { data, loading, error, fetchMore } = useQuery<GetMetamodelsQuery, GetMetamodelsVariables>(GET_METAMODELS, {
     variables: {
       type: "FILE",
       folder_id,
@@ -18,6 +19,8 @@ export default function FileList({ folder_id }: { folder_id?: string }) {
     );
   }
   if (error) return <div>{JSON.stringify(error)}</div>;
+  if (!data) return null;
+  
   return (
     <div className="flex flex-col w-full gap-2 p-4">
       {data.getMetamodels.models.length === 0 && <div>No files</div>}
@@ -54,7 +57,8 @@ export default function FileList({ folder_id }: { folder_id?: string }) {
                     data.getMetamodels.models.length - 1
                   ].id,
               },
-              updateQuery: (prev, { fetchMoreResult }) => {
+              updateQuery: (prev: GetMetamodelsQuery, { fetchMoreResult }: { fetchMoreResult: GetMetamodelsQuery }) => {
+                if (!fetchMoreResult) return prev;
                 return {
                   getMetamodels: {
                     models: [

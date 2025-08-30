@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Popup from "reactjs-popup";
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client/react";
 import { useSession } from "../../../contexts/SessionContext";
 import run_backup from "./run_backup";
 import { POSSIBLE_STATUS } from "./types";

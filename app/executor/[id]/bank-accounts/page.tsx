@@ -1,14 +1,19 @@
 "use client";
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import Link from "next/link";
 import GET_GRANTED_METAMODELS from "../../../../graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODELS";
 import { useParams } from "next/navigation";
+import type { 
+  GetGrantedMetamodelsQuery, 
+  GetGrantedMetamodelsVariables,
+  MetamodelMetadata 
+} from "@/types/interfaces/metamodel";
 
 export default function GrantedBankAccounts() {
   const params = useParams();
-  const id = params?.id;
+  const id = params?.id as string;
 
-  const { loading, error, data, fetchMore } = useQuery(GET_GRANTED_METAMODELS, {
+  const { loading, error, data, fetchMore } = useQuery<GetGrantedMetamodelsQuery, GetGrantedMetamodelsVariables>(GET_GRANTED_METAMODELS, {
     variables: {
       access_id: id,
       type: "BANK_ACCOUNT",
@@ -16,7 +21,8 @@ export default function GrantedBankAccounts() {
   });
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <div>Error : {JSON.stringify(error)}</div>;
+  if (error) return <div>Error : {error.message}</div>;
+  if (!data?.getGrantedMetamodels) return <div>No data available</div>;
   return (
     <div className="w-full">
       <h1 className="text-xl font-semibold">Bank Accounts</h1>
@@ -24,8 +30,8 @@ export default function GrantedBankAccounts() {
         {data.getGrantedMetamodels.models.length === 0 && (
           <div className="py-2 opacity-50">No Bank Account Found</div>
         )}
-        {data.getGrantedMetamodels.models.map((model: any) => {
-          const parsed_data = JSON.parse(model.metadata);
+        {data.getGrantedMetamodels.models.map((model) => {
+          const parsed_data: MetamodelMetadata = JSON.parse(model.metadata);
           return (
             <Link
               key={model.id}
@@ -48,7 +54,7 @@ export default function GrantedBankAccounts() {
                     data.getGrantedMetamodels.models.length - 1
                   ].id,
               },
-              updateQuery: (prev, { fetchMoreResult }) => {
+              updateQuery: (prev: GetGrantedMetamodelsQuery, { fetchMoreResult }: { fetchMoreResult: GetGrantedMetamodelsQuery }) => {
                 return {
                   getGrantedMetamodels: {
                     models: [

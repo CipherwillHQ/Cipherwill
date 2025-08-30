@@ -1,40 +1,45 @@
 "use client";
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import CREATE_METAMODEL from "../../../../graphql/ops/app/metamodel/mutations/CREATE_METAMODEL";
 import GET_METAMODELS from "../../../../graphql/ops/app/metamodel/queries/GET_METAMODELS";
 import SimpleButton from "@/components/common/SimpleButton";
 import Popup from "reactjs-popup";
 import toast from "react-hot-toast";
 import { useCallback } from "react";
+import { CreateMetamodelMutation, CreateMetamodelVariables, GetMetamodelsVariables } from "../../../../types/interfaces";
+import { stringifyMetamodelMetadata } from "../../../../common/metamodel/utils";
 
 export default function CreateNote() {
-  const [createNote] = useMutation(CREATE_METAMODEL, {
-    refetchQueries: [
-      {
-        query: GET_METAMODELS,
-        variables: {
-          type: "NOTE",
+  const [createNote] = useMutation<CreateMetamodelMutation, CreateMetamodelVariables>(
+    CREATE_METAMODEL,
+    {
+      refetchQueries: [
+        {
+          query: GET_METAMODELS,
+          variables: {
+            type: "NOTE",
+          } as GetMetamodelsVariables,
         },
-      },
-    ],
-  });
+      ],
+    }
+  );
 
   const addNote = useCallback((close: () => void) => {
     let title = (document.getElementById("note-title") as any).value;
     title = title.trim();
     if (title && title.length > 0) {
-      // create bank account
+      // create note
       createNote({
         variables: {
           type: "NOTE",
-          metadata: JSON.stringify({ title }),
+          metadata: stringifyMetamodelMetadata({ name: title, title }),
         },
       });
       close();
     } else {
       toast.error("Please enter a valid title");
     }
-  }, []);
+  }, [createNote]);
   return (
     <Popup
       trigger={

@@ -1,31 +1,42 @@
 "use client";
 
-import { useQuery } from "@apollo/client";
-import { useState } from "react";
+import { useQuery } from "@apollo/client/react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import GET_GRANTED_METAMODEL from "@/graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODEL";
 import getTimeAgo from "@/common/time/getTimeAgo";
 import DownloadGrantedObject from "./DownloadGrantedObject";
+import type { 
+  GetGrantedMetamodelQuery, 
+  GetGrantedMetamodelVariables 
+} from "@/types/interfaces/metamodel";
 
-export default function DonorObjectView() {
-  const params = useParams();
-  const access_id: string = params?.id as string;
-  const object_id: string = params?.model_id as string;
+export default function ExecutorObjectView() {
+  const params = useParams() as { id: string; model_id: string };
+  const access_id: string = params?.id;
+  const object_id: string = params?.model_id;
 
   const [keyMetadata, setKeyMetadata] = useState<any | null>(null);
 
-  const { data: granted_metamodel } = useQuery(GET_GRANTED_METAMODEL, {
-    variables: {
-      access_id,
-      model_id: object_id,
-    },
-    onCompleted(data) {
-      const keyMetadata = data?.getGrantedMetamodel;
-      if (!keyMetadata) return;
-      setKeyMetadata(keyMetadata);
-    },
-  });
-  if (!granted_metamodel) return <div>Loading Granted Models...</div>;
+  const { data: granted_metamodel, loading, error } = useQuery<GetGrantedMetamodelQuery, GetGrantedMetamodelVariables>(
+    GET_GRANTED_METAMODEL, 
+    {
+      variables: {
+        access_id,
+        model_id: object_id,
+      },
+    }
+  );
+
+  useEffect(() => {
+    if (granted_metamodel?.getGrantedMetamodel) {
+      setKeyMetadata(granted_metamodel.getGrantedMetamodel);
+    }
+  }, [granted_metamodel]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+  if (!granted_metamodel?.getGrantedMetamodel) return <div>No data available</div>;
 
   const parsed_data = JSON.parse(
     granted_metamodel.getGrantedMetamodel.metadata

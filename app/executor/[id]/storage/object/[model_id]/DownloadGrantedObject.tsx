@@ -4,7 +4,7 @@ import logger from "@/common/debug/logger";
 import SimpleButton from "@/components/common/SimpleButton";
 import { useSession } from "@/contexts/SessionContext";
 import GET_POD from "@/graphql/ops/app/pod/queries/GET_POD";
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client/react";
 import toast from "react-hot-toast";
 import crypto from "crypto";
 import GET_KEY_BY_REF_ID from "@/graphql/ops/app/key/Queries/GET_KEY_BY_REF_ID";
@@ -12,6 +12,14 @@ import GET_METAMODEL from "@/graphql/ops/app/metamodel/queries/GET_METAMODEL";
 import GET_GRANTED_METAMODEL from "@/graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODEL";
 import GET_BENEFICIARY_ENCRYPTION_KEY from "@/graphql/ops/app/executor/access/queries/GET_BENEFICIARY_ENCRYPTION_KEY";
 import get_pod_decryption_key from "@/common/executor/data/get_pod_decryption_key";
+import type { 
+  GetKeyByRefIdQuery,
+  GetKeyByRefIdVariables,
+  GetBeneficiaryEncryptionKeyQuery,
+  GetBeneficiaryEncryptionKeyVariables,
+  GetGrantedMetamodelQuery,
+  GetGrantedMetamodelVariables
+} from "@/types/interfaces/metamodel";
 
 export default function DownloadGrantedObject({
   access_id,
@@ -27,7 +35,7 @@ export default function DownloadGrantedObject({
       onClick={async () => {
         toast.success("Downloading object... Please wait");
         // download decryption key
-        const encryption_key = await client.query({
+        const encryption_key = await client.query<GetKeyByRefIdQuery, GetKeyByRefIdVariables>({
           query: GET_KEY_BY_REF_ID,
           fetchPolicy: "network-only",
           variables: session
@@ -42,16 +50,23 @@ export default function DownloadGrantedObject({
         });
 
         // get time capsule private key to decrypt data
-        const { data: beneficairy_encryption_key } = await client.query({
+        const { data: beneficairy_encryption_key } = await client.query<GetBeneficiaryEncryptionKeyQuery, GetBeneficiaryEncryptionKeyVariables>({
           query: GET_BENEFICIARY_ENCRYPTION_KEY,
           variables: {
             id: access_id,
           },
         });
-        if (!beneficairy_encryption_key.getBeneficiaryEncryptionKey) {
+        
+        if (!beneficairy_encryption_key?.getBeneficiaryEncryptionKey) {
           toast.error("You do not have access key to decrypt this data");
           return;
         }
+        
+        if (!encryption_key.data?.getKeyByRefId?.key) {
+          toast.error("Unable to retrieve encryption key");
+          return;
+        }
+        
         const pod_decryption_key = await get_pod_decryption_key({
           encrypted_key: encryption_key.data.getKeyByRefId.key,
           time_capsule_private_key:
@@ -64,7 +79,7 @@ export default function DownloadGrantedObject({
           return;
         }
 
-        const metamodel_response = await client.query({
+        const metamodel_response = await client.query<GetGrantedMetamodelQuery, GetGrantedMetamodelVariables>({
           query: GET_GRANTED_METAMODEL,
           fetchPolicy: "network-only",
           variables: {
@@ -72,11 +87,16 @@ export default function DownloadGrantedObject({
             model_id: ref_id,
           },
         });
+        
+        if (!metamodel_response.data?.getGrantedMetamodel) {
+          toast.error("Unable to retrieve metamodel data");
+          return;
+        }
+        
         const metamodel = metamodel_response.data.getGrantedMetamodel;
         const parsed_metadata = JSON.parse(metamodel.metadata);
         if (!parsed_metadata || parsed_metadata.title === undefined) {
           toast.error("No title found");
-
           return;
         }
 

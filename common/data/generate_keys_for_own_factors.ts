@@ -1,6 +1,7 @@
 import { ApolloClient } from "@apollo/client";
 import { EncryptionKeys, Key } from "./types";
 import GET_FACTORS from "@/graphql/ops/auth/queries/AVAILABLE_AUTH_FACTORS";
+import { GetFactorsQuery } from "@/types/interfaces/metamodel";
 import encrypt from "@/crypto/e0/encrypt";
 
 export default async function generate_keys_for_own_factors({
@@ -10,15 +11,15 @@ export default async function generate_keys_for_own_factors({
 }: {
   key_cluster: Key[];
   encryption_keys: EncryptionKeys;
-  client: ApolloClient<any>;
+  client: ApolloClient;
 }) {
   // get all own factors
-  const factors = await client.query({
+  const factors = await client.query<GetFactorsQuery>({
     query: GET_FACTORS,
     fetchPolicy:"network-only"
   });
 
-  const all_factors = factors.data.getFactors;
+  const all_factors = factors.data?.getFactors || [];
 
   // if zero factors then encrypt for null key
   if (all_factors.length === 0) {

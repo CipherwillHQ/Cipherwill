@@ -2,9 +2,10 @@
 import ConfirmationButton from "@/components/common/ConfirmationButton";
 import DELETE_FOLDER from "@/graphql/ops/app/storage/mutations/DELETE_FOLDER";
 import GET_FOLDERS from "@/graphql/ops/app/storage/queries/GET_FOLDERS";
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { DeleteFolderMutation, DeleteFolderVariables } from "@/types/interfaces/metamodel";
 
 export default function DeleteFolder({
   id,
@@ -14,7 +15,7 @@ export default function DeleteFolder({
   folder_id?: string;
 }) {
   const router = useRouter();
-  const [deleteFolder, { loading }] = useMutation(DELETE_FOLDER, {
+  const [deleteFolder, { loading }] = useMutation<DeleteFolderMutation, DeleteFolderVariables>(DELETE_FOLDER, {
     variables: {
       id,
     },
@@ -39,13 +40,24 @@ export default function DeleteFolder({
           toast.error("Please wait for the folder to be deleted");
           return;
         }
-        deleteFolder().then((data) => {
+        deleteFolder({
+          variables: {
+            id: id!,
+          },
+        }).then((data) => {
+          if (!data.data?.deleteFolder?.folder_id) {
+            toast.error("Failed to delete folder");
+            return;
+          }
           const parent_folder_id = data.data.deleteFolder.folder_id;
           if (parent_folder_id === "root") {
             router.push("/app/data/storage");
             return;
           }
           router.push(`/app/data/storage/folder/${parent_folder_id}`);
+        }).catch((error) => {
+          toast.error("Error deleting folder");
+          console.error("Delete folder error:", error);
         });
       }}
     >

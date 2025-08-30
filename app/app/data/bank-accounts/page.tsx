@@ -1,4 +1,3 @@
-import MobilePageHeader from "@/components/mobile/MobilePageHeader";
 import BankAccountsList from "./BankAccountsList";
 import CreateBankAccount from "./CreateBankAccount";
 import DesktopAndMobilePageHeader from "@/components/app/common/page/DesktopAndMobilePageHeader";

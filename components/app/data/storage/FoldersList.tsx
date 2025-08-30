@@ -1,10 +1,11 @@
 "use client";
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import GET_FOLDERS from "@/graphql/ops/app/storage/queries/GET_FOLDERS";
 import FolderTile from "./FolderTile";
+import { GetFoldersQuery, GetFoldersVariables } from "@/types/interfaces";
 
 export default function FoldersList({ folder_id }: { folder_id?: string }) {
-  const { data, loading, error, fetchMore } = useQuery(GET_FOLDERS, {
+  const { data, loading, error, fetchMore } = useQuery<GetFoldersQuery, GetFoldersVariables>(GET_FOLDERS, {
     variables: {
       folder_id,
     },
@@ -17,6 +18,8 @@ export default function FoldersList({ folder_id }: { folder_id?: string }) {
     );
   }
   if (error) return <div>{JSON.stringify(error)}</div>;
+  if (!data) return null;
+  
   return (
     <div className="flex flex-col w-full gap-2 p-4">
       {data.getFolders.folders.length === 0 && <div>No folders</div>}
@@ -47,7 +50,8 @@ export default function FoldersList({ folder_id }: { folder_id?: string }) {
                   data.getFolders.folders[data.getFolders.folders.length - 1]
                     .id,
               },
-              updateQuery: (prev, { fetchMoreResult }) => {
+              updateQuery: (prev: GetFoldersQuery, { fetchMoreResult }: { fetchMoreResult: GetFoldersQuery }) => {
+                if (!fetchMoreResult) return prev;
                 return {
                   getFolders: {
                     folders: [

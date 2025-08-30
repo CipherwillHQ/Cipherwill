@@ -5,7 +5,7 @@ import AnonymousChatBox from "@/components/app/AnonymousChatBox";
 import SimpleButton from "@/components/common/SimpleButton";
 import { useUserContext } from "@/contexts/UserSetupContext";
 import SEND_FEEDBACK from "@/graphql/ops/generic/mutations/SEND_FEEDBACK";
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import toast from "react-hot-toast";
 
 export default function ContactForm() {

@@ -7,7 +7,7 @@ import {
   useEffect,
 } from "react";
 import { useAuth } from "../AuthContext";
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
 import ME from "../../graphql/ops/auth/queries/ME";
 import logger from "../../common/debug/logger";
 import getLocalCountry from "../../common/country/getLocalCountry";
@@ -17,27 +17,18 @@ import UPDATE_USER from "../../graphql/ops/auth/mutations/UPDATE_USER";
 import { useMixpanel } from "../MixpanelContext";
 import { usePostHog } from "posthog-js/react";
 import GET_PREFERENCES from "@/graphql/ops/auth/queries/GET_PREFERENCES";
+import type { 
+  MeQuery, 
+  UpdateUserMutation, 
+  UpdateUserVariables,
+  GetPreferencesQuery,
+  User
+} from "@/types/interfaces/metamodel";
 
 interface Props {
   children?: ReactNode;
 }
 const UserSetupContext = createContext<any>({});
-
-type UserResponse = {
-  id: string;
-  email: string;
-  email_verified: boolean;
-  first_name: string;
-  middle_name: string;
-  last_name: string;
-  birth_date: string;
-  gender: string;
-  country: string;
-  plan: string;
-  last_accessed: string;
-  created_at: string;
-  updated_at: string;
-};
 
 export function UserSetupProvider({ children }: Props) {
   const { user } = useAuth();
@@ -60,48 +51,49 @@ export function UserSetupProvider({ children }: Props) {
   const [
     setupPreferences,
     { data: preferences_data, loading: loading_preferences },
-  ] = useLazyQuery(GET_PREFERENCES);
-  const [setupUser, { data: user_data, loading: loading_user }] = useLazyQuery(
-    ME,
-    {
-      onCompleted(data) {
-        const user_data = data.me;
-        logger.info("User setup", user_data);
-        if (user_data) {
-          logger.info("Setting user preferences");
-          setupPreferences();
-        }
-        const user_analytics_data = {
-          name: user_data.first_name,
-          gender: user_data.gender,
-          plan: user_data.plan,
-          country: user_data.country,
-        };
-        mixpanel.identify(user_data.id);
-        mixpanel.people.set(user_analytics_data);
-        posthog.identify(user_data.id, user_analytics_data);
-        if (user_data.country === null) {
-          // This is a new user, add their country
-          signup_conversion();
-          const country = getLocalCountry();
-          const countryName = getCountryNameByCode(country);
-          toast.success(`Added ${countryName} as your country`);
-          setupCountry({
-            variables: {
-              data: {
-                country,
-              },
-            },
-            refetchQueries: [{ query: ME }],
-          });
-        } else {
-          // This is an existing user, logging in
-        }
-      },
-    }
-  );
+  ] = useLazyQuery<GetPreferencesQuery>(GET_PREFERENCES);
+  
+  const [setupUser, { data: user_data, loading: loading_user }] = useLazyQuery<MeQuery>(ME);
 
-  const [setupCountry] = useMutation(UPDATE_USER);
+  const [setupCountry] = useMutation<UpdateUserMutation, UpdateUserVariables>(UPDATE_USER);
+
+  // Handle user data when loaded
+  useEffect(() => {
+    if (user_data?.me) {
+      const user_data_me = user_data.me;
+      logger.info("User setup", user_data_me);
+      if (user_data_me) {
+        logger.info("Setting user preferences");
+        setupPreferences();
+      }
+      const user_analytics_data = {
+        name: user_data_me.first_name,
+        gender: user_data_me.gender,
+        plan: user_data_me.plan,
+        country: user_data_me.country,
+      };
+      mixpanel.identify(user_data_me.id);
+      mixpanel.people.set(user_analytics_data);
+      posthog.identify(user_data_me.id, user_analytics_data);
+      if (user_data_me.country === null) {
+        // This is a new user, add their country
+        signup_conversion();
+        const country = getLocalCountry();
+        const countryName = getCountryNameByCode(country);
+        toast.success(`Added ${countryName} as your country`);
+        setupCountry({
+          variables: {
+            data: {
+              country,
+            },
+          },
+          refetchQueries: [{ query: ME }],
+        });
+      } else {
+        // This is an existing user, logging in
+      }
+    }
+  }, [user_data, setupPreferences, mixpanel, posthog, signup_conversion, setupCountry]);
 
   useEffect(() => {
     if (user) {
@@ -113,7 +105,7 @@ export function UserSetupProvider({ children }: Props) {
     <UserSetupContext.Provider
       value={{
         loading: loading_user || loading_preferences,
-        user: user_data ? (user_data.me as UserResponse) : null,
+        user: user_data?.me || null,
         preferences: preferences_data?.getPreferences || {},
       }}
     >
@@ -124,7 +116,7 @@ export function UserSetupProvider({ children }: Props) {
 
 export function useUserContext(): {
   loading: boolean;
-  user: UserResponse | null;
+  user: User | null;
   preferences: Record<string, string | boolean | number>;
 } {
   return useContext(UserSetupContext);

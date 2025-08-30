@@ -1,13 +1,11 @@
 "use client";
 import { ReactNode, useEffect, useState } from "react";
 import { RiWifiOffLine } from "react-icons/ri";
+import { ComponentProps } from "@/types/interfaces";
 
-interface Props {
-  children?: ReactNode;
-}
 let debounceTimer;
 
-export function OfflineContext({ children }: Props) {
+export function OfflineContext({ children }: ComponentProps) {
   const [online, setOnline] = useState(true);
 
   useEffect(() => {

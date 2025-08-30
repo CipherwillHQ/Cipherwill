@@ -5,7 +5,7 @@ import { useUserContext } from "@/contexts/UserSetupContext";
 import SimpleButton from "@/components/common/SimpleButton";
 import Popup from "reactjs-popup";
 import { IoArrowUpCircleOutline } from "react-icons/io5";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client/react";
 import GET_PREFERENCES from "@/graphql/ops/auth/queries/GET_PREFERENCES";
 import UPDATE_PREFERENCES from "@/graphql/ops/auth/mutations/UPDATE_PREFERENCES";
 import Link from "next/link";
@@ -13,14 +13,21 @@ import PremiumPopup from "./PremiumPopup";
 import { Divider, Segment } from "@/types/Segments";
 import SEND_FEEDBACK from "@/graphql/ops/generic/mutations/SEND_FEEDBACK";
 import toast from "react-hot-toast";
+import type { 
+  GetPreferencesQuery, 
+  UpdatePreferencesMutation, 
+  UpdatePreferencesVariables,
+  SendFeedbackMutation,
+  SendFeedbackVariables 
+} from "@/types/interfaces/metamodel";
 
 export default function Segments() {
   const { user } = useUserContext();
   const current_user_plan = user?.plan || "free";
-  const { data, loading, error } = useQuery(GET_PREFERENCES);
-  const [sendFeedback] = useMutation(SEND_FEEDBACK);
+  const { data, loading, error } = useQuery<GetPreferencesQuery>(GET_PREFERENCES);
+  const [sendFeedback] = useMutation<SendFeedbackMutation, SendFeedbackVariables>(SEND_FEEDBACK);
   const [updatePreferences, { loading: updating }] =
-    useMutation(UPDATE_PREFERENCES);
+    useMutation<UpdatePreferencesMutation, UpdatePreferencesVariables>(UPDATE_PREFERENCES);
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error!</div>;
   const preferences = data?.getPreferences || {};
@@ -155,9 +162,11 @@ export default function Segments() {
                             className="w-full text-center"
                             onClick={() => {
                               if (updating) return;
+                              const preferenceKey = (segment as Segment).preference_key;
+                              if (!preferenceKey) return;
                               updatePreferences({
                                 variables: {
-                                  key: (segment as Segment).preference_key,
+                                  key: preferenceKey,
                                   value: "false",
                                 },
                               });
@@ -170,9 +179,11 @@ export default function Segments() {
                             className="w-full text-center"
                             onClick={() => {
                               if (updating) return;
+                              const preferenceKey = (segment as Segment).preference_key;
+                              if (!preferenceKey) return;
                               updatePreferences({
                                 variables: {
-                                  key: (segment as Segment).preference_key,
+                                  key: preferenceKey,
                                   value: "true",
                                 },
                               });

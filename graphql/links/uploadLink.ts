@@ -1,4 +1,4 @@
-import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
+import createUploadLink from "apollo-upload-client/UploadHttpLink.mjs";
 
 const client_uploadLink = (getJWT: Function) =>
   createUploadLink({

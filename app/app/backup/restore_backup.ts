@@ -15,7 +15,7 @@ export default async function restore_backup({
 }: {
   backupFile: File | null;
   setStatus: (status: string) => void;
-  client: ApolloClient<any>;
+  client: ApolloClient;
   session: any;
 }) {
   const zip = backupFile;
@@ -86,7 +86,7 @@ async function run_restore_0_0_1({
 }: {
   backup_data: any;
   setStatus: (status: string) => void;
-  client: ApolloClient<any>;
+  client: ApolloClient;
   session: any;
 }) {
   logger.info(`Restoring backup file version 0.0.1`);
@@ -161,7 +161,7 @@ async function run_restore_0_0_2({
 }: {
   backup_data: any;
   setStatus: (status: string) => void;
-  client: ApolloClient<any>;
+  client: any;
   session: any;
 }) {
   logger.info(`Restoring backup file version 0.0.2`);

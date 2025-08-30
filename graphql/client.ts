@@ -2,7 +2,6 @@ import {
     ApolloClient,
     from,
     InMemoryCache,
-    NormalizedCacheObject,
   } from "@apollo/client";
   import consoleLink from "./links/consoleLink";
   import errHandler from "./links/errHandler";
@@ -10,7 +9,7 @@ import {
   
   function getGraphQLClient(
     getJWT: Function
-  ): ApolloClient<NormalizedCacheObject> {
+  ): ApolloClient {
     return new ApolloClient({
       link: from(
         process.env.NEXT_PUBLIC_BUILD_ENV === "production"

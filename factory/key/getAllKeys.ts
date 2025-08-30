@@ -6,7 +6,7 @@ export default async function getAllKeys({
   client,
   maxPublicKey,
 }: {
-  client: ApolloClient<any>;
+  client: ApolloClient;
   maxPublicKey: string;
 }) {
   let data:any[] = [];

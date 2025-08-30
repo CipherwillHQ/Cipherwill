@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import DELETE_DATA from "../../../graphql/ops/auth/mutations/DELETE_DATA";
 import DELETE_ACCOUNT from "../../../graphql/ops/auth/mutations/DELETE_ACCOUNT";
 import { useAuth } from "../../../contexts/AuthContext";

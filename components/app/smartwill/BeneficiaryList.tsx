@@ -1,6 +1,6 @@
 "use client";
 
-import { useApolloClient, useMutation, useQuery } from "@apollo/client";
+import { useApolloClient, useMutation, useQuery } from "@apollo/client/react";
 import GET_SMARTWILL_BENEFICIARY from "../../../graphql/ops/app/smartwill/queries/GET_SMARTWILL_BENEFICIARY";
 import GET_PERSON_BY_IDS from "../../../graphql/ops/app/people/queries/GET_PERSON_BY_IDS";
 import DELETE_SMARTWILL_BENEFICIARY from "../../../graphql/ops/app/smartwill/mutations/DELETE_SMARTWILL_BENEFICIARY";
@@ -11,10 +11,18 @@ import perform_migrate_in from "../../../common/factor/perform_migrate_in";
 import GET_BENEFICIARY_KEY_COUNT from "../../../graphql/ops/auth/queries/GET_BENEFICIARY_KEY_COUNT";
 import CustomMessage from "./CustomMessage";
 import SimpleButton from "@/components/common/SimpleButton";
+import { SmartWillBeneficiariesData, BeneficiaryKeyCountData, SmartWillBeneficiary, BeneficiaryKeyCount } from "../../../types/interfaces/graphql";
+import { GetPersonByIdsData, Person } from "../../../types/interfaces/people";
 
-export default function BeneficiaryList({ max_key_count, max_publicKey }) {
-  const { loading, data, error } = useQuery(GET_SMARTWILL_BENEFICIARY);
-  const { data: beneficiary_key_count } = useQuery(GET_BENEFICIARY_KEY_COUNT);
+export default function BeneficiaryList({ 
+  max_key_count, 
+  max_publicKey 
+}: {
+  max_key_count: number;
+  max_publicKey: string;
+}) {
+  const { loading, data, error } = useQuery<SmartWillBeneficiariesData>(GET_SMARTWILL_BENEFICIARY);
+  const { data: beneficiary_key_count } = useQuery<BeneficiaryKeyCountData>(GET_BENEFICIARY_KEY_COUNT);
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message} </div>;
 
@@ -41,12 +49,12 @@ function BeneficiaryListById({
   max_key_count,
   max_publicKey,
 }: {
-  beneficiaries: any[];
-  beneficiary_key_count: any[];
+  beneficiaries: SmartWillBeneficiary[];
+  beneficiary_key_count: BeneficiaryKeyCount[] | null;
   max_key_count: number;
   max_publicKey: string;
 }) {
-  const { loading, data, error } = useQuery(GET_PERSON_BY_IDS, {
+  const { loading, data, error } = useQuery<GetPersonByIdsData>(GET_PERSON_BY_IDS, {
     variables: {
       list: beneficiaries.map((x) => x.person_id),
     },
@@ -55,7 +63,7 @@ function BeneficiaryListById({
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message} </div>;
 
-  if (data.getPersonByIds.length === 0)
+  if (!data || data.getPersonByIds.length === 0)
     return (
       <div className="text-gray-400" data-cy="no-beneficiaries">
         No Beneficiaries
@@ -94,6 +102,12 @@ function PersonTile({
   beneficiary_key_count,
   max_key_count,
   max_publicKey,
+}: {
+  beneficiary: SmartWillBeneficiary | undefined;
+  person: Person;
+  beneficiary_key_count: BeneficiaryKeyCount[];
+  max_key_count: number;
+  max_publicKey: string;
 }) {
   const client = useApolloClient();
   const { session } = useSession();
@@ -104,10 +118,14 @@ function PersonTile({
 
   let minimum_count = 100000;
 
+  if (!beneficiary) {
+    return <div key={person.id}>Invalid Beneficiary data</div>;
+  }
+
   const count = beneficiary_key_count.find(
     (x) => x.beneficiary_id === beneficiary.id
   );
-  if (!beneficiary || !count) {
+  if (!count) {
     return <div key={person.id}>Invalid Beneficiary data</div>;
   }
   if (count.factor_wise_count) {

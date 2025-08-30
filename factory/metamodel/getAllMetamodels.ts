@@ -6,7 +6,7 @@ export default async function getAllMetamodels({
   client,
   type,
 }: {
-  client: ApolloClient<any>;
+  client: ApolloClient;
   type?: string;
 }) {
   let metamodels:any[] = [];

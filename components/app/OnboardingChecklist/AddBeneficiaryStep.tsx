@@ -1,15 +1,16 @@
 import GET_SMARTWILL_BENEFICIARY from "@/graphql/ops/app/smartwill/queries/GET_SMARTWILL_BENEFICIARY";
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import Link from "next/link";
 import { BiCheckCircle, BiCircle } from "react-icons/bi";
+import { SmartWillBeneficiariesData } from "@/types/interfaces/graphql";
 
 export default function AddBeneficiaryStep() {
-  const { loading, data, error } = useQuery(GET_SMARTWILL_BENEFICIARY);
+  const { loading, data, error } = useQuery<SmartWillBeneficiariesData>(GET_SMARTWILL_BENEFICIARY);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message} </div>;
 
-  const is_complete = data.getSmartWillBeneficiaries.length > 0;
+  const is_complete = (data?.getSmartWillBeneficiaries?.length ?? 0) > 0;
   return (
     <div className="w-full max-w-sm">
       <Link

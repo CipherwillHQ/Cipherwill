@@ -1,15 +1,12 @@
 "use client";
 
 import React, { ReactNode, useState } from "react";
-import { ApolloProvider } from "@apollo/client";
+import { ApolloProvider } from "@apollo/client/react";
 import { getGraphQLClient } from "../../graphql/client";
 import { useAuth } from "../AuthContext";
+import { ComponentProps } from "@/types/interfaces";
 
-interface Props {
-  children?: ReactNode;
-}
-
-export function ApolloContext({ children }: Props) {
+export function ApolloContext({ children }: ComponentProps) {
   const { getJWT } = useAuth();
   // Setting client as state objects helps to maintain the cache
   const [client] = useState(getGraphQLClient(getJWT));

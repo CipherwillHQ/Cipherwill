@@ -2,7 +2,6 @@
 import { useState } from "react";
 import ActiveSubscription from "./ActiveSubscription";
 import Invoices from "./Invoices";
-import MobilePageHeader from "@/components/mobile/MobilePageHeader";
 import DesktopAndMobilePageHeader from "@/components/app/common/page/DesktopAndMobilePageHeader";
 export default function Billing() {
   const [mode, setMode] = useState<"subscription" | "invoices">("subscription");

@@ -1,7 +1,7 @@
 "use client";
 import { useUserContext } from "@/contexts/UserSetupContext";
 import SEND_FEEDBACK from "@/graphql/ops/generic/mutations/SEND_FEEDBACK";
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import { useCallback } from "react";
 import toast from "react-hot-toast";
 

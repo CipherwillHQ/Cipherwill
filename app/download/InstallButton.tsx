@@ -2,12 +2,7 @@
 
 import SimpleButton from "@/components/common/SimpleButton";
 import { useEffect, useState } from "react";
-
-// Define the BeforeInstallPromptEvent interface if not available
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
-}
+import { BeforeInstallPromptEvent } from "@/types/interfaces";
 
 export default function InstallButton() {
   const [differedEvent, setDifferedEvent] = useState<BeforeInstallPromptEvent | null>(null);

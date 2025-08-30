@@ -2,7 +2,7 @@
 import SimpleButton from "@/components/common/SimpleButton";
 import CREATE_FOLDER from "@/graphql/ops/app/storage/mutations/CREATE_FOLDER";
 import GET_FOLDERS from "@/graphql/ops/app/storage/queries/GET_FOLDERS";
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import { useCallback } from "react";
 import toast from "react-hot-toast";
 import Popup from "reactjs-popup";

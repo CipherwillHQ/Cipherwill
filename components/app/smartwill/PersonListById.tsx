@@ -1,12 +1,20 @@
 "use client";
 
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client/react";
 
 import DELETE_SMARTWILL_BENEFICIARY from "../../../graphql/ops/app/smartwill/mutations/DELETE_SMARTWILL_BENEFICIARY";
 import DELETE_SMARTWILL_FRIEND from "../../../graphql/ops/app/smartwill/mutations/DELETE_SMARTWILL_FRIEND";
 import GET_SMARTWILL_BENEFICIARY from "../../../graphql/ops/app/smartwill/queries/GET_SMARTWILL_BENEFICIARY";
 import GET_SMARTWILL_FRIENDS from "../../../graphql/ops/app/smartwill/queries/GET_SMARTWILL_FRIENDS";
 import GET_PERSON_BY_IDS from "../../../graphql/ops/app/people/queries/GET_PERSON_BY_IDS";
+import { 
+  GetPersonByIdsData, 
+  GetPersonByIdsVariables,
+  DeleteSmartWillFriendData,
+  DeleteSmartWillFriendVariables,
+  DeleteSmartWillBeneficiaryData,
+  DeleteSmartWillBeneficiaryVariables
+} from "../../../types/interfaces/people";
 
 export default function PersonListById({
   list,
@@ -15,18 +23,18 @@ export default function PersonListById({
   list: string[];
   type: string;
 }) {
-  const { loading, data, error } = useQuery(GET_PERSON_BY_IDS, {
+  const { loading, data, error } = useQuery<GetPersonByIdsData, GetPersonByIdsVariables>(GET_PERSON_BY_IDS, {
     variables: {
       list,
     },
   });
-  const [deleteBeneficiary] = useMutation(DELETE_SMARTWILL_BENEFICIARY);
-  const [deleteFriend] = useMutation(DELETE_SMARTWILL_FRIEND);
+  const [deleteBeneficiary] = useMutation<DeleteSmartWillBeneficiaryData, DeleteSmartWillBeneficiaryVariables>(DELETE_SMARTWILL_BENEFICIARY);
+  const [deleteFriend] = useMutation<DeleteSmartWillFriendData, DeleteSmartWillFriendVariables>(DELETE_SMARTWILL_FRIEND);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message} </div>;
 
-  if (data.getPersonByIds.length === 0)
+  if (!data || data.getPersonByIds.length === 0)
     return (
       <div className="text-gray-400" data-cy="no-friends">
         No Friends
