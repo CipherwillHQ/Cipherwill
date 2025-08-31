@@ -14,7 +14,7 @@ export default async function generate_encryption_keys({
       metamodel_ref_id: item.ref_id,
       key,
     };
-    logger.info(`Random key generated for ${item.ref_id}: ${key}`);
+    // logger.info(`Random key generated for ${item.ref_id}: ${key}`);
   }
   return random_keys;
 }

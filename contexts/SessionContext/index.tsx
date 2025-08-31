@@ -40,8 +40,8 @@ export function SessionProvider({ children }) {
 
   // Handle factors error
   useEffect(() => {
-    if (factorsError && 'graphQLErrors' in factorsError && Array.isArray(factorsError.graphQLErrors)) {
-      const code = factorsError.graphQLErrors[0]?.extensions?.code;
+    if (factorsError && 'errors' in factorsError && Array.isArray(factorsError.errors)) {
+      const code = factorsError.errors[0]?.extensions?.code;
       if (code === "USER_DEACTIVATED") {
         set_inactive_user(code);
       }

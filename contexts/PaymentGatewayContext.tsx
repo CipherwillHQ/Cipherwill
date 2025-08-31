@@ -30,7 +30,7 @@ export function PaymentGatewayProvider({ children }: ComponentProps) {
 
   useEffect(() => {
     if (!isLoading) {
-      logger.info("Initializing paddle");
+      // logger.info("Initializing paddle");
       initializePaddle({
         environment: ENVIROMENT,
         token: PADDLE_TOKEN,

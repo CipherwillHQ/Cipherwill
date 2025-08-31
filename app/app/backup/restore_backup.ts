@@ -110,7 +110,7 @@ async function run_restore_0_0_1({
         },
       });
     } catch (error) {
-      if (error.graphQLErrors[0].extensions.code === "MODEL_NOT_FOUND") {
+      if (error.errors[0].extensions.code === "MODEL_NOT_FOUND") {
         // create note
         await client
           .mutate({
@@ -185,7 +185,7 @@ async function run_restore_0_0_2({
         },
       });
     } catch (error) {
-      if (error.graphQLErrors[0].extensions.code === "MODEL_NOT_FOUND") {
+      if (error.errors[0].extensions.code === "MODEL_NOT_FOUND") {
         // create note
         await client
           .mutate({

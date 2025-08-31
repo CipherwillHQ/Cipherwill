@@ -26,12 +26,12 @@ export default function MetaDetails({ id }: { id: string }) {
   const [update_metamodel] = useMutation<UpdateMetamodelMutation, UpdateMetamodelVariables>(UPDATE_METAMODEL);
 
   // Handle the MODEL_NOT_FOUND error
-  if (error && 'graphQLErrors' in error) {
-    const graphQLErrors = (error as any).graphQLErrors;
+  if (error && 'errors' in error) {
+    const errors = (error as any).errors;
     if (
-      graphQLErrors &&
-      graphQLErrors[0] &&
-      graphQLErrors[0].extensions?.code === "MODEL_NOT_FOUND"
+      errors &&
+      errors[0] &&
+      errors[0].extensions?.code === "MODEL_NOT_FOUND"
     ) {
       window.location.href = "/app/data/email-accounts";
       return null;

@@ -25,8 +25,8 @@ export default function MetaDetails({ id }: MetaDetailsProps) {
   const [update_metamodel] = useMutation<UpdateMetamodelMutation, UpdateMetamodelVariables>(UPDATE_METAMODEL);
 
   // Handle model not found error
-  if (error && 'graphQLErrors' in error && error.graphQLErrors && error.graphQLErrors[0] && 
-      error.graphQLErrors[0].extensions?.code === "MODEL_NOT_FOUND") {
+  if (error && 'errors' in error && error.errors && error.errors[0] && 
+      error.errors[0].extensions?.code === "MODEL_NOT_FOUND") {
     window.location.href = "/app/data/storage";
   }
 

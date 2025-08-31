@@ -23,7 +23,6 @@ export interface GetMetamodelsQuery {
 
 // Generic metadata interface - can contain any properties
 export interface MetamodelMetadata {
-  name: string; // Common field that most metadata types will have
   [key: string]: any; // Allow any additional properties
 }
 

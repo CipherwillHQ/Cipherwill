@@ -45,9 +45,9 @@ export default function Profile() {
 
   // Handle mutation errors
   useEffect(() => {
-    if (error && 'graphQLErrors' in error && Array.isArray(error.graphQLErrors) && 
-        error.graphQLErrors.length > 0 &&
-        error.graphQLErrors[0]?.extensions?.code === "COUNTRY_RESTRICTED_ACCORDING_TO_SUBSCRIPTION") {
+    if (error && 'errors' in error && Array.isArray(error.errors) && 
+        error.errors.length > 0 &&
+        error.errors[0]?.extensions?.code === "COUNTRY_RESTRICTED_ACCORDING_TO_SUBSCRIPTION") {
       fetchProfile(); // reset the country to default one
       // show country restricted message
       setCountryRestrictionMessage(true);

@@ -61,9 +61,9 @@ export function UserSetupProvider({ children }: Props) {
   useEffect(() => {
     if (user_data?.me) {
       const user_data_me = user_data.me;
-      logger.info("User setup", user_data_me);
+      // logger.info("User setup", user_data_me);
       if (user_data_me) {
-        logger.info("Setting user preferences");
+        // logger.info("Setting user preferences");
         setupPreferences();
       }
       const user_analytics_data = {

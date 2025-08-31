@@ -20,7 +20,7 @@ export default async function getPod(
       return pod.data?.getPod?.content || null;
     }
   } catch (error: any) {
-    if (error?.graphQLErrors?.[0]?.extensions?.code === "POD_NOT_FOUND") {
+    if (error?.errors?.[0]?.extensions?.code === "POD_NOT_FOUND") {
       return null;
     } else {
       throw error;

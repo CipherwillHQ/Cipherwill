@@ -56,9 +56,9 @@ export function usePod<POD_DATA_TYPE>(
     } catch (error) {
       if (
         error &&
-        error.graphQLErrors &&
-        error.graphQLErrors[0] &&
-        error.graphQLErrors[0].extensions.code === "POD_NOT_FOUND"
+        error.errors &&
+        error.errors[0] &&
+        error.errors[0].extensions.code === "POD_NOT_FOUND"
       ) {
         setData(null);
         onComplete(null);

@@ -20,8 +20,8 @@ export default function StorageFolderPage() {
   });
 
   // Handle folder not found error
-  if (error && 'graphQLErrors' in error && error.graphQLErrors && error.graphQLErrors[0]) {
-    const error_code = error.graphQLErrors[0].extensions?.code;
+  if (error && 'errors' in error && error.errors && error.errors[0]) {
+    const error_code = error.errors[0].extensions?.code;
     if (error_code === "FOLDER_NOT_FOUND") {
       window.location.href = "/app/data/storage";
     }

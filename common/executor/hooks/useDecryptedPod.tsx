@@ -78,7 +78,7 @@ export default function useDecryptedPod({
               },
             });
           } catch (error: any) {
-            if (error.graphQLErrors?.[0]?.extensions?.code === "POD_NOT_FOUND") {
+            if (error.errors?.[0]?.extensions?.code === "POD_NOT_FOUND") {
               return;
             } else {
               throw error;

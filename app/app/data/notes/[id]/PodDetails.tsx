@@ -34,6 +34,7 @@ export default function PodDetails({
     }
   );
   const editor = useEditor({
+    immediatelyRender: false, // Prevent immediate rendering to avoid hydration mismatches
     extensions: [StarterKit,
       Placeholder.configure({
         placeholder:'Write something...'

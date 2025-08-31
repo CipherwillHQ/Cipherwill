@@ -32,7 +32,7 @@ export default function CreateNote() {
       createNote({
         variables: {
           type: "NOTE",
-          metadata: stringifyMetamodelMetadata({ name: title, title }),
+          metadata: stringifyMetamodelMetadata({ title }),
         },
       });
       close();
