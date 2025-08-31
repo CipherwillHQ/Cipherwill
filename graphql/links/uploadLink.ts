@@ -1,7 +1,7 @@
-import createUploadLink from "apollo-upload-client/UploadHttpLink.mjs";
+import UploadHttpLink from "apollo-upload-client/UploadHttpLink.mjs";
 
 const client_uploadLink = (getJWT: Function) =>
-  createUploadLink({
+  new UploadHttpLink({
     uri: process.env.NEXT_PUBLIC_API_HOST,
     fetch: async (uri, options) => {
       const jwt = await getJWT();
@@ -13,7 +13,7 @@ const client_uploadLink = (getJWT: Function) =>
   });
 
 const ssr_uploadLink = (cache: any = "no-store") =>
-  createUploadLink({
+  new UploadHttpLink({
     uri: process.env.NEXT_PUBLIC_API_HOST,
     fetch: async (uri, options) => {
       if (typeof cache === "number" && process.env.NEXT_PUBLIC_BUILD_ENV === "production") {
