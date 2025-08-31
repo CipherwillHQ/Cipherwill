@@ -1,8 +1,13 @@
 "use client";
 
 import GET_GRANTED_STORAGE_FOLDERS from "@/graphql/ops/app/executor/metamodels/GET_GRANTED_STORAGE_FOLDERS";
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import Link from "next/link";
+import type { 
+  GetGrantedStorageFoldersQuery, 
+  GetGrantedStorageFoldersVariables,
+  StorageFolder 
+} from "@/types/interfaces/metamodel";
 
 export default function GrantedFolderList({
   folder_id = "root",
@@ -11,7 +16,7 @@ export default function GrantedFolderList({
   folder_id?: string;
   access_id: string;
 }) {
-  const { data, loading, error, fetchMore } = useQuery(
+  const { data, loading, error, fetchMore } = useQuery<GetGrantedStorageFoldersQuery, GetGrantedStorageFoldersVariables>(
     GET_GRANTED_STORAGE_FOLDERS,
     {
       variables: {
@@ -20,15 +25,17 @@ export default function GrantedFolderList({
       },
     }
   );
+  
   if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error : {JSON.stringify(error)}</div>;
+  if (error) return <div>Error : {error.message}</div>;
+  if (!data) return <div>No data available</div>;
   return (
     <section className="py-4">
       {data &&
       data.getGrantedStorageFolders &&
       data.getGrantedStorageFolders.folders.length > 0 ? (
         <div className="flex flex-col gap-2">
-          {data.getGrantedStorageFolders.folders.map((folder: any) => {
+          {data.getGrantedStorageFolders.folders.map((folder: StorageFolder) => {
             return (
               <Link
                 key={folder.id}
@@ -55,7 +62,8 @@ export default function GrantedFolderList({
                     data.getGrantedStorageFolders.folders.length - 1
                   ].id,
               },
-              updateQuery: (prev, { fetchMoreResult }) => {
+              updateQuery: (prev: GetGrantedStorageFoldersQuery, { fetchMoreResult }: { fetchMoreResult: GetGrantedStorageFoldersQuery }) => {
+                if (!fetchMoreResult) return prev;
                 return {
                   getGrantedStorageFolders: {
                     folders: [

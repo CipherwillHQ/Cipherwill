@@ -1,35 +1,36 @@
 "use client";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client/react";
 import GET_METAMODEL from "../../../../../graphql/ops/app/metamodel/queries/GET_METAMODEL";
 import UPDATE_METAMODEL from "../../../../../graphql/ops/app/metamodel/mutations/UPDATE_METAMODEL";
 import getTimeAgo from "../../../../../common/time/getTimeAgo";
 import ShareMetapod from "@/components/app/data/ShareMetapod";
+import { GetMetamodelQuery, GetMetamodelVariables, UpdateMetamodelMutation, UpdateMetamodelVariables, MetamodelMetadata } from "../../../../../types/interfaces";
+import { parseMetamodelMetadata, stringifyMetamodelMetadata } from "../../../../../common/metamodel/utils";
 
-export default function MetaDetails({ id }) {
-  const { data, loading, error, refetch } = useQuery(GET_METAMODEL, {
+interface MetaDetailsProps {
+  id: string;
+}
+
+export default function MetaDetails({ id }: MetaDetailsProps) {
+  const { data, loading, error, refetch } = useQuery<GetMetamodelQuery, GetMetamodelVariables>(GET_METAMODEL, {
     variables: {
       id,
     },
-    onError(error) {
-      if (
-        error &&
-        error.graphQLErrors &&
-        error.graphQLErrors[0] &&
-        error.graphQLErrors[0].extensions?.code === "MODEL_NOT_FOUND"
-      ) {
-        window.location.href = "/app/data/payment-cards";
-      }
-    },
   });
 
-  const [update_metamodel] = useMutation(UPDATE_METAMODEL, {
-    onCompleted: () => {
-      refetch();
-    },
-  });
+  const [update_metamodel] = useMutation<UpdateMetamodelMutation, UpdateMetamodelVariables>(UPDATE_METAMODEL);
+
+  // Handle model not found error
+  if (error && 'errors' in error && error.errors && error.errors[0] && 
+      error.errors[0].extensions?.code === "MODEL_NOT_FOUND") {
+    window.location.href = "/app/data/payment-cards";
+  }
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{JSON.stringify(error)}</div>;
-  const parsedData = JSON.parse(data.getMetamodel.metadata);
+  if (!data) return <div>No data found</div>;
+
+  const parsedData = parseMetamodelMetadata<MetamodelMetadata>(data.getMetamodel);
 
   return (
     <div className="flex flex-col sm:flex-row items-center gap-2 justify-between py-2">
@@ -52,12 +53,16 @@ export default function MetaDetails({ id }) {
                 variables: {
                   data: {
                     id,
-                    metadata: JSON.stringify({
+                    metadata: stringifyMetamodelMetadata({
                       ...parsedData,
                       name: new_name,
                     }),
                   },
                 },
+              }).then(() => {
+                refetch();
+              }).catch((error) => {
+                console.error('Failed to update payment card:', error);
               });
             }
           }}

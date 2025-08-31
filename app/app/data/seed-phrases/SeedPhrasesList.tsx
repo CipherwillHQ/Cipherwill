@@ -1,16 +1,20 @@
 "use client";
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import GET_METAMODELS from "../../../../graphql/ops/app/metamodel/queries/GET_METAMODELS";
 import SeedPhraseTile from "./SeedPhraseTile";
+import { GetMetamodelsQuery, GetMetamodelsVariables, MetamodelMetadata } from "../../../../types/interfaces";
+import { parseMetamodelMetadata } from "../../../../common/metamodel/utils";
 
 export default function SeedPhrasesList() {
-  const { data, loading, error, fetchMore } = useQuery(GET_METAMODELS, {
+  const { data, loading, error, fetchMore } = useQuery<GetMetamodelsQuery, GetMetamodelsVariables>(GET_METAMODELS, {
     variables: {
       type: "SEED_PHRASE",
     },
   });
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{JSON.stringify(error)}</div>;
+  if (!data) return <div>No data found</div>;
   return (
     <div className="flex flex-col w-full">
       {data.getMetamodels.models.length === 0 && <div>No seed phrases</div>}
@@ -20,7 +24,7 @@ export default function SeedPhrasesList() {
           <SeedPhraseTile
             key={model.id}
             id={model.id}
-            data={JSON.parse(model.metadata)}
+            data={parseMetamodelMetadata<MetamodelMetadata>(model)}
           />
         ))}
       </div>
@@ -35,7 +39,8 @@ export default function SeedPhrasesList() {
                     data.getMetamodels.models.length - 1
                   ].id,
               },
-              updateQuery: (prev, { fetchMoreResult }) => {
+              updateQuery: (prev: GetMetamodelsQuery, { fetchMoreResult }: { fetchMoreResult: GetMetamodelsQuery }) => {
+                if (!fetchMoreResult) return prev;
                 return {
                   getMetamodels: {
                     models: [

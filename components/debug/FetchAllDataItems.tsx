@@ -1,6 +1,6 @@
 "use client";
 
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client/react";
 import getAllKeys from "../../factory/key/getAllKeys";
 
 export default function FetchAllDataItems() {

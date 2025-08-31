@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
 import ADD_SMARTWILL_BENEFICIARY from "../../../graphql/ops/app/smartwill/mutations/ADD_SMARTWILL_BENEFICIARY";
 import BeneficiaryList from "../../../components/app/smartwill/BeneficiaryList";
 import PersonSelector from "../../../components/app/smartwill/PersonSelector";
@@ -23,8 +23,11 @@ export default function Smartwill() {
   const [max_publicKey, set_max_publicKey] = useState("null");
   const [max_key_count, set_max_key_count] = useState(0);
 
-  const [getKeyCount] = useLazyQuery(GET_MY_KEY_COUNT, {
-    onCompleted: async (data) => {
+  const [getKeyCount] = useLazyQuery(GET_MY_KEY_COUNT);
+  useEffect(() => {
+    (async () => {
+      const result = await getKeyCount();
+      const data = result.data as any;
       if (data && data.getMyKeyCount) {
         let maxCount = 0;
         let maxPublicKey = "";
@@ -37,10 +40,7 @@ export default function Smartwill() {
         set_max_key_count(maxCount);
         set_max_publicKey(maxPublicKey);
       }
-    },
-  });
-  useEffect(() => {
-    getKeyCount();
+    })();
   }, [getKeyCount]);
 
   const [addBeneficiary] = useMutation(ADD_SMARTWILL_BENEFICIARY);
@@ -83,9 +83,6 @@ export default function Smartwill() {
                 variables: {
                   id: e.person,
                 },
-                onCompleted: () => {
-                  toast.success("Beneficiary Added");
-                },
                 refetchQueries: [
                   {
                     query: GET_SMARTWILL_BENEFICIARY,
@@ -94,6 +91,8 @@ export default function Smartwill() {
                     query: GET_BENEFICIARY_KEY_COUNT,
                   },
                 ],
+              }).then(() => {
+                toast.success("Beneficiary Added");
               });
             }
           }

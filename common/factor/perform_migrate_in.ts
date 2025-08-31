@@ -19,7 +19,7 @@ async function data_for_beneficiary(
 
 export default async function perform_migrate_in(
   max_public_key: string,
-  client: ApolloClient<any>,
+  client: ApolloClient,
   encrypt_for_public_key: string,
   privateKey: string | null,
   beneficiary_id?: string

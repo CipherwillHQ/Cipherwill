@@ -6,20 +6,25 @@ import { useSession } from "@/contexts/SessionContext";
 import decrypt from "@/crypto/e0/decrypt";
 import GET_KEY_BY_REF_ID from "@/graphql/ops/app/key/Queries/GET_KEY_BY_REF_ID";
 import GET_POD from "@/graphql/ops/app/pod/queries/GET_POD";
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client/react";
 import toast from "react-hot-toast";
 import crypto from "crypto";
 import SwapFile from "./SwapFile";
 import GET_METAMODEL from "@/graphql/ops/app/metamodel/queries/GET_METAMODEL";
+import { GetKeyByRefIdQuery, GetKeyByRefIdVariables, GetPodQuery, GetPodVariables, GetMetamodelQuery, GetMetamodelVariables } from "@/types/interfaces";
 
-export default function PodDetails({ id }) {
+interface PodDetailsProps {
+  id: string;
+}
+
+export default function PodDetails({ id }: PodDetailsProps) {
   const client = useApolloClient();
   const { session } = useSession();
   return (
     <div className="flex gap-2 py-4">
       <SimpleButton
         onClick={async () => {
-          const encryption_key = await client.query({
+          const encryption_key = await client.query<GetKeyByRefIdQuery, GetKeyByRefIdVariables>({
             query: GET_KEY_BY_REF_ID,
             fetchPolicy: "network-only",
             variables: session
@@ -75,13 +80,19 @@ export default function PodDetails({ id }) {
             return;
           }
 
-          const metamodel_response = await client.query({
+          const metamodel_response = await client.query<GetMetamodelQuery, GetMetamodelVariables>({
             query: GET_METAMODEL,
             fetchPolicy: "network-only",
             variables: {
               id,
             },
           });
+          
+          if (!metamodel_response.data) {
+            toast.error("Failed to get file metadata");
+            return;
+          }
+          
           const metamodel = metamodel_response.data.getMetamodel;
           const parsed_metadata = JSON.parse(metamodel.metadata);
           if (!parsed_metadata || parsed_metadata.title === undefined) {
@@ -92,7 +103,7 @@ export default function PodDetails({ id }) {
 
           let pod;
           try {
-            pod = await client.query({
+            pod = await client.query<GetPodQuery, GetPodVariables>({
               query: GET_POD,
               fetchPolicy: "network-only",
               variables: {
@@ -104,6 +115,12 @@ export default function PodDetails({ id }) {
             logger.error("Error while downloading data", error);
             return;
           }
+          
+          if (!pod.data) {
+            toast.error("Failed to get pod data");
+            return;
+          }
+          
           const key = random_key.slice(16);
           const iv = random_key.slice(0, 16);
 

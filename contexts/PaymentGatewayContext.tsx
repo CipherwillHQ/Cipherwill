@@ -10,10 +10,7 @@ import { useAuth } from "./AuthContext";
 import { initializePaddle, Paddle } from "@paddle/paddle-js";
 import logger from "@/common/debug/logger";
 import { BUILD_ENV } from "@/common/constant";
-
-interface Props {
-  children?: ReactNode;
-}
+import { ComponentProps } from "@/types/interfaces";
 
 const ENVIROMENT = BUILD_ENV === "production" ? "production" : "sandbox";
 const PADDLE_TOKEN = process.env.NEXT_PUBLIC_PADDLE_TOKEN ?? "";
@@ -27,13 +24,13 @@ const PaymentGatewayContext = createContext<{
   PADDLE_PRICE_ID: PADDLE_PRICE_ID,
 });
 
-export function PaymentGatewayProvider({ children }: Props) {
+export function PaymentGatewayProvider({ children }: ComponentProps) {
   const { user, isLoading } = useAuth();
   const [paddle, setPaddle] = useState<Paddle>();
 
   useEffect(() => {
     if (!isLoading) {
-      logger.info("Initializing paddle");
+      // logger.info("Initializing paddle");
       initializePaddle({
         environment: ENVIROMENT,
         token: PADDLE_TOKEN,

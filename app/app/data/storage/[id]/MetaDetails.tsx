@@ -1,5 +1,5 @@
 "use client";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client/react";
 import toast from "react-hot-toast";
 import { BiEditAlt } from "react-icons/bi";
 import GET_METAMODEL from "../../../../../graphql/ops/app/metamodel/queries/GET_METAMODEL";
@@ -8,33 +8,34 @@ import getTimeAgo from "../../../../../common/time/getTimeAgo";
 import ShareMetapod from "@/components/app/data/ShareMetapod";
 import DesktopAndMobilePageHeader from "@/components/app/common/page/DesktopAndMobilePageHeader";
 import DeleteButton from "./DeleteButton";
+import { GetMetamodelQuery, GetMetamodelVariables, UpdateMetamodelMutation, UpdateMetamodelVariables, MetamodelMetadata } from "../../../../../types/interfaces";
+import { parseMetamodelMetadata, stringifyMetamodelMetadata } from "../../../../../common/metamodel/utils";
 
-export default function MetaDetails({ id }) {
-  const { data, loading, error, refetch } = useQuery(GET_METAMODEL, {
+interface MetaDetailsProps {
+  id: string;
+}
+
+export default function MetaDetails({ id }: MetaDetailsProps) {
+  const { data, loading, error, refetch } = useQuery<GetMetamodelQuery, GetMetamodelVariables>(GET_METAMODEL, {
     variables: {
       id,
     },
-    onError(error) {
-      if (
-        error &&
-        error.graphQLErrors &&
-        error.graphQLErrors[0] &&
-        error.graphQLErrors[0].extensions?.code === "MODEL_NOT_FOUND"
-      ) {
-        window.location.href = "/app/data/storage";
-      }
-    },
   });
 
-  const [update_metamodel] = useMutation(UPDATE_METAMODEL, {
-    onCompleted: () => {
-      refetch();
-    },
-  });
+  const [update_metamodel] = useMutation<UpdateMetamodelMutation, UpdateMetamodelVariables>(UPDATE_METAMODEL);
+
+  // Handle model not found error
+  if (error && 'errors' in error && error.errors && error.errors[0] && 
+      error.errors[0].extensions?.code === "MODEL_NOT_FOUND") {
+    window.location.href = "/app/data/storage";
+  }
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{JSON.stringify(error)}</div>;
+  if (!data) return <div>No data found</div>;
+
   const file_details = data.getMetamodel;
-  const parsedData = JSON.parse(data.getMetamodel.metadata);
+  const parsedData = parseMetamodelMetadata<MetamodelMetadata>(data.getMetamodel);
 
   return (
     <div className="flex flex-col gap-2">
@@ -66,12 +67,16 @@ export default function MetaDetails({ id }) {
                   variables: {
                     data: {
                       id,
-                      metadata: JSON.stringify({
+                      metadata: stringifyMetamodelMetadata({
                         ...parsedData,
                         title: new_name,
                       }),
                     },
                   },
+                }).then(() => {
+                  refetch();
+                }).catch((error) => {
+                  console.error('Failed to update file:', error);
                 });
               }
             }}
@@ -108,7 +113,7 @@ export default function MetaDetails({ id }) {
       <div className="px-4">
         <DeleteButton
           id={data.getMetamodel.id}
-          folder_id={data.getMetamodel.folder_id}
+          folder_id={data.getMetamodel.folder_id || "root"}
         />
       </div>
     </div>

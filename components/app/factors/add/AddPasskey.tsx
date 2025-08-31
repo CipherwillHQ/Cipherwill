@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import crypto from "crypto";
 import { ec as EC } from "elliptic";
 import mergeUint8Arrays from "@/common/string/mergeUint8Arrays";
-import { useApolloClient, useMutation } from "@apollo/client";
+import { useApolloClient, useMutation } from "@apollo/client/react";
 import CREATE_FACTOR from "@/graphql/ops/auth/mutations/CREATE_FACTOR";
 import { useSession } from "@/contexts/SessionContext";
 import continuousFactorIn from "./continuousFactorIn";
@@ -87,6 +87,7 @@ export default function AddPasskey({ continuous }) {
                 challenge,
                 rp: { id: domain, name: "Cipherwill" },
                 user: {
+                  //@ts-ignore
                   id: mergeUint8Arrays(
                     factor_nonce,
                     new Uint8Array(Buffer.from(user.id, "utf-8"))

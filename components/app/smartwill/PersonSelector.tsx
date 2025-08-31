@@ -1,12 +1,13 @@
 "use client";
 
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client/react";
 import { useEffect, useState } from "react";
 import SEARCH_PERSON from "../../../graphql/ops/app/people/queries/SEARCH_PERSON";
 import validate_email from "../../../common/validators/validate_email";
 import BasicPopup from "../../BasicPopup";
 import InvitationBox from "./InvitationBox";
 import { PersonRef } from "@/types/Will";
+import { SearchPersonData, SearchPersonVariables } from "../../../types/interfaces/people";
 
 let timeout: any;
 
@@ -49,7 +50,7 @@ function SeachAndList({
   const [invitationMode, setInvitationMode] = useState<null | string>(null);
   const [inputEmail, setInputEmail] = useState("");
   const [searchUser, { loading, error, data: peoples }] =
-    useLazyQuery(SEARCH_PERSON);
+    useLazyQuery<SearchPersonData, SearchPersonVariables>(SEARCH_PERSON);
 
   useEffect(() => {
     if (!validate_email(inputEmail)) {

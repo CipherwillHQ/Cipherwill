@@ -1,20 +1,11 @@
 "use client";
-
 import * as Sentry from "@sentry/nextjs";
+import Error from "next/error";
 import NextError from "next/error";
 import { useEffect } from "react";
 
-const errors_to_ignore = [
-  "Failed to fetch", // client internet error
-];
-
-export default function GlobalError({
-  error,
-}: {
-  error: Error & { digest?: string };
-}) {
-  useEffect(() => {
-    if (errors_to_ignore.includes(error.message)) return;
+export default function GlobalError({ error }: { error: Error }) {
+   useEffect(() => {
     Sentry.captureException(error);
   }, [error]);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
 import { useEffect, useState } from "react";
 import UPDATE_USER from "../../../graphql/ops/auth/mutations/UPDATE_USER";
 import ME from "../../../graphql/ops/auth/queries/ME";
@@ -11,6 +11,7 @@ import Country from "./Country";
 import Gender from "./Gender";
 import DateOfBirth from "./DateOfBirth";
 import Name from "./Name";
+import { MeQuery, UpdateUserMutation, UpdateUserVariables } from "../../../types/interfaces";
 
 export default function Profile() {
   const [email, setEmail] = useState("");
@@ -24,50 +25,45 @@ export default function Profile() {
   const [countryRestrictionMessage, setCountryRestrictionMessage] =
     useState(false);
 
-  const [fetchProfile, { data: ProfileData, loading:profile_loading }] = useLazyQuery(ME, {
-    onCompleted: (data) => {
-      if (data && data.me) {
-        setEmail(data.me.email || "");
-        setFirstName(data.me.first_name || "");
-        setMiddleName(data.me.middle_name || "");
-        setLastName(data.me.last_name || "");
-        setGender(data.me.gender || "");
-        setCountry(data.me.country || "");
-        setDob(data.me.birth_date === null ? null : parseInt(data.me.birth_date));
-      }
-    },
-  });
+  const [fetchProfile, { data: ProfileData, loading:profile_loading }] = useLazyQuery<MeQuery>(ME);
 
   // useMutation
-  const [updateProfile, { loading, error }] = useMutation(
-    UPDATE_USER,
+  const [updateProfile, { loading, error }] = useMutation<UpdateUserMutation, UpdateUserVariables>(UPDATE_USER);
 
-    {
-      onError(error, clientOptions) {
-        if (
-          error.graphQLErrors !== null &&
-          error.graphQLErrors.length > 0 &&
-          error.graphQLErrors[0].extensions?.code ===
-            "COUNTRY_RESTRICTED_ACCORDING_TO_SUBSCRIPTION"
-        ) {
-          fetchProfile(); // reset the country to default one
-          // show country restricted message
-          setCountryRestrictionMessage(true);
-        }
-      },
+  // Handle profile data updates
+  useEffect(() => {
+    if (ProfileData && ProfileData.me) {
+      setEmail(ProfileData.me.email || "");
+      setFirstName(ProfileData.me.first_name || "");
+      setMiddleName(ProfileData.me.middle_name || "");
+      setLastName(ProfileData.me.last_name || "");
+      setGender(ProfileData.me.gender || "");
+      setCountry(ProfileData.me.country || "");
+      setDob(ProfileData.me.birth_date === null || ProfileData.me.birth_date === undefined ? null : parseInt(ProfileData.me.birth_date));
     }
-  );
+  }, [ProfileData]);
+
+  // Handle mutation errors
+  useEffect(() => {
+    if (error && 'errors' in error && Array.isArray(error.errors) && 
+        error.errors.length > 0 &&
+        error.errors[0]?.extensions?.code === "COUNTRY_RESTRICTED_ACCORDING_TO_SUBSCRIPTION") {
+      fetchProfile(); // reset the country to default one
+      // show country restricted message
+      setCountryRestrictionMessage(true);
+    }
+  }, [error, fetchProfile]);
 
   useEffect(() => {
     fetchProfile();
   }, [fetchProfile]);
   return (
     <div className="w-full max-w-3xl flex flex-col justify-center border border-default rounded-md p-4 bg-secondary">
-      {countryRestrictionMessage && ProfileData && (
+      {countryRestrictionMessage && ProfileData?.me && (
         <CountryRestrictionPopup
           open={countryRestrictionMessage}
           closeModal={() => setCountryRestrictionMessage(false)}
-          currentCountry={ProfileData.me.country}
+          currentCountry={ProfileData.me.country || ""}
         />
       )}
       <div className="text-lg font-medium pb-2">Profile Information</div>
@@ -89,6 +85,8 @@ export default function Profile() {
       <div className="pt-2 text-right">
         <SimpleButton
           onClick={() => {
+            if (!ProfileData?.me) return;
+            
             let data_to_update = {};
             const new_stamp = dob !== null ? (new Date(dob).getTime() || 0).toString() : "";
 
@@ -116,12 +114,11 @@ export default function Profile() {
                   ...data_to_update,
                 },
               },
-              onCompleted: () => {
-                fetchProfile({
-                  fetchPolicy: "network-only",
-                });
-                toast.success("updated");
-              },
+            }).then(() => {
+              fetchProfile();
+              toast.success("updated");
+            }).catch((err) => {
+              console.error('Profile update error:', err);
             });
           }}
         >

@@ -1,5 +1,5 @@
 "use client";
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client/react";
 import { useCallback, useEffect, useState } from "react";
 import { useSession } from "../SessionContext";
 import GET_POD from "@/graphql/ops/app/pod/queries/GET_POD";
@@ -11,6 +11,7 @@ import CryptoJS from "crypto-js";
 import { POD_TYPE } from "@/types/POD";
 import parseToLatestDataModel from "./parseToLatestDataModel";
 import upload_pod_data from "@/common/data/upload_pod_data";
+import { GetKeyByRefIdQuery, GetKeyByRefIdVariables, GetPodQuery, GetPodVariables } from "@/types/interfaces/metamodel";
 
 export function usePod<POD_DATA_TYPE>(
   config: {
@@ -45,7 +46,7 @@ export function usePod<POD_DATA_TYPE>(
     setLoading(true);
     let pod;
     try {
-      pod = await client.query({
+      pod = await client.query<GetPodQuery, GetPodVariables>({
         query: GET_POD,
         fetchPolicy: "network-only",
         variables: {
@@ -55,9 +56,9 @@ export function usePod<POD_DATA_TYPE>(
     } catch (error) {
       if (
         error &&
-        error.graphQLErrors &&
-        error.graphQLErrors[0] &&
-        error.graphQLErrors[0].extensions.code === "POD_NOT_FOUND"
+        error.errors &&
+        error.errors[0] &&
+        error.errors[0].extensions.code === "POD_NOT_FOUND"
       ) {
         setData(null);
         onComplete(null);
@@ -76,7 +77,7 @@ export function usePod<POD_DATA_TYPE>(
     }
     const content = pod.data.getPod.content;
 
-    const encryption_key = await client.query({
+    const encryption_key = await client.query<GetKeyByRefIdQuery, GetKeyByRefIdVariables>({
       query: GET_KEY_BY_REF_ID,
       fetchPolicy: "network-only",
       variables: session

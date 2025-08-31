@@ -1,17 +1,18 @@
 import GET_METAMODELS from "@/graphql/ops/app/metamodel/queries/GET_METAMODELS";
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import Link from "next/link";
 import { BiCheckCircle, BiCircle } from "react-icons/bi";
+import { GetMetamodelsQuery, GetMetamodelsVariables } from "@/types/interfaces/metamodel";
 
 export default function CompleteNoteCreationStep() {
-  const { data, loading, error } = useQuery(GET_METAMODELS, {
+  const { data, loading, error } = useQuery<GetMetamodelsQuery, GetMetamodelsVariables>(GET_METAMODELS, {
     variables: {
       type: "NOTE",
     },
   });
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
-  const is_complete = data.getMetamodels.models.length > 0;
+  const is_complete = (data?.getMetamodels?.models?.length ?? 0) > 0;
   return (
     <div className="w-full max-w-sm">
       <Link

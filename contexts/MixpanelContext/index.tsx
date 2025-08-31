@@ -1,15 +1,13 @@
 "use client";
 import { createContext, ReactNode, useContext, useEffect } from "react";
 import mixpanel, { Mixpanel } from "mixpanel-browser";
+import { ComponentProps } from "@/types/interfaces";
 
-interface Props {
-  children?: ReactNode;
-}
 const MixpanelContext = createContext<any>({});
 
 const DEBUG_MIXPANEL = false;
 
-export function MixpanelProvider({ children }: Props) {
+export function MixpanelProvider({ children }: ComponentProps) {
   useEffect(() => {
     mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN ?? "", {
       api_host: process.env.NEXT_PUBLIC_MIXPANEL_HOST,

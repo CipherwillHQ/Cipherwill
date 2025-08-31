@@ -1,4 +1,4 @@
-import { useApolloClient, useMutation } from "@apollo/client";
+import { useApolloClient, useMutation } from "@apollo/client/react";
 import { useSession } from "../../../contexts/SessionContext";
 import toast from "react-hot-toast";
 import { useState } from "react";

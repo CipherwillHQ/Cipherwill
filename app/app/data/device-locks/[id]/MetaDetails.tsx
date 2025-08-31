@@ -1,35 +1,52 @@
 "use client";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client/react";
 import GET_METAMODEL from "../../../../../graphql/ops/app/metamodel/queries/GET_METAMODEL";
 import UPDATE_METAMODEL from "../../../../../graphql/ops/app/metamodel/mutations/UPDATE_METAMODEL";
 import getTimeAgo from "../../../../../common/time/getTimeAgo";
 import ShareMetapod from "@/components/app/data/ShareMetapod";
+import { 
+  GetMetamodelQuery, 
+  GetMetamodelVariables, 
+  MetamodelMetadata,
+  UpdateMetamodelVariables,
+  UpdateMetamodelMutation
+} from "../../../../../types/interfaces";
+import { parseMetamodelMetadata, stringifyMetamodelMetadata } from "../../../../../common/metamodel/utils";
 
-export default function MetaDetails({ id }) {
-  const { data, loading, error, refetch } = useQuery(GET_METAMODEL, {
-    variables: {
-      id,
-    },
-    onError(error) {
-      if (
-        error &&
-        error.graphQLErrors &&
-        error.graphQLErrors[0] &&
-        error.graphQLErrors[0].extensions?.code === "MODEL_NOT_FOUND"
-      ) {
-        window.location.href = "/app/data/device-locks";
-      }
-    },
-  });
+export default function MetaDetails({ id }: { id: string }) {
+  const { data, loading, error, refetch } = useQuery<GetMetamodelQuery, GetMetamodelVariables>(
+    GET_METAMODEL,
+    {
+      variables: {
+        id,
+      },
+    }
+  );
 
-  const [update_metamodel] = useMutation(UPDATE_METAMODEL, {
-    onCompleted: () => {
-      refetch();
-    },
-  });
+  const [update_metamodel] = useMutation<UpdateMetamodelMutation, UpdateMetamodelVariables>(UPDATE_METAMODEL);
+
+  // Handle the MODEL_NOT_FOUND error
+  if (error && 'errors' in error) {
+    const errors = (error as any).errors;
+    if (
+      errors &&
+      errors[0] &&
+      errors[0].extensions?.code === "MODEL_NOT_FOUND"
+    ) {
+      window.location.href = "/app/data/device-locks";
+      return null;
+    }
+  }
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{JSON.stringify(error)}</div>;
-  const parsedData = JSON.parse(data.getMetamodel.metadata);
+  
+  if (!data?.getMetamodel) {
+    return <div>No data available</div>;
+  }
+
+  const metamodel = data.getMetamodel;
+  const parsedData: MetamodelMetadata = parseMetamodelMetadata(metamodel);
 
   return (
     <div className="flex flex-col sm:flex-row items-center gap-2 justify-between py-2">
@@ -52,12 +69,14 @@ export default function MetaDetails({ id }) {
                 variables: {
                   data: {
                     id,
-                    metadata: JSON.stringify({
+                    metadata: stringifyMetamodelMetadata({
                       ...parsedData,
                       name: new_name,
                     }),
                   },
                 },
+              }).then(() => {
+                refetch();
               });
             }
           }}
@@ -83,9 +102,9 @@ export default function MetaDetails({ id }) {
         </button>
         <ShareMetapod />
         <div className="text-xs">
-          Created at: {getTimeAgo(parseInt(data.getMetamodel.created_at))}
+          Created at: {getTimeAgo(parseInt(metamodel.created_at))}
           <br />
-          Updated at: {getTimeAgo(parseInt(data.getMetamodel.updated_at))}
+          Updated at: {getTimeAgo(parseInt(metamodel.updated_at))}
         </div>
       </div>
     </div>

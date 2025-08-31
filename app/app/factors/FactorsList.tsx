@@ -5,7 +5,7 @@ import {
   useLazyQuery,
   useMutation,
   useQuery,
-} from "@apollo/client";
+} from "@apollo/client/react";
 import GET_FACTORS from "../../../graphql/ops/auth/queries/AVAILABLE_AUTH_FACTORS";
 import { useSession } from "../../../contexts/SessionContext";
 import UPDATE_FACTOR from "../../../graphql/ops/auth/mutations/UPDATE_FACTOR";
@@ -15,6 +15,7 @@ import OptionsMenu from "./OptionsMenu";
 import remove_factor from "../../../common/factor/remove_factor";
 import getShortKey from "../../../factory/publicKey/getShortKey";
 import GET_ALL_KEY_COUNT from "../../../graphql/ops/app/key/Queries/GET_ALL_KEY_COUNT";
+import { GetFactorsQuery, GetAllKeyCountQuery, UpdateFactorMutation, UpdateFactorVariables } from "../../../types/interfaces";
 
 export default function FactorsList() {
   const { session } = useSession();
@@ -24,14 +25,18 @@ export default function FactorsList() {
     publicKey: "null",
     value: 0,
   });
-  const { data, loading, error } = useQuery(GET_FACTORS);
-  const [getKeyCount, { data: count }] = useLazyQuery(GET_ALL_KEY_COUNT, {
-    onCompleted(data) {
-      if (data && data.getAllKeyCount.length > 0) {
+  const { data, loading, error } = useQuery<GetFactorsQuery>(GET_FACTORS);
+  const [getKeyCount, { data: count }] = useLazyQuery<GetAllKeyCountQuery>(GET_ALL_KEY_COUNT);
+
+  const [updateFactor] = useMutation<UpdateFactorMutation, UpdateFactorVariables>(UPDATE_FACTOR);
+
+  useEffect(() => {
+    getKeyCount().then((result) => {
+      if (result.data && result.data.getAllKeyCount.length > 0) {
         let max = 0;
         let publicKey = "null";
-        for (let index = 0; index < data.getAllKeyCount.length; index++) {
-          const element = data.getAllKeyCount[index];
+        for (let index = 0; index < result.data.getAllKeyCount.length; index++) {
+          const element = result.data.getAllKeyCount[index];
           if (element.count > max) {
             max = element.count;
             publicKey = element.publicKey;
@@ -42,17 +47,14 @@ export default function FactorsList() {
           value: max,
         });
       }
-    },
-  });
-
-  const [updateFactor] = useMutation(UPDATE_FACTOR);
-
-  useEffect(() => {
-    getKeyCount();
+    }).catch((error) => {
+      console.error('Failed to get key count:', error);
+    });
   }, [getKeyCount]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
+  if (!data) return <div>No data found</div>;
 
   return (
     <div>
@@ -66,11 +68,8 @@ export default function FactorsList() {
         {data.getFactors.map((factor) => {
           const data_count =
             count &&
-            count.getAllKeyCount &&
-            count.getAllKeyCount.find((a) => a.publicKey === factor.publicKey)
-              ? count.getAllKeyCount.find(
-                  (a) => a.publicKey === factor.publicKey
-                ).count
+            count.getAllKeyCount
+              ? count.getAllKeyCount.find((a) => a.publicKey === factor.publicKey)?.count || 0
               : 0;
 
           return (

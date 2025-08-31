@@ -6,7 +6,7 @@ import { sleep } from "../time/sleep";
 import DELETE_KEY_BY_PUBLIC_KEY from "../../graphql/ops/app/key/Mutations/DELETE_KEY_BY_PUBLIC_KEY";
 
 export default async function remove_factor(
-  client: ApolloClient<any>,
+  client: ApolloClient,
   session_publicKey: string,
   session_privateKey: string,
   factor_id: string,

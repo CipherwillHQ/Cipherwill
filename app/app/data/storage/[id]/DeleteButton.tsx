@@ -1,13 +1,19 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import DELETE_METAMODEL from "../../../../../graphql/ops/app/metamodel/mutations/DELETE_METAMODEL";
 import GET_METAMODELS from "../../../../../graphql/ops/app/metamodel/queries/GET_METAMODELS";
 import ConfirmationButton from "../../../../../components/common/ConfirmationButton";
+import { DeleteMetamodelMutation, DeleteMetamodelVariables } from "../../../../../types/interfaces";
 
-export default function DeleteButton({ id, folder_id }) {
+interface DeleteButtonProps {
+  id: string;
+  folder_id: string;
+}
+
+export default function DeleteButton({ id, folder_id }: DeleteButtonProps) {
   const router = useRouter();
-  const [deleteFile] = useMutation(DELETE_METAMODEL, {
+  const [deleteFile] = useMutation<DeleteMetamodelMutation, DeleteMetamodelVariables>(DELETE_METAMODEL, {
     refetchQueries: [
       {
         query: GET_METAMODELS,
@@ -27,6 +33,8 @@ export default function DeleteButton({ id, folder_id }) {
             id,
           },
         }).then((delete_res) => {
+          if (!delete_res.data) return;
+          
           if (delete_res.data.deleteMetamodel.folder_id === "root") {
             router.replace("/app/data/storage");
           } else if (
@@ -38,6 +46,8 @@ export default function DeleteButton({ id, folder_id }) {
               `/app/data/storage/folder/${delete_res.data.deleteMetamodel.folder_id}`
             );
           }
+        }).catch((error) => {
+          console.error('Failed to delete file:', error);
         });
       }}
     >

@@ -1,5 +1,5 @@
 "use client";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client/react";
 import { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "../AuthContext";
 import Link from "next/link";
@@ -15,6 +15,7 @@ import Metamask from "./Metamask";
 import { MetaMaskProvider } from "@metamask/sdk-react";
 import Passkey from "./Passkey";
 import DeactivatedUserWarning from "./DeactivatedUserWarning";
+import type { GetFactorsQuery } from "@/types/interfaces/metamodel";
 
 const SessionContext = createContext<any>({});
 
@@ -26,18 +27,27 @@ export function SessionProvider({ children }) {
     publicKey: string;
     privateKey: string;
   }>(null);
-  const [getAuthFactors] = useLazyQuery(GET_FACTORS, {
-    onCompleted(data) {
-      const methods = data.getFactors;
+  
+  const [getAuthFactors, { data: factorsData, error: factorsError }] = useLazyQuery<GetFactorsQuery>(GET_FACTORS);
+
+  // Handle factors data when loaded
+  useEffect(() => {
+    if (factorsData?.getFactors) {
+      const methods = factorsData.getFactors;
       set_available_methods(methods);
-    },
-    onError(error) {
-      const code = (error?.cause as any)?.result?.errors[0]?.extensions?.code;
+    }
+  }, [factorsData]);
+
+  // Handle factors error
+  useEffect(() => {
+    if (factorsError && 'errors' in factorsError && Array.isArray(factorsError.errors)) {
+      const code = factorsError.errors[0]?.extensions?.code;
       if (code === "USER_DEACTIVATED") {
         set_inactive_user(code);
       }
-    },
-  });
+    }
+  }, [factorsError]);
+
   useEffect(() => {
     if (user) {
       getAuthFactors();

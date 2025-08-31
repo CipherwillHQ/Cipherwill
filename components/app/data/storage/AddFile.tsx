@@ -5,16 +5,17 @@ import SimpleButton from "@/components/common/SimpleButton";
 import { useSession } from "@/contexts/SessionContext";
 import CREATE_METAMODEL from "@/graphql/ops/app/metamodel/mutations/CREATE_METAMODEL";
 import GET_METAMODELS from "@/graphql/ops/app/metamodel/queries/GET_METAMODELS";
-import { useApolloClient, useMutation } from "@apollo/client";
+import { useApolloClient, useMutation } from "@apollo/client/react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import Popup from "reactjs-popup";
+import { CreateMetamodelMutation, CreateMetamodelVariables, GetMetamodelsQuery, GetMetamodelsVariables } from "@/types/interfaces/metamodel";
 
 export default function AddFile({ folder_id }: { folder_id?: string }) {
   const [isUploading, setIsUploading] = useState(false);
   const client = useApolloClient();
   const { session } = useSession();
-  const [createFileModel] = useMutation(CREATE_METAMODEL, {
+  const [createFileModel] = useMutation<CreateMetamodelMutation, CreateMetamodelVariables>(CREATE_METAMODEL, {
     variables: {
       type: "FILE",
       folder_id,
@@ -82,6 +83,14 @@ export default function AddFile({ folder_id }: { folder_id?: string }) {
                   setIsUploading(false);
                   return;
                 }
+
+                // Check if the metamodel was created successfully
+                if (!new_model.data?.createMetamodel?.id) {
+                  toast.error("Failed to create metamodel");
+                  setIsUploading(false);
+                  return;
+                }
+
                 // upload data
                 await upload_pod_data({
                   data_items: [

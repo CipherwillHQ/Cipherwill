@@ -4,7 +4,6 @@ import { useUserContext } from "@/contexts/UserSetupContext";
 import CycleDescription from "./CycleDescription";
 import DesktopAndMobilePageHeader from "@/components/app/common/page/DesktopAndMobilePageHeader";
 import SimpleButton from "@/components/common/SimpleButton";
-import CustomCipherwillInterval from "./CustomCipherwillInterval";
 import { useEffect, useState } from "react";
 
 export default function TImelinePage() {
@@ -24,7 +23,7 @@ export default function TImelinePage() {
           <CycleDescription
             birth_stamp={user.birth_date}
             interval={interval}
-            last_accessed={user ? user.last_accessed : null}
+            last_accessed={user.last_accessed || null}
           />
         ) : (
           <div className="flex flex-col gap-3 border border-default rounded-md p-4 bg-secondary max-w-md">

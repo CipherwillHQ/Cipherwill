@@ -1,5 +1,6 @@
 import { ApolloClient } from "@apollo/client";
 import GET_ALL_KEY_COUNT from "../../graphql/ops/app/key/Queries/GET_ALL_KEY_COUNT";
+import { GetAllKeyCountQuery } from "../../types/interfaces/metamodel";
 
 declare type CountResult = {
   count: number;
@@ -7,15 +8,15 @@ declare type CountResult = {
 };
 
 export default async function getMaxKeyCount(
-  client: ApolloClient<any>
+  client: ApolloClient
 ): Promise<CountResult> {
-  const { data } = await client.query({
+  const { data } = await client.query<GetAllKeyCountQuery>({
     fetchPolicy: "network-only",
     query: GET_ALL_KEY_COUNT,
   });
   let maxKeyCount = 0;
   let maxPublicKeys: string[] = ["null"];
-  if (data === null || data.getAllKeyCount === undefined) {
+  if (!data || !data.getAllKeyCount || data.getAllKeyCount.length === 0) {
     return {
       count: maxKeyCount,
       publicKey: maxPublicKeys,

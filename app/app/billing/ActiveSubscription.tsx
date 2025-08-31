@@ -7,17 +7,18 @@ import { useCallback } from "react";
 import { usePaddle } from "@/contexts/PaymentGatewayContext";
 import { CheckoutOpenOptions } from "@paddle/paddle-js";
 import logger from "@/common/debug/logger";
-import { useApolloClient, useQuery } from "@apollo/client";
+import { useApolloClient, useQuery } from "@apollo/client/react";
 import ME from "@/graphql/ops/auth/queries/ME";
 import GET_MY_SUBSCRIPTION from "@/graphql/ops/app/billing/queries/GET_MY_SUBSCRIPTION";
 import SubscriptionDetails from "./SubscriptionDetails";
 import SimpleButton from "@/components/common/SimpleButton";
+import { MeData, SubscriptionData } from "@/types/interfaces";
 
 export default function ActiveSubscription() {
   const { user } = useUserContext();
   const { paddle, PADDLE_PRICE_ID } = usePaddle();
   const client = useApolloClient();
-  const { data: user_data } = useQuery(ME);
+  const { data: user_data } = useQuery<MeData>(ME);
 
   // const country_to_display =
   //   user && user.country ? user.country : getLocalCountry();
@@ -26,7 +27,7 @@ export default function ActiveSubscription() {
     data: getSubscription,
     loading,
     error,
-  } = useQuery(GET_MY_SUBSCRIPTION);
+  } = useQuery<SubscriptionData>(GET_MY_SUBSCRIPTION);
 
   const upgradeUsingPaddle = useCallback(async () => {
     const user_id = user_data?.me?.id;

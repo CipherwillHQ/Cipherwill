@@ -1,4 +1,4 @@
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client/react";
 import { useSession } from "../../../contexts/SessionContext";
 import { useState } from "react";
 import restore_backup from "./restore_backup";

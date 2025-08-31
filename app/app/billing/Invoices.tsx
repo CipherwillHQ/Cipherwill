@@ -1,13 +1,14 @@
 import capitalizeFirstLetter from "@/common/string/capitalizeFirstLetter";
 import GET_INVOICE_PDF from "@/graphql/ops/app/billing/queries/GET_INVOICE_PDF";
 import GET_MY_INVOICES from "@/graphql/ops/app/billing/queries/GET_MY_INVOICES";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { GetMyInvoicesData, GetInvoicePdfData } from "@/types/interfaces/graphql";
+import { useLazyQuery, useQuery } from "@apollo/client/react";
 import { DateTime } from "luxon";
 import toast from "react-hot-toast";
 
 export default function Invoices() {
-  const { data, loading, error } = useQuery(GET_MY_INVOICES);
-  const [fetchInvoicePDF] = useLazyQuery(GET_INVOICE_PDF);
+  const { data, loading, error } = useQuery<GetMyInvoicesData>(GET_MY_INVOICES);
+  const [fetchInvoicePDF] = useLazyQuery<GetInvoicePdfData>(GET_INVOICE_PDF);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;

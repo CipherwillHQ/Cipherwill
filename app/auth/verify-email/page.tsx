@@ -4,24 +4,28 @@ import { IoMailOutline } from "react-icons/io5";
 import { useAuth } from "../../../contexts/AuthContext";
 import toast from "react-hot-toast";
 import { RedirectType, redirect } from "next/navigation";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client/react";
 import ME from "../../../graphql/ops/auth/queries/ME";
 import { sleep } from "../../../common/time/sleep";
 import Link from "next/link";
+import type { MeQuery } from "@/types/interfaces/metamodel";
 
 export default function VerifyEmail() {
   const { isLoading, user, getIdToken, sendEmailVerification } = useAuth();
   const [emailSent, setEmailSent] = useState(false);
   const [error, setError] = useState(null);
   const [validatingEmail, setValidatingEmail] = useState(false);
-  const [fetchUser] = useLazyQuery(ME, {
+  const [fetchUser, { data: userData }] = useLazyQuery<MeQuery>(ME, {
     fetchPolicy: "network-only",
-    onCompleted(data) {
-      if (data.me.email_verified) {
-        window.location.href = "/app";
-      }
-    },
   });
+
+  // Handle user data when loaded
+  useEffect(() => {
+    if (userData?.me?.email_verified) {
+      window.location.href = "/app";
+    }
+  }, [userData]);
+
   useEffect(() => {
     if (user) {
       fetchUser();

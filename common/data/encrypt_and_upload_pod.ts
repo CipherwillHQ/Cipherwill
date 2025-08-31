@@ -53,7 +53,7 @@ export default async function encrypt_and_upload_pod({
 }: {
   encryption_keys: EncryptionKeys;
   data_items: DataItem[];
-  client: ApolloClient<any>;
+  client: ApolloClient;
 }) {
   for await (const item of data_items) {
     // encrypt data with random key

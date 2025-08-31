@@ -1,21 +1,22 @@
 "use client";
 
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client/react";
 import { toast } from "react-hot-toast";
 import GET_ALL_GRANTED_BENEFICIARIES from "../../graphql/ops/app/executor/access/queries/GET_ALL_GRANTED_BENEFICIARIES";
+import { GetAllGrantedBeneficiariesQuery } from "../../types/interfaces/metamodel";
 import REVOKE_ACCESS_TO_MY_WILL from "../../graphql/ops/app/executor/access/mutations/REVOKE_ACCESS_TO_MY_WILL";
 import getTimeRemaining from "../../common/time/getTimeRemaining";
 import { UserById } from "../app/UserById";
 import DevOnly from "../debug/DevOnly";
 
 export default function GrantedBeneficiaryAccessList() {
-  const { loading, error, data } = useQuery(GET_ALL_GRANTED_BENEFICIARIES);
+  const { loading, error, data } = useQuery<GetAllGrantedBeneficiariesQuery>(GET_ALL_GRANTED_BENEFICIARIES);
 
   const [revokeAccess] = useMutation(REVOKE_ACCESS_TO_MY_WILL);
 
   if (loading) return null;
   if (error) return <div>Error : {JSON.stringify(error)}</div>;
-  if (data.getAllGrantedBeneficiaries.length === 0)
+  if (!data || data.getAllGrantedBeneficiaries.length === 0)
     return (
       <DevOnly>
         <div className="border p-2 text-sm rounded-md">
@@ -31,7 +32,7 @@ export default function GrantedBeneficiaryAccessList() {
       <h2 className="font-semibold py-2">
         Following beneficiaries have access to your data
       </h2>
-      {data.getAllGrantedBeneficiaries.map((access) => {
+      {data?.getAllGrantedBeneficiaries.map((access) => {
         return (
           <div
             key={access.id}

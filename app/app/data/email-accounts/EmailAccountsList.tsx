@@ -1,41 +1,51 @@
 "use client";
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import GET_METAMODELS from "../../../../graphql/ops/app/metamodel/queries/GET_METAMODELS";
 import EmailTile from "./EmailTile";
+import { GetMetamodelsQuery, GetMetamodelsVariables } from "../../../../types/interfaces";
+import { parseMetamodelMetadata } from "../../../../common/metamodel/utils";
 
 export default function EmailAccountsList() {
-  const { data, loading, error, fetchMore } = useQuery(GET_METAMODELS, {
-    variables: {
-      type: "EMAIL_ACCOUNT",
-    },
-  });
+  const { data, loading, error, fetchMore } = useQuery<GetMetamodelsQuery, GetMetamodelsVariables>(
+    GET_METAMODELS,
+    {
+      variables: {
+        type: "EMAIL_ACCOUNT",
+      },
+    }
+  );
+  
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{JSON.stringify(error)}</div>;
+  
+  if (!data?.getMetamodels) {
+    return <div>No data available</div>;
+  }
+
+  const { models, has_more } = data.getMetamodels;
+
   return (
     <div className="flex flex-col w-full">
-      {data.getMetamodels.models.length === 0 && <div>No email accounts</div>}
+      {models.length === 0 && <div>No email accounts</div>}
 
       <div className="flex flex-wrap gap-2 w-full">
-        {data.getMetamodels.models.map((model) => (
+        {models.map((model) => (
           <EmailTile
             key={model.id}
             id={model.id}
-            data={JSON.parse(model.metadata)}
+            data={parseMetamodelMetadata(model)}
           />
         ))}
       </div>
-      {data.getMetamodels.has_more && (
+      {has_more && (
         <button
           className="my-2 p-1 border rounded-sm hover:bg-slate-100"
           onClick={() => {
             fetchMore({
               variables: {
-                cursor:
-                  data.getMetamodels.models[
-                    data.getMetamodels.models.length - 1
-                  ].id,
+                cursor: models[models.length - 1].id,
               },
-              updateQuery: (prev, { fetchMoreResult }) => {
+              updateQuery: (prev: GetMetamodelsQuery, { fetchMoreResult }: { fetchMoreResult: GetMetamodelsQuery }) => {
                 return {
                   getMetamodels: {
                     models: [
