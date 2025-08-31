@@ -23,6 +23,7 @@
     "@metamask/sdk-react": "^0.31.2",
     "@notionhq/client": "^4.0.2",
     "@paddle/paddle-js": "^1.4.2",
+    "@sentry/nextjs": "10",
     "@tiptap/core": "^3.3.0",
     "@tiptap/extension-placeholder": "^3.3.0",
     "@tiptap/pm": "^3.3.0",
