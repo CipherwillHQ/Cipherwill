@@ -59,6 +59,7 @@
     "next-sitemap": "^4.2.3",
     "notion-client": "^7.4.3",
     "posthog-js": "^1.261.0",
+    "posthog-node": "^5.8.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-element-to-jsx-string": "^17.0.1",

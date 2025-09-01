@@ -1,8 +1,19 @@
-// This file configures the initialization of Sentry on the client.
-// The added config here will be used whenever a users loads a page in their browser.
+// This file configures the initialization of Sentry and PostHog on the client.
+// The added config here will be used whenever a user loads a page in their browser.
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
+// https://posthog.com/docs/integrations/js-integration
 
+import posthog from "posthog-js";
 import * as Sentry from "@sentry/nextjs";
+
+// Initialize PostHog
+posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
+  api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+  ui_host: "https://us.posthog.com",
+  defaults: '2025-05-24',
+  capture_exceptions: true, // Enables capturing exceptions using Error Tracking
+  debug: process.env.NODE_ENV === "development",
+});
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
