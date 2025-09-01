@@ -1,3 +1,5 @@
+import { JSX } from "react";
+
 type Divider = {
   divider: string;
   path?: string;

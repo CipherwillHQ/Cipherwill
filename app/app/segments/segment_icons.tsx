@@ -1,3 +1,4 @@
+import { JSX } from "react";
 import { BiFolder } from "react-icons/bi";
 import { GiMoneyStack } from "react-icons/gi";
 import { HiOutlineCreditCard } from "react-icons/hi2";

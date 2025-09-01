@@ -1,3 +1,4 @@
+import { JSX } from "react";
 import { TbInfoCircle } from "react-icons/tb";
 import Popup from "reactjs-popup";
 import { PopupPosition } from "reactjs-popup/dist/types";
