@@ -1,4 +1,3 @@
-
 import { AuthProvider } from "../contexts/AuthContext";
 import { ApolloContext } from "../contexts/ApolloContext";
 import { Metadata, Viewport } from "next";
@@ -7,9 +6,7 @@ import { UserSetupProvider } from "../contexts/UserSetupContext";
 import { gilroy, PlayfairDisplay } from "./font";
 import { FULL_HOSTNAME, IS_PRODUCTION } from "@/common/constant";
 import { MixpanelProvider } from "@/contexts/MixpanelContext";
-import { CSPostHogProvider } from "@/contexts/CSPostHogProvider";
 import dynamic from "next/dynamic";
-import Head from "next/head";
 import DynamicToaster from "@/components/common/DynamicToaster";
 
 // This works with dynamic imports to lower LCP
@@ -132,15 +129,13 @@ export default function RootLayout({ children }) {
         <DynamicToaster position="top-right" />
         <MixpanelProvider>
           <AuthProvider>
-            <CSPostHogProvider>
-              <ApolloContext>
-                <UserSetupProvider>
-                  {/* <StripeContext> */}
-                  {children}
-                  {/* </StripeContext> */}
-                </UserSetupProvider>
-              </ApolloContext>
-            </CSPostHogProvider>
+            <ApolloContext>
+              <UserSetupProvider>
+                {/* <StripeContext> */}
+                {children}
+                {/* </StripeContext> */}
+              </UserSetupProvider>
+            </ApolloContext>
           </AuthProvider>
         </MixpanelProvider>
       </body>
