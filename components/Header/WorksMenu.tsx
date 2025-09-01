@@ -2,9 +2,9 @@ import Link from "next/link";
 
 export function WorksMenuDesktop() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-black">
       <Link href={"/how-it-works"}>
-        <div className="w-80 hover:bg-orange-100 rounded-md p-4">
+        <div className="w-80 hover:bg-primary-100 rounded-md p-4">
           <div className="font-semibold text-lg">Platform Overview</div>
           <div className="text-sm">
             How it works in simple words or view detailed platform working
@@ -13,7 +13,7 @@ export function WorksMenuDesktop() {
         </div>
       </Link>
       <Link href={"/i/how-execution-timeline-works"}>
-        <div className="w-80 hover:bg-orange-100 rounded-md p-4">
+        <div className="w-80 hover:bg-primary-100 rounded-md p-4">
           <div className="font-semibold text-lg">Will Execution</div>
           <div className="text-sm">
             How Cipherwill securely executes your digital will upon predefined
@@ -22,7 +22,7 @@ export function WorksMenuDesktop() {
         </div>
       </Link>
       <Link href={"/how-factors-work"}>
-        <div className="w-80 hover:bg-orange-100 rounded-md p-4">
+        <div className="w-80 hover:bg-primary-100 rounded-md p-4">
           <div className="font-semibold text-lg">Security Factors</div>
           <div className="text-sm">
             These factors act as safeguards, encrypting your data to protect it
@@ -30,7 +30,7 @@ export function WorksMenuDesktop() {
         </div>
       </Link>
       <Link href={"/i/cascade-encryption"}>
-        <div className="w-80 hover:bg-orange-100 rounded-md p-4">
+        <div className="w-80 hover:bg-primary-100 rounded-md p-4">
           <div className="font-semibold text-lg">Encryption Layers</div>
           <div className="text-sm">
             Breaks down Cipherwill's Implementation of Cascade Encryption
@@ -38,7 +38,7 @@ export function WorksMenuDesktop() {
         </div>
       </Link>
       <Link href={"/i/time-capsule-encryption"}>
-        <div className="w-80 hover:bg-orange-100 rounded-md p-4">
+        <div className="w-80 hover:bg-primary-100 rounded-md p-4">
           <div className="font-semibold text-lg">Time Capsule Encryption</div>
           <div className="text-sm">
             Understand Time Based Encryption Used in Cipherwill

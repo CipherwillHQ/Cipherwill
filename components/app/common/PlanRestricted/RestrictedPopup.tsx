@@ -1,4 +1,5 @@
 import SimpleButton from "@/components/common/SimpleButton";
+import { JSX } from "react";
 import Popup from "reactjs-popup";
 
 export default function RestrictedPopup({

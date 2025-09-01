@@ -17,6 +17,7 @@ The **Open Source Cipherwill Web Client** is a user-friendly, secure interface f
 For End-to-End Encryption
 - Master Password - Seed password used with a nonce to generate the Public/Private keys.
 - Metamask - Signature of a nonce used as a seed to generate Public/Private keys.
+- Passkey - Passwordless authentication using cryptographic keys for secure access.
 
 ## Contribution Guidelines
 

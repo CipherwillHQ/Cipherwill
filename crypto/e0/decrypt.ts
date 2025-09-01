@@ -7,6 +7,7 @@ export default async function decrypt(
   iv: Buffer,
   mac: Buffer
 ) {
+  // console.log("private key *******************", private_key);
   const decrypted = await torusecc.decrypt(Buffer.from(private_key, "hex"), {
     ciphertext,
     ephemPublicKey,

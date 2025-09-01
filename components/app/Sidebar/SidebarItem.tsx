@@ -1,3 +1,5 @@
+import { JSX } from "react";
+
 export default function SidebarItem({
   icon,
   title,
