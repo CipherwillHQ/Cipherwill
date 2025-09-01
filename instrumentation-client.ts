@@ -10,7 +10,14 @@ import * as Sentry from "@sentry/nextjs";
 posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
   api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
   ui_host: "https://us.posthog.com",
-  defaults: '2025-05-24',
+  defaults: "2025-05-24",
+  person_profiles: "identified_only",
+  session_recording: {
+    maskAllInputs: true,
+    maskTextSelector: "*",
+  },
+  mask_all_element_attributes: true,
+  mask_all_text: true,
   capture_exceptions: true, // Enables capturing exceptions using Error Tracking
   debug: process.env.NODE_ENV === "development",
 });
