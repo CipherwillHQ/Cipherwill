@@ -1,6 +1,7 @@
 import Link from "next/link";
 import menu from "./bottom_menu";
 import SymbolicLogo from "../public/logo/SymbolicLogo";
+import LinkToTheTop from "../public/LinkToTheTop";
 
 export default function TopRow() {
   return (
@@ -45,12 +46,12 @@ export default function TopRow() {
             <ul className="mt-3 space-y-2">
               {column.items.map((link) => (
                 <li key={link.title}>
-                  <Link
+                  <LinkToTheTop
                     href={link.path}
                     className="flex hover:opacity-85 transition-all duration-200 hover:underline"
                   >
                     {link.title}
-                  </Link>
+                  </LinkToTheTop>
                 </li>
               ))}
             </ul>

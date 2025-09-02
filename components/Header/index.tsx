@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import menu from "./menu";
 import MobileHeader from "./MobileHeader";
 import { twMerge } from "tailwind-merge";
+import LinkToTheTop from "../public/LinkToTheTop";
 
 export default function Header({
   classOverride = "",
@@ -17,7 +18,7 @@ export default function Header({
   nonExpandedClassOverride = "",
   expandedClassOverride = "",
   nonExpandedLogo = "black",
-  expandedLogo = "black"
+  expandedLogo = "black",
 }: {
   classOverride?: string;
   backdropClassOverride?: string;
@@ -69,33 +70,34 @@ export default function Header({
         </span> */}
 
       <div className="w-full max-w-7xl mx-auto flex items-center justify-between h-full px-4">
-        <Link href="/" className="flex items-center">
+        <LinkToTheTop href="/" className="flex items-center">
           <Image
             id="header-logo"
             data-cy="logo"
             alt={`cipherwill logo`}
             src={
-              expanded?
-              expandedLogo === "black" ? logoBlack : logoWhite:
-              nonExpandedLogo === "black" ? logoBlack : logoWhite
+              expanded
+                ? expandedLogo === "black"
+                  ? logoBlack
+                  : logoWhite
+                : nonExpandedLogo === "black"
+                ? logoBlack
+                : logoWhite
             }
             width={150}
             height={100}
             priority
             suppressHydrationWarning
           />
-        </Link>
+        </LinkToTheTop>
 
         <div className="hidden sm:flex items-center gap-3 -ml-6">
           {menu.map((item) => {
             return (
-              <Link key={item.path} href={item.path}>
+              <LinkToTheTop key={item.path} href={item.path}>
                 <div
                   className={`mx-1 hover:text-neutral-500 p-1 font-medium
-                  ${
-                    pathname === item.path &&
-                    "font-semibold"
-                  }
+                  ${pathname === item.path && "font-semibold"}
                   content-center ${expanded ? "h-16" : "h-20"}
                   `}
                   onMouseEnter={() => {
@@ -111,12 +113,12 @@ export default function Header({
                 >
                   {item.title}
                 </div>
-              </Link>
+              </LinkToTheTop>
             );
           })}
         </div>
         <div className="flex items-center">
-          <Link href="/app">
+          <LinkToTheTop href="/app">
             <div
               className={`
               ${
@@ -130,7 +132,7 @@ export default function Header({
                 {user ? "Dashboard" : "Login/Signup"}
               </div>
             </div>
-          </Link>
+          </LinkToTheTop>
           <MobileHeader />
         </div>
       </div>
