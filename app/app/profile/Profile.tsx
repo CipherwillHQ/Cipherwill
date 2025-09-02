@@ -11,7 +11,11 @@ import Country from "./Country";
 import Gender from "./Gender";
 import DateOfBirth from "./DateOfBirth";
 import Name from "./Name";
-import { MeQuery, UpdateUserMutation, UpdateUserVariables } from "../../../types/interfaces";
+import {
+  MeQuery,
+  UpdateUserMutation,
+  UpdateUserVariables,
+} from "../../../types/interfaces";
 
 export default function Profile() {
   const [email, setEmail] = useState("");
@@ -20,15 +24,21 @@ export default function Profile() {
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
   const [country, setCountry] = useState("");
-  const [dob, setDob] = useState<(null | number)>(null);
+  const [dob, setDob] = useState<null | number>(null);
 
   const [countryRestrictionMessage, setCountryRestrictionMessage] =
     useState(false);
 
-  const [fetchProfile, { data: ProfileData, loading:profile_loading }] = useLazyQuery<MeQuery>(ME);
+  const [fetchProfile, { data: ProfileData, loading: profile_loading }] =
+    useLazyQuery<MeQuery>(ME);
 
   // useMutation
-  const [updateProfile, { loading, error }] = useMutation<UpdateUserMutation, UpdateUserVariables>(UPDATE_USER);
+  const [updateProfile, { loading, error }] = useMutation<
+    UpdateUserMutation,
+    UpdateUserVariables
+  >(UPDATE_USER, {
+    refetchQueries: [{ query: ME }],
+  });
 
   // Handle profile data updates
   useEffect(() => {
@@ -39,15 +49,25 @@ export default function Profile() {
       setLastName(ProfileData.me.last_name || "");
       setGender(ProfileData.me.gender || "");
       setCountry(ProfileData.me.country || "");
-      setDob(ProfileData.me.birth_date === null || ProfileData.me.birth_date === undefined ? null : parseInt(ProfileData.me.birth_date));
+      setDob(
+        ProfileData.me.birth_date === null ||
+          ProfileData.me.birth_date === undefined
+          ? null
+          : parseInt(ProfileData.me.birth_date)
+      );
     }
   }, [ProfileData]);
 
   // Handle mutation errors
   useEffect(() => {
-    if (error && 'errors' in error && Array.isArray(error.errors) && 
-        error.errors.length > 0 &&
-        error.errors[0]?.extensions?.code === "COUNTRY_RESTRICTED_ACCORDING_TO_SUBSCRIPTION") {
+    if (
+      error &&
+      "errors" in error &&
+      Array.isArray(error.errors) &&
+      error.errors.length > 0 &&
+      error.errors[0]?.extensions?.code ===
+        "COUNTRY_RESTRICTED_ACCORDING_TO_SUBSCRIPTION"
+    ) {
       fetchProfile(); // reset the country to default one
       // show country restricted message
       setCountryRestrictionMessage(true);
@@ -86,9 +106,10 @@ export default function Profile() {
         <SimpleButton
           onClick={() => {
             if (!ProfileData?.me) return;
-            
+
             let data_to_update = {};
-            const new_stamp = dob !== null ? (new Date(dob).getTime() || 0).toString() : "";
+            const new_stamp =
+              dob !== null ? (new Date(dob).getTime() || 0).toString() : "";
 
             if (ProfileData.me.first_name !== firstName)
               data_to_update["first_name"] = firstName;
@@ -114,12 +135,13 @@ export default function Profile() {
                   ...data_to_update,
                 },
               },
-            }).then(() => {
-              fetchProfile();
-              toast.success("updated");
-            }).catch((err) => {
-              console.error('Profile update error:', err);
-            });
+            })
+              .then(() => {
+                toast.success("Updated");
+              })
+              .catch((err) => {
+                console.error("Profile update error:", err);
+              });
           }}
         >
           Save Profile

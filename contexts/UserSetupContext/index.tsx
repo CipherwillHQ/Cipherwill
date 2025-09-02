@@ -7,7 +7,7 @@ import {
   useEffect,
 } from "react";
 import { useAuth } from "../AuthContext";
-import { useLazyQuery, useMutation } from "@apollo/client/react";
+import { useQuery, useLazyQuery, useMutation } from "@apollo/client/react";
 import ME from "../../graphql/ops/auth/queries/ME";
 import logger from "../../common/debug/logger";
 import getLocalCountry from "../../common/country/getLocalCountry";
@@ -53,7 +53,9 @@ export function UserSetupProvider({ children }: Props) {
     { data: preferences_data, loading: loading_preferences },
   ] = useLazyQuery<GetPreferencesQuery>(GET_PREFERENCES);
   
-  const [setupUser, { data: user_data, loading: loading_user }] = useLazyQuery<MeQuery>(ME);
+  const { data: user_data, loading: loading_user } = useQuery<MeQuery>(ME, {
+    skip: !user,
+  });
 
   const [setupCountry] = useMutation<UpdateUserMutation, UpdateUserVariables>(UPDATE_USER);
 
@@ -94,12 +96,6 @@ export function UserSetupProvider({ children }: Props) {
       }
     }
   }, [user_data, setupPreferences, mixpanel, posthog, signup_conversion, setupCountry]);
-
-  useEffect(() => {
-    if (user) {
-      setupUser();
-    }
-  }, [user, setupUser]);
 
   return (
     <UserSetupContext.Provider
