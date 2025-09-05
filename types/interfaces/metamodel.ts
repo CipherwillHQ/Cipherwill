@@ -362,7 +362,7 @@ export interface GetBeneficiaryEncryptionKeyQuery {
 }
 
 export interface GetBeneficiaryEncryptionKeyVariables {
-  id: string;
+  access_id: string;
 }
 
 // Beneficiary factors interfaces
@@ -394,7 +394,7 @@ export interface GetAccessDetailsQuery {
 }
 
 export interface GetAccessDetailsVariables {
-  id: string;
+  access_id: string;
 }
 
 export interface GetAllBeneficiaryAccessQuery {

@@ -53,7 +53,7 @@ export default function DownloadGrantedObject({
         const { data: beneficairy_encryption_key } = await client.query<GetBeneficiaryEncryptionKeyQuery, GetBeneficiaryEncryptionKeyVariables>({
           query: GET_BENEFICIARY_ENCRYPTION_KEY,
           variables: {
-            id: access_id,
+            access_id,
           },
         });
         

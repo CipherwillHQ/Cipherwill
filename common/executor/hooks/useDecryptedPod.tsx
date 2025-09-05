@@ -52,7 +52,7 @@ export default function useDecryptedPod({
           >({
             query: GET_BENEFICIARY_ENCRYPTION_KEY,
             variables: {
-              id: access_id,
+              access_id,
             },
           });
           

@@ -4,20 +4,28 @@ import { useApolloClient, useQuery } from "@apollo/client/react";
 import GET_PERSON_BY_IDS from "../../../graphql/ops/app/people/queries/GET_PERSON_BY_IDS";
 import GET_ACCESS_DETAILS from "../../../graphql/ops/app/executor/access/queries/GET_ACCESS_DETAILS";
 import { useEffect, useState } from "react";
+import { GetAccessDetailsQuery, GetAccessDetailsVariables } from "@/types";
 
 export default function DonorName({ access_id }: { access_id: string }) {
   const [userName, setUserName] = useState("");
   const client = useApolloClient();
-  
-  const { data, loading, error } = useQuery(GET_ACCESS_DETAILS, {
+
+  const { data, loading, error } = useQuery<
+    GetAccessDetailsQuery,
+    GetAccessDetailsVariables
+  >(GET_ACCESS_DETAILS, {
     variables: {
-      id: access_id,
+      access_id: access_id,
     },
   });
 
   useEffect(() => {
     const fetchUserDetails = async () => {
-      if (data && (data as any).getAccessDetails && (data as any).getAccessDetails.user) {
+      if (
+        data &&
+        (data as any).getAccessDetails &&
+        (data as any).getAccessDetails.user
+      ) {
         const userId = (data as any).getAccessDetails.user;
         const res = await client.query({
           query: GET_PERSON_BY_IDS,
@@ -37,8 +45,7 @@ export default function DonorName({ access_id }: { access_id: string }) {
     };
 
     fetchUserDetails();
-  }, [data, client])
-  
+  }, [data, client]);
 
   return userName;
 }

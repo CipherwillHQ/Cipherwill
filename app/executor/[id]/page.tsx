@@ -21,7 +21,7 @@ export default function ExecutorPanel() {
     GET_ACCESS_DETAILS, 
     {
       variables: {
-        id,
+        access_id:id,
       },
     }
   );
