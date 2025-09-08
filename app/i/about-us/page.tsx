@@ -41,9 +41,8 @@ export default function AboutUs() {
               <div className="text-sm max-w-sm">
                 Operating address:
                 <br />
-                01, Sanskruti Vandan Apartment, Lane No. 2, Near Hiteshkumar
-                Jain English Medium School, Niphad, Nashik, Maharashtra, India -
-                422303
+                13th Cross, Baldwins Road, Bengaluru, Karnataka,
+                India 560030
               </div>
             </div>
           </div>
