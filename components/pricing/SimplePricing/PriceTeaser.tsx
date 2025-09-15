@@ -55,9 +55,9 @@ const pricingData = [
     featureColor: "text-green-700",
   },
   {
-    id: "premium",
+    id: "yearly",
     badge: {
-      text: "Premium",
+      text: "Yearly",
       bgColor: "bg-orange-300",
       textColor: "text-orange-950",
     },
@@ -65,7 +65,7 @@ const pricingData = [
       amount: "$40",
       period: "/Year",
       originalAmount: "$60",
-      discount: "30% Discount For Limited Period",
+      discount: "30% Discount (Best Value)",
     },
     button: {
       text: "Get Started",
