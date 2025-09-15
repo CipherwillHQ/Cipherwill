@@ -17,7 +17,6 @@ module.exports = {
     "/callback",
     "/callback/*",
     "/i/frequently-asked-questions/sitemap.xml",
-    "/i/payment-integration-test",
     "/i/legacy",
     "/i/assets",
     "/i/security",

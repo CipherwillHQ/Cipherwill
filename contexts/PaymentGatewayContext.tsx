@@ -14,14 +14,17 @@ import { ComponentProps } from "@/types/interfaces";
 
 const ENVIROMENT = BUILD_ENV === "production" ? "production" : "sandbox";
 const PADDLE_TOKEN = process.env.NEXT_PUBLIC_PADDLE_TOKEN ?? "";
-export const PADDLE_PRICE_ID = process.env.NEXT_PUBLIC_PADDLE_PRICE_ID ?? "";
+export const PADDLE_YEARLY_PRICE_ID = process.env.NEXT_PUBLIC_PADDLE_YEARLY_PRICE_ID ?? "";
+export const PADDLE_MONTHLY_PRICE_ID = process.env.NEXT_PUBLIC_PADDLE_MONTHLY_PRICE_ID ?? "";
 
 
 const PaymentGatewayContext = createContext<{
   paddle?: Paddle;
-  PADDLE_PRICE_ID: string;
+  PADDLE_YEARLY_PRICE_ID: string;
+  PADDLE_MONTHLY_PRICE_ID: string;
 }>({
-  PADDLE_PRICE_ID: PADDLE_PRICE_ID,
+  PADDLE_YEARLY_PRICE_ID: PADDLE_YEARLY_PRICE_ID,
+  PADDLE_MONTHLY_PRICE_ID: PADDLE_MONTHLY_PRICE_ID,
 });
 
 export function PaymentGatewayProvider({ children }: ComponentProps) {
@@ -49,7 +52,7 @@ export function PaymentGatewayProvider({ children }: ComponentProps) {
       });
     }
   }, [isLoading, user]);
-  const value = { paddle, PADDLE_PRICE_ID: PADDLE_PRICE_ID };
+  const value = { paddle, PADDLE_YEARLY_PRICE_ID: PADDLE_YEARLY_PRICE_ID, PADDLE_MONTHLY_PRICE_ID: PADDLE_MONTHLY_PRICE_ID   };
   return (
     <PaymentGatewayContext.Provider value={value}>
       {children}
@@ -61,6 +64,7 @@ export function usePaddle() {
   const ctx = useContext(PaymentGatewayContext);
   return {
     paddle: ctx.paddle,
-    PADDLE_PRICE_ID: ctx.PADDLE_PRICE_ID,
+    PADDLE_YEARLY_PRICE_ID: ctx.PADDLE_YEARLY_PRICE_ID,
+    PADDLE_MONTHLY_PRICE_ID: ctx.PADDLE_MONTHLY_PRICE_ID,
   };
 }
