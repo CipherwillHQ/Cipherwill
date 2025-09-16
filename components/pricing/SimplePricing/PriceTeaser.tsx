@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { LuDot } from "react-icons/lu";
-import PricingABTest from "./PricingABTest";
 
 const pricingData = [
   {

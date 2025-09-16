@@ -1,10 +1,7 @@
 "use client";
 import Link from "next/link";
-import TaglineABTest from "./TaglineABTest";
 import SimpleButton from "@/components/common/SimpleButton";
 import { BiRightArrowAlt } from "react-icons/bi";
-import { TbLock } from "react-icons/tb";
-import InfoButton from "@/components/common/InfoButton";
 
 export default function CenterHero() {
   return (

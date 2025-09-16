@@ -1,11 +1,4 @@
-"use client";
-
-import { useFeatureFlagEnabled } from "posthog-js/react";
-
 export default function EncryptionDetails() {
-  const flagEnabled = useFeatureFlagEnabled("show-encryption-details");
-  if (!flagEnabled) return null;
-
   return (
     <>
       <h3 className="text-xl py-2 font-semibold mt-2">Advanced Encryption</h3>
