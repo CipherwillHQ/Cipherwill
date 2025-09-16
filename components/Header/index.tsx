@@ -126,7 +126,7 @@ export default function Header({
                 //   ? "bg-white text-black":
                 "bg-linear-to-r from-primary-700 to-primary text-white hover:shadow-md"
               }
-              font-semibold transition-colors duration-300 px-4 py-2 rounded-full text-xs m-2`}
+              font-semibold transition-colors duration-300 px-4 py-2 rounded-full sm:text-xs m-2`}
             >
               <div className="mt-[1px] sm:mt-0">
                 {user ? "Dashboard" : "Login/Signup"}
