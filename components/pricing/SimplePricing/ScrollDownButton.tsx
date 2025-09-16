@@ -5,7 +5,7 @@ import { FaAngleDown } from "react-icons/fa6";
 export default function ScrollDownButton() {
   return (
     <button
-      className="flex items-center gap-3 text-gray-500 justify-center mx-auto"
+      className="hover:cursor-pointer flex items-center gap-3 text-gray-500 justify-center mx-auto"
       onClick={() => {
         // scroll down to comapre section
 
