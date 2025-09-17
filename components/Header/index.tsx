@@ -128,7 +128,7 @@ export default function Header({
               }
               font-semibold transition-colors duration-300 px-4 py-2 rounded-full sm:text-xs m-2`}
             >
-              <div className="mt-[1px] sm:mt-0">
+              <div className="mt-[1px] sm:mt-0 text-sm">
                 {user ? "Dashboard" : "Login/Signup"}
               </div>
             </div>
