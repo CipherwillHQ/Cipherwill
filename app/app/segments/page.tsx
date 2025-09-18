@@ -16,7 +16,7 @@ import type {
   UpdatePreferencesMutation, 
   UpdatePreferencesVariables,
 } from "@/types/interfaces/metamodel";
-import SuggestionBox from "./SuggestionBox";
+import SuggestionBox from "@/components/app/dashboard/SuggestionBox";
 
 export default function Segments() {
   const { user } = useUserContext();
@@ -31,7 +31,7 @@ export default function Segments() {
   return (
     <div className="w-full">
       <DesktopAndMobilePageHeader title="Segments">
-        <SuggestionBox />
+        <SuggestionBox triggerText="💡 Suggest a segment" />
       </DesktopAndMobilePageHeader>
       <div className="flex flex-wrap py-4 px-4 sm:py-0 gap-2">
         {segments.map((segment) => {
