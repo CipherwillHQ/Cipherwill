@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { BeforeInstallPromptEvent } from "@/types/interfaces";
 
 export default function InstallButton() {
-  const [differedEvent, setDifferedEvent] = useState<BeforeInstallPromptEvent | null>(null);
+  const [differedEvent, setDifferedEvent] =
+    useState<BeforeInstallPromptEvent | null>(null);
   const saveDifferedEvent = (event: BeforeInstallPromptEvent) => {
     // Prevent the mini-infobar from appearing on mobile.
     event.preventDefault();
@@ -28,6 +29,7 @@ export default function InstallButton() {
   return (
     <div className="my-12">
       <SimpleButton
+        className="mx-auto"
         onClick={(e) => {
           differedEvent.prompt();
         }}
