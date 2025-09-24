@@ -4,6 +4,7 @@ import {
   TbClockPlay,
   TbFileInvoice,
   TbLockAccess,
+  TbTableSpark,
 } from "react-icons/tb";
 import { VscSettings } from "react-icons/vsc";
 import { BiUserPlus } from "react-icons/bi";
@@ -21,6 +22,14 @@ const menu: (Divider | Segment)[] = [
     plan_required: "free",
     preference_key: null,
     path: "/app",
+  },
+  {
+    icon: <TbTableSpark />,
+    title: "Tasks",
+    description: "User tasks",
+    plan_required: "free",
+    preference_key: null,
+    path: "/app/tasks",
   },
   {
     icon: <TbCell />,
