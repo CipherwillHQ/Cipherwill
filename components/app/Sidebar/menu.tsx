@@ -13,6 +13,7 @@ import { BsFilePerson } from "react-icons/bs";
 import segments from "@/app/app/segments/segments";
 import { Divider, Segment } from "@/types/Segments";
 import { RiNotificationBadgeLine } from "react-icons/ri";
+import { MdTaskAlt } from "react-icons/md";
 
 const menu: (Divider | Segment)[] = [
   {
@@ -24,12 +25,12 @@ const menu: (Divider | Segment)[] = [
     path: "/app",
   },
   {
-    icon: <TbTableSpark />,
-    title: "Tasks",
-    description: "User tasks",
+    icon: <MdTaskAlt />,
+    title: "Actions",
+    description: "User actions",
     plan_required: "free",
     preference_key: null,
-    path: "/app/tasks",
+    path: "/app/actions",
   },
   {
     icon: <TbCell />,
