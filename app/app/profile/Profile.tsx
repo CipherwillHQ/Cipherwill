@@ -109,7 +109,7 @@ export default function Profile() {
 
             let data_to_update = {};
             const new_stamp =
-              dob !== null ? (new Date(dob).getTime() || 0).toString() : "";
+              dob !== null ? (new Date(dob).getTime() || 0).toString() : null;
 
             if (ProfileData.me.first_name !== firstName)
               data_to_update["first_name"] = firstName;

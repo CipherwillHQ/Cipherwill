@@ -91,3 +91,11 @@ export interface Action {
 export interface GetUserActionsData {
   getUserActions: Action[];
 }
+
+export interface GetIgnoredActionsData {
+  getIgnoredActions: Action[];
+}
+
+export interface GetCompletedActionsData {
+  getCompletedActions: Action[];
+}
