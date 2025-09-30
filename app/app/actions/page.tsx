@@ -1,6 +1,7 @@
 "use client";
 import DesktopAndMobilePageHeader from "@/components/app/common/page/DesktopAndMobilePageHeader";
 import SuggestionBox from "@/components/app/dashboard/SuggestionBox";
+import UserActions from "./UserActions";
 
 export default function ActionsPage() {
   return (
@@ -8,7 +9,7 @@ export default function ActionsPage() {
       <DesktopAndMobilePageHeader title="Actions">
         <SuggestionBox triggerText="Give feedback on actions" />
       </DesktopAndMobilePageHeader>
-      <div className="px-4">Actions coming soon...</div>
+      <UserActions/>
     </div>
   );
 }
