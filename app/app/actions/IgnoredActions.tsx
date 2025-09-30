@@ -57,36 +57,41 @@ export default function IgnoredActions() {
 
   return (
     <div className="">
-      <div className="space-y-4">
-        {data.getIgnoredActions.map((action) => (
-          <div
-            key={action.id}
-            className="flex items-center justify-between p-4 border border-neutral-200 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-900 hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors"
-          >
-            <div className="flex-1">
-              <p className="text-neutral-900 dark:text-neutral-100 font-medium">
-                {action.action}
-              </p>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-                Created: {getTimeAgo(parseInt(action.created_at))}
-              </p>
-              {action.ignored_at && (
-                <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-                  Ignored: {getTimeAgo(parseInt(action.ignored_at))}
+      <div className="border border-neutral-200 dark:border-neutral-700 rounded-lg overflow-hidden">
+        <div className="bg-neutral-50 dark:bg-neutral-800 px-4 py-2 border-b border-neutral-200 dark:border-neutral-700">
+          <h3 className="text-sm font-medium text-neutral-900 dark:text-neutral-100">Ignored Actions</h3>
+        </div>
+        <div className="divide-y divide-neutral-200 dark:divide-neutral-700">
+          {data.getIgnoredActions.map((action) => (
+            <div
+              key={action.id}
+              className="flex items-center justify-between px-4 py-3"
+            >
+              <div className="flex-1 min-w-0">
+                <p className="text-neutral-900 dark:text-neutral-100 font-medium truncate">
+                  {action.action}
                 </p>
-              )}
+                <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-1">
+                  Created: {getTimeAgo(parseInt(action.created_at))}
+                </p>
+                {action.ignored_at && (
+                  <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-1">
+                    Ignored: {getTimeAgo(parseInt(action.ignored_at))}
+                  </p>
+                )}
+              </div>
+              <div className="ml-4">
+                <SimpleButton
+                  onClick={() => handleUnignoreAction(action)}
+                  variant="secondary"
+                  className=""
+                >
+                  Unignore
+                </SimpleButton>
+              </div>
             </div>
-            <div className="ml-4">
-              <SimpleButton
-                onClick={() => handleUnignoreAction(action)}
-                variant="secondary"
-                className="text-sm px-3 py-1"
-              >
-                Unignore
-              </SimpleButton>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

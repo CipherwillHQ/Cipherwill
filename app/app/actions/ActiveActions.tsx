@@ -105,48 +105,51 @@ export default function ActiveActions() {
 
   return (
     <div className="">
-      <div className="space-y-4">
-        {data.getUserActions.map((action) => (
-          <div
-            key={action.id}
-            className="flex items-center justify-between p-4 border border-neutral-200 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-900 hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors"
-          >
-            <div className="flex-1">
-              <p className="text-neutral-900 dark:text-neutral-100 font-medium">
-                {action.action}
-              </p>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-                Created: {getTimeAgo(parseInt(action.created_at))}
-              </p>
-            </div>
-            <div className="ml-4 flex flex-col space-y-2">
-              {action.completed_at ? (
-                <span className="text-green-600 dark:text-green-400 text-sm font-medium">
-                  Completed: {new Date(action.completed_at).toLocaleString()}
-                </span>
-              ) : (
-                <>
-                  <div className="flex space-x-2">
+      <div className="border border-neutral-200 dark:border-neutral-700 rounded-lg overflow-hidden">
+        <div className="bg-neutral-50 dark:bg-neutral-800 px-4 py-2 border-b border-neutral-200 dark:border-neutral-700">
+          <h3 className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+            Active Actions
+          </h3>
+        </div>
+        <div className="divide-y divide-neutral-200 dark:divide-neutral-700">
+          {data.getUserActions.map((action) => (
+            <div
+              key={action.id}
+              className="flex items-center justify-between px-4 py-3"
+            >
+              <div className="flex-1 min-w-0">
+                <p className="text-neutral-900 dark:text-neutral-100 font-medium truncate">
+                  {action.action}
+                </p>
+                <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-1">
+                  Created: {getTimeAgo(parseInt(action.created_at))}
+                </p>
+              </div>
+              <div className="ml-4 flex flex-col space-y-1">
+                {action.completed_at ? (
+                  <span className="text-green-600 dark:text-green-400 text-xs font-medium">
+                    Completed: {new Date(action.completed_at).toLocaleString()}
+                  </span>
+                ) : (
+                  <div className="flex flex-col space-y-1">
                     <SimpleButton
                       onClick={() => handleMarkCompleted(action)}
                       variant="primary"
-                      className="text-sm px-3 py-1"
                     >
                       Complete
                     </SimpleButton>
+                    <SimpleButton
+                      onClick={() => handleIgnoreAction(action)}
+                      variant="secondary"
+                    >
+                      Ignore
+                    </SimpleButton>
                   </div>
-                  <SimpleButton
-                    onClick={() => handleIgnoreAction(action)}
-                    variant="secondary"
-                    className="text-sm px-3 py-1 self-start"
-                  >
-                    Ignore
-                  </SimpleButton>
-                </>
-              )}
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
