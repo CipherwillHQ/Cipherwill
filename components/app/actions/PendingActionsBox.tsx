@@ -15,7 +15,9 @@ import Link from "next/link";
 
 export default function PendingActionsBox() {
   const { data, loading, error } =
-    useQuery<GetUserActionsData>(GET_USER_ACTIONS);
+    useQuery<GetUserActionsData>(GET_USER_ACTIONS,{
+      fetchPolicy: "network-only",
+    });
 
   const [markActionCompleted] = useMutation(MARK_ACTION_COMPLETED, {
     refetchQueries: [

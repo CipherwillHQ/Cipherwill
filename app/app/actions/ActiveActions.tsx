@@ -15,7 +15,9 @@ import GET_COMPLETED_ACTIONS from "@/graphql/ops/app/actions/queries/GET_COMPLET
 
 export default function ActiveActions() {
   const { data, loading, error } =
-    useQuery<GetUserActionsData>(GET_USER_ACTIONS);
+    useQuery<GetUserActionsData>(GET_USER_ACTIONS,{
+      fetchPolicy: "network-only",
+    });
 
   const [ignoreAction] = useMutation(IGNORE_ACTION, {
     refetchQueries: [

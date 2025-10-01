@@ -12,7 +12,9 @@ import toast from "react-hot-toast";
 
 export default function IgnoredActions() {
   const { data, loading, error } =
-    useQuery<GetIgnoredActionsData>(GET_IGNORED_ACTIONS);
+    useQuery<GetIgnoredActionsData>(GET_IGNORED_ACTIONS,{
+      fetchPolicy: "network-only",
+    });
   const [unignoreAction] = useMutation(UNIGNORE_ACTION, {
     refetchQueries: [
       { query: GET_IGNORED_ACTIONS },

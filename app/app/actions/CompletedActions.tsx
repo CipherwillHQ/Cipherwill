@@ -7,7 +7,9 @@ import getTimeAgo from "@/common/time/getTimeAgo";
 
 export default function CompletedActions() {
   const { data, loading, error } =
-    useQuery<GetCompletedActionsData>(GET_COMPLETED_ACTIONS);
+    useQuery<GetCompletedActionsData>(GET_COMPLETED_ACTIONS,{
+      fetchPolicy: "network-only",
+    });
 
   if (loading) {
     return (
