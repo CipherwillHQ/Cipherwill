@@ -33,11 +33,13 @@ export default function LiveChatBox({ className }: { className?: string }) {
 
   const { data, loading, error } = useQuery<MeData>(ME);
 
+  // Load Crisp on mount
   useEffect(() => {
-    if (data && !loading && !error) {
-      if (typeof window === "undefined" || !CRISP_TOKEN) return;
-      
-      user_session_attach(data);
+    if (typeof window === "undefined" || !CRISP_TOKEN) return;
+
+    if (Crisp.isCrispInjected()) {
+      setIsCrispLoaded(true);
+    } else {
       Crisp.load();
       Crisp.session.onLoaded(() => {
         setIsCrispLoaded(true);
@@ -65,7 +67,14 @@ export default function LiveChatBox({ className }: { className?: string }) {
         Crisp.chat.hide();
       });
     }
-  }, [data, loading, error]);
+  }, []);
+
+  // Attach user when data is available
+  useEffect(() => {
+    if (data && !loading && !error && isCrispLoaded) {
+      user_session_attach(data);
+    }
+  }, [data, loading, error, isCrispLoaded]);
 
   useEffect(() => {
     // Only run on client side and if Crisp is available

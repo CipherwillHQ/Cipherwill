@@ -135,7 +135,7 @@ export default function PendingActionsBox() {
               <SimpleButton
                 onClick={() => handleMarkCompleted(action)}
                 variant="primary"
-                className="text-xs px-3 py-1"
+                className="text-sm px-3 py-1"
               >
                 Complete
               </SimpleButton>

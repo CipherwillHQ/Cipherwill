@@ -12,6 +12,7 @@ import DELETE_KEY_BY_PUBLIC_KEY from "../../graphql/ops/app/key/Mutations/DELETE
 import GET_ALL_KEY_COUNT from "../../graphql/ops/app/key/Queries/GET_ALL_KEY_COUNT";
 import DevOnly from "../debug/DevOnly";
 import { GetAllKeyCountQuery, DeleteKeyByPublicKeyVariables } from "../../types/interfaces";
+import SimpleButton from "../common/SimpleButton";
 
 // Simple interface for deletion mutation response
 interface DeleteKeyMutationResponse {
@@ -99,11 +100,9 @@ export default function FactorsSyncStatus() {
           <div className="text-red-800 text-sm">
             Profile is not Zero Knowledge(ZK-ENC) Protected
           </div>
-          <Link href={"/app/factors"}>
-            <button className="bg-orange-200 hover:bg-orange-300 text-sm px-3 py-1 rounded-full mx-2 whitespace-nowrap">
+            <SimpleButton href={"/app/factors"} variant="primary">
               Add Factor
-            </button>
-          </Link>
+            </SimpleButton>
         </div>
       </DevOnly>
     );
