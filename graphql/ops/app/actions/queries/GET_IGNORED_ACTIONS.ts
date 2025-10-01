@@ -5,6 +5,7 @@ const GET_IGNORED_ACTIONS = gql`
     getIgnoredActions {
       id
       action
+      description
       variable
       condition
       value

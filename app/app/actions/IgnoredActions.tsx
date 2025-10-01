@@ -71,6 +71,11 @@ export default function IgnoredActions() {
                 <p className="text-neutral-900 dark:text-neutral-100 font-medium truncate">
                   {action.action}
                 </p>
+                {action.description && (
+                  <p className="text-neutral-700 dark:text-neutral-300 text-sm mt-1">
+                    {action.description}
+                  </p>
+                )}
                 <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-1">
                   Created: {getTimeAgo(parseInt(action.created_at))}
                 </p>

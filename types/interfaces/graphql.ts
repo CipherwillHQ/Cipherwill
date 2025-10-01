@@ -79,6 +79,7 @@ export interface SmartWillFriendsData {
 export interface Action {
   id: string;
   action: string;
+  description?: string;
   variable: string;
   condition: string;
   value: string;

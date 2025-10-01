@@ -5,6 +5,7 @@ const GET_USER_ACTIONS = gql`
     getUserActions {
       id
       action
+      description
       variable
       condition
       value

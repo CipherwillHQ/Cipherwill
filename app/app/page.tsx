@@ -10,6 +10,7 @@ import DevOnly from "@/components/debug/DevOnly";
 import Link from "next/link";
 import LiveSupportTile from "@/components/app/dashboard/LiveSupportTile";
 import SegmentsIntroduction from "@/components/app/dashboard/SegmentsIntroduction";
+import PendingActionsBox from "@/components/app/actions/PendingActionsBox";
 
 export default function App() {
   return (
@@ -23,7 +24,8 @@ export default function App() {
         </div>
         <div className="p-2">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <OnboardingChecklist />
+            {/* <OnboardingChecklist /> */}
+            <PendingActionsBox/>
             <div className="flex flex-col gap-2">
               <FactorsSyncStatus />
               <SegmentsIntroduction/>

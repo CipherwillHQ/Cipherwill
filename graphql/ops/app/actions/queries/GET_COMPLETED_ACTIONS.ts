@@ -5,6 +5,7 @@ const GET_COMPLETED_ACTIONS = gql`
     getCompletedActions {
       id
       action
+      description
       variable
       condition
       value
