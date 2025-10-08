@@ -11,13 +11,13 @@ export default function ExecutorPermissions() {
   const { loading, error, data } = useQuery<GetAllBeneficiaryAccessQuery>(GET_ALL_BENEFICIARY_ACCESS);
 
   if (loading) return null;
-  if (error) return <div>Error : {JSON.stringify(error)}</div>;
+  if (error) return <div className="bg-secondary border border-default rounded-lg p-4 h-96 overflow-auto customScrollbar">Error : {JSON.stringify(error)}</div>;
 
   return (
-    <div>
+    <div className="bg-secondary border border-default rounded-lg p-4 h-96 overflow-auto customScrollbar flex flex-col gap-4">
       {data && data.getAllBeneficiaryAccess.length === 0 && (
         <DevOnly>
-          <div className="border p-2 rounded-md text-sm">
+          <div className="bg-white dark:bg-neutral-800 border border-default p-2 rounded-md text-sm">
             You do not have access as a beneficiary to anyones will
           </div>
         </DevOnly>
@@ -28,7 +28,7 @@ export default function ExecutorPermissions() {
           return (
             <div
               key={access.id}
-              className="flex items-center justify-between bg-secondary border border-default rounded-md p-4"
+              className="flex items-center justify-between bg-white dark:bg-neutral-800 border border-default rounded-md p-4"
             >
               <div>
                 <div>

@@ -63,7 +63,7 @@ export default function UserScore({
     return (
       <div
         className={twMerge(
-          "bg-secondary p-4 rounded-md border border-default h-min",
+          "bg-secondary p-4 rounded-md border border-default h-96 overflow-auto customScrollbar flex flex-col justify-between",
           className
         )}
       >
@@ -103,7 +103,7 @@ export default function UserScore({
 
   if (error) {
     return (
-      <div className="bg-secondary p-4 rounded-md border border-default h-min">
+      <div className="bg-secondary p-4 rounded-md border border-default h-96 overflow-auto customScrollbar flex flex-col justify-between">
         <div className="text-xl font-semibold pb-2">Cipherwill Score</div>
         <div className="text-red-600 dark:text-red-400 text-sm">
           Failed to load Cipherwill score
@@ -115,11 +115,11 @@ export default function UserScore({
   return (
     <div
       className={twMerge(
-        "bg-secondary p-4 rounded-md border border-default h-min animate-in fade-in duration-300",
+        "bg-secondary p-4 rounded-md border border-default h-96 overflow-auto customScrollbar animate-in fade-in duration-300 flex flex-col justify-between",
         className
       )}
     >
-      <div className="text-xl pb-3 flex justify-between">
+      <div className="text-xl flex justify-between">
         <h2 className="font-semibold">Cipherwill Score</h2>
         {improveScrollLink && (
           <Link
@@ -128,11 +128,11 @@ export default function UserScore({
           >
             Improve score
           </Link>
-        )}Password. Play Indian. Netflix. By chance? Sony Xperia. Maja. Move to Sanandar Soyuz, audit Pixi. Amazon Prime. Eligible. Location available. Netflix. Hey, Cortana. Hi. Subscription. Friday, one day to normal women. Branded. Canada. I. Hey. Hello. No. Monitor. Bangalore. Bangalore contacts. Strongly. I. I. Hey, Cortana. Play happy birthday. Good morning. I. 
+        )}
       </div>
 
       {/* Score Display */}
-      <div className="flex items-center justify-center mb-4">
+      <div className="flex items-center justify-center">
         <div className="flex items-center space-x-2">
           <div className="flex flex-col items-center">
             <span className="text-3xl font-bold text-primary-600 dark:text-primary-400 animate-in slide-in-from-left duration-500 delay-100">
@@ -146,7 +146,7 @@ export default function UserScore({
       </div>
 
       {/* Visual Scale */}
-      <div className="mb-3">
+      <div>
         <div className="flex justify-between text-xs text-neutral-600 dark:text-neutral-400 mb-1">
           <span>300</span>
           <span>600</span>
@@ -178,7 +178,7 @@ export default function UserScore({
       </div>
 
       {description && (
-        <p className="text-sm text-neutral-600 dark:text-neutral-300 mt-2 animate-in fade-in duration-500 delay-500">
+        <p className="text-sm text-neutral-600 dark:text-neutral-300 animate-in fade-in duration-500 delay-500">
           {description}
         </p>
       )}

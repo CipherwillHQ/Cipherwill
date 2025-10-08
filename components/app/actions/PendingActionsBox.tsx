@@ -66,7 +66,7 @@ export default function PendingActionsBox() {
 
   if (loading) {
     return (
-      <div className="bg-secondary p-4 rounded-md border border-default h-min">
+      <div className="bg-secondary p-4 rounded-md border border-default h-96 overflow-auto customScrollbar">
         <div className="text-xl font-semibold pb-2">Pending Actions</div>
         <div className="space-y-2">
           <div className="bg-neutral-200 dark:bg-neutral-800 animate-pulse w-full h-10 rounded-md" />
@@ -79,7 +79,7 @@ export default function PendingActionsBox() {
 
   if (error) {
     return (
-      <div className="bg-secondary p-4 rounded-md border border-default h-min">
+      <div className="bg-secondary p-4 rounded-md border border-default h-96 overflow-auto customScrollbar">
         <div className="text-xl font-semibold pb-2">Pending Actions</div>
         <div className="text-red-600 dark:text-red-400 text-sm">
           Error loading actions
@@ -96,7 +96,7 @@ export default function PendingActionsBox() {
 
   if (latestPendingActions.length === 0) {
     return (
-      <div className="bg-secondary p-4 rounded-md border border-default h-min">
+      <div className="bg-secondary p-4 rounded-md border border-default h-96 overflow-auto customScrollbar">
         <div className="text-xl font-semibold pb-2">Pending Actions</div>
         <div className="text-neutral-600 dark:text-neutral-400 text-sm">
           No pending actions
@@ -106,7 +106,7 @@ export default function PendingActionsBox() {
   }
 
   return (
-    <div className="bg-secondary p-4 rounded-md border border-default h-min">
+    <div className="bg-secondary p-4 rounded-md border border-default h-96 overflow-auto customScrollbar">
       <div className="flex items-center justify-between mb-3">
         <div className="text-xl font-semibold pb-2">Pending Actions</div>
         <Link

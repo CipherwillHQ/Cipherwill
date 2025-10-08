@@ -21,6 +21,15 @@ export interface GetMetamodelsQuery {
   };
 }
 
+export interface MetamodelTypeCount {
+  type: string;
+  count: number;
+}
+
+export interface GetMetamodelTypeCountsQuery {
+  getMetamodelTypeCounts: MetamodelTypeCount[];
+}
+
 // Generic metadata interface - can contain any properties
 export interface MetamodelMetadata {
   [key: string]: any; // Allow any additional properties
