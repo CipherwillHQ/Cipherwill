@@ -25,7 +25,10 @@ export default function App() {
         </div>
         <div className="p-2">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            <UserScore improveScrollLink />
+            <UserScore
+              improveScrollLink
+              description="Your personalized score based on your activity."
+            />
             <PendingActionsBox />
             <SecuredCounter />
             {/* <OnboardingChecklist /> */}

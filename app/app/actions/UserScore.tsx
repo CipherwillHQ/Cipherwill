@@ -1,12 +1,18 @@
 "use client";
 
-import { FaStar } from "react-icons/fa";
-import { useQuery } from "@apollo/client/react";
+import { CiUndo } from "react-icons/ci";
+import { useMutation, useQuery } from "@apollo/client/react";
 import GET_USER_SCORE from "@/graphql/ops/app/actions/queries/GET_USER_SCORE";
 import { GetUserScoreData } from "@/types/interfaces";
 import { twMerge } from "tailwind-merge";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import ConfirmationButton from "@/components/common/ConfirmationButton";
+import toast from "react-hot-toast";
+import RECHECK_ALL_ACTIONS from "@/graphql/ops/app/actions/mutations/RECHECK_ALL_ACTIONS";
+import GET_USER_ACTIONS from "@/graphql/ops/app/actions/queries/GET_USER_ACTIONS";
+import GET_IGNORED_ACTIONS from "@/graphql/ops/app/actions/queries/GET_IGNORED_ACTIONS";
+import GET_COMPLETED_ACTIONS from "@/graphql/ops/app/actions/queries/GET_COMPLETED_ACTIONS";
 
 interface UserScoreProps {
   maxScore?: number;
@@ -22,6 +28,16 @@ export default function UserScore({
   improveScrollLink = false,
 }: UserScoreProps) {
   const { data, loading, error } = useQuery<GetUserScoreData>(GET_USER_SCORE);
+  const [recheckAllActions, { loading: rechecking }] = useMutation(RECHECK_ALL_ACTIONS, {
+    refetchQueries: [
+      { query: GET_USER_ACTIONS },
+      { query: GET_IGNORED_ACTIONS },
+      { query: GET_COMPLETED_ACTIONS },
+      {
+        query: GET_USER_SCORE,
+      },
+    ],
+  });
 
   const score = data?.getUserScore || 0;
   // Normalize score between 300 and maxScore (default 950)
@@ -121,14 +137,29 @@ export default function UserScore({
     >
       <div className="text-xl flex justify-between">
         <h2 className="font-semibold">Cipherwill Score</h2>
-        {improveScrollLink && (
-          <Link
-            className="ml-2 text-sm opacity-70 hover:underline"
-            href={"/app/actions"}
-          >
-            Improve score
-          </Link>
-        )}
+        <div className="flex gap-4">
+          {improveScrollLink && (
+            <Link
+              className="ml-2 text-sm opacity-70 hover:underline"
+              href={"/app/actions"}
+            >
+              Improve score
+            </Link>
+          )}
+          <CiUndo
+            className={`inline ${rechecking ? "opacity-50 cursor-not-allowed" : "hover:cursor-pointer"}`}
+            onClick={() => {
+              if (rechecking) return;
+              const confirm = window.confirm(
+                "Are you sure you want to refresh your score? This will recalculate your score based on your current activities."
+              );
+              if (confirm) {
+               toast.success("Score refresh initiated!");
+               recheckAllActions();
+              }
+            }}
+          />
+        </div>
       </div>
 
       {/* Score Display */}
