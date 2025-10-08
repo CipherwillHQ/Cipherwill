@@ -12,17 +12,23 @@ import GET_IGNORED_ACTIONS from "@/graphql/ops/app/actions/queries/GET_IGNORED_A
 import GET_COMPLETED_ACTIONS from "@/graphql/ops/app/actions/queries/GET_COMPLETED_ACTIONS";
 import ConfirmationButton from "@/components/common/ConfirmationButton";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import GET_USER_SCORE from "@/graphql/ops/app/actions/queries/GET_USER_SCORE";
 
 export default function UserActions() {
-  const [activeTab, setActiveTab] = useState<'active' | 'ignored' | 'completed'>('active');
+  const [activeTab, setActiveTab] = useState<
+    "active" | "ignored" | "completed"
+  >("active");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  
+
   const [recheckAllActions] = useMutation(RECHECK_ALL_ACTIONS, {
     refetchQueries: [
       { query: GET_USER_ACTIONS },
       { query: GET_IGNORED_ACTIONS },
       { query: GET_COMPLETED_ACTIONS },
+      {
+        query: GET_USER_SCORE,
+      },
     ],
   });
 
@@ -33,9 +39,9 @@ export default function UserActions() {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -55,25 +61,25 @@ export default function UserActions() {
       <div className="mb-4 flex justify-between items-center">
         <div className="flex space-x-2">
           <button
-            onClick={() => setActiveTab('active')}
+            onClick={() => setActiveTab("active")}
             className={`mx-2 p-1 hover:cursor-pointer ${
-              activeTab === 'active' && 'border-b-2 border-accent-500'
+              activeTab === "active" && "border-b-2 border-accent-500"
             }`}
           >
             Active
           </button>
           <button
-            onClick={() => setActiveTab('ignored')}
+            onClick={() => setActiveTab("ignored")}
             className={`mx-2 p-1 hover:cursor-pointer ${
-              activeTab === 'ignored' && 'border-b-2 border-accent-500'
+              activeTab === "ignored" && "border-b-2 border-accent-500"
             }`}
           >
             Ignored
           </button>
           <button
-            onClick={() => setActiveTab('completed')}
+            onClick={() => setActiveTab("completed")}
             className={`mx-2 p-1 hover:cursor-pointer ${
-              activeTab === 'completed' && 'border-b-2 border-accent-500'
+              activeTab === "completed" && "border-b-2 border-accent-500"
             }`}
           >
             Completed
@@ -101,9 +107,9 @@ export default function UserActions() {
           )}
         </div>
       </div>
-      {activeTab === 'active' ? (
+      {activeTab === "active" ? (
         <ActiveActions />
-      ) : activeTab === 'ignored' ? (
+      ) : activeTab === "ignored" ? (
         <IgnoredActions />
       ) : (
         <CompletedActions />

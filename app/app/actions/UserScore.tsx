@@ -119,16 +119,16 @@ export default function UserScore({
         className
       )}
     >
-      <div className="text-xl font-semibold pb-3 flex justify-between">
-        Cipherwill Score
+      <div className="text-xl pb-3 flex justify-between">
+        <h2 className="font-semibold">Cipherwill Score</h2>
         {improveScrollLink && (
           <Link
-            className="ml-2 text-sm opacity-30 hover:underline"
+            className="ml-2 text-sm opacity-70 hover:underline"
             href={"/app/actions"}
           >
             Improve score
           </Link>
-        )}
+        )}Password. Play Indian. Netflix. By chance? Sony Xperia. Maja. Move to Sanandar Soyuz, audit Pixi. Amazon Prime. Eligible. Location available. Netflix. Hey, Cortana. Hi. Subscription. Friday, one day to normal women. Branded. Canada. I. Hey. Hello. No. Monitor. Bangalore. Bangalore contacts. Strongly. I. I. Hey, Cortana. Play happy birthday. Good morning. I. 
       </div>
 
       {/* Score Display */}
