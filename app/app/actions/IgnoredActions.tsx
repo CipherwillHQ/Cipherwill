@@ -9,17 +9,23 @@ import { GetIgnoredActionsData, Action } from "@/types/interfaces";
 import SimpleButton from "@/components/common/SimpleButton";
 import getTimeAgo from "@/common/time/getTimeAgo";
 import toast from "react-hot-toast";
+import GET_USER_SCORE from "@/graphql/ops/app/actions/queries/GET_USER_SCORE";
 
 export default function IgnoredActions() {
-  const { data, loading, error } =
-    useQuery<GetIgnoredActionsData>(GET_IGNORED_ACTIONS,{
+  const { data, loading, error } = useQuery<GetIgnoredActionsData>(
+    GET_IGNORED_ACTIONS,
+    {
       fetchPolicy: "network-only",
-    });
+    }
+  );
   const [unignoreAction] = useMutation(UNIGNORE_ACTION, {
     refetchQueries: [
       { query: GET_IGNORED_ACTIONS },
       { query: GET_USER_ACTIONS },
       { query: GET_COMPLETED_ACTIONS },
+      {
+        query: GET_USER_SCORE,
+      },
     ],
   });
 
@@ -61,7 +67,9 @@ export default function IgnoredActions() {
     <div className="">
       <div className="border border-neutral-200 dark:border-neutral-700 rounded-lg overflow-hidden">
         <div className="bg-neutral-50 dark:bg-neutral-800 px-4 py-2 border-b border-neutral-200 dark:border-neutral-700">
-          <h3 className="text-sm font-medium text-neutral-900 dark:text-neutral-100">Ignored Actions</h3>
+          <h3 className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+            Ignored Actions
+          </h3>
         </div>
         <div className="divide-y divide-neutral-200 dark:divide-neutral-700">
           {data.getIgnoredActions.map((action) => (

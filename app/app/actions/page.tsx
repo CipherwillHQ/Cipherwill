@@ -2,6 +2,7 @@
 import DesktopAndMobilePageHeader from "@/components/app/common/page/DesktopAndMobilePageHeader";
 import SuggestionBox from "@/components/app/dashboard/SuggestionBox";
 import UserActions from "./UserActions";
+import UserScore from "./UserScore";
 
 export default function ActionsPage() {
   return (
@@ -9,7 +10,11 @@ export default function ActionsPage() {
       <DesktopAndMobilePageHeader title="Actions">
         <SuggestionBox triggerText="Give feedback on actions" />
       </DesktopAndMobilePageHeader>
-      <UserActions/>
+      <UserScore
+        description="User score based on actions taken"
+        className="m-4"
+      />
+      <UserActions />
     </div>
   );
 }

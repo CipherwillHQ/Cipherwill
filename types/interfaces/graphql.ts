@@ -100,3 +100,7 @@ export interface GetIgnoredActionsData {
 export interface GetCompletedActionsData {
   getCompletedActions: Action[];
 }
+
+export interface GetUserScoreData {
+  getUserScore: number;
+}

@@ -11,6 +11,7 @@ import Link from "next/link";
 import LiveSupportTile from "@/components/app/dashboard/LiveSupportTile";
 import SegmentsIntroduction from "@/components/app/dashboard/SegmentsIntroduction";
 import PendingActionsBox from "@/components/app/actions/PendingActionsBox";
+import UserScore from "./actions/UserScore";
 
 export default function App() {
   return (
@@ -24,23 +25,22 @@ export default function App() {
         </div>
         <div className="p-2">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <UserScore improveScrollLink />
             {/* <OnboardingChecklist /> */}
-            <PendingActionsBox/>
-            <div className="flex flex-col gap-2">
-              <FactorsSyncStatus />
-              <SegmentsIntroduction/>
-              <LiveSupportTile />
-              <ExecutorPermissions />
-              <GrantedBeneficiaryAccessList />
-              <DevOnly>
-                <Link
-                  href="/executor"
-                  className="border border-accent-500 p-1 rounded-md"
-                >
-                  Executor Dashboard
-                </Link>
-              </DevOnly>
-            </div>
+            <PendingActionsBox />
+            <FactorsSyncStatus />
+            <SegmentsIntroduction />
+            <LiveSupportTile />
+            <ExecutorPermissions />
+            <GrantedBeneficiaryAccessList />
+            <DevOnly>
+              <Link
+                href="/executor"
+                className="border border-accent-500 p-1 rounded-md"
+              >
+                Executor Dashboard
+              </Link>
+            </DevOnly>
           </div>
         </div>
       </div>
