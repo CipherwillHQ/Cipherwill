@@ -12,6 +12,7 @@ import getTimeAgo from "@/common/time/getTimeAgo";
 import GET_IGNORED_ACTIONS from "@/graphql/ops/app/actions/queries/GET_IGNORED_ACTIONS";
 import GET_COMPLETED_ACTIONS from "@/graphql/ops/app/actions/queries/GET_COMPLETED_ACTIONS";
 import Link from "next/link";
+import GET_USER_SCORE from "@/graphql/ops/app/actions/queries/GET_USER_SCORE";
 
 export default function PendingActionsBox() {
   const { data, loading, error } =
@@ -24,6 +25,9 @@ export default function PendingActionsBox() {
       { query: GET_USER_ACTIONS },
       { query: GET_IGNORED_ACTIONS },
       { query: GET_COMPLETED_ACTIONS },
+      {
+        query: GET_USER_SCORE,
+      }
     ],
   });
   const router = useRouter();

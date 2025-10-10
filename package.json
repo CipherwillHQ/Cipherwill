@@ -36,6 +36,8 @@
     "@types/luxon": "^3.7.1",
     "@vercel/speed-insights": "^1.1.0",
     "apollo-upload-client": "^19.0.0",
+    "chart.js": "^4.5.0",
+    "chartjs-plugin-annotation": "^3.1.0",
     "countries-and-timezones": "^3.8.0",
     "crisp-sdk-web": "^1.0.25",
     "cross-env": "^10.0.0",

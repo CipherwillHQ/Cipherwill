@@ -75,7 +75,7 @@ export default function IgnoredActions() {
           {data.getIgnoredActions.map((action) => (
             <div
               key={action.id}
-              className="flex items-center justify-between px-4 py-3"
+              className="flex items-center justify-between px-4 py-3 bg-white/50 dark:bg-neutral-800/50"
             >
               <div className="flex-1 min-w-0">
                 <p className="text-neutral-900 dark:text-neutral-100 font-medium truncate">

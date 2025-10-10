@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/client/react";
 import GET_METAMODEL_TYPE_COUNTS from "../../../graphql/ops/app/metamodel/queries/GET_METAMODEL_TYPE_COUNTS";
 import { GetMetamodelTypeCountsQuery } from "@/types/interfaces/metamodel";
 import { TbShieldCheck } from "react-icons/tb";
+import SimpleButton from "@/components/common/SimpleButton";
 
 export default function SecuredCounter() {
   const { loading, error, data } = useQuery<GetMetamodelTypeCountsQuery>(

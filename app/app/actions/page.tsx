@@ -12,7 +12,7 @@ export default function ActionsPage() {
       </DesktopAndMobilePageHeader>
       <UserScore
         description="User score based on actions taken"
-        className="m-4"
+        className="m-4 h-min"
       />
       <UserActions />
     </div>
