@@ -5,15 +5,25 @@ import { useMutation, useQuery } from "@apollo/client/react";
 import GET_USER_SCORE from "@/graphql/ops/app/actions/queries/GET_USER_SCORE";
 import { GetUserScoreData } from "@/types/interfaces";
 import { twMerge } from "tailwind-merge";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import ConfirmationButton from "@/components/common/ConfirmationButton";
 import toast from "react-hot-toast";
 import RECHECK_ALL_ACTIONS from "@/graphql/ops/app/actions/mutations/RECHECK_ALL_ACTIONS";
 import GET_USER_ACTIONS from "@/graphql/ops/app/actions/queries/GET_USER_ACTIONS";
 import GET_IGNORED_ACTIONS from "@/graphql/ops/app/actions/queries/GET_IGNORED_ACTIONS";
 import GET_COMPLETED_ACTIONS from "@/graphql/ops/app/actions/queries/GET_COMPLETED_ACTIONS";
 import BasicPopup from "@/components/BasicPopup";
+import { useTheme } from "@/contexts/ThemeSelector";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  DoughnutController,
+} from 'chart.js';
+import annotationPlugin from 'chartjs-plugin-annotation';
+
+ChartJS.register(ArcElement, Tooltip, Legend, DoughnutController, annotationPlugin);
 
 interface UserScoreProps {
   maxScore?: number;
@@ -39,6 +49,7 @@ export default function UserScore({
       },
     ],
   });
+  const { current_theme } = useTheme();
 
   const score = data?.getUserScore || 0;
   // Normalize score between 300 and maxScore (default 950)
@@ -48,40 +59,111 @@ export default function UserScore({
     Math.min(((score - minScore) / (maxScore - minScore)) * 100, 100)
   );
 
+  // Colors: red for low, yellow for medium, green for high
+  const COLORS = ['rgb(231, 24, 49)', 'rgb(239, 198, 0)', 'rgb(140, 214, 16)']; // red, yellow, green
+
+  function getColorIndex(perc: number) {
+    return perc < 33 ? 0 : perc < 66 ? 1 : 2; // red, yellow, green
+  }
+
   // Animation state
   const [animatedPercentage, setAnimatedPercentage] = useState(0);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const chartRef = useRef<HTMLCanvasElement>(null);
+  const chartInstanceRef = useRef<ChartJS | null>(null);
 
-  // Animate progress bar after loading
+  // Set percentage after loading
   useEffect(() => {
-    if (!loading && percentage > 0) {
-      const duration = 1500; // 1.5 seconds
-      const steps = 60; // 60 FPS
-      const increment = percentage / steps;
-      let currentStep = 0;
-
-      const animate = () => {
-        currentStep++;
-        const currentPercentage = Math.min(increment * currentStep, percentage);
-        setAnimatedPercentage(currentPercentage);
-
-        if (currentStep < steps && currentPercentage < percentage) {
-          requestAnimationFrame(animate);
-        }
-      };
-
-      // Start animation after a brief delay
-      setTimeout(() => {
-        requestAnimationFrame(animate);
-      }, 500);
+    if (!loading) {
+      setAnimatedPercentage(percentage);
     }
   }, [loading, percentage]);
+
+  // Create chart
+  useEffect(() => {
+    if (chartRef.current && !loading && !chartInstanceRef.current) {
+      const ctx = chartRef.current.getContext('2d');
+      if (ctx) {
+        const data = {
+          datasets: [{
+            data: [percentage, 100 - percentage],
+            backgroundColor(ctx: any) {
+              const isDark = current_theme === 'dark';
+              if (ctx.type !== 'data') {
+                return;
+              }
+              if (ctx.index === 1) {
+                return isDark ? 'rgb(64, 64, 64)' : 'rgb(234, 234, 234)'; // dark background for dark mode
+              }
+              return COLORS[getColorIndex(ctx.raw)];
+            },
+            borderWidth: 0,
+          }]
+        };
+
+        const annotation = {
+          type: 'doughnutLabel',
+          content: ({ chart }: any) => [
+            chart.data.datasets[0].data[0].toFixed(1) + '%',
+            // 'Score',
+          ],
+          drawTime: 'beforeDraw',
+          position: {
+            y: '-50%'
+          },
+          font: [{ size: 35, weight: 'bold' }, { size: 20 }],
+          color: ({ chart }: any) => [COLORS[getColorIndex(chart.data.datasets[0].data[0])], 'grey']
+        };
+
+        const config = {
+          type: 'doughnut' as const,
+          data,
+          options: {
+            aspectRatio: 2,
+            circumference: 180,
+            rotation: -90,
+            plugins: {
+              annotation: {
+                annotations: {
+                  annotation
+                }
+              },
+              tooltip: {
+                enabled: false
+              },
+              legend: {
+                display: false
+              }
+            },
+            responsive: true,
+            maintainAspectRatio: false
+          }
+        };
+
+        chartInstanceRef.current = new ChartJS(ctx, config as any);
+      }
+    }
+
+    return () => {
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.destroy();
+        chartInstanceRef.current = null;
+      }
+    };
+  }, [loading, COLORS]);
+
+  // Update chart on theme change
+  useEffect(() => {
+    if (chartInstanceRef.current) {
+      chartInstanceRef.current.update();
+    }
+  }, [current_theme]);
 
   if (loading) {
     return (
       <div
         className={twMerge(
-          "bg-secondary p-4 rounded-md border border-default h-96 overflow-auto customScrollbar flex flex-col justify-between",
+          "bg-secondary p-4 rounded-md border border-default h-96 overflow-auto customScrollbar flex flex-col gap-4",
           className
         )}
       >
@@ -94,24 +176,10 @@ export default function UserScore({
             </div>
           </div>
 
-          {/* Loading Scale */}
-          <div className="mb-3">
-            <div className="flex justify-between text-xs text-neutral-400 mb-1">
-              <span>300</span>
-              <span>600</span>
-              <span>950</span>
-            </div>
-            <div className="relative h-3 bg-neutral-200 dark:bg-neutral-700 rounded-full overflow-hidden animate-pulse">
-              <div className="absolute inset-0 flex">
-                <div className="w-1/3 bg-neutral-300 dark:bg-neutral-600 opacity-50"></div>
-                <div className="w-1/3 bg-neutral-300 dark:bg-neutral-600 opacity-50"></div>
-                <div className="w-1/3 bg-neutral-300 dark:bg-neutral-600 opacity-50"></div>
-              </div>
-            </div>
-            <div className="flex justify-between text-xs text-neutral-400 mt-1">
-              <span>Low</span>
-              <span>Medium</span>
-              <span>High</span>
+          {/* Loading Gauge */}
+          <div className="flex items-center justify-center flex-1">
+            <div className="w-full h-full p-4">
+              <div className="w-full h-full bg-neutral-300 dark:bg-neutral-600 rounded animate-pulse"></div>
             </div>
           </div>
         </div>
@@ -121,7 +189,7 @@ export default function UserScore({
 
   if (error) {
     return (
-      <div className="bg-secondary p-4 rounded-md border border-default h-96 overflow-auto customScrollbar flex flex-col justify-between">
+      <div className="bg-secondary p-4 rounded-md border border-default h-96 overflow-auto customScrollbar flex flex-col gap-4">
         <div className="text-xl font-semibold pb-2">Cipherwill Score</div>
         <div className="text-red-600 dark:text-red-400 text-sm">
           Failed to load Cipherwill score
@@ -134,7 +202,7 @@ export default function UserScore({
     <>
       <div
         className={twMerge(
-          "bg-secondary p-4 rounded-md border border-default h-96 overflow-auto customScrollbar animate-in fade-in duration-300 flex flex-col justify-between",
+          "bg-secondary p-4 rounded-md border border-default h-96 overflow-auto customScrollbar animate-in fade-in duration-300 flex flex-col gap-4",
           className
         )}
       >
@@ -160,49 +228,17 @@ export default function UserScore({
         </div>
 
         {/* Score Display */}
-        <div className="flex items-center justify-center">
-          <div className="flex items-center space-x-2">
-            <div className="flex flex-col items-center">
-              <span className="text-3xl font-bold text-primary-600 dark:text-primary-400 animate-in slide-in-from-left duration-500 delay-100">
-                {percentage.toFixed(1)}%
-              </span>
-              <span className="text-sm text-neutral-500 dark:text-neutral-400">
-                {score}/{maxScore} points
-              </span>
-            </div>
+        <div className="flex items-center justify-center flex-1">
+          <div className="w-full h-full p-4">
+            <canvas ref={chartRef} />
           </div>
         </div>
 
-        {/* Visual Scale */}
-        <div>
-          <div className="flex justify-between text-xs text-neutral-600 dark:text-neutral-400 mb-1">
-            <span>300</span>
-            <span>600</span>
-            <span>950</span>
-          </div>
-          <div className="relative h-3 bg-neutral-200 dark:bg-neutral-700 rounded-full overflow-hidden">
-            {/* Color Zones Background */}
-            <div className="absolute inset-0 flex">
-              <div className="w-1/3 bg-red-500 opacity-20"></div>
-              <div className="w-1/3 bg-yellow-500 opacity-20"></div>
-              <div className="w-1/3 bg-green-500 opacity-20"></div>
-            </div>
-
-            {/* Progress Bar */}
-            <div
-              className="relative h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full"
-              style={{ width: `${animatedPercentage}%` }}
-            >
-              <div className="absolute inset-0 bg-white opacity-30 rounded-full animate-pulse"></div>
-            </div>
-          </div>
-
-          {/* Zone Labels */}
-          <div className="flex justify-between text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-            <span className="text-red-600 dark:text-red-400">Low</span>
-            <span className="text-yellow-600 dark:text-yellow-400">Medium</span>
-            <span className="text-green-600 dark:text-green-400">High</span>
-          </div>
+        {/* Score Text */}
+        <div className="text-center">
+          <span className="text-sm text-neutral-500 dark:text-neutral-400">
+            {score}/{maxScore} points
+          </span>
         </div>
 
         {description && (
