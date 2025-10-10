@@ -12,7 +12,7 @@ import RECHECK_ALL_ACTIONS from "@/graphql/ops/app/actions/mutations/RECHECK_ALL
 import GET_USER_ACTIONS from "@/graphql/ops/app/actions/queries/GET_USER_ACTIONS";
 import GET_IGNORED_ACTIONS from "@/graphql/ops/app/actions/queries/GET_IGNORED_ACTIONS";
 import GET_COMPLETED_ACTIONS from "@/graphql/ops/app/actions/queries/GET_COMPLETED_ACTIONS";
-import BasicPopup from "@/components/BasicPopup";
+import ConfirmationPopup from "@/components/app/smartwill/ConfirmationPopup";
 import { useTheme } from "@/contexts/ThemeSelector";
 import {
   Chart as ChartJS,
@@ -248,32 +248,18 @@ export default function UserScore({
         )}
       </div>
 
-      <BasicPopup open={showConfirmModal} setOpen={setShowConfirmModal}>
-        <div className="max-w-md">
-          <h3 className="text-lg font-semibold mb-4">Confirm Score Refresh</h3>
-          <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
-            Are you sure you want to refresh your score? This will recalculate your score based on your current activities.
-          </p>
-          <div className="flex gap-3 justify-end">
-            <button
-              onClick={() => setShowConfirmModal(false)}
-              className="px-4 py-2 text-sm bg-neutral-200 dark:bg-neutral-700 rounded hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors hover:cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={() => {
-                setShowConfirmModal(false);
-                toast.success("Score refresh initiated!");
-                recheckAllActions();
-              }}
-              className="px-4 py-2 text-sm bg-primary-600 text-white rounded hover:bg-primary-700 transition-colors hover:cursor-pointer"
-            >
-              Confirm
-            </button>
-          </div>
-        </div>
-      </BasicPopup>
+      <ConfirmationPopup
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={() => {
+          toast.success("Score refresh initiated!");
+          recheckAllActions();
+        }}
+        title="Confirm Score Refresh"
+        message="Are you sure you want to refresh your score? This will recalculate your score based on your current activities."
+        confirmText="Refresh Score"
+        variant="info"
+      />
     </>
   );
 }
