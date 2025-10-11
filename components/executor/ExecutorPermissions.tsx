@@ -5,23 +5,23 @@ import { GetAllBeneficiaryAccessQuery } from "../../types/interfaces/metamodel";
 import getTimeRemaining from "../../common/time/getTimeRemaining";
 import Link from "next/link";
 import { UserById } from "../app/UserById";
-import DevOnly from "../debug/DevOnly";
 
 export default function ExecutorPermissions() {
-  const { loading, error, data } = useQuery<GetAllBeneficiaryAccessQuery>(GET_ALL_BENEFICIARY_ACCESS);
+  const { loading, error, data } = useQuery<GetAllBeneficiaryAccessQuery>(
+    GET_ALL_BENEFICIARY_ACCESS
+  );
 
   if (loading) return null;
-  if (error) return <div className="bg-secondary border border-default rounded-lg p-4 h-96 overflow-auto customScrollbar">Error : {JSON.stringify(error)}</div>;
+  if (error)
+    return (
+      <div className="bg-secondary border border-default rounded-lg p-4 h-96 overflow-auto customScrollbar">
+        Error : {JSON.stringify(error)}
+      </div>
+    );
+  if (data && data.getAllBeneficiaryAccess.length === 0) return null;
 
   return (
     <div className="bg-secondary border border-default rounded-lg p-4 h-96 overflow-auto customScrollbar flex flex-col gap-4">
-      {data && data.getAllBeneficiaryAccess.length === 0 && (
-        <DevOnly>
-          <div className="bg-white dark:bg-neutral-800 border border-default p-2 rounded-md text-sm">
-            You do not have access as a beneficiary to anyones will
-          </div>
-        </DevOnly>
-      )}
       {data &&
         data.getAllBeneficiaryAccess &&
         data.getAllBeneficiaryAccess.map((access) => {

@@ -20,10 +20,16 @@ import {
   Tooltip,
   Legend,
   DoughnutController,
-} from 'chart.js';
-import annotationPlugin from 'chartjs-plugin-annotation';
+} from "chart.js";
+import annotationPlugin from "chartjs-plugin-annotation";
 
-ChartJS.register(ArcElement, Tooltip, Legend, DoughnutController, annotationPlugin);
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  DoughnutController,
+  annotationPlugin
+);
 
 interface UserScoreProps {
   maxScore?: number;
@@ -39,16 +45,19 @@ export default function UserScore({
   improveScrollLink = false,
 }: UserScoreProps) {
   const { data, loading, error } = useQuery<GetUserScoreData>(GET_USER_SCORE);
-  const [recheckAllActions, { loading: rechecking }] = useMutation(RECHECK_ALL_ACTIONS, {
-    refetchQueries: [
-      { query: GET_USER_ACTIONS },
-      { query: GET_IGNORED_ACTIONS },
-      { query: GET_COMPLETED_ACTIONS },
-      {
-        query: GET_USER_SCORE,
-      },
-    ],
-  });
+  const [recheckAllActions, { loading: rechecking }] = useMutation(
+    RECHECK_ALL_ACTIONS,
+    {
+      refetchQueries: [
+        { query: GET_USER_ACTIONS },
+        { query: GET_IGNORED_ACTIONS },
+        { query: GET_COMPLETED_ACTIONS },
+        {
+          query: GET_USER_SCORE,
+        },
+      ],
+    }
+  );
   const { current_theme } = useTheme();
 
   const score = data?.getUserScore || 0;
@@ -60,7 +69,7 @@ export default function UserScore({
   );
 
   // Colors: red for low, yellow for medium, green for high
-  const COLORS = ['rgb(231, 24, 49)', 'rgb(239, 198, 0)', 'rgb(140, 214, 16)']; // red, yellow, green
+  const COLORS = ["rgb(231, 24, 49)", "rgb(239, 198, 0)", "rgb(140, 214, 16)"]; // red, yellow, green
 
   function getColorIndex(perc: number) {
     return perc < 33 ? 0 : perc < 66 ? 1 : 2; // red, yellow, green
@@ -82,41 +91,46 @@ export default function UserScore({
   // Create chart
   useEffect(() => {
     if (chartRef.current && !loading && !chartInstanceRef.current) {
-      const ctx = chartRef.current.getContext('2d');
+      const ctx = chartRef.current.getContext("2d");
       if (ctx) {
         const data = {
-          datasets: [{
-            data: [percentage, 100 - percentage],
-            backgroundColor(ctx: any) {
-              const isDark = current_theme === 'dark';
-              if (ctx.type !== 'data') {
-                return;
-              }
-              if (ctx.index === 1) {
-                return isDark ? 'rgb(64, 64, 64)' : 'rgb(234, 234, 234)'; // dark background for dark mode
-              }
-              return COLORS[getColorIndex(ctx.raw)];
+          datasets: [
+            {
+              data: [percentage, 100 - percentage],
+              backgroundColor(ctx: any) {
+                const isDark = current_theme === "dark";
+                if (ctx.type !== "data") {
+                  return;
+                }
+                if (ctx.index === 1) {
+                  return isDark ? "rgb(64, 64, 64)" : "rgb(234, 234, 234)"; // dark background for dark mode
+                }
+                return COLORS[getColorIndex(ctx.raw)];
+              },
+              borderWidth: 0,
             },
-            borderWidth: 0,
-          }]
+          ],
         };
 
         const annotation = {
-          type: 'doughnutLabel',
+          type: "doughnutLabel",
           content: ({ chart }: any) => [
-            chart.data.datasets[0].data[0].toFixed(1) + '%',
+            chart.data.datasets[0].data[0].toFixed(1) + "%",
             // 'Score',
           ],
-          drawTime: 'beforeDraw',
+          drawTime: "beforeDraw",
           position: {
-            y: '-50%'
+            y: "-50%",
           },
-          font: [{ size: 35, weight: 'bold' }, { size: 20 }],
-          color: ({ chart }: any) => [COLORS[getColorIndex(chart.data.datasets[0].data[0])], 'grey']
+          font: [{ size: 35, weight: "bold" }, { size: 20 }],
+          color: ({ chart }: any) => [
+            COLORS[getColorIndex(chart.data.datasets[0].data[0])],
+            "grey",
+          ],
         };
 
         const config = {
-          type: 'doughnut' as const,
+          type: "doughnut" as const,
           data,
           options: {
             aspectRatio: 2,
@@ -125,19 +139,19 @@ export default function UserScore({
             plugins: {
               annotation: {
                 annotations: {
-                  annotation
-                }
+                  annotation,
+                },
               },
               tooltip: {
-                enabled: false
+                enabled: false,
               },
               legend: {
-                display: false
-              }
+                display: false,
+              },
             },
             responsive: true,
-            maintainAspectRatio: false
-          }
+            maintainAspectRatio: false,
+          },
         };
 
         chartInstanceRef.current = new ChartJS(ctx, config as any);
@@ -218,7 +232,11 @@ export default function UserScore({
               </Link>
             )}
             <CiUndo
-              className={`inline ${rechecking ? "opacity-50 cursor-not-allowed" : "hover:cursor-pointer"}`}
+              className={`inline ${
+                rechecking
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:cursor-pointer"
+              }`}
               onClick={() => {
                 if (rechecking) return;
                 setShowConfirmModal(true);
@@ -242,7 +260,7 @@ export default function UserScore({
         </div>
 
         {description && (
-          <p className="text-sm text-neutral-600 dark:text-neutral-300 animate-in fade-in duration-500 delay-500">
+          <p className="text-sm text-neutral-600 dark:text-neutral-300 animate-in fade-in duration-500 delay-500 border-t border-default pt-4">
             {description}
           </p>
         )}
