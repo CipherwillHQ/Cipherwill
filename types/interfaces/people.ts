@@ -23,6 +23,7 @@ export interface InviteUserData {
 export interface InviteUserVariables {
   first_name: string;
   email: string;
+  anonymous_invite: boolean;
 }
 
 export interface DeleteSmartWillFriendData {

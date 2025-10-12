@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 const INVITE_USER = gql`
-  mutation INVITE_USER($first_name: String!, $email: String!) {
-    inviteUser(first_name: $first_name, email: $email) {
+  mutation INVITE_USER($first_name: String!, $email: String!, $anonymous_invite: Boolean!) {
+    inviteUser(first_name: $first_name, email: $email, anonymous_invite: $anonymous_invite) {
       ... on User {
         id
         email

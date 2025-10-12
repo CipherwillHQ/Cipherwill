@@ -20,6 +20,7 @@ export default function InvitationBox({
 }) {
   const [name, setName] = useState("");
   const [isInviting, setIsInviting] = useState(false);
+  const [anonymousInvite, setAnonymousInvite] = useState(false);
   const [inviteUser] = useMutation<InviteUserData, InviteUserVariables>(INVITE_USER);
 
   const handleInvite = async () => {
@@ -31,6 +32,7 @@ export default function InvitationBox({
         variables: {
           first_name: name.trim(),
           email: inputEmail,
+          anonymous_invite: anonymousInvite,
         },
         onCompleted(data, clientOptions) {
           if (data && data.inviteUser) {
@@ -93,6 +95,21 @@ export default function InvitationBox({
             className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
             disabled={isInviting}
           />
+        </div>
+
+        {/* Anonymous Invite Checkbox */}
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="anonymous-invite"
+            checked={anonymousInvite}
+            onChange={(e) => setAnonymousInvite(e.target.checked)}
+            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            disabled={isInviting}
+          />
+          <label htmlFor="anonymous-invite" className="text-sm text-gray-700 dark:text-gray-300">
+            Send invitation anonymously (they won't know who invited them)
+          </label>
         </div>
 
         {/* Action Button */}
