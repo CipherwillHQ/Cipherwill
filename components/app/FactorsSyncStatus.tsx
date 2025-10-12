@@ -12,6 +12,7 @@ import DELETE_KEY_BY_PUBLIC_KEY from "../../graphql/ops/app/key/Mutations/DELETE
 import GET_ALL_KEY_COUNT from "../../graphql/ops/app/key/Queries/GET_ALL_KEY_COUNT";
 import DevOnly from "../debug/DevOnly";
 import { GetAllKeyCountQuery, DeleteKeyByPublicKeyVariables } from "../../types/interfaces";
+import SimpleButton from "../common/SimpleButton";
 
 // Simple interface for deletion mutation response
 interface DeleteKeyMutationResponse {
@@ -95,21 +96,19 @@ export default function FactorsSyncStatus() {
   if (is_insucure)
     return (
       <DevOnly>
-        <div className="border border-red-500 rounded-md p-2 flex items-center justify-between h-min">
+        <div className="border border-red-500 rounded-md p-2 flex items-center justify-between h-96 overflow-auto customScrollbar">
           <div className="text-red-800 text-sm">
             Profile is not Zero Knowledge(ZK-ENC) Protected
           </div>
-          <Link href={"/app/factors"}>
-            <button className="bg-orange-200 hover:bg-orange-300 text-sm px-3 py-1 rounded-full mx-2 whitespace-nowrap">
+            <SimpleButton href={"/app/factors"} variant="primary">
               Add Factor
-            </button>
-          </Link>
+            </SimpleButton>
         </div>
       </DevOnly>
     );
 
   return (
-    <div>
+    <div className="bg-secondary border border-default rounded-lg p-4 h-96 overflow-auto customScrollbar flex flex-col gap-4">
       <div className="flex items-center justify-between py-2">
         <h2 className="font-semibold">Factor Synchronization Status </h2>
         <div
@@ -153,7 +152,7 @@ export default function FactorsSyncStatus() {
           return (
             <div
               key={c.publicKey}
-              className="border border-default bg-secondary p-2 my-2 rounded-md flex items-center justify-between"
+              className="border border-default p-2 rounded-md flex items-center justify-between"
             >
               <div>Factor {c.publicKey.slice(-8).toUpperCase()}</div>
               <div>

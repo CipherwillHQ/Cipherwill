@@ -11,18 +11,28 @@ import perform_migrate_in from "../../../common/factor/perform_migrate_in";
 import GET_BENEFICIARY_KEY_COUNT from "../../../graphql/ops/auth/queries/GET_BENEFICIARY_KEY_COUNT";
 import CustomMessage from "./CustomMessage";
 import SimpleButton from "@/components/common/SimpleButton";
-import { SmartWillBeneficiariesData, BeneficiaryKeyCountData, SmartWillBeneficiary, BeneficiaryKeyCount } from "../../../types/interfaces/graphql";
+import ConfirmationPopup from "./ConfirmationPopup";
+import {
+  SmartWillBeneficiariesData,
+  BeneficiaryKeyCountData,
+  SmartWillBeneficiary,
+  BeneficiaryKeyCount,
+} from "../../../types/interfaces/graphql";
 import { GetPersonByIdsData, Person } from "../../../types/interfaces/people";
 
-export default function BeneficiaryList({ 
-  max_key_count, 
-  max_publicKey 
+export default function BeneficiaryList({
+  max_key_count,
+  max_publicKey,
 }: {
   max_key_count: number;
   max_publicKey: string;
 }) {
-  const { loading, data, error } = useQuery<SmartWillBeneficiariesData>(GET_SMARTWILL_BENEFICIARY);
-  const { data: beneficiary_key_count } = useQuery<BeneficiaryKeyCountData>(GET_BENEFICIARY_KEY_COUNT);
+  const { loading, data, error } = useQuery<SmartWillBeneficiariesData>(
+    GET_SMARTWILL_BENEFICIARY
+  );
+  const { data: beneficiary_key_count } = useQuery<BeneficiaryKeyCountData>(
+    GET_BENEFICIARY_KEY_COUNT
+  );
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message} </div>;
 
@@ -54,11 +64,14 @@ function BeneficiaryListById({
   max_key_count: number;
   max_publicKey: string;
 }) {
-  const { loading, data, error } = useQuery<GetPersonByIdsData>(GET_PERSON_BY_IDS, {
-    variables: {
-      list: beneficiaries.map((x) => x.person_id),
-    },
-  });
+  const { loading, data, error } = useQuery<GetPersonByIdsData>(
+    GET_PERSON_BY_IDS,
+    {
+      variables: {
+        list: beneficiaries.map((x) => x.person_id),
+      },
+    }
+  );
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message} </div>;
@@ -113,6 +126,7 @@ function PersonTile({
   const { session } = useSession();
 
   const [isMigrating, setIsMigrating] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const [deleteBeneficiary] = useMutation(DELETE_SMARTWILL_BENEFICIARY);
 
@@ -243,26 +257,39 @@ function PersonTile({
           data-cy="remove-beneficiary-button"
           className="flex items-center hover:cursor-pointer px-2 py-1 text-sm rounded-full border border-red-400 bg-red-100 hover:bg-red-200 text-black transition-colors"
           onClick={() => {
-            const cnf = confirm(
-              "Are you sure you want to remove this beneficiary?"
-            );
-            if (cnf) {
-              deleteBeneficiary({
-                variables: {
-                  id: person.id,
-                },
-                refetchQueries: [
-                  {
-                    query: GET_SMARTWILL_BENEFICIARY,
-                  },
-                ],
-              });
-            }
+            setShowDeleteConfirm(true);
           }}
         >
           Remove
         </button>
       </div>
+
+      <ConfirmationPopup
+        isOpen={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        onConfirm={() => {
+          deleteBeneficiary({
+            variables: {
+              id: person.id,
+            },
+            refetchQueries: [
+              {
+                query: GET_SMARTWILL_BENEFICIARY,
+              },
+            ],
+          });
+        }}
+        title="Remove Beneficiary"
+        message={`Are you sure you want to remove ${
+          person.first_name
+            ? person.first_name
+            : person.email
+            ? person.email
+            : "this person"
+        } as a beneficiary? This action cannot be undone.`}
+        confirmText="Remove Beneficiary"
+        variant="danger"
+      />
     </div>
   );
 }

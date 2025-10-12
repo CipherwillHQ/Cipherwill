@@ -36,6 +36,8 @@
     "@types/luxon": "^3.7.1",
     "@vercel/speed-insights": "^1.1.0",
     "apollo-upload-client": "^19.0.0",
+    "chart.js": "^4.5.0",
+    "chartjs-plugin-annotation": "^3.1.0",
     "countries-and-timezones": "^3.8.0",
     "crisp-sdk-web": "^1.0.25",
     "cross-env": "^10.0.0",
@@ -77,9 +79,9 @@
     "@types/node": "^24.3.0",
     "@types/react": "^19.1.12",
     "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.13",
-    "tsx": "^4.20.5",
-    "typescript": "^5.9.2"
+    "tailwindcss": "^4.1.14",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
   },
   "engines": {
     "node": "22.x"

@@ -6,7 +6,7 @@ import CTA from "@/components/public/CTA";
 import FAQs from "@/components/public/FAQs";
 import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
 
-const title = "CipherWill Help Center";
+const title = "Cipherwill Help Center";
 const description =
   "Our support and help desk for FAQs, tutorials, and customer support. We help you with your digital estate planning and your satisfaction is our priority.";
 

@@ -15,11 +15,11 @@ export default function GrantedBeneficiaryAccessList() {
   const [revokeAccess] = useMutation(REVOKE_ACCESS_TO_MY_WILL);
 
   if (loading) return null;
-  if (error) return <div>Error : {JSON.stringify(error)}</div>;
+  if (error) return <div className="bg-secondary border border-default rounded-lg p-4 h-96 overflow-auto customScrollbar">Error : {JSON.stringify(error)}</div>;
   if (!data || data.getAllGrantedBeneficiaries.length === 0)
     return (
       <DevOnly>
-        <div className="border p-2 text-sm rounded-md">
+        <div className="bg-secondary border border-default rounded-lg p-4 h-96 overflow-auto customScrollbar text-sm">
           Your smartwill is under the update schedule. None of your
           beneficiaries have access to your data and not aware about the update
           schedule.
@@ -28,7 +28,7 @@ export default function GrantedBeneficiaryAccessList() {
     );
 
   return (
-    <div>
+    <div className="bg-secondary border border-default rounded-lg p-4 h-96 overflow-auto customScrollbar flex flex-col gap-4">
       <h2 className="font-semibold py-2">
         Following beneficiaries have access to your data
       </h2>
@@ -36,7 +36,7 @@ export default function GrantedBeneficiaryAccessList() {
         return (
           <div
             key={access.id}
-            className="flex items-center justify-between border rounded-md p-2 my-2"
+            className="flex items-center justify-between bg-white dark:bg-neutral-800 border border-default rounded-md p-2"
           >
             <div>
               <div>

@@ -11,6 +11,7 @@ import { useUserContext } from "@/contexts/UserSetupContext";
 import DevOnly from "@/components/debug/DevOnly";
 import UserFlag from "@/components/common/UserFlag";
 import { Divider, Segment } from "@/types/Segments";
+import LiveChatBox from "../LiveChatBox";
 
 export default function SidebarPanel() {
   const pathname = usePathname();
@@ -80,6 +81,8 @@ export default function SidebarPanel() {
             </Link>
           );
         })}
+
+        <LiveChatBox />
       </div>
 
       <div className="pt-1 border-t border-default">

@@ -4,6 +4,7 @@ import {
   TbClockPlay,
   TbFileInvoice,
   TbLockAccess,
+  TbTableSpark,
 } from "react-icons/tb";
 import { VscSettings } from "react-icons/vsc";
 import { BiUserPlus } from "react-icons/bi";
@@ -12,6 +13,7 @@ import { BsFilePerson } from "react-icons/bs";
 import segments from "@/app/app/segments/segments";
 import { Divider, Segment } from "@/types/Segments";
 import { RiNotificationBadgeLine } from "react-icons/ri";
+import { MdTaskAlt } from "react-icons/md";
 
 const menu: (Divider | Segment)[] = [
   {
@@ -21,6 +23,14 @@ const menu: (Divider | Segment)[] = [
     plan_required: "free",
     preference_key: null,
     path: "/app",
+  },
+  {
+    icon: <MdTaskAlt />,
+    title: "Actions",
+    description: "User actions",
+    plan_required: "free",
+    preference_key: null,
+    path: "/app/actions",
   },
   {
     icon: <TbCell />,

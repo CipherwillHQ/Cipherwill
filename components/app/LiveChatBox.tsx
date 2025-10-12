@@ -33,11 +33,13 @@ export default function LiveChatBox({ className }: { className?: string }) {
 
   const { data, loading, error } = useQuery<MeData>(ME);
 
+  // Load Crisp on mount
   useEffect(() => {
-    if (data && !loading && !error) {
-      if (typeof window === "undefined" || !CRISP_TOKEN) return;
-      
-      user_session_attach(data);
+    if (typeof window === "undefined" || !CRISP_TOKEN) return;
+
+    if (Crisp.isCrispInjected()) {
+      setIsCrispLoaded(true);
+    } else {
       Crisp.load();
       Crisp.session.onLoaded(() => {
         setIsCrispLoaded(true);
@@ -65,7 +67,14 @@ export default function LiveChatBox({ className }: { className?: string }) {
         Crisp.chat.hide();
       });
     }
-  }, [data, loading, error]);
+  }, []);
+
+  // Attach user when data is available
+  useEffect(() => {
+    if (data && !loading && !error && isCrispLoaded) {
+      user_session_attach(data);
+    }
+  }, [data, loading, error, isCrispLoaded]);
 
   useEffect(() => {
     // Only run on client side and if Crisp is available
@@ -104,7 +113,7 @@ export default function LiveChatBox({ className }: { className?: string }) {
         />
       ) : (
         <div className="flex items-center">
-          <div className="relative bg-black dark:bg-white text-white dark:text-black mr-2 h-5 w-5 text-sm text-center rounded-full flex items-center justify-center">
+          <div className="relative bg-black dark:bg-white text-white dark:text-black mx-2 h-5 w-5 text-sm text-center rounded-full flex items-center justify-center">
             <div className="absolute -top-1 -right-1 bg-yellow-500 h-2 w-2 rounded-full animate-ping" />
             <span className="text-xs font-bold">{unreadCount > 99 ? "99+" : unreadCount}</span>
           </div>
