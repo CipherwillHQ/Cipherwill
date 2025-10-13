@@ -27,7 +27,7 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             <UserScore
               improveScrollLink
-              description="Your personalized score based on your activity."
+              description="This score reflects how complete your digital legacy is. Improve it by adding missing accounts, documents, and assets."
             />
             <PendingActionsBox />
             <SecuredCounter />

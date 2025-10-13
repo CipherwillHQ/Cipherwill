@@ -11,7 +11,7 @@ export default function ActionsPage() {
         <SuggestionBox triggerText="Give feedback on actions" />
       </DesktopAndMobilePageHeader>
       <UserScore
-        description="User score based on actions taken"
+        description="Your Cipherwill Score shows how prepared your digital legacy is. Add more details to increase your score and ensure everything is ready for your loved ones."
         className="m-4 h-min"
       />
       <UserActions />
