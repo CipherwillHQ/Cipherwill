@@ -19,11 +19,11 @@ export default function App() {
       <MobileMenu />
       <Topbar />
       <div className="px-2">
-        <div className="flex flex-col sm:flex-row items-center gap-4 p-2">
+        <div className="p-2">
           <Greetings />
-          <EmailVerificationCheck />
         </div>
         <div className="p-2">
+          <EmailVerificationCheck />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             <UserScore
               improveScrollLink
