@@ -32,14 +32,6 @@ function getExecutorMenu(pathname: string) {
       });
     });
   }
-  menu.push({
-    divider: true,
-  });
-  menu.push({
-    icon: <TbHomeShield />,
-    title: "Back to Cipherwill App",
-    path: `/app`,
-  });
   return menu;
 }
 
