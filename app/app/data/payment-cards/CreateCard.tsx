@@ -3,9 +3,10 @@ import { useMutation } from "@apollo/client/react";
 import CREATE_METAMODEL from "../../../../graphql/ops/app/metamodel/mutations/CREATE_METAMODEL";
 import GET_METAMODELS from "../../../../graphql/ops/app/metamodel/queries/GET_METAMODELS";
 import SimpleButton from "@/components/common/SimpleButton";
+import { CreateMetamodelMutation, CreateMetamodelVariables } from "@/types";
 
 export default function CreateCard() {
-  const [createCard] = useMutation(CREATE_METAMODEL, {
+  const [createCard] = useMutation<CreateMetamodelMutation, CreateMetamodelVariables>(CREATE_METAMODEL, {
     refetchQueries: [
       {
         query: GET_METAMODELS,
