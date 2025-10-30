@@ -18,7 +18,7 @@ export default function TimelinePage() {
   return (
     <div className="w-full">
       <DesktopAndMobilePageHeader title="Cipherwill Timeline" />
-      <div className="flex flex-col gap-4 p-4">
+      <div className="flex flex-col gap-4 px-4">
         {user && user.birth_date && user.birth_date !== "0" ? (
           <CycleDescription
             birth_stamp={user.birth_date}

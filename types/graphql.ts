@@ -31,3 +31,50 @@ export interface SubscriptionData {
     cancel_at?: string;
   };
 }
+
+export interface UserPhoneNumber {
+  id: string;
+  phone_code: string;
+  phone_num: string;
+  verified: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface GetUserPhoneNumbersData {
+  getUserPhoneNumbers: UserPhoneNumber[];
+}
+
+export interface AddUserPhoneNumberVariables {
+  phone_code: string;
+  phone_num: string;
+}
+
+export interface AddUserPhoneNumberData {
+  addUserPhoneNumber: boolean;
+}
+
+export interface RemoveUserPhoneNumberVariables {
+  id: string;
+}
+
+export interface RemoveUserPhoneNumberData {
+  removeUserPhoneNumber: boolean;
+}
+
+export interface SendUserPhoneVerificationCodeVariables {
+  id: string;
+}
+
+export interface SendUserPhoneVerificationCodeData {
+  sendUserPhoneVerificationCode: boolean;
+}
+
+export interface VerifyUserPhoneNumberVariables {
+  id: string;
+  otp: string;
+}
+
+export interface VerifyUserPhoneNumberData {
+  verifyUserPhoneNumber: boolean;
+}

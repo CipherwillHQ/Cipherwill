@@ -33,7 +33,7 @@ export default function Segments() {
       <DesktopAndMobilePageHeader title="Segments">
         <SuggestionBox triggerText="💡 Suggest a segment" />
       </DesktopAndMobilePageHeader>
-      <div className="flex flex-wrap py-4 px-4 sm:py-0 gap-2">
+      <div className="flex flex-wrap px-4 gap-2">
         {segments.map((segment) => {
           if ((segment as Divider).divider) {
             return (
