@@ -63,8 +63,8 @@ export default function PhoneNotifications() {
       return;
     }
 
-    if (phoneNum.length < 6) {
-      toast.error("Phone number must be at least 6 digits long");
+    if (phoneNum.length < 4) {
+      toast.error("Phone number must be at least 4 digits long");
       return;
     }
 
@@ -188,7 +188,7 @@ export default function PhoneNotifications() {
         {userPhoneNumbers.map((phoneNumber) => (
           <div
             key={phoneNumber.id}
-            className="border border-default bg-secondary rounded-md p-2 flex flex-col gap-4"
+            className="border border-default bg-secondary rounded-md p-4 flex flex-col gap-4"
           >
             <div className="flex justify-between items-center">
               <h3 className="font-semibold text-lg">
@@ -363,7 +363,7 @@ export default function PhoneNotifications() {
                   />
                 </div>
                 <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  Enter your country code and phone number (minimum 6 digits)
+                  Enter your country code and phone number (minimum 4 digits)
                 </div>
               </div>
             </div>
@@ -382,7 +382,7 @@ export default function PhoneNotifications() {
                   adding ||
                   !phoneCode.trim() ||
                   !phoneNum.trim() ||
-                  phoneNum.length < 6
+                  phoneNum.length < 4
                 }
                 className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed rounded-lg transition-colors flex items-center gap-2"
               >

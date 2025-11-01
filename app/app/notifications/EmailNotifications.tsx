@@ -18,7 +18,7 @@ export default function EmailNotifications() {
         {userEmails.map((email, index) => (
           <div
             key={index}
-            className="border border-default bg-secondary rounded-md p-2 flex flex-col gap-4"
+            className="border border-default bg-secondary rounded-md p-4 flex flex-col gap-4"
           >
             <h3 className="font-semibold text-lg">Email: {email}</h3>
             <div className="flex justify-between">
