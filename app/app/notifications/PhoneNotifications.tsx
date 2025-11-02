@@ -16,6 +16,7 @@ import {
   VerifyUserPhoneNumberVariables,
 } from "@/types/graphql";
 import toast from "react-hot-toast";
+import ConfirmationButton from "@/components/common/ConfirmationButton";
 
 export default function PhoneNotifications() {
   const [showAddPopup, setShowAddPopup] = useState(false);
@@ -176,7 +177,7 @@ export default function PhoneNotifications() {
   return (
     <div>
       <div className="flex justify-between pb-4">
-        <h2>Phone Numbers</h2>
+        <h2 className="font-medium">Phone Numbers</h2>
         <SimpleButton onClick={() => setShowAddPopup(true)}>
           Add phone number
         </SimpleButton>
@@ -194,14 +195,22 @@ export default function PhoneNotifications() {
               <h3 className="font-semibold text-lg">
                 Phone Number: +{phoneNumber.phone_code} {phoneNumber.phone_num}
               </h3>
-              <SimpleButton
-                variant="danger"
-                onClick={() => handleRemovePhoneNumber(phoneNumber)}
-                className="text-sm px-3 py-1"
+              <ConfirmationButton
+                onConfirm={() => handleRemovePhoneNumber(phoneNumber)}
+                className="text-sm px-3 py-1 text-red-700 dark:text-red-400"
               >
                 Remove
-              </SimpleButton>
+              </ConfirmationButton>
             </div>
+            {phoneNumber.verified && (
+              <div className="hidden md:flex justify-between gap-2 font-semibold text-sm">
+                <div className="w-full max-w-2/3 text-left opacity-0">
+                  feature
+                </div>
+                <div className="w-full max-w-1/6 text-center">Mandatory</div>
+                <div className="w-full max-w-1/6 text-center">Promotional</div>
+              </div>
+            )}
 
             {!phoneNumber.verified ? (
               <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md p-4">
@@ -224,8 +233,8 @@ export default function PhoneNotifications() {
               </div>
             ) : (
               <>
-                <div className="flex justify-between">
-                  <div>
+                <div className="flex flex-col md:flex-row justify-between">
+                  <div className="md:max-w-2/3 w-full">
                     <h4 className="font-semibold">Phone Calls</h4>
                     <p>
                       Receive important phone calls such as cipherwill
@@ -233,15 +242,27 @@ export default function PhoneNotifications() {
                       notifications.
                     </p>
                   </div>
-                  <div className="mt-2">
+                  <div className="mt-2 md:max-w-1/6 w-full flex items-center justify-between md:justify-center">
+                    <div className="md:hidden font-medium">
+                      Mandatory Communication
+                    </div>
+                    <label className="inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" checked />
+                      <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                    </label>
+                  </div>
+                  <div className="mt-2 md:max-w-1/6 w-full flex items-center justify-between md:justify-center">
+                    <div className="md:hidden font-medium">
+                      Promotional Communication
+                    </div>
                     <label className="inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" checked />
                       <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                     </label>
                   </div>
                 </div>
-                <div className="flex justify-between">
-                  <div>
+                <div className="flex flex-col md:flex-row justify-between">
+                  <div className="md:max-w-2/3 w-full">
                     <h4 className="font-semibold">Text Messages (SMS)</h4>
                     <p>
                       Receive important text messages such as cipherwill
@@ -249,15 +270,27 @@ export default function PhoneNotifications() {
                       notifications.
                     </p>
                   </div>
-                  <div className="mt-2">
+                  <div className="mt-2 md:max-w-1/6 w-full flex items-center justify-between md:justify-center">
+                    <div className="md:hidden font-medium">
+                      Mandatory Communication
+                    </div>
+                    <label className="inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" checked />
+                      <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                    </label>
+                  </div>
+                  <div className="mt-2 md:max-w-1/6 w-full flex items-center justify-between md:justify-center">
+                    <div className="md:hidden font-medium">
+                      Promotional Communication
+                    </div>
                     <label className="inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" checked />
                       <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                     </label>
                   </div>
                 </div>
-                <div className="flex justify-between">
-                  <div>
+                <div className="flex flex-col md:flex-row justify-between">
+                  <div className="md:max-w-2/3 w-full">
                     <h4 className="font-semibold">Whatsapp Messages</h4>
                     <p>
                       Receive important Whatsapp messages such as cipherwill
@@ -265,7 +298,19 @@ export default function PhoneNotifications() {
                       notifications.
                     </p>
                   </div>
-                  <div className="mt-2">
+                  <div className="mt-2 md:max-w-1/6 w-full flex items-center justify-between md:justify-center">
+                    <div className="md:hidden font-medium">
+                      Mandatory Communication
+                    </div>
+                    <label className="inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" checked />
+                      <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                    </label>
+                  </div>
+                  <div className="mt-2 md:max-w-1/6 w-full flex items-center justify-between md:justify-center">
+                    <div className="md:hidden font-medium">
+                      Promotional Communication
+                    </div>
                     <label className="inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" checked />
                       <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
