@@ -280,9 +280,8 @@ export default function PhoneNotifications() {
                   <div className="md:max-w-2/3 w-full">
                     <h4 className="font-semibold">Phone Calls</h4>
                     <p>
-                      Receive important phone calls such as cipherwill
-                      reminders, security alerts, and account activity
-                      notifications.
+                      You'll receive a phone call from Cipherwill for important
+                      reminders, security alerts, and account activity.
                     </p>
                   </div>
                   <div className="mt-2 md:max-w-1/6 w-full flex items-center justify-between md:justify-center">
@@ -332,9 +331,8 @@ export default function PhoneNotifications() {
                   <div className="md:max-w-2/3 w-full">
                     <h4 className="font-semibold">Text Messages (SMS)</h4>
                     <p>
-                      Receive important text messages such as cipherwill
-                      reminders, security alerts, and account activity
-                      notifications.
+                      You'll receive important text messages from Cipherwill such as
+                      reminders, security alerts, and account activity notifications.
                     </p>
                   </div>
                   <div className="mt-2 md:max-w-1/6 w-full flex items-center justify-between md:justify-center">
@@ -384,9 +382,8 @@ export default function PhoneNotifications() {
                   <div className="md:max-w-2/3 w-full">
                     <h4 className="font-semibold">Whatsapp Messages</h4>
                     <p>
-                      Receive important Whatsapp messages such as cipherwill
-                      reminders, security alerts, and account activity
-                      notifications.
+                      You'll receive important Whatsapp messages from Cipherwill such as
+                      reminders, security alerts, and account activity notifications.
                     </p>
                   </div>
                   <div className="mt-2 md:max-w-1/6 w-full flex items-center justify-between md:justify-center">
