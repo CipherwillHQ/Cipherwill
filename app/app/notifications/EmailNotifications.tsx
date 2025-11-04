@@ -1,10 +1,32 @@
 "use client";
 import SimpleButton from "@/components/common/SimpleButton";
 import { useUserContext } from "@/contexts/UserSetupContext";
+import { useQuery, useMutation } from "@apollo/client/react";
+import GET_PREFERENCES from "@/graphql/ops/auth/queries/GET_PREFERENCES";
+import UPDATE_PREFERENCES from "@/graphql/ops/auth/mutations/UPDATE_PREFERENCES";
+import { GetPreferencesData, UpdatePreferencesVariables } from "@/types/graphql";
 
 export default function EmailNotifications() {
   const { user } = useUserContext();
   const userEmails = user?.email ? [user.email] : [];
+
+  const { data: preferencesData, loading: preferencesLoading } = useQuery<GetPreferencesData>(GET_PREFERENCES);
+  const [updatePreferences, { loading: updateLoading }] = useMutation<{}, UpdatePreferencesVariables>(UPDATE_PREFERENCES);
+
+  const promotionalEmails = preferencesData?.getPreferences?.promotional_emails ?? true; // default to true if not set
+
+  const handlePromotionalEmailsToggle = async (checked: boolean) => {
+    try {
+      await updatePreferences({
+        variables: {
+          key: "promotional_emails",
+          value: checked.toString(),
+        },
+      });
+    } catch (error) {
+      console.error("Failed to update promotional emails preference:", error);
+    }
+  };
   return (
     <div>
       <div className="flex justify-between pb-4">
@@ -39,7 +61,13 @@ export default function EmailNotifications() {
               <div className="font-medium">Promotional emails</div>
               <div className="">
                 <label className="inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" checked />
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={promotionalEmails}
+                    onChange={(e) => handlePromotionalEmailsToggle(e.target.checked)}
+                    disabled={preferencesLoading || updateLoading}
+                  />
                   <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                 </label>
               </div>

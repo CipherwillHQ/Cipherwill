@@ -78,3 +78,32 @@ export interface VerifyUserPhoneNumberVariables {
 export interface VerifyUserPhoneNumberData {
   verifyUserPhoneNumber: boolean;
 }
+
+export interface Preferences {
+  id: string;
+  check_in_interval: string;
+  segment_bank_account: boolean;
+  segment_email_accounts: boolean;
+  segment_device_locks: boolean;
+  segment_passwords: boolean;
+  segment_seed_phrases: boolean;
+  segment_defi_staking: boolean;
+  segment_payment_cards: boolean;
+  segment_storage: boolean;
+  promotional_emails: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface GetPreferencesData {
+  getPreferences: Preferences;
+}
+
+export interface UpdatePreferencesVariables {
+  key: string;
+  value: string;
+}
+
+export interface UpdatePreferencesData {
+  updateUserPreferences: Preferences;
+}

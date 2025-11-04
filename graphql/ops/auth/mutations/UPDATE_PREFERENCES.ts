@@ -13,6 +13,7 @@ const UPDATE_PREFERENCES = gql`
       segment_defi_staking
       segment_payment_cards
       segment_storage
+      promotional_emails
       created_at
       updated_at
     }
