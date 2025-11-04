@@ -8,12 +8,15 @@ import ADD_USER_PHONE_NUMBER from "@/graphql/ops/auth/mutations/ADD_USER_PHONE_N
 import REMOVE_USER_PHONE_NUMBER from "@/graphql/ops/auth/mutations/REMOVE_USER_PHONE_NUMBER";
 import SEND_USER_PHONE_VERIFICATION_CODE from "@/graphql/ops/auth/mutations/SEND_USER_PHONE_VERIFICATION_CODE";
 import VERIFY_USER_PHONE_NUMBER from "@/graphql/ops/auth/mutations/VERIFY_USER_PHONE_NUMBER";
+import UPDATE_MOBILE_PREFERENCES from "@/graphql/ops/auth/mutations/UPDATE_MOBILE_PREFERENCES";
 import {
   GetUserPhoneNumbersData,
   AddUserPhoneNumberVariables,
   RemoveUserPhoneNumberVariables,
   SendUserPhoneVerificationCodeVariables,
   VerifyUserPhoneNumberVariables,
+  UpdateMobilePreferencesVariables,
+  UpdateMobilePreferencesData,
 } from "@/types/graphql";
 import toast from "react-hot-toast";
 import ConfirmationButton from "@/components/common/ConfirmationButton";
@@ -50,6 +53,10 @@ export default function PhoneNotifications() {
     boolean,
     VerifyUserPhoneNumberVariables
   >(VERIFY_USER_PHONE_NUMBER);
+  const [updateMobilePreferences, { loading: updatingPreferences }] =
+    useMutation<UpdateMobilePreferencesData, UpdateMobilePreferencesVariables>(
+      UPDATE_MOBILE_PREFERENCES
+    );
 
   const userPhoneNumbers = data?.getUserPhoneNumbers || [];
 
@@ -172,6 +179,42 @@ export default function PhoneNotifications() {
     }
   };
 
+  const handleUpdatePreference = async (
+    phoneId: string,
+    key: string,
+    value: boolean
+  ) => {
+    const ALLOWED_KEYS = [
+      "mandatory_phone_calls",
+      "mandatory_sms",
+      "mandatory_whatsapp",
+      "promotional_phone_calls",
+      "promotional_sms",
+      "promotional_whatsapp",
+    ];
+
+    if (!ALLOWED_KEYS.includes(key)) {
+      toast.error("Invalid preference key");
+      return;
+    }
+
+    try {
+      await updateMobilePreferences({
+        variables: {
+          id: phoneId,
+          key,
+          value,
+        },
+      });
+      toast.success("Notification preference updated successfully");
+    } catch (err) {
+      console.error("Error updating preference:", err);
+      toast.error(
+        "Failed to update notification preference. Please try again."
+      );
+    }
+  };
+
   if (loading) return <div>Loading phone numbers...</div>;
   if (error) return <div>Error loading phone numbers: {error.message}</div>;
   return (
@@ -247,7 +290,19 @@ export default function PhoneNotifications() {
                       Mandatory Communication
                     </div>
                     <label className="inline-flex items-center cursor-pointer">
-                      <input type="checkbox" className="sr-only peer" checked />
+                      <input
+                        type="checkbox"
+                        className="sr-only peer"
+                        checked={phoneNumber.mandatory_phone_calls}
+                        onChange={(e) =>
+                          handleUpdatePreference(
+                            phoneNumber.id,
+                            "mandatory_phone_calls",
+                            e.target.checked
+                          )
+                        }
+                        disabled={updatingPreferences}
+                      />
                       <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                     </label>
                   </div>
@@ -256,7 +311,19 @@ export default function PhoneNotifications() {
                       Promotional Communication
                     </div>
                     <label className="inline-flex items-center cursor-pointer">
-                      <input type="checkbox" className="sr-only peer" checked />
+                      <input
+                        type="checkbox"
+                        className="sr-only peer"
+                        checked={phoneNumber.promotional_phone_calls}
+                        onChange={(e) =>
+                          handleUpdatePreference(
+                            phoneNumber.id,
+                            "promotional_phone_calls",
+                            e.target.checked
+                          )
+                        }
+                        disabled={updatingPreferences}
+                      />
                       <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                     </label>
                   </div>
@@ -275,7 +342,19 @@ export default function PhoneNotifications() {
                       Mandatory Communication
                     </div>
                     <label className="inline-flex items-center cursor-pointer">
-                      <input type="checkbox" className="sr-only peer" checked />
+                      <input
+                        type="checkbox"
+                        className="sr-only peer"
+                        checked={phoneNumber.mandatory_sms}
+                        onChange={(e) =>
+                          handleUpdatePreference(
+                            phoneNumber.id,
+                            "mandatory_sms",
+                            e.target.checked
+                          )
+                        }
+                        disabled={updatingPreferences}
+                      />
                       <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                     </label>
                   </div>
@@ -284,7 +363,19 @@ export default function PhoneNotifications() {
                       Promotional Communication
                     </div>
                     <label className="inline-flex items-center cursor-pointer">
-                      <input type="checkbox" className="sr-only peer" checked />
+                      <input
+                        type="checkbox"
+                        className="sr-only peer"
+                        checked={phoneNumber.promotional_sms}
+                        onChange={(e) =>
+                          handleUpdatePreference(
+                            phoneNumber.id,
+                            "promotional_sms",
+                            e.target.checked
+                          )
+                        }
+                        disabled={updatingPreferences}
+                      />
                       <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                     </label>
                   </div>
@@ -303,7 +394,19 @@ export default function PhoneNotifications() {
                       Mandatory Communication
                     </div>
                     <label className="inline-flex items-center cursor-pointer">
-                      <input type="checkbox" className="sr-only peer" checked />
+                      <input
+                        type="checkbox"
+                        className="sr-only peer"
+                        checked={phoneNumber.mandatory_whatsapp}
+                        onChange={(e) =>
+                          handleUpdatePreference(
+                            phoneNumber.id,
+                            "mandatory_whatsapp",
+                            e.target.checked
+                          )
+                        }
+                        disabled={updatingPreferences}
+                      />
                       <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                     </label>
                   </div>
@@ -312,7 +415,19 @@ export default function PhoneNotifications() {
                       Promotional Communication
                     </div>
                     <label className="inline-flex items-center cursor-pointer">
-                      <input type="checkbox" className="sr-only peer" checked />
+                      <input
+                        type="checkbox"
+                        className="sr-only peer"
+                        checked={phoneNumber.promotional_whatsapp}
+                        onChange={(e) =>
+                          handleUpdatePreference(
+                            phoneNumber.id,
+                            "promotional_whatsapp",
+                            e.target.checked
+                          )
+                        }
+                        disabled={updatingPreferences}
+                      />
                       <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                     </label>
                   </div>

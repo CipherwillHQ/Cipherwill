@@ -37,6 +37,15 @@ export interface UserPhoneNumber {
   phone_code: string;
   phone_num: string;
   verified: boolean;
+
+  mandatory_phone_calls: boolean;
+  mandatory_sms: boolean;
+  mandatory_whatsapp: boolean;
+
+  promotional_phone_calls: boolean;
+  promotional_sms: boolean;
+  promotional_whatsapp: boolean;
+
   created_at: string;
   updated_at: string;
 }
@@ -77,6 +86,16 @@ export interface VerifyUserPhoneNumberVariables {
 
 export interface VerifyUserPhoneNumberData {
   verifyUserPhoneNumber: boolean;
+}
+
+export interface UpdateMobilePreferencesVariables {
+  id: string;
+  key: string;
+  value: boolean;
+}
+
+export interface UpdateMobilePreferencesData {
+  updateMobilePreferences: UserPhoneNumber;
 }
 
 export interface Preferences {
