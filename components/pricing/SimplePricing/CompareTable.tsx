@@ -85,6 +85,12 @@ const compareTable = [
   {
     section: "Platform",
   },
+  
+  {
+    name: "Communications",
+    free: "Email only",
+    premium: "Email & Phone (Calls, SMS, WhatsApp)",
+  },
   {
     name: "For",
     free: "Basic digital inheritance planning",
@@ -92,7 +98,7 @@ const compareTable = [
   },
   {
     name: "Support",
-    free: "Chat support",
+    free: "Email support",
     premium: "Live chat support",
   },
   {
