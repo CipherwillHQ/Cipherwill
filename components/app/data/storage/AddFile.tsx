@@ -70,7 +70,7 @@ export default function AddFile({ folder_id }: { folder_id?: string }) {
                     type: "FILE",
                     metadata: JSON.stringify({
                       title: file.name || "Untitled file",
-                      type: file.type,
+                      type: file.type || "unknown",
                     }),
                   },
                 }).catch((error) => {

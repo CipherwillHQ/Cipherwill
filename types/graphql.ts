@@ -31,3 +31,98 @@ export interface SubscriptionData {
     cancel_at?: string;
   };
 }
+
+export interface UserPhoneNumber {
+  id: string;
+  phone_code: string;
+  phone_num: string;
+  verified: boolean;
+
+  mandatory_phone_calls: boolean;
+  mandatory_sms: boolean;
+  mandatory_whatsapp: boolean;
+
+  promotional_phone_calls: boolean;
+  promotional_sms: boolean;
+  promotional_whatsapp: boolean;
+
+  created_at: string;
+  updated_at: string;
+}
+
+export interface GetUserPhoneNumbersData {
+  getUserPhoneNumbers: UserPhoneNumber[];
+}
+
+export interface AddUserPhoneNumberVariables {
+  phone_code: string;
+  phone_num: string;
+}
+
+export interface AddUserPhoneNumberData {
+  addUserPhoneNumber: boolean;
+}
+
+export interface RemoveUserPhoneNumberVariables {
+  id: string;
+}
+
+export interface RemoveUserPhoneNumberData {
+  removeUserPhoneNumber: boolean;
+}
+
+export interface SendUserPhoneVerificationCodeVariables {
+  id: string;
+}
+
+export interface SendUserPhoneVerificationCodeData {
+  sendUserPhoneVerificationCode: boolean;
+}
+
+export interface VerifyUserPhoneNumberVariables {
+  id: string;
+  otp: string;
+}
+
+export interface VerifyUserPhoneNumberData {
+  verifyUserPhoneNumber: boolean;
+}
+
+export interface UpdateMobilePreferencesVariables {
+  id: string;
+  key: string;
+  value: boolean;
+}
+
+export interface UpdateMobilePreferencesData {
+  updateMobilePreferences: UserPhoneNumber;
+}
+
+export interface Preferences {
+  id: string;
+  check_in_interval: string;
+  segment_bank_account: boolean;
+  segment_email_accounts: boolean;
+  segment_device_locks: boolean;
+  segment_passwords: boolean;
+  segment_seed_phrases: boolean;
+  segment_defi_staking: boolean;
+  segment_payment_cards: boolean;
+  segment_storage: boolean;
+  promotional_emails: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface GetPreferencesData {
+  getPreferences: Preferences;
+}
+
+export interface UpdatePreferencesVariables {
+  key: string;
+  value: string;
+}
+
+export interface UpdatePreferencesData {
+  updateUserPreferences: Preferences;
+}

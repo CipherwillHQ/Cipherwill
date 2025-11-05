@@ -11,7 +11,14 @@ import toast from "react-hot-toast";
 import crypto from "crypto";
 import SwapFile from "./SwapFile";
 import GET_METAMODEL from "@/graphql/ops/app/metamodel/queries/GET_METAMODEL";
-import { GetKeyByRefIdQuery, GetKeyByRefIdVariables, GetPodQuery, GetPodVariables, GetMetamodelQuery, GetMetamodelVariables } from "@/types/interfaces";
+import {
+  GetKeyByRefIdQuery,
+  GetKeyByRefIdVariables,
+  GetPodQuery,
+  GetPodVariables,
+  GetMetamodelQuery,
+  GetMetamodelVariables,
+} from "@/types/interfaces";
 
 interface PodDetailsProps {
   id: string;
@@ -24,7 +31,10 @@ export default function PodDetails({ id }: PodDetailsProps) {
     <div className="flex gap-2 py-4">
       <SimpleButton
         onClick={async () => {
-          const encryption_key = await client.query<GetKeyByRefIdQuery, GetKeyByRefIdVariables>({
+          const encryption_key = await client.query<
+            GetKeyByRefIdQuery,
+            GetKeyByRefIdVariables
+          >({
             query: GET_KEY_BY_REF_ID,
             fetchPolicy: "network-only",
             variables: session
@@ -80,19 +90,22 @@ export default function PodDetails({ id }: PodDetailsProps) {
             return;
           }
 
-          const metamodel_response = await client.query<GetMetamodelQuery, GetMetamodelVariables>({
+          const metamodel_response = await client.query<
+            GetMetamodelQuery,
+            GetMetamodelVariables
+          >({
             query: GET_METAMODEL,
             fetchPolicy: "network-only",
             variables: {
               id,
             },
           });
-          
+
           if (!metamodel_response.data) {
             toast.error("Failed to get file metadata");
             return;
           }
-          
+
           const metamodel = metamodel_response.data.getMetamodel;
           const parsed_metadata = JSON.parse(metamodel.metadata);
           if (!parsed_metadata || parsed_metadata.title === undefined) {
@@ -115,12 +128,12 @@ export default function PodDetails({ id }: PodDetailsProps) {
             logger.error("Error while downloading data", error);
             return;
           }
-          
+
           if (!pod.data) {
             toast.error("Failed to get pod data");
             return;
           }
-          
+
           const key = random_key.slice(16);
           const iv = random_key.slice(0, 16);
 
@@ -163,6 +176,9 @@ export default function PodDetails({ id }: PodDetailsProps) {
               break;
             case "image/gif":
               suffix = ".gif";
+              break;
+            case "unknown":
+              suffix = "";
               break;
             default:
               logger.error("Unknown file type", parsed_metadata.type);

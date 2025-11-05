@@ -12,6 +12,7 @@ import SegmentsIntroduction from "@/components/app/dashboard/SegmentsIntroductio
 import PendingActionsBox from "@/components/app/actions/PendingActionsBox";
 import UserScore from "./actions/UserScore";
 import SecuredCounter from "@/components/app/dashboard/SecuredCounter";
+import GuidedActions from "@/components/app/GuidedActions";
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
         </div>
         <div className="p-2">
           <EmailVerificationCheck />
+          {/* <GuidedActions /> */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             <UserScore
               improveScrollLink

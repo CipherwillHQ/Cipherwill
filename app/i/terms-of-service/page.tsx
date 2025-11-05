@@ -30,7 +30,7 @@ export default function TOS() {
         <div className="py-4">Last updated on December 3, 2024</div>
         <div>
           These Terms of Use ("Terms") govern your access to and use of the
-          CipherWill platform and services ("Services"). By accessing or using
+          Cipherwill platform and services ("Services"). By accessing or using
           our Services, you agree to be bound by these Terms. If you do not
           agree to these Terms, please refrain from using our Services.
         </div>
@@ -130,14 +130,14 @@ export default function TOS() {
         <div>
           All intellectual property rights in our Services, including but not
           limited to copyrights, trademarks, and trade secrets, belong to
-          CipherWill or our licensors. You agree not to reproduce, modify,
+          Cipherwill or our licensors. You agree not to reproduce, modify,
           distribute, or create derivative works based on our Services without
           our prior written permission.
         </div>
 
         <h2 className="pt-12 pb-4 font-semibold">5. Limitation of Liability</h2>
         <div>
-          To the maximum extent permitted by applicable law, CipherWill and its
+          To the maximum extent permitted by applicable law, Cipherwill and its
           affiliates, directors, officers, employees, agents, and licensors
           shall not be liable for any indirect, incidental, special,
           consequential, or punitive damages arising out of or in connection
@@ -147,7 +147,7 @@ export default function TOS() {
 
         <h2 className="pt-12 pb-4 font-semibold">6. Indemnification</h2>
         <div>
-          You agree to indemnify and hold CipherWill and its affiliates,
+          You agree to indemnify and hold Cipherwill and its affiliates,
           directors, officers, employees, agents, and licensors harmless from
           any claims, losses, damages, liabilities, costs, and expenses,
           including reasonable attorneys' fees, arising out of or in connection

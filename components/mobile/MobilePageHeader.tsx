@@ -11,7 +11,7 @@ export default function MobilePageHeader({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="sm:hidden sticky top-0 z-10 p-4 w-screen bg-secondary border-b border-default">
+    <div className="sm:hidden sticky top-0 z-10 p-4 w-screen bg-secondary border-b border-default mb-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <Link href={path} className="pr-2">

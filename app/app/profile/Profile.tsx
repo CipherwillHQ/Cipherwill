@@ -102,7 +102,7 @@ export default function Profile() {
       {<DateOfBirth dob={dob} setDob={setDob} />}
       <Gender gender={gender} setGender={setGender} />
       <Country country={country} setCountry={setCountry} />
-      <div className="pt-2 text-right">
+      <div className="pt-4 text-right">
         <SimpleButton
           onClick={() => {
             if (!ProfileData?.me) return;

@@ -40,14 +40,14 @@ const menu: (Divider | Segment)[] = [
     preference_key: null,
     path: "/app/segments",
   },
-  // {
-  //   icon: <RiNotificationBadgeLine />,
-  //   title: "Notifications",
-  //   description: "Notification management",
-  //   plan_required: "free",
-  //   preference_key: null,
-  //   path: "/app/notifications",
-  // },
+  {
+    icon: <RiNotificationBadgeLine />,
+    title: "Notifications",
+    description: "Notification management",
+    plan_required: "free",
+    preference_key: null,
+    path: "/app/notifications",
+  },
   // {
   //   icon: <IoIosAnalytics />,
   //   title: "Usage",

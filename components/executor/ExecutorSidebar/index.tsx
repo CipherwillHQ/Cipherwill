@@ -5,6 +5,7 @@ import getExecutorMenu from "./getExecutorMenu";
 import DonorName from "./DonorName";
 import SidebarLogo from "../../app/Sidebar/SidebarLogo";
 import SwitchThemeButton from "@/components/app/Sidebar/SwitchThemeButton";
+import { TbHomeShield } from "react-icons/tb";
 
 export default function ExecutorSidebar() {
   const pathname = usePathname();
@@ -16,51 +17,56 @@ export default function ExecutorSidebar() {
         <SidebarLogo />
 
         <div className="w-full flex flex-1 flex-col overflow-auto">
-          {pathname && exeutorId && getExecutorMenu(pathname).map((item, index) => {
-            if (item.divider) {
-              return (
-                <div
-                  key={`divider-${index}`}
-                  className="border-t border-gray-300 mx-1 my-2"
-                />
-              );
-            }
-            if (item.donor) {
-              return (
-                <div
-                  key={`donor-${index}`}
-                  className="p-1 text-xs sm:text-base text-center"
-                >
-                  Data of <DonorName access_id={exeutorId} />
-                </div>
-              );
-            }
-            return (
-              <Link
-                key={item.path}
-                href={item.path}
-                data-cy={`executor-sidebar-${item.title}`}
-              >
-                <div
-                  className={`flex items-center m-1 p-2 rounded-md justify-center sm:justify-start  
-                 ${
-                   item.path === pathname
-                     ? "font-semibold"
-                     : "hover:underline"
-                 }
-             `}
-                >
-                  <div className={`sm:mr-2 text-2xl sm:text-xl`}>
-                    {item.icon}
+          {pathname &&
+            exeutorId &&
+            getExecutorMenu(pathname).map((item, index) => {
+              if (item.divider) {
+                return (
+                  <div
+                    key={`divider-${index}`}
+                    className="border-t border-gray-300 mx-1 my-2"
+                  />
+                );
+              }
+              if (item.donor) {
+                return (
+                  <div
+                    key={`donor-${index}`}
+                    className="p-1 text-xs sm:text-base text-center"
+                  >
+                    Data of <DonorName access_id={exeutorId} />
                   </div>
-                  <div className={`text-sm hidden sm:flex`}>{item.title}</div>
-                </div>
-              </Link>
-            );
-          })}
+                );
+              }
+              return (
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  data-cy={`executor-sidebar-${item.title}`}
+                >
+                  <div
+                    className={`flex items-center m-1 p-2 rounded-md justify-center sm:justify-start ${item.path === pathname ? "font-semibold" : "hover:underline"}`}
+                  >
+                    <div className={`sm:mr-2 text-2xl sm:text-xl`}>
+                      {item.icon}
+                    </div>
+                    <div className={`text-sm hidden sm:flex`}>{item.title}</div>
+                  </div>
+                </Link>
+              );
+            })}
         </div>
+        <Link href={`/app`}>
+          <div
+            className={`flex items-center m-1 p-2 rounded-md justify-center sm:justify-start`}
+          >
+            <div className={`sm:mr-2 text-2xl sm:text-xl`}>
+              <TbHomeShield />
+            </div>
+            <div className={`text-sm hidden sm:flex`}>Go to Cipherwill App</div>
+          </div>
+        </Link>
       </div>
-
       <SwitchThemeButton />
     </div>
   );

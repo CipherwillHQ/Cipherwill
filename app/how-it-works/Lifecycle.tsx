@@ -184,7 +184,7 @@ export default function Lifecycle() {
                 your data safe.
               </li>
               <li>
-                In CipherWill, your data is first encrypted with a "time capsule
+                In Cipherwill, your data is first encrypted with a "time capsule
                 key" and then gets another layer of protection using the
                 beneficiary&apos;s public key. This setup means you need both
                 keys to decrypt your data.
@@ -248,7 +248,7 @@ export default function Lifecycle() {
               </li>
               <li>
                 If you don&apos;t respond to any of these reminders, then
-                CipherWill will proceed to execute the will as scheduled.
+                Cipherwill will proceed to execute the will as scheduled.
               </li>
             </ul>
 
