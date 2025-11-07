@@ -12,14 +12,15 @@ import GET_METAMODEL from "@/graphql/ops/app/metamodel/queries/GET_METAMODEL";
 import GET_GRANTED_METAMODEL from "@/graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODEL";
 import GET_BENEFICIARY_ENCRYPTION_KEY from "@/graphql/ops/app/executor/access/queries/GET_BENEFICIARY_ENCRYPTION_KEY";
 import get_pod_decryption_key from "@/common/executor/data/get_pod_decryption_key";
-import type { 
+import type {
   GetKeyByRefIdQuery,
   GetKeyByRefIdVariables,
   GetBeneficiaryEncryptionKeyQuery,
   GetBeneficiaryEncryptionKeyVariables,
   GetGrantedMetamodelQuery,
-  GetGrantedMetamodelVariables
+  GetGrantedMetamodelVariables,
 } from "@/types/interfaces/metamodel";
+import GET_GRANTED_STORAGE_OBJECT_DOWNLOAD_URL from "@/graphql/ops/app/executor/access/queries/GET_GRANTED_STORAGE_OBJECT_DOWNLOAD_URL";
 
 export default function DownloadGrantedObject({
   access_id,
@@ -35,7 +36,10 @@ export default function DownloadGrantedObject({
       onClick={async () => {
         toast.success("Downloading object... Please wait");
         // download decryption key
-        const encryption_key = await client.query<GetKeyByRefIdQuery, GetKeyByRefIdVariables>({
+        const encryption_key = await client.query<
+          GetKeyByRefIdQuery,
+          GetKeyByRefIdVariables
+        >({
           query: GET_KEY_BY_REF_ID,
           fetchPolicy: "network-only",
           variables: session
@@ -50,28 +54,31 @@ export default function DownloadGrantedObject({
         });
 
         // get time capsule private key to decrypt data
-        const { data: beneficairy_encryption_key } = await client.query<GetBeneficiaryEncryptionKeyQuery, GetBeneficiaryEncryptionKeyVariables>({
+        const { data: beneficairy_encryption_key } = await client.query<
+          GetBeneficiaryEncryptionKeyQuery,
+          GetBeneficiaryEncryptionKeyVariables
+        >({
           query: GET_BENEFICIARY_ENCRYPTION_KEY,
           variables: {
             access_id,
           },
         });
-        
+
         if (!beneficairy_encryption_key?.getBeneficiaryEncryptionKey) {
           toast.error("You do not have access key to decrypt this data");
           return;
         }
-        
+
         if (!encryption_key.data?.getKeyByRefId?.key) {
           toast.error("Unable to retrieve encryption key");
           return;
         }
-        
+
         const pod_decryption_key = await get_pod_decryption_key({
           encrypted_key: encryption_key.data.getKeyByRefId.key,
           time_capsule_private_key:
             beneficairy_encryption_key.getBeneficiaryEncryptionKey,
-          current_session_private_key: session?session.privateKey:null,
+          current_session_private_key: session ? session.privateKey : null,
         });
 
         if (!pod_decryption_key || pod_decryption_key.length < 16) {
@@ -79,7 +86,10 @@ export default function DownloadGrantedObject({
           return;
         }
 
-        const metamodel_response = await client.query<GetGrantedMetamodelQuery, GetGrantedMetamodelVariables>({
+        const metamodel_response = await client.query<
+          GetGrantedMetamodelQuery,
+          GetGrantedMetamodelVariables
+        >({
           query: GET_GRANTED_METAMODEL,
           fetchPolicy: "network-only",
           variables: {
@@ -87,12 +97,12 @@ export default function DownloadGrantedObject({
             model_id: ref_id,
           },
         });
-        
+
         if (!metamodel_response.data?.getGrantedMetamodel) {
           toast.error("Unable to retrieve metamodel data");
           return;
         }
-        
+
         const metamodel = metamodel_response.data.getGrantedMetamodel;
         const parsed_metadata = JSON.parse(metamodel.metadata);
         if (!parsed_metadata || parsed_metadata.title === undefined) {
@@ -101,20 +111,51 @@ export default function DownloadGrantedObject({
         }
 
         // start encrypted object download
-        let pod;
-        try {
-          pod = await client.query({
-            query: GET_POD,
+        // let pod;
+        // try {
+        //   pod = await client.query({
+        //     query: GET_POD,
+        //     fetchPolicy: "network-only",
+        //     variables: {
+        //       ref_id: ref_id,
+        //     },
+        //   });
+        // } catch (error) {
+        //   toast.error("Error while downloading data");
+        //   logger.error("Error while downloading data", error);
+        //   return;
+        // }
+
+        const download_pod_data_via_presigned_url = async ({
+          ref_id,
+          access_id,
+        }: {
+          ref_id: string;
+          access_id: string;
+        }) => {
+          const res = await client.query({
+            query: GET_GRANTED_STORAGE_OBJECT_DOWNLOAD_URL,
             fetchPolicy: "network-only",
-            variables: {
-              ref_id: ref_id,
-            },
+            variables: { access_id, ref_id },
           });
-        } catch (error) {
-          toast.error("Error while downloading data");
-          logger.error("Error while downloading data", error);
-          return;
-        }
+          const download_url = (res.data as any).getGrantedStorageObjectDownloadUrl;
+          const response = await fetch(download_url);
+          if (!response.ok) {
+            throw new Error(
+              `Failed to download file: ${response.status} ${response.statusText}`
+            );
+          }
+          const blob = await response.blob();
+          const arrayBuffer = await blob.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
+          return buffer.toString("base64");
+        };
+
+        const pod_data = await download_pod_data_via_presigned_url({
+          ref_id: ref_id,
+          access_id: access_id,
+        });
+
         const key = pod_decryption_key.slice(16);
         const iv = pod_decryption_key.slice(0, 16);
 
@@ -122,7 +163,7 @@ export default function DownloadGrantedObject({
 
         const encryptedBlob = new Blob(
           [
-            Buffer.from(pod.data.getPod.content, "base64"), // binary
+            Buffer.from(pod_data, "base64"), // binary
           ],
           {
             type: "data/encrypted",
