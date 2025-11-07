@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import crypto from "crypto";
 import SwapFile from "./SwapFile";
 import GET_METAMODEL from "@/graphql/ops/app/metamodel/queries/GET_METAMODEL";
+
 import {
   GetKeyByRefIdQuery,
   GetKeyByRefIdVariables,
@@ -19,6 +20,7 @@ import {
   GetMetamodelQuery,
   GetMetamodelVariables,
 } from "@/types/interfaces";
+import GET_POD_DOWNLOAD_URL from "@/graphql/ops/app/pod/queries/GET_POD_DOWNLOAD_URL";
 
 interface PodDetailsProps {
   id: string;
@@ -114,25 +116,46 @@ export default function PodDetails({ id }: PodDetailsProps) {
             return;
           }
 
-          let pod;
-          try {
-            pod = await client.query<GetPodQuery, GetPodVariables>({
-              query: GET_POD,
-              fetchPolicy: "network-only",
-              variables: {
-                ref_id: id,
-              },
-            });
-          } catch (error) {
-            toast.error("Error while downloading data");
-            logger.error("Error while downloading data", error);
-            return;
-          }
+          // let pod;
+          // try {
+          //   pod = await client.query<GetPodQuery, GetPodVariables>({
+          //     query: GET_POD,
+          //     fetchPolicy: "network-only",
+          //     variables: {
+          //       ref_id: id,
+          //     },
+          //   });
+          // } catch (error) {
+          //   toast.error("Error while downloading data");
+          //   logger.error("Error while downloading data", error);
+          //   return;
+          // }
 
-          if (!pod.data) {
-            toast.error("Failed to get pod data");
-            return;
-          }
+          // if (!pod.data) {
+          //   toast.error("Failed to get pod data");
+          //   return;
+          // }
+
+          // const pod_data = pod.data.getPod.content;
+
+          const download_pod_data_via_presigned_url = async ({ ref_id }: { ref_id: string }) => {
+            const res = await client.query({
+              query: GET_POD_DOWNLOAD_URL,
+              fetchPolicy: "network-only",
+              variables: { ref_id },
+            });
+            const download_url = (res.data as any).getPodDownloadUrl;
+            const response = await fetch(download_url);
+            if (!response.ok) {
+              throw new Error(`Failed to download file: ${response.status} ${response.statusText}`);
+            }
+            const blob = await response.blob();
+            const arrayBuffer = await blob.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+            return buffer.toString('base64');
+          };
+
+          const pod_data = await download_pod_data_via_presigned_url({ ref_id: id });
 
           const key = random_key.slice(16);
           const iv = random_key.slice(0, 16);
@@ -141,7 +164,7 @@ export default function PodDetails({ id }: PodDetailsProps) {
 
           const encryptedBlob = new Blob(
             [
-              Buffer.from(pod.data.getPod.content, "base64"), // binary
+              Buffer.from(pod_data, "base64"), // binary
             ],
             {
               type: "data/encrypted",
@@ -181,7 +204,8 @@ export default function PodDetails({ id }: PodDetailsProps) {
               suffix = "";
               break;
             default:
-              logger.error("Unknown file type", parsed_metadata.type);
+              // logger.error("Unknown file type", parsed_metadata.type);
+              suffix = "";
               break;
           }
 
@@ -203,7 +227,8 @@ export default function PodDetails({ id }: PodDetailsProps) {
         Download
       </SimpleButton>
 
-      <SwapFile id={id} />
+      {/* TODO: Degraded functionality */}
+      {/* <SwapFile id={id} /> */}
     </div>
   );
 }
