@@ -26,7 +26,8 @@ export default function DeleteButton({ id, folder_id }: DeleteButtonProps) {
   });
   return (
     <ConfirmationButton
-      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-sm w-full mt-2"
+    className="text-red-700 dark:text-red-400 font-semibold"
+    
       onConfirm={async () => {
         await deleteFile({
           variables: {

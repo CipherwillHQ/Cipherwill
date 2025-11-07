@@ -8,25 +8,54 @@ import getTimeAgo from "../../../../../common/time/getTimeAgo";
 import ShareMetapod from "@/components/app/data/ShareMetapod";
 import DesktopAndMobilePageHeader from "@/components/app/common/page/DesktopAndMobilePageHeader";
 import DeleteButton from "./DeleteButton";
-import { GetMetamodelQuery, GetMetamodelVariables, UpdateMetamodelMutation, UpdateMetamodelVariables, MetamodelMetadata } from "../../../../../types/interfaces";
-import { parseMetamodelMetadata, stringifyMetamodelMetadata } from "../../../../../common/metamodel/utils";
+import {
+  GetMetamodelQuery,
+  GetMetamodelVariables,
+  UpdateMetamodelMutation,
+  UpdateMetamodelVariables,
+  MetamodelMetadata,
+} from "../../../../../types/interfaces";
+import {
+  parseMetamodelMetadata,
+  stringifyMetamodelMetadata,
+} from "../../../../../common/metamodel/utils";
 
 interface MetaDetailsProps {
   id: string;
 }
 
 export default function MetaDetails({ id }: MetaDetailsProps) {
-  const { data, loading, error, refetch } = useQuery<GetMetamodelQuery, GetMetamodelVariables>(GET_METAMODEL, {
+  const { data, loading, error } = useQuery<
+    GetMetamodelQuery,
+    GetMetamodelVariables
+  >(GET_METAMODEL, {
     variables: {
       id,
     },
   });
 
-  const [update_metamodel] = useMutation<UpdateMetamodelMutation, UpdateMetamodelVariables>(UPDATE_METAMODEL);
+  const [update_metamodel] = useMutation<
+    UpdateMetamodelMutation,
+    UpdateMetamodelVariables
+  >(UPDATE_METAMODEL, {
+    refetchQueries: [
+      {
+        query: GET_METAMODEL,
+        variables: {
+          id,
+        },
+      },
+    ],
+  });
 
   // Handle model not found error
-  if (error && 'errors' in error && error.errors && error.errors[0] && 
-      error.errors[0].extensions?.code === "MODEL_NOT_FOUND") {
+  if (
+    error &&
+    "errors" in error &&
+    error.errors &&
+    error.errors[0] &&
+    error.errors[0].extensions?.code === "MODEL_NOT_FOUND"
+  ) {
     window.location.href = "/app/data/storage";
   }
 
@@ -35,7 +64,9 @@ export default function MetaDetails({ id }: MetaDetailsProps) {
   if (!data) return <div>No data found</div>;
 
   const file_details = data.getMetamodel;
-  const parsedData = parseMetamodelMetadata<MetamodelMetadata>(data.getMetamodel);
+  const parsedData = parseMetamodelMetadata<MetamodelMetadata>(
+    data.getMetamodel
+  );
 
   return (
     <div className="flex flex-col gap-2">
@@ -73,10 +104,8 @@ export default function MetaDetails({ id }: MetaDetailsProps) {
                       }),
                     },
                   },
-                }).then(() => {
-                  refetch();
                 }).catch((error) => {
-                  console.error('Failed to update file:', error);
+                  console.error("Failed to update file:", error);
                 });
               }
             }}
@@ -109,12 +138,14 @@ export default function MetaDetails({ id }: MetaDetailsProps) {
           </div>
         </div>
       </div>
-      <div className="text-sm px-4">type: {parsedData.type}</div>
-      <div className="px-4">
-        <DeleteButton
-          id={data.getMetamodel.id}
-          folder_id={data.getMetamodel.folder_id || "root"}
-        />
+      <div className="flex items-center justify-between gap-2">
+        <div className="text-sm px-4">type: {parsedData.type}</div>
+        <div className="px-4">
+          <DeleteButton
+            id={data.getMetamodel.id}
+            folder_id={data.getMetamodel.folder_id || "root"}
+          />
+        </div>
       </div>
     </div>
   );

@@ -5,6 +5,62 @@ import crypto from "crypto";
 import logger from "../debug/logger";
 import toast from "react-hot-toast";
 import UPDATE_POD from "@/graphql/ops/app/pod/mutations/UPDATE_POD";
+import GET_PRESIGNED_POD_UPLOAD_URL from "@/graphql/ops/app/pod/mutations/GET_PRESIGNED_POD_UPLOAD_URL";
+import COMPLETED_POD_UPLOAD from "@/graphql/ops/app/pod/mutations/COMPLETED_POD_UPLOAD";
+
+async function get_presigned_url(
+  client: ApolloClient,
+  data_model_version: string,
+  ref_id: string,
+  mime_type: string,
+  allowed_space: number
+): Promise<string> {
+  const res = await client.mutate({
+    mutation: GET_PRESIGNED_POD_UPLOAD_URL,
+    variables: {
+      data_model_version,
+      ref_id,
+      mime_type,
+      allowed_space,
+    },
+  });
+  return (res.data as any).getPresignedPodUploadUrl;
+}
+
+async function upload_via_presigned_url(
+  url: string,
+  file: Blob
+): Promise<void> {
+  const response = await fetch(url, {
+    method: "PUT",
+    body: file,
+    headers: {
+      "Content-Type": file.type,
+    },
+  });
+  if (!response.ok) {
+    throw new Error(
+      `Failed to upload file: ${response.status} ${response.statusText}`
+    );
+  }
+}
+
+async function inform_backend_of_upload(
+  client: ApolloClient,
+  ref_id: string
+): Promise<void> {
+  const res = await client.mutate({
+    mutation: COMPLETED_POD_UPLOAD,
+    variables: {
+      ref_id,
+    },
+  });
+  if (!(res.data as any).completedPodUpload) {
+    toast.error("Error while informing backend of completed upload");
+    logger.error("Error while informing backend of completed upload");
+    return;
+  }
+}
 
 async function create_encrypted_file({
   encryption_keys,
@@ -57,32 +113,66 @@ export default async function encrypt_and_upload_pod({
 }) {
   for await (const item of data_items) {
     // encrypt data with random key
-    const encrypted_file = await create_encrypted_file({ encryption_keys, item });
+    const encrypted_file = await create_encrypted_file({
+      encryption_keys,
+      item,
+    });
     if (encrypted_file === undefined) {
       logger.error(`Error while encrypting file`);
       toast.error("Error while encrypting file");
       return;
     }
-    // upload encrypted pod
-    await client
-      .mutate({
-        mutation: UPDATE_POD,
-        variables: {
-          data_model_version: item.data_model_version,
-          ref_id: item.ref_id,
-          file: encrypted_file,
-        },
-        context: {
-          headers: {
-            "apollo-require-preflight": true,
+    const mime_type = encrypted_file.type;
+    if (mime_type === "text/plain") {
+      // use backend upload
+
+      // upload encrypted pod
+      await client
+        .mutate({
+          mutation: UPDATE_POD,
+          variables: {
+            data_model_version: item.data_model_version,
+            ref_id: item.ref_id,
+            file: encrypted_file,
           },
-        },
-      })
-      .then((res) => {
-        logger.info(`Encrypted file uploaded for ${item.ref_id}`);
-      })
-      .catch((error) => {
-        logger.error(`Error while uploading encrypted file`, error);
-      });
+          context: {
+            headers: {
+              "apollo-require-preflight": true,
+            },
+          },
+        })
+        .then((res) => {
+          logger.info(`Encrypted file uploaded for ${item.ref_id}`);
+        })
+        .catch((error) => {
+          logger.error(`Error while uploading encrypted file`, error);
+        });
+    } else {
+      // use direct r2 upload
+
+      const allowed_space = encrypted_file.size;
+      // upload directly to r2 using pre-signed url and update details on backend
+      const upload_url = await get_presigned_url(
+        client,
+        item.data_model_version,
+        item.ref_id,
+        mime_type,
+        allowed_space
+      );
+      try {
+        await upload_via_presigned_url(upload_url, encrypted_file);
+        logger.info(
+          `Uploaded encrypted file via presigned url for ${item.ref_id}`
+        );
+        await inform_backend_of_upload(client, item.ref_id);
+      } catch (error) {
+        logger.error(
+          `Error while uploading encrypted file via presigned url`,
+          error
+        );
+        toast.error("Error while uploading encrypted file");
+        return;
+      }
+    }
   }
 }

@@ -6,7 +6,7 @@ export default async function FileViewer({ params }) {
   return (
     <div className="w-full">
       <MetaDetails id={id} />
-      <div className="px-4">
+      <div className="p-4">
         <PodDetails id={id} />
       </div>
     </div>
