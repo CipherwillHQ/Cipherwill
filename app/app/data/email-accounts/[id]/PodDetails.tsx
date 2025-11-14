@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { usePod } from "@/contexts/PodHelper";
-import DeleteButton from "./DeleteButton";
 import { EMAIL_ACCOUNT_TYPE } from "@/types/pods/EMAIL_ACCOUNT";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { TbTrash } from "react-icons/tb";
@@ -42,7 +41,7 @@ export default function PodDetails({ id }) {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 px-4 w-full max-w-md">
       {/* <pre>{JSON.stringify(data, null, 2)}</pre>
       <hr /> */}
       <input
@@ -303,7 +302,6 @@ export default function PodDetails({ id }) {
           }
           Save
         </button>
-        <DeleteButton id={id} />
       </div>
     </div>
   );

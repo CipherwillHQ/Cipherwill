@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { usePod } from "@/contexts/PodHelper";
-import DeleteButton from "./DeleteButton";
 import LoadingIndicator from "@/components/common/LoadingIndicator";
 import { DEVICE_LOCK } from "@/types/pods/DEVICE_LOCK";
 
@@ -30,7 +29,7 @@ export default function PodDetails({ id }) {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 px-4 w-full max-w-md">
       {/* <pre>{JSON.stringify(data, null, 2)}</pre>
       <hr /> */}
       <input
@@ -84,7 +83,6 @@ export default function PodDetails({ id }) {
           {is_updating && <LoadingIndicator />}
           Save
         </button>
-        <DeleteButton id={id} />
       </div>
     </div>
   );

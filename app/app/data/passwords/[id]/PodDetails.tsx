@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { usePod } from "@/contexts/PodHelper";
-import DeleteButton from "./DeleteButton";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { TbTrash } from "react-icons/tb";
 import LoadingIndicator from "@/components/common/LoadingIndicator";
@@ -37,7 +36,7 @@ export default function PodDetails({ id }) {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 px-4 w-full max-w-md">
       {/* <pre>{JSON.stringify(data, null, 2)}</pre>
       <hr /> */}
       <input
@@ -85,13 +84,13 @@ export default function PodDetails({ id }) {
           });
         }}
       />{" "}
-      <div className="font-semibold">URIs</div>
+      <div className="font-semibold">Websites</div>
       <div className="flex items-center gap-2">
         <input
           id="password-uri"
           className="bg-secondary border border-default rounded-md p-2 w-full"
           type="text"
-          placeholder="URI (e.g., https://example.com)"
+          placeholder="Website (e.g., https://example.com)"
         />
         <button
           className="bg-secondary border border-default rounded-md p-2"
@@ -120,7 +119,7 @@ export default function PodDetails({ id }) {
       </div>{" "}
       <div className="flex gap-2 flex-wrap">
         {(data.uri === undefined || data.uri?.length === 0) && (
-          <div className="text-sm font-semibold text-neutral-500">No URIs</div>
+          <div className="text-sm font-semibold text-neutral-500">No Websites</div>
         )}
         {data.uri?.map((uri, index) => (
           <div
@@ -168,7 +167,6 @@ export default function PodDetails({ id }) {
           {is_updating && <LoadingIndicator />}
           Save
         </button>
-        <DeleteButton id={id} />
       </div>
     </div>
   );
