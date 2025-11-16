@@ -1,14 +1,8 @@
 "use client";
 import { stringifyMetamodelMetadata } from "@/common/metamodel";
-import getTimeAgo from "@/common/time/getTimeAgo";
-import ConfirmationButton from "@/components/common/ConfirmationButton";
-import DELETE_METAMODEL from "@/graphql/ops/app/metamodel/mutations/DELETE_METAMODEL";
 import UPDATE_METAMODEL from "@/graphql/ops/app/metamodel/mutations/UPDATE_METAMODEL";
 import GET_METAMODEL from "@/graphql/ops/app/metamodel/queries/GET_METAMODEL";
-import GET_METAMODELS from "@/graphql/ops/app/metamodel/queries/GET_METAMODELS";
 import {
-  DeleteMetamodelMutation,
-  DeleteMetamodelVariables,
   GetMetamodelQuery,
   GetMetamodelVariables,
   POD_TYPE,
@@ -16,9 +10,8 @@ import {
   UpdateMetamodelVariables,
 } from "@/types";
 import { useMutation, useQuery } from "@apollo/client/react";
-import { useRouter } from "next/navigation";
-import { FiMoreHorizontal } from "react-icons/fi";
-import Popup from "reactjs-popup";
+import Options from "./Options";
+import BeneficiaryChoice from "./BeneficiaryChoice";
 
 export default function DataHeader({
   metamode_id,
@@ -29,8 +22,6 @@ export default function DataHeader({
   metamodel_type: POD_TYPE;
   saveStatus?: "SAVED" | "NOT_SAVED" | "ERROR" | "LOADING";
 }) {
-  const router = useRouter();
-
   const { data, loading, error, refetch } = useQuery<
     GetMetamodelQuery,
     GetMetamodelVariables
@@ -44,20 +35,6 @@ export default function DataHeader({
     UpdateMetamodelMutation,
     UpdateMetamodelVariables
   >(UPDATE_METAMODEL);
-
-  const [deleteMetamodel] = useMutation<
-    DeleteMetamodelMutation,
-    DeleteMetamodelVariables
-  >(DELETE_METAMODEL, {
-    refetchQueries: [
-      {
-        query: GET_METAMODELS,
-        variables: {
-          type: metamodel_type.toUpperCase(), // ex. convert defi_staking to DEFI_STAKING
-        },
-      },
-    ],
-  });
 
   const model = data?.getMetamodel;
   if (!model) {
@@ -124,73 +101,17 @@ export default function DataHeader({
           </div>
         )}
       </div>
-      <Popup
-        trigger={
-          <button className="px-2">
-            <FiMoreHorizontal size={22} />
-          </button>
-        }
-        position="bottom right"
+      <div
+      className="flex items-center justify-between gap-2"
       >
-        <div className="bg-secondary text-black dark:text-white rounded-sm">
-          <button
-            className="p-2 w-full text-left"
-            onClick={() => {
-              document.getElementById("name-box")?.focus();
-              close();
-            }}
-          >
-            Rename
-          </button>
-
-          <ConfirmationButton
-            className="p-2 w-full text-left"
-            onConfirm={async () => {
-              await deleteMetamodel({
-                variables: {
-                  id: metamode_id,
-                },
-              });
-              router.replace(`/app/data/${get_path_from_type(metamodel_type)}`);
-            }}
-          >
-            Delete permanently
-          </ConfirmationButton>
-          <div className="p-2">
-            <div className="text-xs">
-              Created at: {getTimeAgo(parseInt(model?.created_at))}
-            </div>
-            <div className="text-xs">
-              Updated at: {getTimeAgo(parseInt(model?.updated_at))}
-            </div>
-          </div>
-        </div>
-      </Popup>
+        <BeneficiaryChoice />
+      <Options
+        metamode_id={metamode_id}
+        metamodel_type={metamodel_type}
+        created_at={model?.created_at}
+        updated_at={model?.updated_at}
+      />
+      </div>
     </div>
   );
-}
-
-function get_path_from_type(type: POD_TYPE): string {
-  switch (type) {
-    case "note":
-      return "notes";
-    case "email_account":
-      return "email-accounts";
-    case "bank_account":
-      return "bank-accounts";
-    case "defi_staking":
-      return "defi-staking";
-    case "device_lock":
-      return "device-locks";
-    case "payment_card":
-      return "payment-cards";
-    case "seed_phrase":
-      return "seed-phrases";
-    case "password":
-      return "passwords";
-    case "storage":
-      return "storage";
-    default:
-      return "";
-  }
 }
