@@ -9,13 +9,29 @@ import { useApolloClient, useMutation } from "@apollo/client/react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import Popup from "reactjs-popup";
-import { CreateMetamodelMutation, CreateMetamodelVariables, GetMetamodelsQuery, GetMetamodelsVariables } from "@/types/interfaces/metamodel";
+import {
+  CreateMetamodelMutation,
+  CreateMetamodelVariables
+} from "@/types/interfaces/metamodel";
+
+const known_file_types = [
+  "text/plain",
+  "image/png",
+  "image/jpg",
+  "image/jpeg",
+  "image/gif",
+  "video/mp4",
+  "application/pdf",
+];
 
 export default function AddFile({ folder_id }: { folder_id?: string }) {
   const [isUploading, setIsUploading] = useState(false);
   const client = useApolloClient();
   const { session } = useSession();
-  const [createFileModel] = useMutation<CreateMetamodelMutation, CreateMetamodelVariables>(CREATE_METAMODEL, {
+  const [createFileModel] = useMutation<
+    CreateMetamodelMutation,
+    CreateMetamodelVariables
+  >(CREATE_METAMODEL, {
     variables: {
       type: "FILE",
       folder_id,
@@ -44,10 +60,13 @@ export default function AddFile({ folder_id }: { folder_id?: string }) {
         return (
           <div className="flex flex-col gap-2 bg-white dark:bg-neutral-800 text-black dark:text-white p-4">
             Upload file
-            <input type="file"
-            placeholder="Choose file"
-            accept="*"
-            id="file-upload" className="border p-2 my-4 hover:cursor-pointer"/>
+            <input
+              type="file"
+              placeholder="Choose file"
+              accept="*"
+              id="file-upload"
+              className="border p-2 my-4 hover:cursor-pointer"
+            />
             <SimpleButton
               onClick={async () => {
                 if (isUploading) {
@@ -70,7 +89,7 @@ export default function AddFile({ folder_id }: { folder_id?: string }) {
                     type: "FILE",
                     metadata: JSON.stringify({
                       title: file.name || "Untitled file",
-                      type: file.type || "unknown",
+                      type: known_file_types.includes(file.type) ? file.type : "unknown",
                     }),
                   },
                 }).catch((error) => {
