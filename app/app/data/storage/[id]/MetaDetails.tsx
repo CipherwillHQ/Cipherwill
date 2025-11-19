@@ -121,6 +121,10 @@ export default function MetaDetails({ id }: MetaDetailsProps) {
           </div>
         </div>
 
+        <div>
+          File type : {parsedData.file_ext}
+        </div>
+        
         <div className="flex items-center gap-2">
           <button
             onClick={() => {
