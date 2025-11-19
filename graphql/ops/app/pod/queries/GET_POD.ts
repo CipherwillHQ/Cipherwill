@@ -8,6 +8,7 @@ const GET_POD = gql`
       mime_type
       encoding
       content
+      size
       created_at
       updated_at
     }

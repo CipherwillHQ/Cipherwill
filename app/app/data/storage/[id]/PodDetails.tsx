@@ -24,6 +24,7 @@ import {
 } from "@/types/interfaces";
 import GET_POD_DOWNLOAD_URL from "@/graphql/ops/app/pod/queries/GET_POD_DOWNLOAD_URL";
 import { useQuery } from "@apollo/client/react";
+import { bytesToReadable } from "@/common/storage/bytes_to_redable";
 
 interface PodDetailsProps {
   id: string;
@@ -41,7 +42,14 @@ export default function PodDetails({ id }: PodDetailsProps) {
     variables: { id },
   });
 
-  if (metamodelLoading) {
+  const { data: podData, loading: podLoading } = useQuery<
+    GetPodQuery,
+    GetPodVariables
+  >(GET_POD, {
+    variables: { ref_id: id },
+  });
+
+  if (metamodelLoading || podLoading) {
     return (
       <div className="bg-secondary border border-default rounded-lg p-6">
         <div className="animate-pulse">
@@ -52,7 +60,7 @@ export default function PodDetails({ id }: PodDetailsProps) {
     );
   }
 
-  if (!metamodelData?.getMetamodel) {
+  if (!metamodelData?.getMetamodel || !podData?.getPod) {
     return (
       <div className="bg-secondary border border-default rounded-lg p-6">
         <div className="text-red-500">Failed to load file details</div>
@@ -61,6 +69,7 @@ export default function PodDetails({ id }: PodDetailsProps) {
   }
 
   const parsedMetadata = JSON.parse(metamodelData.getMetamodel.metadata);
+  const parsedPod = podData.getPod;
 
   const getFileIcon = (type: string) => {
     if (type.startsWith("image/")) return "🖼️";
@@ -85,6 +94,8 @@ export default function PodDetails({ id }: PodDetailsProps) {
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
             <TbFile size={16} />
             <span>{getFileTypeDisplay(parsedMetadata.type)}</span>
+            <span>•</span>
+            File size is {bytesToReadable(parseInt(parsedPod.size || "0"))}
             <span>•</span>
             <TbShieldCheck size={16} className="text-primary" />
             <span>Encrypted & Secure</span>

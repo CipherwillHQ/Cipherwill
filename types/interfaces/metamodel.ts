@@ -106,6 +106,7 @@ export interface Pod {
   mime_type: string;
   encoding: string;
   content: string;
+  size: string;
   created_at: string;
   updated_at: string;
 }
