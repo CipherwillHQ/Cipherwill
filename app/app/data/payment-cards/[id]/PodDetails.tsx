@@ -1,9 +1,6 @@
 "use client";
 import { useState } from "react";
 import { usePod } from "@/contexts/PodHelper";
-import DeleteButton from "./DeleteButton";
-import { BsEye, BsEyeSlash } from "react-icons/bs";
-import { TbTrash } from "react-icons/tb";
 import LoadingIndicator from "@/components/common/LoadingIndicator";
 import { PAYMENT_CARD_TYPE } from "@/types/pods/PAYMENT_CARD";
 
@@ -34,13 +31,11 @@ export default function PodDetails({ id }) {
     }
   );
 
-  const [showPassword, setShowPassword] = useState(false);
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 px-4 w-full max-w-md">
       {/* <pre>{JSON.stringify(data, null, 2)}</pre>
       <hr /> */}
       <input
@@ -157,7 +152,6 @@ export default function PodDetails({ id }) {
           {is_updating && <LoadingIndicator />}
           Save
         </button>
-        <DeleteButton id={id} />
       </div>
     </div>
   );

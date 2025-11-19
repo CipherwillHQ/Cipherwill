@@ -1,6 +1,6 @@
 import MobilePageHeader from "@/components/mobile/MobilePageHeader";
-import MetaDetails from "./MetaDetails";
 import PodDetails from "./PodDetails";
+import DataHeader from "@/components/app/data/DataHeader";
 
 export default async function PasswordViewer({ params }) {
   const { id } = await params;
@@ -8,12 +8,8 @@ export default async function PasswordViewer({ params }) {
   return (
     <div className="w-full">
       <MobilePageHeader path="/app/data/passwords" />
-      <div className="px-4 w-full">
-        <MetaDetails id={id} />
-        <div className="w-full max-w-md mt-4">
-          <PodDetails id={id} />
-        </div>
-      </div>
+      <DataHeader metamode_id={id} metamodel_type="password" />
+      <PodDetails id={id} />
     </div>
   );
 }

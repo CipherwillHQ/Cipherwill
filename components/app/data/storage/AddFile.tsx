@@ -90,6 +90,7 @@ export default function AddFile({ folder_id }: { folder_id?: string }) {
                     metadata: JSON.stringify({
                       title: file.name || "Untitled file",
                       type: known_file_types.includes(file.type) ? file.type : "unknown",
+                      file_ext: file.name.split('.').pop() || '',
                     }),
                   },
                 }).catch((error) => {

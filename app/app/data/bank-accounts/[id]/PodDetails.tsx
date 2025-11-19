@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { BANK_ACCOUNT_TYPE } from "../../../../../types/pods/BANK_ACCOUNT";
 import { usePod } from "@/contexts/PodHelper";
-import DeleteButton from "./DeleteButton";
 import LoadingIndicator from "@/components/common/LoadingIndicator";
 
 const BANK_ACCOUNT_SAMPLE: BANK_ACCOUNT_TYPE = {
@@ -29,7 +28,7 @@ export default function PodDetails({ id }) {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 px-4 w-full max-w-md">
       {/* <pre>{JSON.stringify(data, null, 2)}</pre>
       <hr /> */}
       <input
@@ -45,7 +44,7 @@ export default function PodDetails({ id }) {
         }}
       />{" "}
       <input
-      className="bg-secondary border border-default rounded-md p-2"
+        className="bg-secondary border border-default rounded-md p-2"
         type="text"
         placeholder="Bank name"
         value={data.bank_name || ""}
@@ -65,13 +64,11 @@ export default function PodDetails({ id }) {
               account_number: data.account_number,
             });
           }}
-        > {
-          is_updating && 
-          <LoadingIndicator/>
-        }
-        Save
+        >
+          {" "}
+          {is_updating && <LoadingIndicator />}
+          Save
         </button>
-        <DeleteButton id={id} />
       </div>
     </div>
   );

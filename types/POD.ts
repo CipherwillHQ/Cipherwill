@@ -6,4 +6,6 @@ export type POD_TYPE =
   | "password"
   | "seed_phrase"
   | "defi_staking"
-  | "payment_card";
+  | "payment_card"
+  | "storage"
+  ;

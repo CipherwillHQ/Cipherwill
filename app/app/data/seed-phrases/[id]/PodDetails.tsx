@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { usePod } from "@/contexts/PodHelper";
-import DeleteButton from "./DeleteButton";
 import LoadingIndicator from "@/components/common/LoadingIndicator";
 import { SEED_PHRASE_TYPE } from "@/types/pods/SEED_PHRASE";
 import { TbTrash } from "react-icons/tb";
@@ -33,7 +32,7 @@ export default function PodDetails({ id }) {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 px-4 w-full max-w-md">
       {/* <pre>{JSON.stringify(data, null, 2)}</pre>
       <hr /> */}
       <div className="font-semibold">Seed Phrase</div>
@@ -157,7 +156,6 @@ export default function PodDetails({ id }) {
           {is_updating && <LoadingIndicator />}
           Save
         </button>
-        <DeleteButton id={id} />
       </div>
     </div>
   );

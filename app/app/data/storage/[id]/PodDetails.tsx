@@ -24,6 +24,7 @@ import {
 } from "@/types/interfaces";
 import GET_POD_DOWNLOAD_URL from "@/graphql/ops/app/pod/queries/GET_POD_DOWNLOAD_URL";
 import { useQuery } from "@apollo/client/react";
+import { bytesToReadable } from "@/common/storage/bytes_to_redable";
 
 interface PodDetailsProps {
   id: string;
@@ -41,7 +42,14 @@ export default function PodDetails({ id }: PodDetailsProps) {
     variables: { id },
   });
 
-  if (metamodelLoading) {
+  const { data: podData, loading: podLoading } = useQuery<
+    GetPodQuery,
+    GetPodVariables
+  >(GET_POD, {
+    variables: { ref_id: id },
+  });
+
+  if (metamodelLoading || podLoading) {
     return (
       <div className="bg-secondary border border-default rounded-lg p-6">
         <div className="animate-pulse">
@@ -52,7 +60,7 @@ export default function PodDetails({ id }: PodDetailsProps) {
     );
   }
 
-  if (!metamodelData?.getMetamodel) {
+  if (!metamodelData?.getMetamodel || !podData?.getPod) {
     return (
       <div className="bg-secondary border border-default rounded-lg p-6">
         <div className="text-red-500">Failed to load file details</div>
@@ -61,19 +69,20 @@ export default function PodDetails({ id }: PodDetailsProps) {
   }
 
   const parsedMetadata = JSON.parse(metamodelData.getMetamodel.metadata);
+  const parsedPod = podData.getPod;
 
   const getFileIcon = (type: string) => {
-    if (type.startsWith('image/')) return '🖼️';
-    if (type.startsWith('video/')) return '🎥';
-    if (type === 'text/plain') return '📄';
-    return '📁';
+    if (type.startsWith("image/")) return "🖼️";
+    if (type.startsWith("video/")) return "🎥";
+    if (type === "text/plain") return "📄";
+    return "🗎";
   };
 
   const getFileTypeDisplay = (type: string) => {
-    if (type.startsWith('image/')) return 'Image';
-    if (type.startsWith('video/')) return 'Video';
-    if (type === 'text/plain') return 'Text Document';
-    return 'File';
+    if (type.startsWith("image/")) return "Image";
+    if (type.startsWith("video/")) return "Video";
+    if (type === "text/plain") return "Text Document";
+    return "File";
   };
 
   return (
@@ -85,6 +94,8 @@ export default function PodDetails({ id }: PodDetailsProps) {
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
             <TbFile size={16} />
             <span>{getFileTypeDisplay(parsedMetadata.type)}</span>
+            <span>•</span>
+            File size is {bytesToReadable(parseInt(parsedPod.size || "0"))}
             <span>•</span>
             <TbShieldCheck size={16} className="text-primary" />
             <span>Encrypted & Secure</span>
@@ -104,195 +115,215 @@ export default function PodDetails({ id }: PodDetailsProps) {
 
               setIsDownloading(true);
               try {
-              const encryption_key = await client.query<
-                GetKeyByRefIdQuery,
-                GetKeyByRefIdVariables
-              >({
-                query: GET_KEY_BY_REF_ID,
-                fetchPolicy: "network-only",
-                variables: session
-                  ? {
-                      ref_id: id,
-                      publicKey: session.publicKey,
-                    }
-                  : {
-                      ref_id: id,
-                      publicKey: "null",
-                    },
-              });
-              let random_key = "";
+                const encryption_key = await client.query<
+                  GetKeyByRefIdQuery,
+                  GetKeyByRefIdVariables
+                >({
+                  query: GET_KEY_BY_REF_ID,
+                  fetchPolicy: "network-only",
+                  variables: session
+                    ? {
+                        ref_id: id,
+                        publicKey: session.publicKey,
+                      }
+                    : {
+                        ref_id: id,
+                        publicKey: "null",
+                      },
+                });
+                let random_key = "";
 
-              if (
-                encryption_key.data &&
-                encryption_key.data.getKeyByRefId &&
-                encryption_key.data.getKeyByRefId.key
-              ) {
-                if (encryption_key.data.getKeyByRefId.key.startsWith("{")) {
-                  const parsedData = JSON.parse(
-                    encryption_key.data.getKeyByRefId.key
-                  );
-                  if (parsedData.type === "E0") {
-                    // factorless decryption
-                    random_key = await decrypt(
-                      session.privateKey,
-                      Buffer.from(parsedData.ciphertext, "base64"),
-                      Buffer.from(parsedData.ephemPublicKey, "base64"),
-                      Buffer.from(parsedData.iv, "base64"),
-                      Buffer.from(parsedData.mac, "base64")
+                if (
+                  encryption_key.data &&
+                  encryption_key.data.getKeyByRefId &&
+                  encryption_key.data.getKeyByRefId.key
+                ) {
+                  if (encryption_key.data.getKeyByRefId.key.startsWith("{")) {
+                    const parsedData = JSON.parse(
+                      encryption_key.data.getKeyByRefId.key
                     );
-                  } else if (parsedData.type === "E1") {
-                    // factored decryption
-                    random_key = await decrypt(
-                      session.privateKey,
-                      Buffer.from(parsedData.ciphertext, "base64"),
-                      Buffer.from(parsedData.ephemPublicKey, "base64"),
-                      Buffer.from(parsedData.iv, "base64"),
-                      Buffer.from(parsedData.mac, "base64")
-                    );
+                    if (parsedData.type === "E0") {
+                      // factorless decryption
+                      random_key = await decrypt(
+                        session.privateKey,
+                        Buffer.from(parsedData.ciphertext, "base64"),
+                        Buffer.from(parsedData.ephemPublicKey, "base64"),
+                        Buffer.from(parsedData.iv, "base64"),
+                        Buffer.from(parsedData.mac, "base64")
+                      );
+                    } else if (parsedData.type === "E1") {
+                      // factored decryption
+                      random_key = await decrypt(
+                        session.privateKey,
+                        Buffer.from(parsedData.ciphertext, "base64"),
+                        Buffer.from(parsedData.ephemPublicKey, "base64"),
+                        Buffer.from(parsedData.iv, "base64"),
+                        Buffer.from(parsedData.mac, "base64")
+                      );
+                    }
+                  } else {
+                    random_key = encryption_key.data.getKeyByRefId.key;
                   }
                 } else {
-                  random_key = encryption_key.data.getKeyByRefId.key;
+                  // no key found
+                  toast.error("No key found");
+                  throw new Error("No key found");
                 }
-              } else {
-                // no key found
-                toast.error("No key found");
-                throw new Error("No key found");
-              }
-              if (random_key.length < 16) {
-                toast.error("Invalid encryption key");
-                throw new Error("Invalid encryption key");
-              }
+                if (random_key.length < 16) {
+                  toast.error("Invalid encryption key");
+                  throw new Error("Invalid encryption key");
+                }
 
-              const metamodel_response = await client.query<
-                GetMetamodelQuery,
-                GetMetamodelVariables
-              >({
-                query: GET_METAMODEL,
-                fetchPolicy: "network-only",
-                variables: {
-                  id,
-                },
-              });
-
-              if (!metamodel_response.data) {
-                toast.error("Failed to get file metadata");
-                throw new Error("Failed to get file metadata");
-              }
-
-              const metamodel = metamodel_response.data.getMetamodel;
-              const parsed_metadata = JSON.parse(metamodel.metadata);
-              if (!parsed_metadata || parsed_metadata.title === undefined) {
-                toast.error("No title found");
-                throw new Error("No title found");
-              }
-
-              // let pod;
-              // try {
-              //   pod = await client.query<GetPodQuery, GetPodVariables>({
-              //     query: GET_POD,
-              //     fetchPolicy: "network-only",
-              //     variables: {
-              //       ref_id: id,
-              //     },
-              //   });
-              // } catch (error) {
-              //   toast.error("Error while downloading data");
-              //   logger.error("Error while downloading data", error);
-              //   return;
-              // }
-
-              // if (!pod.data) {
-              //   toast.error("Failed to get pod data");
-              //   return;
-              // }
-
-              // const pod_data = pod.data.getPod.content;
-
-              const download_pod_data_via_presigned_url = async ({ ref_id }: { ref_id: string }) => {
-                const res = await client.query({
-                  query: GET_POD_DOWNLOAD_URL,
+                const metamodel_response = await client.query<
+                  GetMetamodelQuery,
+                  GetMetamodelVariables
+                >({
+                  query: GET_METAMODEL,
                   fetchPolicy: "network-only",
-                  variables: { ref_id },
+                  variables: {
+                    id,
+                  },
                 });
-                const download_url = (res.data as any).getPodDownloadUrl;
-                const response = await fetch(download_url);
-                if (!response.ok) {
-                  throw new Error(`Failed to download file: ${response.status} ${response.statusText}`);
+
+                if (!metamodel_response.data) {
+                  toast.error("Failed to get file metadata");
+                  throw new Error("Failed to get file metadata");
                 }
-                const blob = await response.blob();
-                const arrayBuffer = await blob.arrayBuffer();
-                const buffer = Buffer.from(arrayBuffer);
-                return buffer.toString('base64');
-              };
 
-              const pod_data = await download_pod_data_via_presigned_url({ ref_id: id });
-
-              const key = random_key.slice(16);
-              const iv = random_key.slice(0, 16);
-
-              const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
-
-              const encryptedBlob = new Blob(
-                [
-                  Buffer.from(pod_data, "base64"), // binary
-                ],
-                {
-                  type: "data/encrypted",
+                const metamodel = metamodel_response.data.getMetamodel;
+                const parsed_metadata = JSON.parse(metamodel.metadata);
+                if (!parsed_metadata || parsed_metadata.title === undefined) {
+                  toast.error("No title found");
+                  throw new Error("No title found");
                 }
-              );
-              // Decrypt the data
-              const decrypted = Buffer.concat([
-                decipher.update(
-                  Buffer.from(await encryptedBlob.arrayBuffer()) // binary
-                ),
-                decipher.final(),
-              ]);
 
-              // save decrypted file
-              const blob = new Blob([decrypted], { type: parsed_metadata.type });
-              let suffix;
-              switch (parsed_metadata.type) {
-                case "text/plain":
-                  suffix = ".txt";
-                  break;
-                case "image/png":
-                  suffix = ".png";
-                  break;
-                case "image/jpeg":
-                  suffix = ".jpg";
-                  break;
-                case "image/jpg":
-                  suffix = ".jpg";
-                  break;
-                case "video/mp4":
-                  suffix = ".mp4";
-                  break;
-                case "image/gif":
-                  suffix = ".gif";
-                  break;
-                case "unknown":
-                  suffix = "";
-                  break;
-                default:
-                  // logger.error("Unknown file type", parsed_metadata.type);
-                  suffix = "";
-                  break;
-              }
+                // let pod;
+                // try {
+                //   pod = await client.query<GetPodQuery, GetPodVariables>({
+                //     query: GET_POD,
+                //     fetchPolicy: "network-only",
+                //     variables: {
+                //       ref_id: id,
+                //     },
+                //   });
+                // } catch (error) {
+                //   toast.error("Error while downloading data");
+                //   logger.error("Error while downloading data", error);
+                //   return;
+                // }
 
-              const url = window.URL.createObjectURL(blob);
-              const a = document.createElement("a");
-              document.body.appendChild(a);
-              // a.style = "display: none";
-              a.href = url;
-              a.download = parsed_metadata.title.endsWith(suffix)
-                ? parsed_metadata.title
-                : parsed_metadata.title + suffix;
-              a.click();
-              document.body.removeChild(a);
-              window.URL.revokeObjectURL(url);
+                // if (!pod.data) {
+                //   toast.error("Failed to get pod data");
+                //   return;
+                // }
 
-              toast.success("File downloaded successfully!");
-              // download pod data
+                // const pod_data = pod.data.getPod.content;
+
+                const download_pod_data_via_presigned_url = async ({
+                  ref_id,
+                }: {
+                  ref_id: string;
+                }) => {
+                  const res = await client.query({
+                    query: GET_POD_DOWNLOAD_URL,
+                    fetchPolicy: "network-only",
+                    variables: { ref_id },
+                  });
+                  const download_url = (res.data as any).getPodDownloadUrl;
+                  const response = await fetch(download_url);
+                  if (!response.ok) {
+                    throw new Error(
+                      `Failed to download file: ${response.status} ${response.statusText}`
+                    );
+                  }
+                  const blob = await response.blob();
+                  const arrayBuffer = await blob.arrayBuffer();
+                  const buffer = Buffer.from(arrayBuffer);
+                  return buffer.toString("base64");
+                };
+
+                const pod_data = await download_pod_data_via_presigned_url({
+                  ref_id: id,
+                });
+
+                const key = random_key.slice(16);
+                const iv = random_key.slice(0, 16);
+
+                const decipher = crypto.createDecipheriv(
+                  "aes-256-cbc",
+                  key,
+                  iv
+                );
+
+                const encryptedBlob = new Blob(
+                  [
+                    Buffer.from(pod_data, "base64"), // binary
+                  ],
+                  {
+                    type: "data/encrypted",
+                  }
+                );
+                // Decrypt the data
+                const decrypted = Buffer.concat([
+                  decipher.update(
+                    Buffer.from(await encryptedBlob.arrayBuffer()) // binary
+                  ),
+                  decipher.final(),
+                ]);
+
+                // save decrypted file
+                const blob = new Blob([decrypted], {
+                  type: parsed_metadata.type,
+                });
+                // check if user already has the file extension saved in metadata
+                let suffix = parsed_metadata.file_ext
+                  ? "." + parsed_metadata.file_ext
+                  : null;
+                if (!suffix || suffix.length === 0) {
+                  // if not already present, infer from mime type
+                  switch (parsed_metadata.type) {
+                    case "text/plain":
+                      suffix = ".txt";
+                      break;
+                    case "image/png":
+                      suffix = ".png";
+                      break;
+                    case "image/jpeg":
+                      suffix = ".jpg";
+                      break;
+                    case "image/jpg":
+                      suffix = ".jpg";
+                      break;
+                    case "video/mp4":
+                      suffix = ".mp4";
+                      break;
+                    case "image/gif":
+                      suffix = ".gif";
+                      break;
+                    case "unknown":
+                      suffix = "";
+                      break;
+                    default:
+                      // logger.error("Unknown file type", parsed_metadata.type);
+                      suffix = "";
+                      break;
+                  }
+                }
+
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                document.body.appendChild(a);
+                // a.style = "display: none";
+                a.href = url;
+                a.download = parsed_metadata.title.endsWith(suffix)
+                  ? parsed_metadata.title
+                  : parsed_metadata.title + suffix;
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+
+                toast.success("File downloaded successfully!");
+                // download pod data
               } catch (error) {
                 logger.error("Error while downloading data", error);
                 // Error toast is already shown above

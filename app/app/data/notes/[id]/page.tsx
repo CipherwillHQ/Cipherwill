@@ -1,9 +1,9 @@
-'use client'  
+"use client";
 import MobilePageHeader from "@/components/mobile/MobilePageHeader";
-import MetaDetails from "./MetaDetails";
 import PodDetails from "./PodDetails";
 import { useState } from "react";
 import { useParams } from "next/navigation";
+import DataHeader from "@/components/app/data/DataHeader";
 
 export default function NoteViewer() {
   const params = useParams();
@@ -14,15 +14,12 @@ export default function NoteViewer() {
   return (
     <div className="w-full">
       <MobilePageHeader path="/app/data/notes" />
-
-      <div className="px-4 w-full">
-        <MetaDetails id={params?.id as string}
+      <DataHeader
+        metamode_id={params?.id as string}
+        metamodel_type="note"
         saveStatus={saveStatus}
-        />
-        <PodDetails id={params?.id as string}
-        setSaveStatus={setSaveStatus}
-        />
-      </div>
+      />
+      <PodDetails id={params?.id as string} setSaveStatus={setSaveStatus} />
     </div>
   );
 }
