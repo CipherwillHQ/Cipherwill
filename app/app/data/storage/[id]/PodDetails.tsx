@@ -66,7 +66,7 @@ export default function PodDetails({ id }: PodDetailsProps) {
     if (type.startsWith("image/")) return "🖼️";
     if (type.startsWith("video/")) return "🎥";
     if (type === "text/plain") return "📄";
-    return "📁";
+    return "🗎";
   };
 
   const getFileTypeDisplay = (type: string) => {

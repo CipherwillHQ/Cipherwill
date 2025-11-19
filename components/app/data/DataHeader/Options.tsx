@@ -52,7 +52,7 @@ export default function Options({
       {/* @ts-ignore */}
       {(close) => {
         return (
-          <div className="bg-secondary text-black dark:text-white p-1">
+          <div className="bg-secondary text-black dark:text-white p-1 border border-default">
             <button
               className="p-2 w-full text-left hover:cursor-pointer"
               onClick={() => {
@@ -78,7 +78,7 @@ export default function Options({
             >
               Delete permanently
             </ConfirmationButton>
-            <div className="p-2">
+            <div className="p-2 opacity-50 font-semibold">
               <div className="text-xs">
                 Created at: {getTimeAgo(parseInt(created_at))}
               </div>
