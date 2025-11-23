@@ -12,9 +12,9 @@ const mediaOutlets = [
     url: "https://apnews.com/press-release/ein-presswire-newsmatics/cipherwill-launches-dead-mans-switch-for-the-digital-age-to-protect-online-assets-74f3cd724cf27b3628f855c167d21351"
   },
   {
-    name: "Benzinga",
-    logo: "/media-logos/benzinga.png", 
-    url: "https://www.benzinga.com/content/47299314/cipherwill-launches-dead-mans-switch-for-the-digital-age-to-protect-online-assets"
+    name: "Global Tech Reporter",
+    logo: "/media-logos/gtr.png", 
+    url: "https://www.globaltechreporter.com/article/842460948-cipherwill-launches-dead-man-s-switch-for-the-digital-age-to-protect-online-assets"
   },
   {
     name: "MENAFN",
