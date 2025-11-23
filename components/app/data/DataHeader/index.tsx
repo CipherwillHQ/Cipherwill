@@ -104,7 +104,7 @@ export default function DataHeader({
       <div
       className="flex items-center justify-between gap-2"
       >
-        {/* <BeneficiaryChoice /> */}
+        <BeneficiaryChoice />
       <Options
         metamode_id={metamode_id}
         metamodel_type={metamodel_type}
