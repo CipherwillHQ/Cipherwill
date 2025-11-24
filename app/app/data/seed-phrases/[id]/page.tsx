@@ -7,7 +7,7 @@ export default async function SeedPhraseViewer({ params }) {
   return (
     <div className="w-full">
       <MobilePageHeader path="/app/data/seed-phrases" />
-      <DataHeader metamode_id={id} metamodel_type="seed_phrase" />
+      <DataHeader metamodel_id={id} metamodel_type="seed_phrase" />
       <PodDetails id={id} />
     </div>
   );

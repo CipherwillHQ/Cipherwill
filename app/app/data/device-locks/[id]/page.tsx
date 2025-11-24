@@ -7,7 +7,7 @@ export default async function DeviceLockViewer({ params }) {
   return (
     <div className="w-full">
       <MobilePageHeader path="/app/data/device-locks" />
-      <DataHeader metamode_id={id} metamodel_type="device_lock" />
+      <DataHeader metamodel_id={id} metamodel_type="device_lock" />
 
       <PodDetails id={id} />
     </div>

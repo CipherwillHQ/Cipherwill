@@ -7,7 +7,7 @@ export default async function PaymentCardViewer({ params }) {
   return (
     <div className="w-full">
       <MobilePageHeader path="/app/data/payment-cards" />
-      <DataHeader metamode_id={id} metamodel_type="payment_card" />
+      <DataHeader metamodel_id={id} metamodel_type="payment_card" />
       <PodDetails id={id} />
     </div>
   );

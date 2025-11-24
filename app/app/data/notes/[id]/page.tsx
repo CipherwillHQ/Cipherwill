@@ -15,7 +15,7 @@ export default function NoteViewer() {
     <div className="w-full">
       <MobilePageHeader path="/app/data/notes" />
       <DataHeader
-        metamode_id={params?.id as string}
+        metamodel_id={params?.id as string}
         metamodel_type="note"
         saveStatus={saveStatus}
       />

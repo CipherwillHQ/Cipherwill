@@ -14,11 +14,11 @@ import Options from "./Options";
 import BeneficiaryChoice from "./BeneficiaryChoice";
 
 export default function DataHeader({
-  metamode_id,
+  metamodel_id,
   metamodel_type,
   saveStatus,
 }: {
-  metamode_id: string;
+  metamodel_id: string;
   metamodel_type: POD_TYPE;
   saveStatus?: "SAVED" | "NOT_SAVED" | "ERROR" | "LOADING";
 }) {
@@ -27,7 +27,7 @@ export default function DataHeader({
     GetMetamodelVariables
   >(GET_METAMODEL, {
     variables: {
-      id: metamode_id,
+      id: metamodel_id,
     },
   });
 
@@ -67,7 +67,7 @@ export default function DataHeader({
               update_metamodel({
                 variables: {
                   data: {
-                    id: metamode_id,
+                    id: metamodel_id,
                     metadata: stringifyMetamodelMetadata({
                       ...metadata,
                       [key]: new_name,
@@ -101,16 +101,14 @@ export default function DataHeader({
           </div>
         )}
       </div>
-      <div
-      className="flex items-center justify-between gap-2"
-      >
-        <BeneficiaryChoice />
-      <Options
-        metamode_id={metamode_id}
-        metamodel_type={metamodel_type}
-        created_at={model?.created_at}
-        updated_at={model?.updated_at}
-      />
+      <div className="flex items-center justify-between gap-2">
+        <BeneficiaryChoice metamodel_id={metamodel_id} />
+        <Options
+          metamodel_id={metamodel_id}
+          metamodel_type={metamodel_type}
+          created_at={model?.created_at}
+          updated_at={model?.updated_at}
+        />
       </div>
     </div>
   );
