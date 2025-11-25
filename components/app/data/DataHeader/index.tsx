@@ -102,7 +102,10 @@ export default function DataHeader({
         )}
       </div>
       <div className="flex items-center justify-between gap-2">
-        <BeneficiaryChoice metamodel_id={metamodel_id} />
+        <BeneficiaryChoice
+          metamodel_id={metamodel_id}
+          ignored_beneficiaries={model.ignored_beneficiaries || []}
+        />
         <Options
           metamodel_id={metamodel_id}
           metamodel_type={metamodel_type}

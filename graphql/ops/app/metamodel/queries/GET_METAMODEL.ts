@@ -7,6 +7,7 @@ const GET_METAMODEL = gql`
       type
       metadata
       folder_id
+      ignored_beneficiaries
       created_at
       updated_at
     }

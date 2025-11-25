@@ -6,6 +6,7 @@ export interface Metamodel {
   type: string;
   metadata: string; // JSON string
   folder_id?: string;
+  ignored_beneficiaries?: string[]; // Array of beneficiary IDs to ignore
   created_at: string;
   updated_at: string;
 }
