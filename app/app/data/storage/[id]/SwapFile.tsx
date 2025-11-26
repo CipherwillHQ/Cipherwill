@@ -70,6 +70,7 @@ export default function SwapFile({ id }) {
                     },
                   ],
                   client,
+                  metamodel_id: id,
                 }).catch((error) => {
                   toast.error("Error while uploading data of swap file");
                   logger.error(
