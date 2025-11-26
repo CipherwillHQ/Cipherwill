@@ -149,6 +149,8 @@ export default function PodDetails({ id }) {
               phrase: data.phrase,
               public_key: data.public_key,
               note: data.note,
+            },{
+              metamodel_id: id,
             });
           }}
         >

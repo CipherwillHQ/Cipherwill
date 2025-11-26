@@ -8,10 +8,12 @@ import type {
   GetGrantedMetamodelsVariables,
   MetamodelMetadata 
 } from "@/types/interfaces/metamodel";
+import { useAccessDetails } from "@/contexts/AccessDetailsContext";
 
 export default function GrantedBankAccounts() {
   const params = useParams();
   const id = params?.id as string;
+  const { accessDetails } = useAccessDetails();
 
   const { loading, error, data, fetchMore } = useQuery<GetGrantedMetamodelsQuery, GetGrantedMetamodelsVariables>(GET_GRANTED_METAMODELS, {
     variables: {
@@ -20,17 +22,20 @@ export default function GrantedBankAccounts() {
     },
   });
 
-  if (loading) return <p>Loading...</p>;
+  if (loading || !accessDetails) return <p>Loading...</p>;
   if (error) return <div>Error : {error.message}</div>;
   if (!data?.getGrantedMetamodels) return <div>No data available</div>;
+  const final_models = data.getGrantedMetamodels.models.filter((model => 
+    !model.ignored_beneficiaries?.includes(accessDetails.beneficiary_id)
+  ));
   return (
     <div className="w-full">
       <h1 className="text-xl font-semibold">Bank Accounts</h1>
       <div className="flex flex-col" data-cy="donor-models">
-        {data.getGrantedMetamodels.models.length === 0 && (
+        {final_models.length === 0 && (
           <div className="py-2 opacity-50">No Bank Account Found</div>
         )}
-        {data.getGrantedMetamodels.models.map((model) => {
+        {final_models.map((model) => {
           const parsed_data: MetamodelMetadata = JSON.parse(model.metadata);
           return (
             <Link

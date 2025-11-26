@@ -122,6 +122,7 @@ export default function AddFile({ folder_id }: { folder_id?: string }) {
                     },
                   ],
                   client,
+                  metamodel_id: new_model.data.createMetamodel.id,
                 }).catch((error) => {
                   toast.error("Error while uploading data of file");
                   logger.error("Error while uploading data", error);

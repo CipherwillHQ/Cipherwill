@@ -3,37 +3,43 @@ import { useQuery } from "@apollo/client/react";
 import Link from "next/link";
 import GET_GRANTED_METAMODELS from "../../../../graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODELS";
 import { useParams } from "next/navigation";
-import type { 
-  GetGrantedMetamodelsQuery, 
+import type {
+  GetGrantedMetamodelsQuery,
   GetGrantedMetamodelsVariables,
-  GrantedMetamodel 
+  GrantedMetamodel,
 } from "@/types/interfaces/metamodel";
+import { useUserContext } from "@/contexts/UserSetupContext";
+import { useAccessDetails } from "@/contexts/AccessDetailsContext";
 
 export default function GrantedNotes() {
   const params = useParams() as { id: string };
   const id = params?.id;
+  const { accessDetails } = useAccessDetails();
 
-  const { loading, error, data, fetchMore } = useQuery<GetGrantedMetamodelsQuery, GetGrantedMetamodelsVariables>(
-    GET_GRANTED_METAMODELS, 
-    {
-      variables: {
-        access_id: id,
-        type: "NOTE",
-      },
-    }
-  );
+  const { loading, error, data, fetchMore } = useQuery<
+    GetGrantedMetamodelsQuery,
+    GetGrantedMetamodelsVariables
+  >(GET_GRANTED_METAMODELS, {
+    variables: {
+      access_id: id,
+      type: "NOTE",
+    },
+  });
 
-  if (loading) return <p>Loading...</p>;
+  if (loading || !accessDetails) return <p>Loading...</p>;
   if (error) return <div>Error : {error.message}</div>;
   if (!data) return <div>No data available</div>;
+  const final_models = data.getGrantedMetamodels.models.filter((model => 
+    !model.ignored_beneficiaries?.includes(accessDetails.beneficiary_id)
+  ));
   return (
     <div className="w-full">
       <h1 className="text-xl font-semibold">Notes</h1>
       <div className="flex flex-col gap-2" data-cy="donor-models">
-        {data.getGrantedMetamodels.models.length === 0 && (
+        {final_models.length === 0 && (
           <div className="py-2 opacity-50">No Notes Found</div>
         )}
-        {data.getGrantedMetamodels.models.map((model: GrantedMetamodel) => {
+        {final_models.map((model: GrantedMetamodel) => {
           const parsed_data = JSON.parse(model.metadata);
           return (
             <Link
@@ -57,7 +63,12 @@ export default function GrantedNotes() {
                     data.getGrantedMetamodels.models.length - 1
                   ].id,
               },
-              updateQuery: (prev: GetGrantedMetamodelsQuery, { fetchMoreResult }: { fetchMoreResult: GetGrantedMetamodelsQuery }) => {
+              updateQuery: (
+                prev: GetGrantedMetamodelsQuery,
+                {
+                  fetchMoreResult,
+                }: { fetchMoreResult: GetGrantedMetamodelsQuery }
+              ) => {
                 if (!fetchMoreResult) return prev;
                 return {
                   getGrantedMetamodels: {

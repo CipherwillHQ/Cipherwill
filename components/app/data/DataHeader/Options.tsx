@@ -14,12 +14,12 @@ import { FiMoreHorizontal } from "react-icons/fi";
 import Popup from "reactjs-popup";
 
 export default function Options({
-  metamode_id,
+  metamodel_id,
   metamodel_type,
   created_at,
   updated_at,
 }: {
-  metamode_id: string;
+  metamodel_id: string;
   metamodel_type: POD_TYPE;
   created_at: string;
   updated_at: string;
@@ -68,7 +68,7 @@ export default function Options({
               onConfirm={async () => {
                 await deleteMetamodel({
                   variables: {
-                    id: metamode_id,
+                    id: metamodel_id,
                   },
                 });
                 router.replace(

@@ -157,6 +157,8 @@ export default function PodDetails({ id }) {
               username: data.username,
               password: data.password,
               note: data.note,
+            },{
+              metamodel_id: id,
             });
           }}
         >

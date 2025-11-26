@@ -7,7 +7,7 @@ export default async function BankAccountViewer({ params }) {
   return (
     <div className="w-full">
       <MobilePageHeader path="/app/data/bank-accounts" />
-      <DataHeader metamode_id={id} metamodel_type="bank_account" />
+      <DataHeader metamodel_id={id} metamodel_type="bank_account" />
       <PodDetails id={id} />
     </div>
   );

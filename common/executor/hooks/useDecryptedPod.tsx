@@ -40,6 +40,7 @@ export default function useDecryptedPod({
   });
 
   useEffect(() => {
+    
     const processData = async () => {
       if (data && data.getKeyByRefId) {
         setKeyMetadata(data.getKeyByRefId);
@@ -88,11 +89,17 @@ export default function useDecryptedPod({
           if (!pod) return;
           
           const content = pod.data.getPod.content;
-          const final_content = JSON.parse(
+          let final_content;
+          try {
+            final_content = JSON.parse(
             CryptoJS.AES.decrypt(content, pod_decryption_key).toString(
               CryptoJS.enc.Utf8
             )
           );
+          }catch (error) {
+            toast.error("Failed to decrypt data.");
+            return;
+          }
           
           if (final_content.type) {
             setData(final_content.data);
@@ -105,10 +112,10 @@ export default function useDecryptedPod({
       }
     };
 
-    if (data) {
+    if (data && !loading && !error) {
       processData();
     }
-  }, [data, access_id, metamodel_id, setData, setKeyMetadata, session, client]);
+  }, [data, loading, error]);
 
   return { data, loading, error };
 }

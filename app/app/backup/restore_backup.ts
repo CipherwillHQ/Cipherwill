@@ -138,6 +138,7 @@ async function run_restore_0_0_1({
                 },
               ],
               client,
+              metamodel_id: (res.data as any).createMetamodel.id,
             });
           })
           .catch((error) => {
@@ -214,6 +215,7 @@ async function run_restore_0_0_2({
                 },
               ],
               client,
+              metamodel_id: (res.data as any).createMetamodel.id,
             });
           })
           .catch((error) => {

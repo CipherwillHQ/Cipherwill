@@ -7,7 +7,7 @@ export default async function DeFiStaking({ params }) {
   return (
     <div className="w-full">
       <MobilePageHeader path="/app/data/defi-staking" />
-      <DataHeader metamode_id={id} metamodel_type="defi_staking" />
+      <DataHeader metamodel_id={id} metamodel_type="defi_staking" />
       <PodDetails id={id} />
     </div>
   );

@@ -5,6 +5,7 @@ const GET_ALL_BENEFICIARY_ACCESS = gql`
     getAllBeneficiaryAccess {
       id
       user
+      beneficiary_id
       created_at
       expire_at
     }

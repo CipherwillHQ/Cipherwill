@@ -62,6 +62,8 @@ export default function PodDetails({ id }) {
             updatePod({
               bank_name: data.bank_name,
               account_number: data.account_number,
+            },{
+              metamodel_id: id,
             });
           }}
         >

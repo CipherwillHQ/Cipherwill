@@ -7,7 +7,7 @@ export default async function EmailAccountViewer({ params }) {
   return (
     <div className="w-full">
       <MobilePageHeader path="/app/data/email-accounts" />
-      <DataHeader metamode_id={id} metamodel_type="email_account" />
+      <DataHeader metamodel_id={id} metamodel_type="email_account" />
       <PodDetails id={id} />
     </div>
   );
