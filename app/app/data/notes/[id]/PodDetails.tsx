@@ -5,7 +5,7 @@ import { usePod } from "@/contexts/PodHelper";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useState } from "react";
-import Placeholder from '@tiptap/extension-placeholder';
+import Placeholder from "@tiptap/extension-placeholder";
 
 const NOTE_SAMPLE: NOTE_TYPE = {
   content: "Sample Note",
@@ -19,8 +19,8 @@ export default function PodDetails({
   id: string;
   setSaveStatus: (status: "SAVED" | "NOT_SAVED" | "ERROR" | "LOADING") => void;
 }) {
-  const [initialValue, setinitialValue] = useState<string|null>(null);
-  const [newValue, setNewValue] = useState<string|null>(null);
+  const [initialValue, setinitialValue] = useState<string | null>(null);
+  const [newValue, setNewValue] = useState<string | null>(null);
 
   const { loading, error, updatePod, is_updating, loadPod } = usePod<NOTE_TYPE>(
     {
@@ -35,10 +35,11 @@ export default function PodDetails({
   );
   const editor = useEditor({
     immediatelyRender: false, // Prevent immediate rendering to avoid hydration mismatches
-    extensions: [StarterKit,
+    extensions: [
+      StarterKit,
       Placeholder.configure({
-        placeholder:'Write something...'
-      })
+        placeholder: "Write something...",
+      }),
     ],
     content: "",
     onCreate: async ({ editor }) => {
@@ -71,9 +72,14 @@ export default function PodDetails({
     debounceTimer = setTimeout(() => {
       if (!editor) return;
       const updateData = editor.getHTML();
-      updatePod({
-        content: updateData,
-      })
+      updatePod(
+        {
+          content: updateData,
+        },
+        {
+          metamodel_id: id,
+        }
+      )
         .then((res) => {
           setinitialValue(updateData);
           setSaveStatus("SAVED");

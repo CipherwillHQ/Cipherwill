@@ -5,6 +5,7 @@ const GET_ACCESS_DETAILS = gql`
     getAccessDetails(access_id: $access_id) {
       id
       user
+      beneficiary_id
       created_at
       expire_at
     }

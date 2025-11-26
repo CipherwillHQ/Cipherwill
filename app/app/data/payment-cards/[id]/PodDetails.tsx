@@ -146,6 +146,8 @@ export default function PodDetails({ id }) {
               issuer: data.issuer,
               network: data.network,
               note: data.note,
+            },{
+              metamodel_id: id,
             });
           }}
         >

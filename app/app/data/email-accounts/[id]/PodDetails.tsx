@@ -293,6 +293,8 @@ export default function PodDetails({ id }) {
               backupCodes: data.backupCodes,
               aliasEmails: data.aliasEmails,
               note: data.note,
+            },{
+              metamodel_id: id,
             });
           }}
         >

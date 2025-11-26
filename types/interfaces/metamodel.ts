@@ -306,6 +306,7 @@ export interface GrantedMetamodel {
   id: string;
   type: string;
   metadata: string; // JSON string
+  ignored_beneficiaries?: string[]; // Array of beneficiary IDs to ignore
   created_at: string;
   updated_at: string;
 }
@@ -394,10 +395,10 @@ export interface GetPersonByIdsQuery {
 // Access details interfaces for executor system
 export interface AccessDetails {
   id: string;
-  user: string; // User ID of the donor
-  expire_at: string;
+  beneficiary_id: string;
+  user: string;
   created_at: string;
-  updated_at: string;
+  expire_at: string;
 }
 
 export interface GetAccessDetailsQuery {

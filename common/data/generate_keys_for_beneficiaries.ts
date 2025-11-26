@@ -23,10 +23,12 @@ export default async function generate_keys_for_beneficiaries({
   key_cluster,
   encryption_keys,
   client,
+  ignored_beneficiaries
 }: {
   key_cluster: Key[];
   encryption_keys: EncryptionKeys;
   client: ApolloClient;
+  ignored_beneficiaries: string[];
 }) {
   // get all beneficiary factors
   const beneficiary_factors = await client.query<GetBeneficiaryFactorsQuery>({
@@ -43,6 +45,12 @@ export default async function generate_keys_for_beneficiaries({
 
   // encrypt key for each beneficiary factor
   for await (const beneficiary_factor of all_beneficiary_factors) {
+    if(
+      ignored_beneficiaries.includes(beneficiary_factor.beneficiary_id)
+    ){
+      // if beneficiary is ignored, skip key generation for that beneficiary
+      continue;
+    }
     const time_capsule_public_key = beneficiary_factor.publicKey;
     // if zero factors then encrypt for null key
     if (beneficiary_factor.factors.length === 0) {

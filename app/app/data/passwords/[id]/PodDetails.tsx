@@ -161,6 +161,8 @@ export default function PodDetails({ id }) {
               totp_secret: data.totp_secret,
               uri: data.uri,
               note: data.note,
+            },{
+              metamodel_id: id,
             });
           }}
         >

@@ -11,7 +11,12 @@ import CryptoJS from "crypto-js";
 import { POD_TYPE } from "@/types/POD";
 import parseToLatestDataModel from "./parseToLatestDataModel";
 import upload_pod_data from "@/common/data/upload_pod_data";
-import { GetKeyByRefIdQuery, GetKeyByRefIdVariables, GetPodQuery, GetPodVariables } from "@/types/interfaces/metamodel";
+import {
+  GetKeyByRefIdQuery,
+  GetKeyByRefIdVariables,
+  GetPodQuery,
+  GetPodVariables,
+} from "@/types/interfaces/metamodel";
 
 export function usePod<POD_DATA_TYPE>(
   config: {
@@ -77,7 +82,10 @@ export function usePod<POD_DATA_TYPE>(
     }
     const content = pod.data.getPod.content;
 
-    const encryption_key = await client.query<GetKeyByRefIdQuery, GetKeyByRefIdVariables>({
+    const encryption_key = await client.query<
+      GetKeyByRefIdQuery,
+      GetKeyByRefIdVariables
+    >({
       query: GET_KEY_BY_REF_ID,
       fetchPolicy: "network-only",
       variables: session
@@ -191,7 +199,14 @@ export function usePod<POD_DATA_TYPE>(
     if (!lazy) load_data();
   }, []);
 
-  async function updatePod(upated_data: POD_DATA_TYPE) {
+  async function updatePod(
+    upated_data: POD_DATA_TYPE,
+    {
+      metamodel_id,
+    }: {
+      metamodel_id: string;
+    }
+  ) {
     // strip out all fields that are not in the type
     let final_data = {};
     for await (const key of Object.keys(config.DATA_SAMPLE as any)) {
@@ -219,6 +234,7 @@ export function usePod<POD_DATA_TYPE>(
       await upload_pod_data({
         data_items: final_pods,
         client,
+        metamodel_id,
       });
     }
     setIsUpdating(false);
