@@ -21,6 +21,7 @@ import {
   parseMetamodelMetadata,
   stringifyMetamodelMetadata,
 } from "../../../../../common/metamodel/utils";
+import BeneficiaryChoice from "@/components/app/data/DataHeader/BeneficiaryChoice";
 
 interface MetaDetailsProps {
   id: string;
@@ -66,8 +67,9 @@ export default function MetaDetails({ id }: MetaDetailsProps) {
   if (!data) return <div>No data found</div>;
 
   const file_details = data.getMetamodel;
+  const metamodel = data.getMetamodel;
   const parsedData = parseMetamodelMetadata<MetamodelMetadata>(
-    data.getMetamodel
+    metamodel
   );
 
   return (
@@ -121,56 +123,61 @@ export default function MetaDetails({ id }: MetaDetailsProps) {
         >
           {parsedData.title}
         </div>
+        <div className="flex items-center gap-2">
+          <BeneficiaryChoice
+            metamodel_id={id}
+            ignored_beneficiaries={metamodel.ignored_beneficiaries || []}
+          />
+          <Popup
+            trigger={
+              <button className="px-2 hover:cursor-pointer">
+                <FiMoreHorizontal size={22} />
+              </button>
+            }
+            position="bottom right"
+          >
+            {/* @ts-ignore */}
+            {(close) => {
+              return (
+                <div className="bg-secondary text-black dark:text-white p-1 border border-default">
+                  <ShareMetapod />
+                  <button
+                    className="p-2 w-full text-left hover:cursor-pointer"
+                    onClick={() => {
+                      document.getElementById("file-title")?.focus();
+                      close();
+                    }}
+                  >
+                    Rename
+                  </button>
 
-        <Popup
-          trigger={
-            <button className="px-2 hover:cursor-pointer">
-              <FiMoreHorizontal size={22} />
-            </button>
-          }
-          position="bottom right"
-        >
-          {/* @ts-ignore */}
-          {(close) => {
-            return (
-              <div className="bg-secondary text-black dark:text-white p-1 border border-default">
-                <ShareMetapod />
-                <button
-                  className="p-2 w-full text-left hover:cursor-pointer"
-                  onClick={() => {
-                    document.getElementById("file-title")?.focus();
-                    close();
-                  }}
-                >
-                  Rename
-                </button>
+                  <div className="p-2">
+                    <DeleteButton
+                      id={data.getMetamodel.id}
+                      folder_id={data.getMetamodel.folder_id || "root"}
+                    />
+                  </div>
 
-                <div className="p-2">
-                  <DeleteButton
-                    id={data.getMetamodel.id}
-                    folder_id={data.getMetamodel.folder_id || "root"}
-                  />
-                </div>
-
-                <div className="p-2 opacity-50 font-semibold">
-                  {parsedData.file_ext && (
+                  <div className="p-2 opacity-50 font-semibold">
+                    {parsedData.file_ext && (
+                      <div className="text-xs">
+                        Saved file type is .{parsedData.file_ext}
+                      </div>
+                    )}
                     <div className="text-xs">
-                      Saved file type is .{parsedData.file_ext}
+                      Created at:{" "}
+                      {getTimeAgo(parseInt(data.getMetamodel.created_at))}
                     </div>
-                  )}
-                  <div className="text-xs">
-                    Created at:{" "}
-                    {getTimeAgo(parseInt(data.getMetamodel.created_at))}
-                  </div>
-                  <div className="text-xs">
-                    Updated at:{" "}
-                    {getTimeAgo(parseInt(data.getMetamodel.updated_at))}
+                    <div className="text-xs">
+                      Updated at:{" "}
+                      {getTimeAgo(parseInt(data.getMetamodel.updated_at))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          }}
-        </Popup>
+              );
+            }}
+          </Popup>
+        </div>
       </div>
     </div>
   );

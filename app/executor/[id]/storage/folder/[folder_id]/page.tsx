@@ -4,41 +4,46 @@ import { useQuery } from "@apollo/client/react";
 import { useParams } from "next/navigation";
 import GrantedFolderList from "./GrantedFolderList";
 import Link from "next/link";
-import type { 
-  GetGrantedMetamodelsQuery, 
+import type {
+  GetGrantedMetamodelsQuery,
   GetGrantedMetamodelsVariables,
-  GrantedMetamodel 
+  GrantedMetamodel,
 } from "@/types/interfaces/metamodel";
+import { useAccessDetails } from "@/contexts/AccessDetailsContext";
 
 export default function GrantedFolderView() {
   const params = useParams() as { id: string; folder_id: string };
   const id: string = params?.id;
   const folder_id: string = params?.folder_id;
+  const { accessDetails } = useAccessDetails();
 
-  const { loading, error, data, fetchMore } = useQuery<GetGrantedMetamodelsQuery, GetGrantedMetamodelsVariables>(
-    GET_GRANTED_METAMODELS, 
-    {
-      variables: {
-        access_id: id,
-        type: "FILE",
-        folder_id: folder_id,
-      },
-    }
-  );
+  const { loading, error, data, fetchMore } = useQuery<
+    GetGrantedMetamodelsQuery,
+    GetGrantedMetamodelsVariables
+  >(GET_GRANTED_METAMODELS, {
+    variables: {
+      access_id: id,
+      type: "FILE",
+      folder_id: folder_id,
+    },
+  });
 
-  if (loading) return <p>Loading...</p>;
+  if (loading || !accessDetails) return <p>Loading...</p>;
   if (error) return <div>Error : {error.message}</div>;
   if (!data) return <div>No data available</div>;
+const final_models = data.getGrantedMetamodels.models.filter((model => 
+    !model.ignored_beneficiaries?.includes(accessDetails.beneficiary_id)
+  ));
   return (
     <div className="w-full">
       <h2 className="text-xl font-semibold">Folders</h2>
       <GrantedFolderList access_id={id} folder_id={folder_id} />
       <h2 className="text-xl font-semibold">Files</h2>
       <div className="flex flex-col gap-2" data-cy="donor-models">
-        {data.getGrantedMetamodels?.models?.length === 0 && (
+        {final_models.length === 0 && (
           <div className="py-2 opacity-50">No Files Found</div>
         )}
-        {data.getGrantedMetamodels?.models?.map((model: GrantedMetamodel) => {
+        {final_models.map((model: GrantedMetamodel) => {
           const parsed_data = JSON.parse(model.metadata);
 
           return (
@@ -62,7 +67,12 @@ export default function GrantedFolderView() {
                 variables: {
                   cursor: models[models.length - 1].id,
                 },
-                updateQuery: (prev: GetGrantedMetamodelsQuery, { fetchMoreResult }: { fetchMoreResult: GetGrantedMetamodelsQuery }) => {
+                updateQuery: (
+                  prev: GetGrantedMetamodelsQuery,
+                  {
+                    fetchMoreResult,
+                  }: { fetchMoreResult: GetGrantedMetamodelsQuery }
+                ) => {
                   if (!fetchMoreResult) return prev;
                   return {
                     getGrantedMetamodels: {
