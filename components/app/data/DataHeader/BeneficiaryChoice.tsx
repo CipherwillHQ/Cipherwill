@@ -83,6 +83,19 @@ export default function BeneficiaryChoice({
       <Popup trigger={popupTrigger} position="bottom right">
         {/* @ts-ignore */}
         {(close) => {
+          if (data && data.getSmartWillBeneficiaries.length === 0) {
+            return (
+              <div className="bg-secondary text-black dark:text-white p-3 max-h-[50vh] overflow-y-auto customScrollbar flex flex-col gap-2">
+                <div>
+                  You have no beneficiaries set up. Please add beneficiaries in
+                  the Cipherwill section to manage beneficiary choices.
+                </div>
+                <SimpleButton href={"/app/beneficiaries"}>
+                  Add Beneficiaries
+                </SimpleButton>
+              </div>
+            );
+          }
           return (
             <BeneficiaryList
               ignored_beneficiaries={ignored_beneficiaries}
