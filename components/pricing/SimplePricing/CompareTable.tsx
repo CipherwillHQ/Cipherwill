@@ -5,7 +5,7 @@ const compareTable = [
     section: "General",
   },
   {
-    name: "Data Storage",
+    name: "Data (All Segments)",
     free: "Unlimited",
     premium: "Unlimited",
   },
@@ -41,6 +41,11 @@ const compareTable = [
   },
   {
     name: "Data backup",
+    free: <BiX size={25} className="text-red-500" />,
+    premium: <BiCheck size={25} className="text-green-700" />,
+  },
+  {
+    name: "Per-Item Beneficiary Selection",
     free: <BiX size={25} className="text-red-500" />,
     premium: <BiCheck size={25} className="text-green-700" />,
   },
@@ -85,7 +90,7 @@ const compareTable = [
   {
     section: "Platform",
   },
-  
+
   {
     name: "Communications",
     free: "Email only",
@@ -136,19 +141,26 @@ export default function CompareTable() {
               );
             }
             return (
-              <div key={index} className="bg-white border border-gray-200 rounded-lg p-4">
+              <div
+                key={index}
+                className="bg-white border border-gray-200 rounded-lg p-4"
+              >
                 <h5 className="font-semibold text-gray-800 mb-3 text-sm leading-relaxed">
                   {item.name}
                 </h5>
                 <div className="flex gap-2">
                   <div className="flex-1 p-3 bg-gray-50 rounded-lg text-center border border-gray-100">
-                    <div className="text-xs text-gray-500 mb-1 font-medium uppercase tracking-wide">Free</div>
+                    <div className="text-xs text-gray-500 mb-1 font-medium uppercase tracking-wide">
+                      Free
+                    </div>
                     <div className="font-medium text-gray-800 flex justify-center items-center min-h-[28px] text-sm">
                       {item.free}
                     </div>
                   </div>
                   <div className="flex-1 p-3 bg-blue-50 rounded-lg text-center border border-blue-100">
-                    <div className="text-xs text-blue-500 mb-1 font-medium uppercase tracking-wide">Premium</div>
+                    <div className="text-xs text-blue-500 mb-1 font-medium uppercase tracking-wide">
+                      Premium
+                    </div>
                     <div className="font-medium text-blue-800 flex justify-center items-center min-h-[28px] text-sm">
                       {item.premium}
                     </div>
@@ -187,7 +199,10 @@ export default function CompareTable() {
             );
           }
           return (
-            <div key={index} className="flex w-min sm:w-full border-gray-300 border-b py-1 hover:bg-gray-50 transition-colors">
+            <div
+              key={index}
+              className="flex w-min sm:w-full border-gray-300 border-b py-1 hover:bg-gray-50 transition-colors"
+            >
               <div className="flex flex-1 min-w-60 border-neutral-200 font-semibold border-dashed border-r p-2">
                 {item.name}
               </div>
