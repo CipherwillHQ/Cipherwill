@@ -2,6 +2,7 @@ import { DateTime } from "luxon";
 import CustomCipherwillInterval from "./CustomCipherwillInterval";
 import Link from "next/link";
 import SimpleButton from "@/components/common/SimpleButton";
+import Timeline from "./Timeline";
 
 export default function CycleDescription({
   birth_stamp,
@@ -102,10 +103,9 @@ export default function CycleDescription({
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 bg-secondary p-4 border border-default rounded-md w-full">
+      <div className="flex flex-col gap-4 bg-secondary p-2 border border-default rounded-md w-full">
         <CustomCipherwillInterval interval={interval} />
-
-        <div className="flex flex-col gap-3 border-b border-default pb-4 mb-2">
+        <div className="flex flex-col gap-3 border-b border-default p-2 pb-4 mb-2">
           {last_accessed && (
             <div className="flex flex-col sm:flex-row w-full justify-between items-center">
               <div className="text-sm opacity-70 font-medium">
@@ -131,56 +131,7 @@ export default function CycleDescription({
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col sm:flex-row w-full justify-between items-center">
-            <div className="text-sm opacity-70 font-medium">
-              First update reminder
-            </div>
-            <div className="text-sm">
-              {DateTime.now()
-                .plus({ days: interval + 3 })
-                .toJSDate()
-                .toDateString()}{" "}
-              (3 Days)
-            </div>
-          </div>
-          <div className="flex flex-col sm:flex-row w-full justify-between items-center">
-            <div className="text-sm opacity-70 font-medium">
-              Second update reminder
-            </div>
-            <div className="text-sm">
-              {DateTime.now()
-                .plus({ days: interval + 30 })
-                .toJSDate()
-                .toDateString()}{" "}
-              (30 Days)
-            </div>
-          </div>
-          <div className="flex flex-col sm:flex-row w-full justify-between items-center">
-            <div className="text-sm opacity-70 font-medium">
-              Last update reminder
-            </div>
-            <div className="text-sm">
-              {DateTime.now()
-                .plus({ days: interval + 90 })
-                .toJSDate()
-                .toDateString()}{" "}
-              (90 Days)
-            </div>
-          </div>
-          <div className="flex flex-col sm:flex-row w-full justify-between items-center">
-            <div className="text-sm opacity-70 font-medium">
-              Will release to beneficiary
-            </div>
-            <div className="text-sm">
-              {DateTime.now()
-                .plus({ days: interval + 100 })
-                .toJSDate()
-                .toDateString()}{" "}
-              (100 Days)
-            </div>
-          </div>
-        </div>
+        <Timeline interval={interval} />
       </div>
     </>
   );

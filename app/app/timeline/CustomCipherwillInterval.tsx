@@ -38,7 +38,7 @@ export default function CustomCipherwillInterval({
     useMutation(UPDATE_PREFERENCES);
 
   return (
-    <div className="flex flex-col md:flex-row justify-between items-center">
+    <div className="flex flex-col md:flex-row justify-between items-center p-2">
       <span className="mr-2">Start sending reminders if i'm inactive for</span>
       <Select
         options={options}
