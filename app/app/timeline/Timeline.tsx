@@ -1,9 +1,11 @@
 "use client";
 
+import Select from "@/components/ui/Select";
 import { useUserContext } from "@/contexts/UserSetupContext";
 import UPDATE_PREFERENCES from "@/graphql/ops/auth/mutations/UPDATE_PREFERENCES";
 import { useMutation } from "@apollo/client/react";
 import { DateTime } from "luxon";
+import toast from "react-hot-toast";
 
 export default function Timeline({ interval }: { interval: number }) {
   const { preferences } = useUserContext();
@@ -19,14 +21,13 @@ export default function Timeline({ interval }: { interval: number }) {
   const [updatePreferences, { loading: updating }] =
     useMutation(UPDATE_PREFERENCES);
 
-    //TODO: remianing tasks
-    // 1. add select compoennt ot chnge time to check in boxes
-    // 2. call mutation on change of select component
-    // 3. give visual indication of loading when mutation is in progress
-    // 4. make this feature a premium thing
-    // 5. make this preference in reminder check in backend
-    // 6. make this preium in set preference in backend
-    
+  //TODO: remianing tasks
+  // 1. add select compoennt ot chnge time to check in boxes
+  // 2. call mutation on change of select component
+  // 3. give visual indication of loading when mutation is in progress
+  // 4. make this feature a premium thing
+  // 5. make this preference in reminder check in backend
+  // 6. make this preium in set preference in backend
 
   return (
     <div className="flex flex-col gap-2">
@@ -34,6 +35,28 @@ export default function Timeline({ interval }: { interval: number }) {
         <div className="text-sm opacity-70 font-medium">Time to check in</div>
         <div className="text-sm">
           {Math.floor(parseInt(firstReminderAfterMs) / 86400000)} days
+          <Select
+            className="ml-2"
+            value={firstReminderAfterMs}
+            onChange={async (e) => {
+              await updatePreferences({
+                variables: {
+                  key: "firstReminderAfterMs",
+                  value: e,
+                },
+              }).then(() => {
+                toast.success(`Updated time to check for first reminder`);
+              });
+            }}
+            disabled={updating}
+            options={[
+              { value: "86400000", label: "1 day" },
+              { value: "172800000", label: "2 days" },
+              { value: "259200000", label: "3 days" },
+              { value: "432000000", label: "5 days" },
+              { value: "604800000", label: "7 days" },
+            ]}
+          />
         </div>
       </div>
       <div className="flex flex-col sm:flex-row w-full justify-between items-center p-2">
