@@ -28,33 +28,49 @@ const available_timeline_values = [
 
 export default function CheckInRow({
   title,
+  subtitle,
   update_key,
   reminder_ms,
+  desc_one,
 }: {
   title: string;
+  subtitle: string;
   update_key: string;
   reminder_ms: string;
+  desc_one: string;
 }) {
   const [updatePreferences, { loading: updating }] =
     useMutation(UPDATE_PREFERENCES);
   const [open, setOpen] = useState(false);
-  // const plan = useCurrentUserPlan();
-  const plan = "premium"; // TODO: remove this line after testing
+  const plan = useCurrentUserPlan();
+  // const plan = "premium"; // TODO: remove this line after testing
 
   return (
-    <div className="flex flex-col sm:flex-row w-full justify-between items-center bg-primary/10 py-2 px-4 rounded-md">
-      <div className="text-sm opacity-70 font-medium">{title}</div>
-      <div className="text-sm flex items-center">
-        {Math.floor(parseInt(reminder_ms) / 86400000)} days{" "}
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-primary/5 rounded-md">
+      <div className="flex-1">
+        <h3 className="font-semibold text-gray-900 dark:text-white text-center sm:text-left">
+          {title}
+        </h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400 text-center sm:text-left">
+          {subtitle}
+        </p>
+      </div>
+      <div className="flex-shrink-0">
         {plan === "premium" ? (
-          <FiEdit
-            className="ml-2 cursor-pointer"
+          <button
             onClick={() => setOpen(true)}
-          />
+            className="w-full sm:w-auto inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-neutral-800 text-gray-800 dark:text-gray-100 border border-default rounded-md text-sm hover:cursor-pointer"
+          >
+            {Math.floor(parseInt(reminder_ms) / 86400000)} days <FiEdit />
+          </button>
         ) : (
           <RestrictedPopup
             plan="Premium"
-            trigger={<FiEdit className="ml-2 cursor-pointer" />}
+            trigger={
+              <button className="w-full sm:w-auto inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-neutral-800 text-gray-800 dark:text-gray-100 border border-default rounded-md text-sm disabled:opacity-60 cursor-not-allowed">
+                {Math.floor(parseInt(reminder_ms) / 86400000)} days <FiEdit />
+              </button>
+            }
           />
         )}
       </div>
@@ -65,7 +81,7 @@ export default function CheckInRow({
             <div className="flex items-center gap-3">
               <FiEdit className="text-blue-500" size={24} />
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Change Reminder Interval
+                Change Interval
               </h2>
             </div>
             <button
@@ -80,14 +96,8 @@ export default function CheckInRow({
           {/* Content */}
           <div className="p-4">
             <div className="mb-4">
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                This setting controls how often you need to check in to keep
-                your will active.
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                If you don't check in within this time period, your will may be
-                released to beneficiaries. Choose an interval that works for
-                your lifestyle.
+              <p className="opacity-75">
+                {desc_one}
               </p>
             </div>
             <Select
