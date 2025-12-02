@@ -11,12 +11,14 @@ export default function RestrictedPopup({
 }) {
   return (
     <Popup trigger={<div>{trigger}</div>} modal>
-      <div className="bg-white rounded-md p-4 border border-default flex flex-col gap-2 max-w-sm">
+      <div className="bg-white dark:bg-neutral-900 text-black dark:text-white rounded-md p-4 border border-default flex flex-col gap-2 max-w-sm">
         <div className="pb-2">
           This is a premium feature. Please upgrade your plan to access this
           feature.
         </div>
-        <SimpleButton href="/app/billing">Upgrade to {plan}</SimpleButton>
+        <SimpleButton className="w-full" href="/app/billing">
+          Upgrade to {plan}
+        </SimpleButton>
       </div>
     </Popup>
   );
