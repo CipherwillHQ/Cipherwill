@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 import CustomCipherwillInterval from "./CustomCipherwillInterval";
 import Link from "next/link";
 import SimpleButton from "@/components/common/SimpleButton";
-import Timeline from "./Timeline";
+import Timeline from "./Timeline/index";
 
 export default function CycleDescription({
   birth_stamp,

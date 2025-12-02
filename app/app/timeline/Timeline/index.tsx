@@ -7,6 +7,22 @@ import { useMutation } from "@apollo/client/react";
 import { DateTime } from "luxon";
 import toast from "react-hot-toast";
 
+const available_timeline_values = [
+  // variation of 3 day to 1 year
+  { value: "259200000", label: "3 days" },
+  { value: "432000000", label: "5 days" },
+  { value: "604800000", label: "7 days" },
+  { value: "864000000", label: "10 days" },
+  { value: "1209600000", label: "14 days" },
+  { value: "2592000000", label: "1 Month" },
+  { value: "5184000000", label: "2 Months" },
+  { value: "7776000000", label: "3 Months" },
+  { value: "8640000000", label: "100 Days" },
+  { value: "15552000000", label: "6 Months" },
+  { value: "17280000000", label: "200 Days" },
+  { value: "31536000000", label: "1 Year" },
+];
+
 export default function Timeline({ interval }: { interval: number }) {
   const { preferences } = useUserContext();
   if (preferences.first_reminder_after_ms === undefined) {
@@ -34,14 +50,14 @@ export default function Timeline({ interval }: { interval: number }) {
       <div className="flex flex-col sm:flex-row w-full justify-between items-center bg-primary/10 py-2 px-4 rounded-md">
         <div className="text-sm opacity-70 font-medium">Time to check in</div>
         <div className="text-sm">
-          {Math.floor(parseInt(firstReminderAfterMs) / 86400000)} days
+          {Math.floor(parseInt(firstReminderAfterMs) / 86400000)} days{" "}
           <Select
             className="ml-2"
             value={firstReminderAfterMs}
             onChange={async (e) => {
               await updatePreferences({
                 variables: {
-                  key: "firstReminderAfterMs",
+                  key: "first_reminder_after_ms",
                   value: e,
                 },
               }).then(() => {
@@ -49,19 +65,17 @@ export default function Timeline({ interval }: { interval: number }) {
               });
             }}
             disabled={updating}
-            options={[
-              { value: "86400000", label: "1 day" },
-              { value: "172800000", label: "2 days" },
-              { value: "259200000", label: "3 days" },
-              { value: "432000000", label: "5 days" },
-              { value: "604800000", label: "7 days" },
-            ]}
+            options={available_timeline_values}
           />
         </div>
       </div>
       <div className="flex flex-col sm:flex-row w-full justify-between items-center p-2">
-        <div className="text-sm opacity-70 font-medium">
+        <div className="opacity-70 font-medium text-center sm:text-left">
           First update reminder
+          <div className="font-bold text-sm">
+            Total {Math.floor(parseInt(firstReminderAfterMs) / 86400000)} Days
+            From Failed Check-In
+          </div>
         </div>
         <div className="text-sm">
           {DateTime.now()
@@ -71,20 +85,43 @@ export default function Timeline({ interval }: { interval: number }) {
                 parseInt(firstReminderAfterMs),
             })
             .toJSDate()
-            .toDateString()}{" "}
-          ({Math.floor(parseInt(firstReminderAfterMs) / 86400000)} Days From
-          Failed Check-In)
+            .toDateString()}
         </div>
       </div>
       <div className="flex flex-col sm:flex-row w-full justify-between items-center bg-primary/10 py-2 px-4 rounded-md">
         <div className="text-sm opacity-70 font-medium">Time to check in</div>
         <div className="text-sm">
-          {Math.floor(parseInt(secondReminderAfterMs) / 86400000)} days
+          {Math.floor(parseInt(secondReminderAfterMs) / 86400000)} days{" "}
+          <Select
+            className="ml-2"
+            value={secondReminderAfterMs}
+            onChange={async (e) => {
+              await updatePreferences({
+                variables: {
+                  key: "second_reminder_after_ms",
+                  value: e,
+                },
+              }).then(() => {
+                toast.success(`Updated time to check for second reminder`);
+              });
+            }}
+            disabled={updating}
+            options={available_timeline_values}
+          />
         </div>
       </div>
       <div className="flex flex-col sm:flex-row w-full justify-between items-center p-2">
-        <div className="text-sm opacity-70 font-medium">
+        <div className="opacity-70 font-medium text-center sm:text-left">
           Second update reminder
+          <div className="font-bold text-sm">
+            Total{" "}
+            {Math.floor(
+              (parseInt(firstReminderAfterMs) +
+                parseInt(secondReminderAfterMs)) /
+                86400000
+            )}{" "}
+            Days From Failed Check-In
+          </div>
         </div>
         <div className="text-sm">
           {DateTime.now()
@@ -96,24 +133,44 @@ export default function Timeline({ interval }: { interval: number }) {
             })
             .toJSDate()
             .toDateString()}{" "}
-          (
-          {Math.floor(
-            (parseInt(firstReminderAfterMs) + parseInt(secondReminderAfterMs)) /
-              86400000
-          )}{" "}
-          Days From Failed Check-In)
         </div>
       </div>
 
       <div className="flex flex-col sm:flex-row w-full justify-between items-center bg-primary/10 py-2 px-4 rounded-md">
         <div className="text-sm opacity-70 font-medium">Time to check in</div>
         <div className="text-sm">
-          {Math.floor(parseInt(lastReminderAfterMs) / 86400000)} days
+          {Math.floor(parseInt(lastReminderAfterMs) / 86400000)} days{" "}
+          <Select
+            className="ml-2"
+            value={lastReminderAfterMs}
+            onChange={async (e) => {
+              await updatePreferences({
+                variables: {
+                  key: "last_reminder_after_ms",
+                  value: e,
+                },
+              }).then(() => {
+                toast.success(`Updated time to check for last reminder`);
+              });
+            }}
+            disabled={updating}
+            options={available_timeline_values}
+          />
         </div>
       </div>
       <div className="flex flex-col sm:flex-row w-full justify-between items-center p-2">
-        <div className="text-sm opacity-70 font-medium">
+        <div className="opacity-70 font-medium text-center sm:text-left">
           Last update reminder
+          <div className="font-bold text-sm">
+            Total{" "}
+            {Math.floor(
+              (parseInt(firstReminderAfterMs) +
+                parseInt(secondReminderAfterMs) +
+                parseInt(lastReminderAfterMs)) /
+                86400000
+            )}{" "}
+            Days From Failed Check-In
+          </div>
         </div>
         <div className="text-sm">
           {DateTime.now()
@@ -126,25 +183,44 @@ export default function Timeline({ interval }: { interval: number }) {
             })
             .toJSDate()
             .toDateString()}{" "}
-          (
-          {Math.floor(
-            (parseInt(firstReminderAfterMs) +
-              parseInt(secondReminderAfterMs) +
-              parseInt(lastReminderAfterMs)) /
-              86400000
-          )}{" "}
-          Days From Failed Check-In)
         </div>
       </div>
       <div className="flex flex-col sm:flex-row w-full justify-between items-center bg-primary/10 py-2 px-4 rounded-md">
         <div className="text-sm opacity-70 font-medium">Time to check in</div>
         <div className="text-sm">
-          {Math.floor(parseInt(willReleaseAfterMs) / 86400000)} days
+          {Math.floor(parseInt(willReleaseAfterMs) / 86400000)} days{" "}
+          <Select
+            className="ml-2"
+            value={willReleaseAfterMs}
+            onChange={async (e) => {
+              await updatePreferences({
+                variables: {
+                  key: "will_release_after_ms",
+                  value: e,
+                },
+              }).then(() => {
+                toast.success(`Updated time to check for data release`);
+              });
+            }}
+            disabled={updating}
+            options={available_timeline_values}
+          />
         </div>
       </div>
       <div className="flex flex-col sm:flex-row w-full justify-between items-center p-2">
-        <div className="text-sm opacity-70 font-medium">
+        <div className="opacity-70 font-medium text-center sm:text-left">
           Will release to beneficiary
+          <div className="font-bold text-sm">
+            Total{" "}
+            {Math.floor(
+              (parseInt(firstReminderAfterMs) +
+                parseInt(secondReminderAfterMs) +
+                parseInt(lastReminderAfterMs) +
+                parseInt(willReleaseAfterMs)) /
+                86400000
+            )}{" "}
+            Days From Failed Check-In
+          </div>
         </div>
         <div className="text-sm">
           {DateTime.now()
@@ -157,30 +233,53 @@ export default function Timeline({ interval }: { interval: number }) {
                 parseInt(willReleaseAfterMs),
             })
             .toJSDate()
-            .toDateString()}{" "}
-          (
-          {Math.floor(
-            (parseInt(firstReminderAfterMs) +
-              parseInt(secondReminderAfterMs) +
-              parseInt(lastReminderAfterMs) +
-              parseInt(willReleaseAfterMs)) /
-              86400000
-          )}{" "}
-          Days From Failed Check-In)
+            .toDateString()}
         </div>
       </div>
       <div className="flex flex-col sm:flex-row w-full justify-between items-center bg-primary/10 py-2 px-4 rounded-md">
         <div className="text-sm opacity-70 font-medium">
-          Access to beneficiaries
+          Data access to beneficiaries via dashboard
         </div>
         <div className="text-sm">
-          {Math.floor(parseInt(willRevokeAfterMs) / 86400000)} days
+          {Math.floor(parseInt(willRevokeAfterMs) / 86400000)} days{" "}
+          <Select
+            className="ml-2"
+            value={willRevokeAfterMs}
+            onChange={async (e) => {
+              await updatePreferences({
+                variables: {
+                  key: "will_revoke_after_ms",
+                  value: e,
+                },
+              }).then(() => {
+                toast.success(`Updated time to check for access revocation`);
+              });
+            }}
+            disabled={updating}
+            options={available_timeline_values}
+          />
         </div>
       </div>
       <div className="flex flex-col sm:flex-row w-full justify-between items-center p-2">
-        <div className="text-sm opacity-70 font-medium text-center sm:text-left">
+        <div className="opacity-70 font-medium text-center sm:text-left">
           Access to beneficiaries will be revoked (all your data will be
           deleted)
+          <div className="font-bold text-sm">
+            Total{" "}
+            {Math.floor(
+              (parseInt(firstReminderAfterMs) +
+                parseInt(secondReminderAfterMs) +
+                parseInt(lastReminderAfterMs) +
+                parseInt(willReleaseAfterMs) +
+                parseInt(willRevokeAfterMs)) /
+                86400000
+            )}{" "}
+            Days From Failed Check-In
+          </div>
+          <div className="font-bold text-sm">
+            Total {Math.floor(parseInt(willRevokeAfterMs) / 86400000)} Days From
+            Access Granted
+          </div>
         </div>
         <div className="text-sm">
           {DateTime.now()
@@ -194,17 +293,7 @@ export default function Timeline({ interval }: { interval: number }) {
                 parseInt(willRevokeAfterMs),
             })
             .toJSDate()
-            .toDateString()}{" "}
-          (
-          {Math.floor(
-            (parseInt(firstReminderAfterMs) +
-              parseInt(secondReminderAfterMs) +
-              parseInt(lastReminderAfterMs) +
-              parseInt(willReleaseAfterMs) +
-              parseInt(willRevokeAfterMs)) /
-              86400000
-          )}{" "}
-          Days From Failed Check-In)
+            .toDateString()}
         </div>
       </div>
     </div>
