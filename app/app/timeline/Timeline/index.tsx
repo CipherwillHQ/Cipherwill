@@ -3,6 +3,7 @@ import { useUserContext } from "@/contexts/UserSetupContext";
 import { DateTime } from "luxon";
 import CheckInRow from "./CheckInRow";
 import ExplainerRow from "./ExplainerRow";
+import TimelineReset from "./TimelineReset";
 
 export default function Timeline({ interval }: { interval: number }) {
   const { preferences } = useUserContext();
@@ -22,6 +23,7 @@ export default function Timeline({ interval }: { interval: number }) {
 
   return (
     <div className="flex flex-col gap-2">
+      {/* Reset row: moved to its own component for better DX and positioning */}
       <CheckInRow
         title="Time to Check in Before First Reminder"
         update_key="first_reminder_after_ms"
@@ -87,6 +89,7 @@ export default function Timeline({ interval }: { interval: number }) {
         }
         interval={interval}
       />
+      <TimelineReset />
     </div>
   );
 }

@@ -71,7 +71,7 @@ export default function ConfirmationPopup({
     <BasicPopup
     popup_className="p-0 m-0"
     open={isOpen} setOpen={onClose}>
-      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 max-w-md w-full">
+      <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 max-w-md w-full">
         {/* Header */}
         <div className={`flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 ${variantStyles.headerBg}`}>
           <div className="flex items-center gap-3">

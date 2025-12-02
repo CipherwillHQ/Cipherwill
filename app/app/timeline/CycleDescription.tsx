@@ -93,7 +93,7 @@ export default function CycleDescription({
       <div className="flex flex-col gap-4 p-4 border border-default rounded-md bg-secondary">
         <div>
           <h2 className="font-semibold">Check In Interval</h2>
-          <div className="text-sm lg:max-w-2xl opacity-80 font-medium pt-2">
+          <div className="text-sm lg:max-w-4xl opacity-80 font-medium pt-2">
             We will regularly check to see if you've logged into your Cipherwill
             account. If we notice that you haven't, we'll start sending you
             reminders based on our schedule, encouraging you to log in. If you
@@ -105,7 +105,7 @@ export default function CycleDescription({
 
       <div className="flex flex-col gap-4 bg-secondary p-2 border border-default rounded-md w-full">
         <CustomCipherwillInterval interval={interval} />
-        <div className="flex flex-col gap-3 border-b border-default p-2 pb-4 mb-2">
+        <div className="flex flex-col gap-3 p-2 pb-4 mb-2">
           {last_accessed && (
             <div className="flex flex-col sm:flex-row w-full justify-between items-center">
               <div className="text-sm opacity-70 font-medium">
@@ -131,6 +131,9 @@ export default function CycleDescription({
             </div>
           </div>
         </div>
+      </div>
+      <div className="flex flex-col gap-4 bg-secondary p-2 border border-default rounded-md w-full">
+        <h2 className="font-semibold p-2">Reminder Timeline</h2>
         <Timeline interval={interval} />
       </div>
     </>
