@@ -43,12 +43,11 @@ export default function CheckInRow({
     useMutation(UPDATE_PREFERENCES);
   const [open, setOpen] = useState(false);
   const plan = useCurrentUserPlan();
-  // const plan = "premium"; // TODO: remove this line after testing
 
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-primary/5 rounded-md">
       <div className="flex-1">
-        <h3 className="font-semibold text-gray-900 dark:text-white text-center sm:text-left">
+        <h3 className="text-gray-900 dark:text-white text-center sm:text-left">
           {title}
         </h3>
         <p className="text-sm text-gray-600 dark:text-gray-400 text-center sm:text-left">
@@ -67,7 +66,7 @@ export default function CheckInRow({
           <RestrictedPopup
             plan="Premium"
             trigger={
-              <button className="w-full sm:w-auto inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-neutral-800 text-gray-800 dark:text-gray-100 border border-default rounded-md text-sm disabled:opacity-60 cursor-not-allowed">
+              <button className="w-full sm:w-auto inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-neutral-800 text-gray-800 dark:text-gray-100 border border-default rounded-md text-sm disabled:opacity-60 hover:cursor-pointer">
                 {Math.floor(parseInt(reminder_ms) / 86400000)} days <FiEdit />
               </button>
             }
