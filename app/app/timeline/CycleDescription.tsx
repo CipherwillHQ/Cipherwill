@@ -133,7 +133,6 @@ export default function CycleDescription({
         </div>
       </div>
       <div className="flex flex-col gap-4 bg-secondary p-2 border border-default rounded-md w-full">
-        <h2 className="font-semibold p-2">Reminder Timeline</h2>
         <Timeline interval={interval} />
       </div>
     </>
