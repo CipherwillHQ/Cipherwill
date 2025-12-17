@@ -44,8 +44,8 @@ export default function EventRow({
   const [updatePreferences, { loading: updating }] =
     useMutation(UPDATE_PREFERENCES);
   const [open, setOpen] = useState(false);
-//   const plan = useCurrentUserPlan();
-  const plan = "premium";
+  const plan = useCurrentUserPlan();
+  // const plan = "premium";
   return (
     <tr className="block sm:table-row border-b border-default">
       <td className="block sm:table-cell p-2">
@@ -85,7 +85,7 @@ export default function EventRow({
                 plan="Premium"
                 trigger={
                   <button className="w-full sm:w-auto inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-neutral-800 text-gray-800 dark:text-gray-100 border border-default rounded-md text-sm disabled:opacity-60 hover:cursor-pointer">
-                    {Math.floor(parseInt(reminder_ms) / 86400000)} days <FiEdit />
+                    {Math.floor(parseInt(reminder_ms) / 86400000)} days<FiEdit />
                   </button>
                 }
               />

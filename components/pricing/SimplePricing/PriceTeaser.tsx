@@ -16,7 +16,7 @@ const pricingData = [
     },
     button: {
       text: "Get Started",
-      bgColor: "bg-blue-600/85 hover:bg-blue-700",
+      bgColor: "bg-primary-600/85 hover:bg-primary-700",
       textColor: "text-white",
     },
     description: {
@@ -26,33 +26,33 @@ const pricingData = [
     features: ["Limited Segments", "5 Beneficiaries", "Live Chat Support"],
     featureColor: "text-gray-700",
   },
-  {
-    id: "monthly",
-    badge: {
-      text: "Monthly",
-      bgColor: "bg-blue-100",
-      textColor: "text-blue-900",
-    },
-    price: {
-      amount: "$5",
-      period: "/Month",
-    },
-    button: {
-      text: "Get Started",
-      bgColor: "bg-blue-600 hover:bg-blue-700",
-      textColor: "text-white",
-    },
-    description: {
-      main: "Perfect for trying premium features",
-      secondary: "Flexible monthly billing",
-    },
-    features: [
-      "All Segments",
-      "Unlimited beneficiaries",
-      "Early access to new features",
-    ],
-    featureColor: "text-green-700",
-  },
+  // {
+  //   id: "monthly",
+  //   badge: {
+  //     text: "Monthly",
+  //     bgColor: "bg-blue-100",
+  //     textColor: "text-blue-900",
+  //   },
+  //   price: {
+  //     amount: "$5",
+  //     period: "/Month",
+  //   },
+  //   button: {
+  //     text: "Get Started",
+  //     bgColor: "bg-blue-600 hover:bg-blue-700",
+  //     textColor: "text-white",
+  //   },
+  //   description: {
+  //     main: "Perfect for trying premium features",
+  //     secondary: "Flexible monthly billing",
+  //   },
+  //   features: [
+  //     "All Segments",
+  //     "Unlimited beneficiaries",
+  //     "Early access to new features",
+  //   ],
+  //   featureColor: "text-green-700",
+  // },
   {
     id: "yearly",
     badge: {
