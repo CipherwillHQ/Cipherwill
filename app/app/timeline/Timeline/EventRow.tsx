@@ -45,7 +45,7 @@ export default function EventRow({
     useMutation(UPDATE_PREFERENCES);
   const [open, setOpen] = useState(false);
   const plan = useCurrentUserPlan();
-  // const plan = "premium";
+  
   return (
     <tr className="block sm:table-row border-b border-default">
       <td className="block sm:table-cell p-2">

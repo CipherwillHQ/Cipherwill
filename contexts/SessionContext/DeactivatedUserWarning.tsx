@@ -64,7 +64,7 @@ export default function DeactivatedUserWarning({
         {/* Description */}
         <div className="mb-8 space-y-4 text-neutral-700 dark:text-neutral-300 leading-relaxed">
           Your account data has been removed from the system. This happens when
-          your Cipherwill has triggered all the events in your will (execution timeline).
+          your Cipherwill has triggered all the events in your cipherwill (Cipherwill Execution Timeline).
           <br />
           OR
           <br />

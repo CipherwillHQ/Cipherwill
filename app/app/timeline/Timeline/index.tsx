@@ -14,10 +14,6 @@ export default function Timeline({ interval }: { interval: number }) {
   const willReleaseAfterMs = preferences.will_release_after_ms as string;
   const willRevokeAfterMs = preferences.will_revoke_after_ms as string;
 
-  //TODO: remianing tasks
-  // 5. make this preference in reminder check in backend
-  // 6. make this preium in set preference in backend
-
   return (
     <div className="flex flex-col gap-2 p-2">
       <div className="overflow-x-auto sm:overflow-x-visible">
