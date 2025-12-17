@@ -113,7 +113,7 @@ export default function EventRow({
 
             {/* Content */}
             <div className="p-4">
-              <div className="mb-4">
+              <div className="mb-4 text-center">
                 <p className="opacity-75">{description}</p>
               </div>
               <Select

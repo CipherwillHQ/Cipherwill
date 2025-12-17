@@ -22,7 +22,7 @@ export default function Timeline({ interval }: { interval: number }) {
     <div className="flex flex-col gap-2 p-2">
       <div className="overflow-x-auto sm:overflow-x-visible">
         <table className="w-full table-auto block sm:table">
-          <thead className="bg-primary/5 hidden sm:table-header-group">
+          <thead className="hidden sm:table-header-group">
             <tr className="border-b border-default block sm:table-row">
               <th className="text-left p-2 block sm:table-cell">Event</th>
               <th className="text-left p-2 block sm:table-cell">Date</th>
