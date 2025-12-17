@@ -54,6 +54,7 @@ export default function EventRow({
           <span>{title}</span>
         </div>
       </td>
+      
       <td className="block sm:table-cell p-2">
         <div className="flex justify-between items-center">
           <span className="sm:hidden font-semibold">Date</span>
