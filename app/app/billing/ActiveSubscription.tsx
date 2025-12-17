@@ -32,54 +32,44 @@ export default function ActiveSubscription() {
     error,
   } = useQuery<SubscriptionData>(GET_MY_SUBSCRIPTION);
 
-  const upgradeUsingPaddle = useCallback(
-    async (is_monthly: boolean) => {
-      const PRICE_ID = is_monthly
-        ? PADDLE_MONTHLY_PRICE_ID
-        : PADDLE_YEARLY_PRICE_ID;
-      const user_id = user_data?.me?.id;
-      if (!user_id) {
-        logger.error("User id is not found for billing");
-        toast.error("Something went wrong! Report has been sent to team.");
-        return;
-      }
+  const upgradeUsingPaddle = useCallback(async () => {
+    const PRICE_ID = PADDLE_YEARLY_PRICE_ID;
+    const user_id = user_data?.me?.id;
+    if (!user_id) {
+      logger.error("User id is not found for billing");
+      toast.error("Something went wrong! Report has been sent to team.");
+      return;
+    }
 
-      if (paddle) {
-        let checkout_configs: CheckoutOpenOptions = {
-          settings: {
-            successUrl: "https://www.cipherwill.com/callback/checkout_success",
-            allowedPaymentMethods: [
-              "apple_pay",
-              "google_pay",
-              "paypal",
-              "card",
-            ],
-            theme: "dark",
+    if (paddle) {
+      let checkout_configs: CheckoutOpenOptions = {
+        settings: {
+          successUrl: "https://www.cipherwill.com/callback/checkout_success",
+          allowedPaymentMethods: ["apple_pay", "google_pay", "paypal", "card"],
+          theme: "dark",
+        },
+        items: [
+          {
+            priceId: PRICE_ID,
+            quantity: 1,
           },
-          items: [
-            {
-              priceId: PRICE_ID,
-              quantity: 1,
-            },
-          ],
-          customData: {
-            user_id,
-          },
+        ],
+        customData: {
+          user_id,
+        },
+      };
+      if (user) {
+        checkout_configs.customer = {
+          email: user.email,
         };
-        if (user) {
-          checkout_configs.customer = {
-            email: user.email,
-          };
-          paddle.Checkout.open(checkout_configs);
-        } else {
-          paddle.Checkout.open(checkout_configs);
-        }
+        paddle.Checkout.open(checkout_configs);
       } else {
-        logger.error("Paddle is not initialized for checkout");
+        paddle.Checkout.open(checkout_configs);
       }
-    },
-    [paddle, PADDLE_MONTHLY_PRICE_ID, PADDLE_YEARLY_PRICE_ID, user, user_data]
-  );
+    } else {
+      logger.error("Paddle is not initialized for checkout");
+    }
+  }, [paddle, PADDLE_YEARLY_PRICE_ID, user, user_data]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error!</div>;
@@ -117,61 +107,130 @@ export default function ActiveSubscription() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4 mb-6">
+            <div className="max-w-md mx-auto mb-6">
               <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => upgradeUsingPaddle(true)}
-                className="bg-secondary rounded-xl p-6 border border-default cursor-pointer hover:shadow-sm transition-all duration-200"
+                whileTap={{ scale: 0.98 }}
+                onClick={() => upgradeUsingPaddle()}
+                className="bg-gradient-to-br from-secondary via-secondary to-secondary rounded-2xl p-8 border border-default cursor-pointer hover:border-primary/80 transition-all duration-300 relative overflow-hidden"
               >
-                <div className="flex items-center mb-3">
-                  <FaCalendarAlt className="text-blue-500 mr-3" />
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Monthly Plan
-                  </h3>
+                <div className="absolute top-0 right-0 bg-primary text-white px-4 py-1 rounded-bl-xl text-xs font-semibold">
+                  SAVE 33%
                 </div>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  $5{" "}
-                  <span className="text-sm font-normal text-gray-500">
-                    / month
-                  </span>
-                </p>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">
-                  Flexible monthly billing
-                </p>
-                <div className="mt-4 text-center">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                    Click to upgrade
-                  </span>
-                </div>
-              </motion.div>
 
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => upgradeUsingPaddle(false)}
-                className="bg-secondary rounded-xl p-6 border border-default cursor-pointer hover:shadow-sm transition-all duration-200"
-              >
-                <div className="flex items-center mb-3">
-                  <FaCreditCard className="text-green-500 mr-3" />
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Annual Plan
+                <div className="text-center mb-6 mt-4">
+                  <FaCreditCard className="mx-auto text-5xl text-primary mb-4" />
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                    Annual Premium Plan
                   </h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">
+                    The best value for securing your digital legacy
+                  </p>
                 </div>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  $40{" "}
-                  <span className="text-sm font-normal text-gray-500">
-                    / year
-                  </span>
-                </p>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">
-                  Save 33% with annual billing
-                </p>
-                <div className="mt-4 text-center">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                    Click to upgrade
-                  </span>
+
+                <div className="text-center mb-6">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <span className="text-gray-500 dark:text-gray-400 line-through text-lg">
+                      $60
+                    </span>
+                    <span className="text-4xl font-bold text-gray-900 dark:text-white">
+                      $40
+                    </span>
+                  </div>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">
+                    per year • Just $3.33/month
+                  </p>
                 </div>
+
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-start gap-2">
+                    <svg
+                      className="w-5 h-5 text-primary flex-shrink-0 mt-0.5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span className="text-gray-700 dark:text-gray-300 text-sm">
+                      Unlimited Beneficiaries & Data
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <svg
+                      className="w-5 h-5 text-primary flex-shrink-0 mt-0.5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span className="text-gray-700 dark:text-gray-300 text-sm">
+                      Access to All Segments
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <svg
+                      className="w-5 h-5 text-primary flex-shrink-0 mt-0.5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span className="text-gray-700 dark:text-gray-300 text-sm">
+                      Flexible Cipherwill Execution Timeline
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <svg
+                      className="w-5 h-5 text-primary flex-shrink-0 mt-0.5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span className="text-gray-700 dark:text-gray-300 text-sm">
+                      Per-Item Beneficiary Selection
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <svg
+                      className="w-5 h-5 text-primary flex-shrink-0 mt-0.5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span className="text-gray-700 dark:text-gray-300 text-sm">
+                      Notification via Email & Phone (Calls, SMS, WhatsApp)
+                    </span>
+                  </div>
+                  
+                </div>
+
+                <motion.div
+                  whileHover={{ scale: 1.01 }}
+                  className="bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-6 rounded-xl text-center transition-colors duration-200"
+                >
+                  Upgrade to Premium
+                </motion.div>
               </motion.div>
             </div>
 
@@ -181,7 +240,7 @@ export default function ActiveSubscription() {
                 variant="secondary"
                 className="w-full sm:w-auto"
               >
-                View All Pricing Options
+                View Plan Comparisons
               </SimpleButton>
             </div>
           </motion.div>
@@ -191,9 +250,9 @@ export default function ActiveSubscription() {
           <div className="flex gap-2 mt-8">
             <button
               className="border p-2 rounded-sm"
-              onClick={() => upgradeUsingPaddle(true)}
+              onClick={() => upgradeUsingPaddle()}
             >
-              Checkout using Paddle
+              Checkout using Paddle (Annual)
             </button>
 
             <button

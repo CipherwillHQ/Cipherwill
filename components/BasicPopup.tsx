@@ -17,7 +17,7 @@ export default function BasicPopup({
     open && (
       <div
         className={twMerge(
-          "absolute top-0 left-0 right-0 bottom-0 p-4 flex flex-col items-center justify-center bg-black/80 overflow-x-hidden",
+          "fixed top-0 left-0 right-0 bottom-0 p-4 flex flex-col items-center justify-center bg-black/80 overflow-x-hidden z-50",
           bg_className
         )}
         onClick={() => {
