@@ -110,15 +110,17 @@ export default function PrivacyPolicy() {
           contacting us directly.
         </div>
         <h2 className="pt-12 pb-4 font-semibold text-xl">
-          3. Sharing of Information
+          3. Data Sharing and Protection
         </h2>
         <div>
-          3.1 Service Providers: We may share your personal information with
-          trusted third-party service providers who assist us in operating our
-          business, delivering our services, or conducting activities on our
-          behalf. These service providers have access to your personal
-          information only to perform the specific tasks assigned to them and
-          are obligated to maintain its confidentiality.
+          3.1 Limited Service Providers: We only share your personal information
+          with essential service providers who assist us in operating our
+          platform and delivering our services on our behalf. These service
+          providers have access to your personal information solely to perform
+          the specific technical tasks required and are legally obligated to
+          maintain its confidentiality and security. We do not sell, rent, or
+          share your personal information with third parties for their own
+          marketing or business purposes.
           <br />
           <Link
             href={`/i/third-party-processors`}
@@ -128,18 +130,24 @@ export default function PrivacyPolicy() {
           </Link>
           <br />
           <br />
-          3.2 Compliance with Laws: We may share your personal information when
-          required to comply with applicable laws, regulations, legal processes,
-          or governmental requests. We may also disclose your information to
-          protect our rights, property, or safety, or the rights, property, or
-          safety of others.
+          3.2 Compliance with Laws: We may disclose your personal information
+          only when required to do so by law, regulation, legal process, or
+          governmental requests. Such disclosures are made only to the extent
+          necessary to comply with legal obligations.
           <br />
           <br />
           3.3 Business Transfers: In the event of a merger, acquisition, or sale
-          of assets, your personal information may be transferred to the
-          acquiring entity or third party involved. We will notify you via email
-          or prominent notice on our website before your personal information is
-          transferred and becomes subject to a different privacy policy.
+          of assets, any transfer of personal information will be subject to the
+          same privacy protections outlined in this policy. We will notify you
+          via email or prominent notice on our website before your personal
+          information is transferred and becomes subject to a different privacy
+          policy, ensuring you have the right to opt out.
+          <br />
+          <br />
+          3.4 No Data Selling or Sharing: Cipherwill strictly prohibits the
+          selling, trading, or sharing of user personal information with
+          affiliates, advertisers, or third parties for any commercial purpose.
+          Your data is used exclusively to provide you with our services.
         </div>
         <h2 className="pt-12 pb-4 font-semibold text-xl">
           4. Data Disclosure{" "}

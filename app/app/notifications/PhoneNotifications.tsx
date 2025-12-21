@@ -20,11 +20,13 @@ import {
 } from "@/types/graphql";
 import toast from "react-hot-toast";
 import ConfirmationButton from "@/components/common/ConfirmationButton";
+import Link from "next/link";
 
 export default function PhoneNotifications() {
   const [showAddPopup, setShowAddPopup] = useState(false);
   const [phoneCode, setPhoneCode] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
+  const [consentAcknowledged, setConsentAcknowledged] = useState(false);
   const [showRemovePopup, setShowRemovePopup] = useState(false);
   const [phoneToRemove, setPhoneToRemove] = useState<{
     id: string;
@@ -76,6 +78,11 @@ export default function PhoneNotifications() {
       return;
     }
 
+    if (!consentAcknowledged) {
+      toast.error("Please confirm you agree to receive messages");
+      return;
+    }
+
     try {
       await addPhoneNumber({
         variables: {
@@ -85,6 +92,7 @@ export default function PhoneNotifications() {
       });
       setPhoneCode("");
       setPhoneNum("");
+      setConsentAcknowledged(false);
       setShowAddPopup(false);
       const refetchResult = await refetch(); // Refresh the phone numbers list
 
@@ -331,8 +339,9 @@ export default function PhoneNotifications() {
                   <div className="md:max-w-2/3 w-full">
                     <h4 className="font-semibold">Text Messages (SMS)</h4>
                     <p>
-                      You'll receive important text messages from Cipherwill such as
-                      reminders, security alerts, and account activity notifications.
+                      You'll receive important text messages from Cipherwill
+                      such as reminders, security alerts, and account activity
+                      notifications.
                     </p>
                   </div>
                   <div className="mt-2 md:max-w-1/6 w-full flex items-center justify-between md:justify-center">
@@ -382,8 +391,9 @@ export default function PhoneNotifications() {
                   <div className="md:max-w-2/3 w-full">
                     <h4 className="font-semibold">Whatsapp Messages</h4>
                     <p>
-                      You'll receive important Whatsapp messages from Cipherwill such as
-                      reminders, security alerts, and account activity notifications.
+                      You'll receive important Whatsapp messages from Cipherwill
+                      such as reminders, security alerts, and account activity
+                      notifications.
                     </p>
                   </div>
                   <div className="mt-2 md:max-w-1/6 w-full flex items-center justify-between md:justify-center">
@@ -519,8 +529,28 @@ export default function PhoneNotifications() {
                     className="flex-1 px-3 py-2 bg-transparent focus:outline-none text-sm"
                   />
                 </div>
-                <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  Enter your country code and phone number (minimum 4 digits)
+                <label className="my-3 flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300">
+                  <input
+                    type="checkbox"
+                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    checked={consentAcknowledged}
+                    onChange={(e) => setConsentAcknowledged(e.target.checked)}
+                  />
+                  <span className="text-gray-600 dark:text-gray-400">
+                    By providing your mobile number and opting in, you agree to
+                    receive transactional and account-related SMS messages from
+                    Cipherwill, including one-time passwords (OTPs), security
+                    alerts, timeline check-in reminders, and important account
+                    notifications. Message frequency varies based on account
+                    activity. Message and data rates may apply. You can opt out
+                    at any time by replying STOP.
+                  </span>
+                </label>
+                <div
+                className="flex items-center gap-4 justify-evenly text-xs"
+                >
+                  <SimpleButton href="/i/privacy-policy" className="bg-transparent text-black dark:text-white">View Privacy Policy</SimpleButton>
+                  <SimpleButton href="/i/terms-of-service" className="bg-transparent text-black dark:text-white">View Terms of Service</SimpleButton>
                 </div>
               </div>
             </div>
@@ -529,7 +559,7 @@ export default function PhoneNotifications() {
             <div className="flex gap-3 justify-end pt-2">
               <button
                 onClick={() => setShowAddPopup(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors  hover:cursor-pointer"
               >
                 Cancel
               </button>
@@ -539,9 +569,10 @@ export default function PhoneNotifications() {
                   adding ||
                   !phoneCode.trim() ||
                   !phoneNum.trim() ||
-                  phoneNum.length < 4
+                  phoneNum.length < 4 ||
+                  !consentAcknowledged
                 }
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed rounded-lg transition-colors flex items-center gap-2"
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed rounded-lg transition-colors flex items-center gap-2 hover:cursor-pointer"
               >
                 {adding && (
                   <svg
