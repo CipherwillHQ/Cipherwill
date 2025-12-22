@@ -12,6 +12,7 @@ import {
 import { useMutation, useQuery } from "@apollo/client/react";
 import Options from "./Options";
 import BeneficiaryChoice from "./BeneficiaryChoice";
+import { CgSandClock } from "react-icons/cg";
 
 export default function DataHeader({
   metamodel_id,
@@ -106,6 +107,12 @@ export default function DataHeader({
           metamodel_id={metamodel_id}
           ignored_beneficiaries={model.ignored_beneficiaries || []}
         />
+        {/* <div className="flex items-center gap-2 border border-default rounded-full text-sm p-1 px-4">
+          <div>
+            <CgSandClock />
+          </div>
+          <div>Never</div>
+        </div> */}
         <Options
           metamodel_id={metamodel_id}
           metamodel_type={metamodel_type}

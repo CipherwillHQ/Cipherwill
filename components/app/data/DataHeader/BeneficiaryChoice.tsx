@@ -31,7 +31,7 @@ export default function BeneficiaryChoice({
   if (error) return <div>Error: {error.message} </div>;
 
   const popupTrigger = (
-    <div className="hover:cursor-pointer flex items-center gap-2 border border-default text-sm py-1 px-2 rounded-full">
+    <div className="hover:cursor-pointer flex items-center gap-2 border border-default text-sm py-1 px-4 rounded-full">
       {ignored_beneficiaries.length === 0 ? (
         <>
           <BiCheckCircle className="text-green-600" />
