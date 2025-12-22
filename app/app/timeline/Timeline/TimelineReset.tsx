@@ -6,13 +6,21 @@ import toast from "react-hot-toast";
 import { FiRefreshCw } from "react-icons/fi";
 import { useState } from "react";
 import ConfirmationPopup from "@/components/app/smartwill/ConfirmationPopup";
+import { useCurrentUserPlan } from "@/contexts/UserSetupContext";
 
 export default function TimelineReset() {
   const [resetting, setResetting] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [updatePreferences] = useMutation(UPDATE_PREFERENCES);
+  const plan = useCurrentUserPlan();
 
   const doReset = async () => {
+    if (plan === "free") {
+      toast.error(
+        "Resetting timeline preferences is not available on the Free plan. Please upgrade to access this feature."
+      );
+      return;
+    }
     setResetting(true);
     try {
       const defaults: Record<string, string> = {
