@@ -55,6 +55,13 @@ export default function ProfilePage() {
               </span>
             </div>
             <FeedbackConfirmationButton
+              options={[
+                "I was just exploring/testing",
+                "It felt overwhelming",
+                "I didn't understand what to do next",
+                "I don't need this yet",
+                "Security concerns",
+              ]}
               onConfirm={() => {
                 deleteData().then(() => {
                   logout();
@@ -78,6 +85,13 @@ export default function ProfilePage() {
               sure you want to delete your account?
             </div>
             <FeedbackConfirmationButton
+              options={[
+                "I was just exploring/testing",
+                "It felt overwhelming",
+                "I didn't understand what to do next",
+                "I don't need this yet",
+                "Security concerns",
+              ]}
               onConfirm={() => {
                 deleteAccount().then(() => {
                   logout();
