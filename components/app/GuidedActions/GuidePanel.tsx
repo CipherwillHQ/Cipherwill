@@ -24,7 +24,7 @@ export default function GuidePanel({
           </SimpleButton>
         </div>
       </div>
-      <div className="flex flex-1 flex-col items-center justify-center">
+      <div className="flex flex-1 flex-col items-center justify-center text-6xl font-bold text-black/10 dark:text-white/10 text-center p-2">
         Actions Placeholder
       </div>
       <div className="text-center">1/6</div>
