@@ -25,30 +25,35 @@ export default function Platform() {
     <div className="w-full">
       <MobileMenu/>
       <DesktopAndMobilePageHeader title="Platform" />
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 py-4 px-4">
-        {filtered_menu.map((item, index) => {
-          if (item.divider) {
+      <div className="py-4 px-4">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+          {filtered_menu.map((item, index) => {
+            if (item.divider) {
+              return (
+                <div
+                  key={index}
+                  className="col-span-2 sm:col-span-3 md:col-span-4 pt-2"
+                >
+                  <div className="text-black/80 dark:text-white font-medium">{item.divider}</div>
+                </div>
+              );
+            }
             return (
-              <div
-                key={index}
-                className=""
-              >
-                <div className="text-black/80 dark:text-white">{item.divider}</div>
-              </div>
-            );
-          }
-          return (
-            <div key={index} className="border border-default p-2 rounded-md bg-secondary">
               <Link
+                key={index}
                 href={item.path}
-                className="flex items-center gap-2"
+                className="border border-default rounded-lg bg-secondary hover:bg-secondary/80 transition-colors w-full h-32 flex flex-col items-center justify-center gap-2 p-4 text-center"
               >
-                {item.icon}
-                {item.title}
+                <div className="text-2xl">
+                  {item.icon}
+                </div>
+                <div className="text-sm font-medium line-clamp-2">
+                  {item.title}
+                </div>
               </Link>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );

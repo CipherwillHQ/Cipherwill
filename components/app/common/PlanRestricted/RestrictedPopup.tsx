@@ -31,7 +31,7 @@ export default function RestrictedPopup({
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <h3 className="text-base font-semibold">Premium Feature</h3>
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 border border-default">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 border border-default text-center">
                     Requires {plan}
                   </span>
                 </div>
