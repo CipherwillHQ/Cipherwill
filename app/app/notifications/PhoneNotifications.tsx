@@ -27,6 +27,7 @@ export default function PhoneNotifications() {
   const [phoneCode, setPhoneCode] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
   const [consentAcknowledged, setConsentAcknowledged] = useState(false);
+  const [policiesAccepted, setPoliciesAccepted] = useState(false);
   const [showRemovePopup, setShowRemovePopup] = useState(false);
   const [phoneToRemove, setPhoneToRemove] = useState<{
     id: string;
@@ -83,6 +84,11 @@ export default function PhoneNotifications() {
       return;
     }
 
+    if (!policiesAccepted) {
+      toast.error("Please accept the Privacy Policy and Terms of Service");
+      return;
+    }
+
     try {
       await addPhoneNumber({
         variables: {
@@ -93,6 +99,7 @@ export default function PhoneNotifications() {
       setPhoneCode("");
       setPhoneNum("");
       setConsentAcknowledged(false);
+      setPoliciesAccepted(false);
       setShowAddPopup(false);
       const refetchResult = await refetch(); // Refresh the phone numbers list
 
@@ -546,12 +553,32 @@ export default function PhoneNotifications() {
                     at any time by replying STOP.
                   </span>
                 </label>
-                <div
-                className="flex items-center gap-4 justify-evenly text-xs"
-                >
-                  <SimpleButton href="/i/privacy-policy" className="bg-transparent text-black dark:text-white">View Privacy Policy</SimpleButton>
-                  <SimpleButton href="/i/terms-of-service" className="bg-transparent text-black dark:text-white">View Terms of Service</SimpleButton>
-                </div>
+                <label className="my-3 flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300">
+                  <input
+                    type="checkbox"
+                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    checked={policiesAccepted}
+                    onChange={(e) => setPoliciesAccepted(e.target.checked)}
+                  />
+                  <span className="text-gray-600 dark:text-gray-400">
+                    I have read and agree to the
+                    {" "}
+                    <Link
+                      href="/i/privacy-policy"
+                      className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
+                    >
+                      Privacy Policy
+                    </Link>
+                    {" "}and{" "}
+                    <Link
+                      href="/i/terms-of-service"
+                      className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
+                    >
+                      Terms of Service
+                    </Link>
+                    .
+                  </span>
+                </label>
               </div>
             </div>
 
@@ -570,7 +597,8 @@ export default function PhoneNotifications() {
                   !phoneCode.trim() ||
                   !phoneNum.trim() ||
                   phoneNum.length < 4 ||
-                  !consentAcknowledged
+                  !consentAcknowledged ||
+                  !policiesAccepted
                 }
                 className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed rounded-lg transition-colors flex items-center gap-2 hover:cursor-pointer"
               >
