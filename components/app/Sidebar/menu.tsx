@@ -26,11 +26,11 @@ const menu: (Divider | Segment)[] = [
   },
   {
     icon: <MdTaskAlt />,
-    title: "Actions",
-    description: "User actions",
+    title: "Score",
+    description: "Cipherwill Score",
     plan_required: "free",
     preference_key: null,
-    path: "/app/actions",
+    path: "/app/score",
   },
   {
     icon: <TbCell />,

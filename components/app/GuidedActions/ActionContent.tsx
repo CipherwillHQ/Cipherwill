@@ -27,7 +27,7 @@ export default function ActionContent({
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Enter text"
-            className="w-full max-w-md px-4 py-2 border border-default rounded bg-primary text-foreground"
+            className="w-full max-w-md px-4 py-2 border border-default rounded"
           />
         );
       case "textarea":
@@ -36,7 +36,7 @@ export default function ActionContent({
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Enter text"
-            className="w-full max-w-md px-4 py-2 border border-default rounded bg-primary text-foreground"
+            className="w-full max-w-md min-h-[150px] max-h-[300px] px-4 py-2 border border-default rounded"
             rows={4}
           />
         );
@@ -47,7 +47,7 @@ export default function ActionContent({
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Enter number"
-            className="w-full max-w-md px-4 py-2 border border-default rounded bg-primary text-foreground"
+            className="w-full max-w-md px-4 py-2 border border-default rounded"
           />
         );
       case "date":
