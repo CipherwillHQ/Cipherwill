@@ -85,7 +85,7 @@ export default function ScoreExplainer() {
             actionLabel="Add"
           />
           <ScoreItem
-            description="100 points if you have at least 3 sessions (opened Cipherwill) with Cipherwill within last 1 year"
+            description="100 points if you have at least 3 sessions (opened Cipherwill) within last 1 year"
             value={score_details.sessions}
             noAction
           />
