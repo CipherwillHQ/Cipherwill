@@ -154,6 +154,78 @@ export default function TOS() {
           with your use of our Services, your violation of these Terms, or your
           violation of any rights.
         </div>
+
+        <h2 className="pt-12 pb-4 font-semibold">7. SMS and Text Message Communications</h2>
+        <div>
+          <h3 className="py-3 font-semibold">Program Name</h3>
+          <div className="mb-4">
+            Cipherwill SMS Notifications Program
+          </div>
+
+          <h3 className="py-3 font-semibold">Program Description</h3>
+          <div className="mb-4">
+            Cipherwill uses SMS text messaging to send you account notifications, security alerts, and promotional updates. Messages include transactional communications (account confirmations, security alerts, password resets) and optional marketing messages (new features, offers, updates).
+          </div>
+
+          <h3 className="py-3 font-semibold">Voluntary Opt-In</h3>
+          <div className="mb-4">
+            SMS opt-in is <b>completely voluntary</b> and is NOT required to create an account or use our services. You can use Cipherwill's full platform without consenting to receive SMS messages.
+          </div>
+
+          <h3 className="py-3 font-semibold">Message Frequency</h3>
+          <div className="mb-4">
+            By opting in to receive SMS messages from Cipherwill, you agree to receive transactional and marketing text messages. Message frequency will vary depending on your account activity and preferences. You may receive up to 10 messages per month during normal operations, excluding account security alerts which may occur as needed.
+          </div>
+
+          <h3 className="py-3 font-semibold">Message Types</h3>
+          <div className="mb-4">
+            <b>Transactional Messages:</b> Account confirmations, security alerts, password resets, and other necessary account updates are sent without requiring separate opt-in consent and continue even after opting out of marketing messages.
+            <br />
+            <br />
+            <b>Marketing Messages:</b> Promotional offers, new feature announcements, and special updates require explicit opt-in consent. You may opt out of marketing messages while continuing to receive transactional messages.
+          </div>
+
+          <h3 className="py-3 font-semibold">Message and Data Rates</h3>
+          <div className="mb-4">
+            <b>Message and data rates may apply.</b> Standard carrier rates apply. Check your wireless plan for details.
+          </div>
+
+          <h3 className="py-3 font-semibold">Opt-Out Instructions</h3>
+          <div className="mb-4">
+            <b>Reply STOP to opt out.</b> You may opt out of SMS messages at any time by texting STOP to the Cipherwill SMS number. You will receive a confirmation message confirming your opt-out request. After opting out of marketing messages, you will not receive promotional SMS messages from Cipherwill, but will continue to receive transactional messages related to your account security and critical updates.
+            <br />
+            <br />
+            <b>Reply HELP for help.</b> Text HELP to receive additional information about the SMS program.
+          </div>
+
+          <h3 className="py-3 font-semibold">Carrier Liability Disclaimer</h3>
+          <div className="mb-4">
+            <b>Carriers are not liable for any delayed or undelivered messages.</b> Message delivery is subject to carrier network availability and may be delayed or undelivered due to factors beyond Cipherwill's control.
+          </div>
+
+          <h3 className="py-3 font-semibold">Customer Support</h3>
+          <div className="mb-4">
+            For SMS-related support, questions, or to report issues with text message delivery, please contact us at:
+            <br />
+            <b>Email: support@cipherwill.com</b>
+            <br />
+            <b>Phone: Available during business hours</b>
+          </div>
+
+          <h3 className="py-3 font-semibold">Privacy Policy</h3>
+          <div className="mb-4">
+            Your SMS communications are subject to our Privacy Policy. For detailed information about how we handle your data and SMS-related information, please refer to our{" "}
+            <a href="/i/privacy-policy" className="text-blue-700 hover:underline">
+              Privacy Policy
+            </a>
+            .
+          </div>
+
+          <h3 className="py-3 font-semibold">Your Consent</h3>
+          <div>
+            By choosing to receive SMS messages from Cipherwill, you expressly consent to receive text messages at the phone number you provide. You understand that this is a voluntary opt-in and that you can modify your preferences at any time. Separate consent is required for marketing messages. Your consent to receive marketing messages does not obligate you to take any action with Cipherwill and does not affect your ability to use our services.
+          </div>
+        </div>
       </div>
       <Footer />
     </div>
