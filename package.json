@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "prebuild": "tsx checks/prebuild-checks.ts",
-    "postbuild": "next-sitemap",
+    "postbuild": "yarn generate:blog-sitemap && next-sitemap",
     "generate:blog-sitemap": "tsx scripts/generate-blog-sitemap.ts",
     "test:dev": "cross-env NODE_ENV=test next dev",
     "test:build": "cross-env NODE_ENV=test next build"
