@@ -66,7 +66,7 @@ async function getAllBlogPosts(): Promise<BlogPost[]> {
       size: PAGE_SIZE,
     });
 
-    all_pages = all_pages.concat(response.pages as BlogPost[]);
+    all_pages = all_pages.concat((response.pages as unknown) as BlogPost[]);
 
     has_more = response.has_more;
     cursor = response.next_cursor || undefined;
