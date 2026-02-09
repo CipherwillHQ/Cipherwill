@@ -9,6 +9,7 @@
     "lint": "next lint",
     "prebuild": "tsx checks/prebuild-checks.ts",
     "postbuild": "next-sitemap",
+    "generate:blog-sitemap": "tsx scripts/generate-blog-sitemap.ts",
     "test:dev": "cross-env NODE_ENV=test next dev",
     "test:build": "cross-env NODE_ENV=test next build"
   },
@@ -78,6 +79,7 @@
     "@types/mixpanel-browser": "^2.66.0",
     "@types/node": "^24.3.0",
     "@types/react": "^19.1.12",
+    "dotenv": "^17.2.4",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.20.6",
