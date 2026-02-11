@@ -1,8 +1,15 @@
 import { Client } from "@notionhq/client";
 
-const notion = new Client({
-  auth: process.env.NOTION_API_KEY,
-});
+let notion: Client | null = null;
+
+function getNotionClient() {
+  if (!notion) {
+    notion = new Client({
+      auth: process.env.NOTION_API_KEY,
+    });
+  }
+  return notion;
+}
 
 export async function getNotionPosts({
   cursor,
@@ -18,7 +25,7 @@ export async function getNotionPosts({
     has_more: false,
     next_cursor: null,
   };
-  const response = await notion.databases.query({
+  const response = await getNotionClient().databases.query({
     database_id: databaseId,
     page_size: size,
     start_cursor: cursor,

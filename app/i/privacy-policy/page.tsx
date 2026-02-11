@@ -224,7 +224,58 @@ export default function PrivacyPolicy() {
           inquiries in compliance with applicable laws and regulations.
         </div>
         <h2 className="pt-12 pb-4 font-semibold text-xl">
-          8. Changes to this Privacy Policy
+          8. SMS and Text Message Data Handling
+        </h2>
+        <div>
+          8.1 SMS Data Collection: When you opt in to receive SMS messages from
+          Cipherwill, we collect and maintain your phone number, opt-in date,
+          opt-in method, and message preferences. We use this information
+          exclusively to deliver SMS communications as part of our notification
+          service and to manage your opt-in/opt-out requests.
+          <br />
+          <br />
+          8.2 SMS Data Security: All phone numbers and SMS-related data are
+          encrypted and stored securely using industry-standard AES-256
+          encryption. We implement strict access controls to protect your mobile
+          information from unauthorized access.
+          <br />
+          <br />
+          8.3 No Third-Party Sharing for Marketing: We do not share your mobile
+          phone number or SMS preferences with third parties for their marketing
+          purposes. <b>Your mobile information will not be shared with third
+          parties for marketing without your explicit additional consent</b>,
+          in compliance with CTIA (Cellular Telecommunications Industry
+          Association) standards. Your phone number is used exclusively by
+          Cipherwill for SMS notifications.
+          <br />
+          <br />
+          8.4 SMS Data Retention: SMS-related data, including phone numbers and
+          message delivery logs, will be retained for the duration of your
+          account and for 12 months after account termination for compliance,
+          legal, and support purposes. After this period, all SMS data will be
+          securely deleted or anonymized.
+          <br />
+          <br />
+          8.5 SMS Opt-In and Opt-Out: You may opt in or opt out of SMS
+          communications at any time. Opt-in is voluntary and not required to
+          use Cipherwill services. To opt out of marketing messages, reply STOP
+          to any SMS message. Your opt-out request will be processed
+          immediately, and you will not receive further promotional SMS
+          messages. Transactional messages related to your account (security
+          alerts, confirmations, critical updates) may continue to be sent after
+          opting out, as these are necessary for account operation.
+          <br />
+          <br />
+          8.6 Transactional vs. Marketing Messages: We distinguish between
+          transactional messages (account confirmations, security alerts,
+          password resets) and marketing messages (promotional offers, new
+          feature announcements). You may receive transactional messages even if
+          you opt out of marketing messages. Separate consent applies to each
+          message category.
+        </div>
+
+        <h2 className="pt-12 pb-4 font-semibold text-xl">
+          9. Changes to this Privacy Policy
         </h2>
         <div>
           We may update this Privacy Policy from time to time to reflect changes
