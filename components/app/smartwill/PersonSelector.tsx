@@ -186,7 +186,7 @@ function SeachAndList({
               <FiUserPlus className="text-green-600 dark:text-green-400" size={18} />
             </div>
             <div className="flex-1">
-              <h3 className="font-medium text-green-800 dark:text-green-200">Invite User</h3>
+              <h3 className="font-medium text-green-800 dark:text-green-200">Add person</h3>
               <p className="text-sm text-green-600 dark:text-green-300">{inputEmail}</p>
             </div>
           </div>
