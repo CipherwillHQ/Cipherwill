@@ -20,6 +20,7 @@ export default function InvitationBox({
 }) {
   const [name, setName] = useState("");
   const [isInviting, setIsInviting] = useState(false);
+  const [sendEmail, setSendEmail] = useState(true);
   const [anonymousInvite, setAnonymousInvite] = useState(false);
   const [inviteUser] = useMutation<InviteUserData, InviteUserVariables>(INVITE_USER);
 
@@ -32,7 +33,8 @@ export default function InvitationBox({
         variables: {
           first_name: name.trim(),
           email: inputEmail,
-          anonymous_invite: anonymousInvite,
+          send_email: sendEmail,
+          anonymous_invite: sendEmail ? anonymousInvite : false,
         },
         onCompleted(data, clientOptions) {
           if (data && data.inviteUser) {
@@ -75,7 +77,7 @@ export default function InvitationBox({
           <FiMail className="text-blue-500" size={18} />
           <div>
             <p className="text-sm text-blue-700 dark:text-blue-300">
-              We'll send an invitation to:
+              {sendEmail ? "We'll send an invitation to:" : "We'll add this person without emailing:"}
             </p>
             <p className="font-medium text-blue-800 dark:text-blue-200">{inputEmail}</p>
           </div>
@@ -97,6 +99,25 @@ export default function InvitationBox({
           />
         </div>
 
+        {/* Send Email Checkbox */}
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="send-email"
+            checked={sendEmail}
+            onChange={(e) => {
+              const nextValue = e.target.checked;
+              setSendEmail(nextValue);
+              if (!nextValue) setAnonymousInvite(false);
+            }}
+            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            disabled={isInviting}
+          />
+          <label htmlFor="send-email" className="text-sm text-gray-700 dark:text-gray-300">
+            Send invitation email
+          </label>
+        </div>
+
         {/* Anonymous Invite Checkbox */}
         <div className="flex items-center gap-2">
           <input
@@ -105,7 +126,7 @@ export default function InvitationBox({
             checked={anonymousInvite}
             onChange={(e) => setAnonymousInvite(e.target.checked)}
             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-            disabled={isInviting}
+            disabled={isInviting || !sendEmail}
           />
           <label htmlFor="anonymous-invite" className="text-sm text-gray-700 dark:text-gray-300">
             Send invitation anonymously (they won't know who invited them)
@@ -133,7 +154,9 @@ export default function InvitationBox({
 
         {/* Helper Text */}
         <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-          They'll receive an email with instructions to join Cipherwill
+          {sendEmail
+            ? "They'll receive an email with instructions to join Cipherwill"
+            : "No email will be sent. You can notify them later."}
         </p>
       </div>
     </div>
