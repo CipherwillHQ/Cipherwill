@@ -9,10 +9,9 @@ import OnboardingChecklist from "@/components/app/OnboardingChecklist";
 import DevOnly from "@/components/debug/DevOnly";
 import Link from "next/link";
 import SegmentsIntroduction from "@/components/app/dashboard/SegmentsIntroduction";
-import PendingActionsBox from "@/components/app/actions/PendingActionsBox";
-import UserScore from "./actions/UserScore";
 import SecuredCounter from "@/components/app/dashboard/SecuredCounter";
 import GuidedActions from "@/components/app/GuidedActions";
+import UserScore from "./score/UserScore";
 
 export default function App() {
   return (
@@ -25,13 +24,13 @@ export default function App() {
         </div>
         <div className="p-2">
           <EmailVerificationCheck />
-          {/* <GuidedActions /> */}
+          <GuidedActions />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             <UserScore
               improveScrollLink
               description="This score reflects how complete your digital legacy is. Improve it by adding missing accounts, documents, and assets."
             />
-            <PendingActionsBox />
+            {/* <PendingActionsBox /> */}
             <SecuredCounter />
             {/* <OnboardingChecklist /> */}
             <FactorsSyncStatus />
