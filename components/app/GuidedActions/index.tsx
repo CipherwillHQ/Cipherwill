@@ -29,15 +29,16 @@ export default function GuidedActions() {
     };
   }, [showGuidedActions]);
 
-  if (!hasObjective && !loading && !error) {
-    return null;
-  }
-
   return (
     <div className="w-full border border-default bg-secondary p-4 rounded-lg flex items-center justify-between mb-2">
       <div className="flex flex-col gap-1">
         <span>Start guided actions</span>
         {error ? <span className="text-xs text-red-600">{error}</span> : null}
+        {!loading && !error && !hasObjective ? (
+          <span className="text-xs text-black/60 dark:text-white/60">
+            No pending guided actions right now. You can still open the guide.
+          </span>
+        ) : null}
       </div>
       <SimpleButton onClick={() => setShowGuidedActions(true)} disabled={loading}>
         Start Now
