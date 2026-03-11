@@ -6,7 +6,7 @@ This folder now runs guided actions from backend objective engine responses inst
 
 - `objectiveId`: current objective being processed.
 - `state`: flat JSON object returned by backend; treated as canonical and always re-sent.
-- `input`: backend-provided UI contract for current step (`email`, `string`, `text`, `number`, `boolean`), or `null` for transition/display steps.
+- `input`: backend-provided UI contract for current step (`single_line_text`, `multi_line_text`, `number`, `boolean`, `choices`), or `null` for transition/display steps.
 
 ## Runtime Flow
 

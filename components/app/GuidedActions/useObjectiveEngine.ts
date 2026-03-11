@@ -29,13 +29,18 @@ const PROCESS_OBJECTIVE_WITH_INPUT = gql`
     $state: JSON
     $step: String!
     $value: JSON
-  ) {
+    ) {
     processObjective(
       objectiveId: $objectiveId
       state: $state
       input: { step: $step, value: $value }
     ) {
       status
+      objectiveTitle
+      objectiveDescription
+      stepsCompleted
+      stepsTotal
+      stepsRemaining
       step
       title
       subtext
@@ -59,6 +64,11 @@ const PROCESS_OBJECTIVE_WITHOUT_INPUT = gql`
   mutation PROCESS_OBJECTIVE_WITHOUT_INPUT($objectiveId: String!, $state: JSON) {
     processObjective(objectiveId: $objectiveId, state: $state, input: null) {
       status
+      objectiveTitle
+      objectiveDescription
+      stepsCompleted
+      stepsTotal
+      stepsRemaining
       step
       title
       subtext
@@ -187,11 +197,18 @@ export default function useObjectiveEngine() {
     persistSession(null);
   }, []);
 
-  const initialize = useCallback(async () => {
+  const reset = useCallback(() => {
+    setCurrent(null);
+    setError(null);
+    setLoading(false);
+    persistSession(null);
+  }, []);
+
+  const initialize = useCallback(async (options?: { ignorePersisted?: boolean }) => {
     setLoading(true);
     setError(null);
     try {
-      const persisted = readPersistedSession();
+      const persisted = options?.ignorePersisted ? null : readPersistedSession();
       const resolution = await resolveNextInProgressObjective(
         engineClient,
         persisted
@@ -254,6 +271,7 @@ export default function useObjectiveEngine() {
     error,
     hasObjective: !!current,
     initialize,
+    reset,
     continueCurrentStep,
     submitCurrentStep,
   };

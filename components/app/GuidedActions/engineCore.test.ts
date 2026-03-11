@@ -40,14 +40,24 @@ test("happy path: in-progress then complete", async () => {
     processResults: [
       {
         status: "in_progress",
+        objectiveTitle: "Add a beneficiary",
+        objectiveDescription: "Add your first beneficiary to get started.",
+        stepsCompleted: 0,
+        stepsTotal: 4,
+        stepsRemaining: 4,
         step: "name",
         title: "What is your name?",
         subtext: "This helps personalize your vault.",
-        input: { type: "text", key: "name" },
+        input: { type: "single_line_text", key: "name" },
         state: { started: true },
       },
       {
         status: "complete",
+        objectiveTitle: null,
+        objectiveDescription: null,
+        stepsCompleted: null,
+        stepsTotal: null,
+        stepsRemaining: null,
         step: null,
         title: null,
         subtext: null,
@@ -77,6 +87,11 @@ test("already-complete objective is skipped automatically", async () => {
     processResults: [
       {
         status: "already_complete",
+        objectiveTitle: null,
+        objectiveDescription: null,
+        stepsCompleted: null,
+        stepsTotal: null,
+        stepsRemaining: null,
         step: null,
         title: null,
         subtext: null,
@@ -85,6 +100,11 @@ test("already-complete objective is skipped automatically", async () => {
       },
       {
         status: "in_progress",
+        objectiveTitle: "Enable updates",
+        objectiveDescription: "Set communication preferences.",
+        stepsCompleted: 1,
+        stepsTotal: 2,
+        stepsRemaining: 1,
         step: "confirm_opt_in",
         title: "Enable updates?",
         subtext: "This can be changed later.",
@@ -103,7 +123,10 @@ test("already-complete objective is skipped automatically", async () => {
 });
 
 test("boolean and text values are preserved/coerced correctly", () => {
-  const textInput = coerceValueForInput({ type: "text", key: "bio" }, "hello");
+  const textInput = coerceValueForInput(
+    { type: "single_line_text", key: "bio" },
+    "hello"
+  );
   const boolInput = buildSubmissionInput("allow_marketing", true);
   assert.equal(textInput, "hello");
   assert.deepEqual(boolInput, { step: "allow_marketing", value: true });
@@ -115,10 +138,15 @@ test("resume uses persisted objective and state", async () => {
     processResults: [
       {
         status: "in_progress",
+        objectiveTitle: "Add a beneficiary",
+        objectiveDescription: "Add your first beneficiary to get started.",
+        stepsCompleted: 1,
+        stepsTotal: 4,
+        stepsRemaining: 3,
         step: "email",
         title: "Email",
         subtext: "Enter your email",
-        input: { type: "email", key: "email" },
+        input: { type: "single_line_text", key: "email" },
         state: { draftEmail: "user@example.com" },
       },
     ],

@@ -21,6 +21,10 @@ export function isInputValid(
   if (!normalized.length) {
     return false;
   }
+  if (inputSpec.type === "choices") {
+    const options = (inputSpec.choices ?? []).map((choice) => String(choice));
+    return options.includes(normalized);
+  }
   if (typeof inputSpec.minLength === "number" && normalized.length < inputSpec.minLength) {
     return false;
   }
@@ -51,14 +55,15 @@ export default function ActionContent({
 }: ActionContentProps) {
   const inputSpec = stepResult.input;
   const inputType = inputSpec?.type ?? null;
+  const choiceOptions = (inputSpec?.choices ?? []).map((choice) => String(choice));
 
   return (
     <motion.div
-      key={stepResult.step ?? "objective-step"}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.25 }}
+      key={`${stepResult.step ?? "display"}-${stepResult.title ?? "objective-step"}`}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -6 }}
+      transition={{ duration: 0.25, ease: "easeOut" }}
       className="flex w-full flex-col items-center gap-5 text-center"
     >
       <h2 className="text-xl md:text-2xl font-medium">
@@ -67,6 +72,13 @@ export default function ActionContent({
       {stepResult.subtext ? (
         <p className="max-w-xl text-sm md:text-base text-black/70 dark:text-white/70">
           {stepResult.subtext}
+        </p>
+      ) : null}
+      {typeof stepResult.stepsRemaining === "number" &&
+      typeof stepResult.stepsTotal === "number" ? (
+        <p className="text-xs md:text-sm text-black/60 dark:text-white/60">
+          {stepResult.stepsRemaining} step
+          {stepResult.stepsRemaining === 1 ? "" : "s"} left of {stepResult.stepsTotal}
         </p>
       ) : null}
       {inputType === "boolean" ? (
@@ -79,9 +91,9 @@ export default function ActionContent({
           </SimpleButton>
         </div>
       ) : null}
-      {inputType === "email" || inputType === "string" ? (
+      {inputType === "single_line_text" ? (
         <input
-          type={inputType === "email" ? "email" : "text"}
+          type="text"
           value={inputValue}
           onChange={(event) => setInputValue(event.target.value)}
           placeholder={inputSpec?.placeholder ?? "Enter value"}
@@ -90,7 +102,7 @@ export default function ActionContent({
           className="w-full max-w-md rounded border border-default px-3 py-2"
         />
       ) : null}
-      {inputType === "text" ? (
+      {inputType === "multi_line_text" ? (
         <textarea
           value={inputValue}
           onChange={(event) => setInputValue(event.target.value)}
@@ -100,6 +112,22 @@ export default function ActionContent({
           rows={5}
           className="w-full max-w-md rounded border border-default px-3 py-2"
         />
+      ) : null}
+      {inputType === "choices" ? (
+        <select
+          value={inputValue}
+          onChange={(event) => setInputValue(event.target.value)}
+          className="w-full max-w-md rounded border border-default px-3 py-2 bg-transparent"
+        >
+          <option value="" disabled>
+            {inputSpec?.placeholder ?? "Select an option"}
+          </option>
+          {choiceOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
       ) : null}
       {inputType === "number" ? (
         <input

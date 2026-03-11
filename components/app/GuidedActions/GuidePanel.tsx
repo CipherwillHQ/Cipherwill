@@ -1,7 +1,7 @@
 import SimpleButton from "@/components/common/SimpleButton";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { SwitchThemeIcon } from "@/contexts/ThemeSelector";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ActionContent from "./ActionContent";
 import ActionControls from "./ActionControls";
 import { isInputValid } from "./ActionContent";
@@ -12,7 +12,7 @@ export default function GuidePanel({
   current,
   loading,
   error,
-  setShowGuidedActions,
+  onClose,
   onRetry,
   onContinue,
   onSubmit,
@@ -21,23 +21,40 @@ export default function GuidePanel({
   current: ObjectiveInProgress | null;
   loading: boolean;
   error: string | null;
-  setShowGuidedActions: (value: boolean) => void;
+  onClose: () => void;
   onRetry: () => void;
   onContinue: () => void;
   onSubmit: (value: unknown) => void;
   onSkip: () => void;
 }) {
   const [inputValue, setInputValue] = useState("");
+  const [showIntro, setShowIntro] = useState(true);
 
   const currentInput = current?.result.input ?? null;
   const canSubmit = useMemo(
     () => isInputValid(currentInput, inputValue),
     [currentInput, inputValue]
   );
+  const currentObjectiveId = current?.objectiveId ?? null;
 
-  const closePanel = () => {
-    setShowGuidedActions(false);
-  };
+  useEffect(() => {
+    if (currentObjectiveId) {
+      setShowIntro(true);
+      setInputValue("");
+    } else {
+      setShowIntro(false);
+    }
+  }, [currentObjectiveId]);
+
+  const contentStateKey = loading
+    ? "loading"
+    : error
+      ? "error"
+      : current
+        ? showIntro
+          ? `intro-${current.objectiveId}`
+          : `objective-${current.objectiveId}-${current.result.step ?? "display"}-${current.result.title ?? ""}`
+        : "empty";
 
   const submitWithCurrentValue = () => {
     if (!currentInput || !canSubmit) {
@@ -60,45 +77,105 @@ export default function GuidePanel({
         <h1>Guided Panel</h1>
         <div className="flex gap-2 items-center">
           <SwitchThemeIcon />
-          <SimpleButton onClick={closePanel}>
+          <SimpleButton onClick={onClose}>
             Close
           </SimpleButton>
         </div>
       </div>
       <div className="flex flex-1 flex-col items-center justify-center text-center p-2">
-        {loading ? <div className="text-lg">Loading guided action...</div> : null}
-        {!loading && error ? (
-          <div className="flex flex-col items-center gap-3 max-w-md">
-            <p className="text-sm md:text-base">{error}</p>
-            <SimpleButton onClick={onRetry}>Retry</SimpleButton>
-          </div>
-        ) : null}
-        {!loading && !error && current ? (
-          <ActionContent
-            stepResult={current.result}
-            inputValue={inputValue}
-            setInputValue={setInputValue}
-            submitValue={onSubmit}
-            loading={loading}
-          />
-        ) : null}
-        {!loading && !error && !current ? (
-          <div className="flex flex-col items-center gap-3">
-            <p className="text-lg">No guided actions available right now.</p>
-            <SimpleButton onClick={closePanel}>Done</SimpleButton>
-          </div>
-        ) : null}
+        <AnimatePresence mode="wait" initial={false}>
+          {loading ? (
+            <motion.div
+              key={contentStateKey}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="text-lg"
+            >
+              Loading guided action...
+            </motion.div>
+          ) : null}
+          {!loading && error ? (
+            <motion.div
+              key={contentStateKey}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="flex flex-col items-center gap-3 max-w-md"
+            >
+              <p className="text-sm md:text-base">{error}</p>
+              <SimpleButton onClick={onRetry}>Retry</SimpleButton>
+            </motion.div>
+          ) : null}
+          {!loading && !error && current ? (
+            <motion.div
+              key={contentStateKey}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="w-full flex flex-col items-center gap-4"
+            >
+              {showIntro ? (
+                <div className="w-full max-w-xl rounded-xl border border-default p-4 md:p-5 flex flex-col gap-3 text-center">
+                  <h2 className="text-xl md:text-2xl font-medium">
+                    {current.result.objectiveTitle ?? "Guided objective"}
+                  </h2>
+                  <p className="text-sm md:text-base text-black/70 dark:text-white/70">
+                    {current.result.objectiveDescription ?? "Let's complete this objective step by step."}
+                  </p>
+                  {typeof current.result.stepsRemaining === "number" &&
+                  typeof current.result.stepsTotal === "number" ? (
+                    <p className="text-xs md:text-sm text-black/60 dark:text-white/60">
+                      {current.result.stepsRemaining} step
+                      {current.result.stepsRemaining === 1 ? "" : "s"} left of{" "}
+                      {current.result.stepsTotal}
+                    </p>
+                  ) : null}
+                  <div className="pt-1">
+                    <SimpleButton onClick={() => setShowIntro(false)}>
+                      Start objective
+                    </SimpleButton>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <ActionContent
+                    stepResult={current.result}
+                    inputValue={inputValue}
+                    setInputValue={setInputValue}
+                    submitValue={onSubmit}
+                    loading={loading}
+                  />
+                  <ActionControls
+                    stepResult={current.result}
+                    isInputValid={canSubmit}
+                    handleSkip={onSkip}
+                    handleSubmit={submitWithCurrentValue}
+                    handleContinue={onContinue}
+                    loading={loading}
+                  />
+                </>
+              )}
+            </motion.div>
+          ) : null}
+          {!loading && !error && !current ? (
+            <motion.div
+              key={contentStateKey}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="flex flex-col items-center gap-3"
+            >
+              <p className="text-lg">No guided actions available right now.</p>
+              <SimpleButton onClick={onClose}>Done</SimpleButton>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
       </div>
-      {!loading && !error && current ? (
-        <ActionControls
-          stepResult={current.result}
-          isInputValid={canSubmit}
-          handleSkip={onSkip}
-          handleSubmit={submitWithCurrentValue}
-          handleContinue={onContinue}
-          loading={loading}
-        />
-      ) : null}
     </motion.div>
   );
 }

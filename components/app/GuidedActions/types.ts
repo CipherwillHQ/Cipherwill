@@ -1,12 +1,11 @@
 export type ObjectiveStatus = "already_complete" | "in_progress" | "complete";
 
 export type ObjectiveInputType =
-  | "email"
-  | "string"
-  | "text"
+  | "single_line_text"
+  | "multi_line_text"
   | "number"
   | "boolean"
-  | "display";
+  | "choices";
 
 export type ObjectiveState = Record<string, unknown>;
 
@@ -29,6 +28,11 @@ export interface ObjectiveInputPayload {
 
 export interface ObjectiveProcessResult {
   status: ObjectiveStatus;
+  objectiveTitle: string | null;
+  objectiveDescription: string | null;
+  stepsCompleted: number | null;
+  stepsTotal: number | null;
+  stepsRemaining: number | null;
   step: string | null;
   title: string | null;
   subtext: string | null;

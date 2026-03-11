@@ -1,4 +1,5 @@
 import SimpleButton from "@/components/common/SimpleButton";
+import { motion } from "framer-motion";
 import type { ObjectiveProcessResult } from "./types";
 
 interface ActionControlsProps {
@@ -24,7 +25,13 @@ export default function ActionControls({
   const isSkippable = !!inputSpec?.skippable;
 
   return (
-    <div className="flex gap-4 items-center justify-center flex-wrap">
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -6 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      className="flex gap-4 items-center justify-center flex-wrap"
+    >
       {isSkippable && (
         <SimpleButton onClick={handleSkip} disabled={loading}>
           Skip
@@ -40,6 +47,6 @@ export default function ActionControls({
           Submit
         </SimpleButton>
       ) : null}
-    </div>
+    </motion.div>
   );
 }

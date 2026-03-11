@@ -1,7 +1,7 @@
 "use client";
 
 import SimpleButton from "@/components/common/SimpleButton";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { AnimatePresence } from "framer-motion";
 import GuidePanel from "./GuidePanel";
 import useObjectiveEngine from "./useObjectiveEngine";
@@ -14,9 +14,21 @@ export default function GuidedActions() {
     error,
     hasObjective,
     initialize,
+    reset,
     continueCurrentStep,
     submitCurrentStep,
   } = useObjectiveEngine();
+
+  const handleCloseGuidedActions = useCallback(async () => {
+    setShowGuidedActions(false);
+    reset();
+    await initialize({ ignorePersisted: true });
+  }, [initialize, reset]);
+
+  const handleOpenGuidedActions = useCallback(async () => {
+    setShowGuidedActions(true);
+    await initialize({ ignorePersisted: true });
+  }, [initialize]);
 
   useEffect(() => {
     if (showGuidedActions) {
@@ -29,18 +41,17 @@ export default function GuidedActions() {
     };
   }, [showGuidedActions]);
 
+  if (!hasObjective && !loading && !error) {
+    return null;
+  }
+
   return (
     <div className="w-full border border-default bg-secondary p-4 rounded-lg flex items-center justify-between mb-2">
       <div className="flex flex-col gap-1">
         <span>Start guided actions</span>
         {error ? <span className="text-xs text-red-600">{error}</span> : null}
-        {!loading && !error && !hasObjective ? (
-          <span className="text-xs text-black/60 dark:text-white/60">
-            No pending guided actions right now. You can still open the guide.
-          </span>
-        ) : null}
       </div>
-      <SimpleButton onClick={() => setShowGuidedActions(true)} disabled={loading}>
+      <SimpleButton onClick={handleOpenGuidedActions} disabled={loading}>
         Start Now
       </SimpleButton>
       <AnimatePresence>
@@ -49,7 +60,7 @@ export default function GuidedActions() {
             current={current}
             loading={loading}
             error={error}
-            setShowGuidedActions={setShowGuidedActions}
+            onClose={handleCloseGuidedActions}
             onRetry={initialize}
             onContinue={continueCurrentStep}
             onSubmit={submitCurrentStep}
