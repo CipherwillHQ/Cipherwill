@@ -1,161 +1,117 @@
 import { motion } from "framer-motion";
 import SimpleButton from "@/components/common/SimpleButton";
+import type { ObjectiveInputSpec, ObjectiveProcessResult } from "./types";
 
 interface ActionContentProps {
-  currentAction: any;
-  inputValue: any;
-  setInputValue: (value: any) => void;
-  handleSubmit: () => void;
-  isAdvancing: boolean;
+  stepResult: ObjectiveProcessResult;
+  inputValue: string;
+  setInputValue: (value: string) => void;
+  submitValue: (value: unknown) => void;
+  loading: boolean;
+}
+
+export function isInputValid(
+  inputSpec: ObjectiveInputSpec | null,
+  value: string
+): boolean {
+  if (!inputSpec || inputSpec.type === "boolean") {
+    return true;
+  }
+  const normalized = value.trim();
+  if (!normalized.length) {
+    return false;
+  }
+  if (typeof inputSpec.minLength === "number" && normalized.length < inputSpec.minLength) {
+    return false;
+  }
+  if (typeof inputSpec.maxLength === "number" && normalized.length > inputSpec.maxLength) {
+    return false;
+  }
+  if (inputSpec.type === "number") {
+    const numericValue = Number(normalized);
+    if (!Number.isFinite(numericValue)) {
+      return false;
+    }
+    if (typeof inputSpec.min === "number" && numericValue < inputSpec.min) {
+      return false;
+    }
+    if (typeof inputSpec.max === "number" && numericValue > inputSpec.max) {
+      return false;
+    }
+  }
+  return true;
 }
 
 export default function ActionContent({
-  currentAction,
+  stepResult,
   inputValue,
   setInputValue,
-  handleSubmit,
-  isAdvancing,
+  submitValue,
+  loading,
 }: ActionContentProps) {
-  const inputType = currentAction?.inputType;
-
-  const renderInput = () => {
-    switch (inputType) {
-      case "text":
-        return (
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Enter text"
-            className="w-full max-w-md px-4 py-2 border border-default rounded"
-          />
-        );
-      case "textarea":
-        return (
-          <textarea
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Enter text"
-            className="w-full max-w-md min-h-[150px] max-h-[300px] px-4 py-2 border border-default rounded"
-            rows={4}
-          />
-        );
-      case "number":
-        return (
-          <input
-            type="number"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Enter number"
-            className="w-full max-w-md px-4 py-2 border border-default rounded"
-          />
-        );
-      case "date":
-        return (
-          <input
-            type="date"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            className="text-3xl"
-          />
-        );
-      case "boolean":
-        return (
-          <div className="flex gap-4">
-            <SimpleButton
-              onClick={() => {
-                if (isAdvancing) return;
-                setInputValue("true");
-                handleSubmit();
-              }}
-              className={inputValue === "true" ? "bg-accent" : ""}
-            >
-              Yes
-            </SimpleButton>
-            <SimpleButton
-              onClick={() => {
-                if (isAdvancing) return;
-                setInputValue("false");
-                handleSubmit();
-              }}
-              className={inputValue === "false" ? "bg-accent" : ""}
-            >
-              No
-            </SimpleButton>
-          </div>
-        );
-      case "multiple-choice":
-        return (
-          <div className="flex flex-wrap gap-3 justify-center">
-            {(currentAction?.choices || []).map((choice: string) => (
-              <SimpleButton
-                key={choice}
-                onClick={() => {
-                  if (isAdvancing) return;
-                  setInputValue((prev: any) => {
-                    const prevArr = Array.isArray(prev) ? prev : [];
-                    if (prevArr.includes(choice)) {
-                      return prevArr.filter((c: string) => c !== choice);
-                    }
-                    return [...prevArr, choice];
-                  });
-                }}
-                className={
-                  Array.isArray(inputValue) && inputValue.includes(choice)
-                    ? "bg-accent text-primary"
-                    : ""
-                }
-              >
-                {choice}
-              </SimpleButton>
-            ))}
-          </div>
-        );
-      case "single-choice":
-        return (
-          <div className="flex flex-wrap gap-3 justify-center">
-            {(currentAction?.choices || []).map((choice: string) => (
-              <SimpleButton
-                key={choice}
-                onClick={() => {
-                  if (isAdvancing) return;
-                  setInputValue(choice);
-                  handleSubmit();
-                }}
-                className={
-                  inputValue === choice ? "bg-accent text-primary" : ""
-                }
-              >
-                {choice}
-              </SimpleButton>
-            ))}
-          </div>
-        );
-      default:
-        return null;
-    }
-  };
+  const inputSpec = stepResult.input;
+  const inputType = inputSpec?.type ?? null;
 
   return (
     <motion.div
-      key={currentAction?.id}
+      key={stepResult.step ?? "objective-step"}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
-      className="flex flex-col items-center gap-6 w-full"
+      transition={{ duration: 0.25 }}
+      className="flex w-full flex-col items-center gap-5 text-center"
     >
-      <div className="text-2xl font-medium">
-        {currentAction?.action || `Action`}
-      </div>
-      <div className="text-xl text-black/60 dark:text-white/60">
-        {currentAction?.description || currentAction?.content}
-      </div>
-      {inputType && (
-        <div className="w-full flex flex-col items-center gap-4">
-          {renderInput()}
+      <h2 className="text-xl md:text-2xl font-medium">
+        {stepResult.title || "Guided Action"}
+      </h2>
+      {stepResult.subtext ? (
+        <p className="max-w-xl text-sm md:text-base text-black/70 dark:text-white/70">
+          {stepResult.subtext}
+        </p>
+      ) : null}
+      {inputType === "boolean" ? (
+        <div className="flex flex-wrap justify-center gap-3">
+          <SimpleButton onClick={() => submitValue(true)} disabled={loading}>
+            Yes
+          </SimpleButton>
+          <SimpleButton onClick={() => submitValue(false)} disabled={loading}>
+            No
+          </SimpleButton>
         </div>
-      )}
+      ) : null}
+      {inputType === "email" || inputType === "string" ? (
+        <input
+          type={inputType === "email" ? "email" : "text"}
+          value={inputValue}
+          onChange={(event) => setInputValue(event.target.value)}
+          placeholder={inputSpec?.placeholder ?? "Enter value"}
+          minLength={inputSpec?.minLength ?? undefined}
+          maxLength={inputSpec?.maxLength ?? undefined}
+          className="w-full max-w-md rounded border border-default px-3 py-2"
+        />
+      ) : null}
+      {inputType === "text" ? (
+        <textarea
+          value={inputValue}
+          onChange={(event) => setInputValue(event.target.value)}
+          placeholder={inputSpec?.placeholder ?? "Enter value"}
+          minLength={inputSpec?.minLength ?? undefined}
+          maxLength={inputSpec?.maxLength ?? undefined}
+          rows={5}
+          className="w-full max-w-md rounded border border-default px-3 py-2"
+        />
+      ) : null}
+      {inputType === "number" ? (
+        <input
+          type="number"
+          value={inputValue}
+          onChange={(event) => setInputValue(event.target.value)}
+          placeholder={inputSpec?.placeholder ?? "Enter number"}
+          min={inputSpec?.min ?? undefined}
+          max={inputSpec?.max ?? undefined}
+          className="w-full max-w-md rounded border border-default px-3 py-2"
+        />
+      ) : null}
     </motion.div>
   );
 }

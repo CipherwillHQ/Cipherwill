@@ -1,41 +1,45 @@
 import SimpleButton from "@/components/common/SimpleButton";
+import type { ObjectiveProcessResult } from "./types";
 
 interface ActionControlsProps {
-  currentAction: any;
+  stepResult: ObjectiveProcessResult;
   isInputValid: boolean;
-  inputType: string | undefined;
   handleSkip: () => void;
   handleSubmit: () => void;
-  isAdvancing: boolean;
-  currentIndex: number;
-  actionsLength: number;
+  handleContinue: () => void;
+  loading: boolean;
 }
 
 export default function ActionControls({
-  currentAction,
+  stepResult,
   isInputValid,
-  inputType,
   handleSkip,
   handleSubmit,
-  isAdvancing,
-  currentIndex,
-  actionsLength,
+  handleContinue,
+  loading,
 }: ActionControlsProps) {
+  const inputSpec = stepResult.input;
+  const hasInput = !!inputSpec;
+  const isBooleanInput = inputSpec?.type === "boolean";
+  const isSkippable = !!inputSpec?.skippable;
+
   return (
     <div className="flex gap-4 items-center justify-center flex-wrap">
-      {currentAction?.skippable && (
-        <SimpleButton onClick={handleSkip} disabled={isAdvancing}>
+      {isSkippable && (
+        <SimpleButton onClick={handleSkip} disabled={loading}>
           Skip
         </SimpleButton>
       )}
-      {isInputValid && inputType !== "boolean" && inputType !== "single-choice" && (
-        <SimpleButton onClick={handleSubmit} disabled={isAdvancing}>
-          {currentIndex === actionsLength - 1 ? "Complete" : "Submit"}
+      {!hasInput ? (
+        <SimpleButton onClick={handleContinue} disabled={loading}>
+          Continue
         </SimpleButton>
-      )}
-      <div className="text-center w-full">
-        {`${currentIndex + 1}/${actionsLength}`}
-      </div>
+      ) : null}
+      {hasInput && !isBooleanInput && isInputValid ? (
+        <SimpleButton onClick={handleSubmit} disabled={loading}>
+          Submit
+        </SimpleButton>
+      ) : null}
     </div>
   );
 }
