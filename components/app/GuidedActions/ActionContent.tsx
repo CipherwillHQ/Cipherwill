@@ -28,6 +28,27 @@ export function isInputValid(
   if (inputSpec.type === "email") {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized);
   }
+  if (inputSpec.type === "date") {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(normalized)) {
+      return false;
+    }
+    const date = new Date(`${normalized}T00:00:00.000Z`);
+    if (Number.isNaN(date.getTime())) {
+      return false;
+    }
+    const [year, month, day] = normalized.split("-").map((x) => parseInt(x, 10));
+    if (
+      date.getUTCFullYear() !== year ||
+      date.getUTCMonth() + 1 !== month ||
+      date.getUTCDate() !== day
+    ) {
+      return false;
+    }
+    if (date.getTime() > Date.now()) {
+      return false;
+    }
+    return year >= 1900;
+  }
   if (typeof inputSpec.minLength === "number" && normalized.length < inputSpec.minLength) {
     return false;
   }
@@ -106,6 +127,15 @@ export default function ActionContent({
           minLength={inputSpec?.minLength ?? undefined}
           maxLength={inputSpec?.maxLength ?? undefined}
           rows={5}
+          className="w-full max-w-2xl rounded-xl border border-default px-4 py-3 text-lg md:text-xl"
+        />
+      ) : null}
+      {inputType === "date" ? (
+        <input
+          type="date"
+          value={inputValue}
+          onChange={(event) => setInputValue(event.target.value)}
+          placeholder={inputSpec?.placeholder ?? "Select date"}
           className="w-full max-w-2xl rounded-xl border border-default px-4 py-3 text-lg md:text-xl"
         />
       ) : null}

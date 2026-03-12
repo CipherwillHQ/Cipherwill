@@ -4,6 +4,7 @@ export type ObjectiveInputType =
   | "email"
   | "single_line_text"
   | "multi_line_text"
+  | "date"
   | "number"
   | "boolean"
   | "choices";
