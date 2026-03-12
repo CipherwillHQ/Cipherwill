@@ -30,6 +30,7 @@ export interface ObjectiveInputPayload {
 
 export interface ObjectiveProcessResult {
   status: ObjectiveStatus;
+  action?: "input" | "display" | "complete" | null;
   objectiveTitle: string | null;
   objectiveDescription: string | null;
   stepsCompleted: number | null;

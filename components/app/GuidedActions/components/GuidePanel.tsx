@@ -4,9 +4,42 @@ import { useEffect, useMemo, useState } from "react";
 import ActionContent from "./ActionContent";
 import ActionControls from "./ActionControls";
 import GuidedButton from "./GuidedButton";
-import { isInputValid } from "./ActionContent";
-import { coerceValueForInput } from "./engineCore";
-import type { ObjectiveInProgress } from "./types";
+import ProgressDots from "./ProgressDots";
+import { coerceValueForInput } from "../core/engineCore";
+import { isInputValid } from "../core/inputValidation";
+import type { ObjectiveInProgress } from "../core/types";
+
+type GuidePanelProps = {
+  current: ObjectiveInProgress | null;
+  loading: boolean;
+  error: string | null;
+  onClose: () => void;
+  onRetry: () => void;
+  onContinue: () => void;
+  onSubmit: (value: unknown) => void;
+};
+
+function getContentStateKey(args: {
+  loading: boolean;
+  error: string | null;
+  current: ObjectiveInProgress | null;
+  showIntro: boolean;
+}) {
+  if (args.loading) {
+    return "loading";
+  }
+  if (args.error) {
+    return "error";
+  }
+  if (!args.current) {
+    return "empty";
+  }
+  if (args.showIntro) {
+    return `intro-${args.current.objectiveId}`;
+  }
+
+  return `objective-${args.current.objectiveId}-${args.current.result.step ?? "display"}-${args.current.result.title ?? ""}`;
+}
 
 export default function GuidePanel({
   current,
@@ -16,15 +49,7 @@ export default function GuidePanel({
   onRetry,
   onContinue,
   onSubmit,
-}: {
-  current: ObjectiveInProgress | null;
-  loading: boolean;
-  error: string | null;
-  onClose: () => void;
-  onRetry: () => void;
-  onContinue: () => void;
-  onSubmit: (value: unknown) => void;
-}) {
+}: GuidePanelProps) {
   const [inputValue, setInputValue] = useState("");
   const [showIntro, setShowIntro] = useState(true);
 
@@ -33,10 +58,12 @@ export default function GuidePanel({
     () => isInputValid(currentInput, inputValue),
     [currentInput, inputValue]
   );
-  const shouldAutoClose =
-    Boolean(current?.result.closePanelAfterDisplay) &&
+  const isTimedDisplayStep =
+    !currentInput &&
     typeof current?.result.displayForMs === "number" &&
     current.result.displayForMs > 0;
+  const shouldAutoClose =
+    isTimedDisplayStep && Boolean(current?.result.closePanelAfterDisplay);
   const currentObjectiveId = current?.objectiveId ?? null;
 
   useEffect(() => {
@@ -48,15 +75,12 @@ export default function GuidePanel({
     }
   }, [currentObjectiveId]);
 
-  const contentStateKey = loading
-    ? "loading"
-    : error
-      ? "error"
-      : current
-        ? showIntro
-          ? `intro-${current.objectiveId}`
-          : `objective-${current.objectiveId}-${current.result.step ?? "display"}-${current.result.title ?? ""}`
-        : "empty";
+  const contentStateKey = getContentStateKey({
+    loading,
+    error,
+    current,
+    showIntro,
+  });
 
   const submitWithCurrentValue = () => {
     if (!currentInput || !canSubmit) {
@@ -74,44 +98,6 @@ export default function GuidePanel({
     onSubmit(null);
     setInputValue("");
   };
-
-  const progressDots = (() => {
-    if (!current) return null;
-    const total = current.result.stepsTotal ?? null;
-    const completed = current.result.stepsCompleted ?? null;
-    const skipped = current.result.stepsSkipped ?? null;
-    if (total === null || completed === null || skipped === null || total <= 0) return null;
-
-    const boundedCompleted = Math.max(0, Math.min(completed, total));
-    const boundedSkipped = Math.max(0, Math.min(skipped, total - boundedCompleted));
-    const remaining = Math.max(0, total - boundedCompleted - boundedSkipped);
-
-    return (
-      <div className="flex items-center justify-center gap-2 pt-1" aria-label="Progress dots">
-        {Array.from({ length: boundedCompleted }).map((_, i) => (
-          <span
-            key={`completed-${i}`}
-            className="h-2.5 w-2.5 rounded-full bg-green-500"
-            aria-label="Completed step"
-          />
-        ))}
-        {Array.from({ length: boundedSkipped }).map((_, i) => (
-          <span
-            key={`skipped-${i}`}
-            className="h-2.5 w-2.5 rounded-full bg-orange-500"
-            aria-label="Skipped step"
-          />
-        ))}
-        {Array.from({ length: remaining }).map((_, i) => (
-          <span
-            key={`remaining-${i}`}
-            className="h-2.5 w-2.5 rounded-full border border-black/40 dark:border-white/40"
-            aria-label="Remaining step"
-          />
-        ))}
-      </div>
-    );
-  })();
 
   return (
     <motion.div
@@ -189,7 +175,7 @@ export default function GuidePanel({
                     submitValue={onSubmit}
                     loading={loading}
                   />
-                  {!shouldAutoClose ? (
+                  {!isTimedDisplayStep ? (
                     <ActionControls
                       stepResult={current.result}
                       isInputValid={canSubmit}
@@ -220,12 +206,17 @@ export default function GuidePanel({
       </div>
       {!loading && !error && current ? (
         <div className="absolute left-1/2 bottom-4 md:bottom-5 -translate-x-1/2">
-          {progressDots}
+          <ProgressDots
+            total={current.result.stepsTotal ?? null}
+            completed={current.result.stepsCompleted ?? null}
+            skipped={current.result.stepsSkipped ?? null}
+          />
         </div>
       ) : null}
-      {!loading && !error && current && shouldAutoClose ? (
+      {!loading && !error && current && isTimedDisplayStep ? (
         <p className="absolute left-1/2 bottom-10 -translate-x-1/2 text-xs md:text-sm text-black/60 dark:text-white/60">
-          Closing in {Math.ceil((current.result.displayForMs ?? 0) / 1000)}s...
+          {shouldAutoClose ? "Closing" : "Continuing"} in{" "}
+          {Math.ceil((current.result.displayForMs ?? 0) / 1000)}s...
         </p>
       ) : null}
     </motion.div>

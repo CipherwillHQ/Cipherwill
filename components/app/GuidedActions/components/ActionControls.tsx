@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import GuidedButton from "./GuidedButton";
-import type { ObjectiveProcessResult } from "./types";
+import type { ObjectiveProcessResult } from "../core/types";
 
 interface ActionControlsProps {
   stepResult: ObjectiveProcessResult;

@@ -1,6 +1,6 @@
 # GuidedActions Objective Engine
 
-This folder now runs guided actions from backend objective engine responses instead of local dummy steps.
+This folder now runs guided actions from backend objective engine responses.
 
 ## Data Model
 
@@ -19,10 +19,13 @@ This folder now runs guided actions from backend objective engine responses inst
 5. For non-input steps, call mutation again with `input: null` via Continue.
 6. Persist `{ objectiveId, state }` in localStorage to resume after refresh.
 
-## Files
+## Structure
 
-- `useObjectiveEngine.ts`: Apollo integration, orchestration, persistence.
-- `engineCore.ts`: pure objective flow state machine helpers.
-- `ActionContent.tsx`: reusable step renderer + UI validation helpers.
-- `GuidePanel.tsx`: panel container with loading/error/mobile-friendly controls.
-- `ActionControls.tsx`: shared action buttons (Skip/Submit/Continue).
+- `hooks/useObjectiveEngine.ts`: Apollo integration, orchestration, persistence.
+- `core/engineCore.ts`: pure objective flow state machine helpers.
+- `core/types.ts`: shared frontend objective types.
+- `core/inputValidation.ts`: input validation helpers.
+- `api/objectiveQueries.ts`: GraphQL queries/mutations for objective engine.
+- `components/GuidePanel.tsx`: panel container with loading/error/mobile-friendly controls.
+- `components/ActionContent.tsx`: reusable step renderer.
+- `components/ActionControls.tsx`: shared action buttons (Skip/Submit/Continue).

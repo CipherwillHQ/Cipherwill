@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { AnimatePresence } from "framer-motion";
-import GuidePanel from "./GuidePanel";
-import GuidedButton from "./GuidedButton";
-import useObjectiveEngine from "./useObjectiveEngine";
+import GuidePanel from "./components/GuidePanel";
+import GuidedButton from "./components/GuidedButton";
+import useObjectiveEngine from "./hooks/useObjectiveEngine";
 
 export default function GuidedActions() {
   const [showGuidedActions, setShowGuidedActions] = useState(false);
@@ -34,22 +34,29 @@ export default function GuidedActions() {
     if (!showGuidedActions || !current) {
       return;
     }
-    if (!current.result.closePanelAfterDisplay) {
+    if (current.result.input) {
       return;
     }
-    const delay = current.result.displayForMs ?? 0;
+    const delay =
+      typeof current.result.displayForMs === "number"
+        ? current.result.displayForMs
+        : 0;
     if (delay <= 0) {
       return;
     }
 
     const timer = window.setTimeout(() => {
-      void handleCloseGuidedActions();
+      if (current.result.closePanelAfterDisplay) {
+        void handleCloseGuidedActions();
+        return;
+      }
+      void continueCurrentStep();
     }, delay);
 
     return () => {
       window.clearTimeout(timer);
     };
-  }, [current, showGuidedActions, handleCloseGuidedActions]);
+  }, [current, showGuidedActions, continueCurrentStep, handleCloseGuidedActions]);
 
   useEffect(() => {
     if (showGuidedActions) {
