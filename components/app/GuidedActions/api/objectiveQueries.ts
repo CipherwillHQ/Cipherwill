@@ -15,6 +15,12 @@ const OBJECTIVE_RESULT_FIELDS = `
   title
   subtext
   state
+  actions {
+    id
+    type
+    timing
+    payload
+  }
   input {
     type
     key

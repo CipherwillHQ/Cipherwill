@@ -1,13 +1,21 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { useApolloClient } from "@apollo/client/react";
 import { AnimatePresence } from "framer-motion";
+import logger from "@/common/debug/logger";
+import { useSession } from "@/contexts/SessionContext";
 import GuidePanel from "./components/GuidePanel";
 import GuidedButton from "./components/GuidedButton";
+import { executeObjectiveAction } from "./core/objectiveActionRunner";
+import type { ObjectiveActionSpec } from "./core/types";
 import useObjectiveEngine from "./hooks/useObjectiveEngine";
 
 export default function GuidedActions() {
   const [showGuidedActions, setShowGuidedActions] = useState(false);
+  const handledActionKeysRef = useRef<Set<string>>(new Set());
+  const client = useApolloClient();
+  const { session } = useSession();
   const {
     current,
     loading,
@@ -21,12 +29,14 @@ export default function GuidedActions() {
 
   const handleCloseGuidedActions = useCallback(async () => {
     setShowGuidedActions(false);
+    handledActionKeysRef.current.clear();
     reset();
     await initialize({ ignorePersisted: true });
   }, [initialize, reset]);
 
   const handleOpenGuidedActions = useCallback(async () => {
     setShowGuidedActions(true);
+    handledActionKeysRef.current.clear();
     await initialize({ ignorePersisted: true });
   }, [initialize]);
 
@@ -57,6 +67,58 @@ export default function GuidedActions() {
       window.clearTimeout(timer);
     };
   }, [current, showGuidedActions, continueCurrentStep, handleCloseGuidedActions]);
+
+  useEffect(() => {
+    if (!showGuidedActions || !current) {
+      return;
+    }
+
+    const stepKey = `${current.objectiveId}:${current.result.step ?? current.result.title ?? "step"}`;
+    const actions = (current.result.actions ?? []).filter(
+      (action): action is ObjectiveActionSpec => Boolean(action?.id && action?.type),
+    );
+    if (actions.length === 0) {
+      return;
+    }
+
+    const runAction = async (action: ObjectiveActionSpec) => {
+      const actionKey = `${stepKey}:${action.id}:${action.timing ?? "in_action"}`;
+      if (handledActionKeysRef.current.has(actionKey)) {
+        return;
+      }
+      handledActionKeysRef.current.add(actionKey);
+      try {
+        await executeObjectiveAction(action, { client, session });
+      } catch (actionError) {
+        logger.error(`Guided action handler failed: ${action.type}`, actionError);
+      }
+    };
+
+    const immediateActions = actions.filter(
+      (action) => (action.timing ?? "in_action") === "in_action",
+    );
+    for (const action of immediateActions) {
+      void runAction(action);
+    }
+
+    const postActions = actions.filter(
+      (action) => (action.timing ?? "in_action") === "post_action",
+    );
+    if (postActions.length > 0) {
+      const delay =
+        typeof current.result.displayForMs === "number" && current.result.displayForMs > 0
+          ? current.result.displayForMs
+          : 0;
+      const timer = window.setTimeout(() => {
+        for (const action of postActions) {
+          void runAction(action);
+        }
+      }, delay);
+      return () => {
+        window.clearTimeout(timer);
+      };
+    }
+  }, [client, current, session, showGuidedActions]);
 
   useEffect(() => {
     if (showGuidedActions) {

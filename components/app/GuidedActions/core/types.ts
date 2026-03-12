@@ -11,6 +11,13 @@ export type ObjectiveInputType =
 
 export type ObjectiveState = Record<string, unknown>;
 
+export interface ObjectiveActionSpec {
+  id: string;
+  type: string;
+  timing?: "in_action" | "post_action" | null;
+  payload?: ObjectiveState | null;
+}
+
 export interface ObjectiveInputSpec {
   type: ObjectiveInputType;
   key: string;
@@ -44,6 +51,7 @@ export interface ObjectiveProcessResult {
   subtext: string | null;
   input: ObjectiveInputSpec | null;
   state: ObjectiveState | null;
+  actions?: ObjectiveActionSpec[] | null;
 }
 
 export interface PersistedObjectiveSession {
