@@ -153,7 +153,7 @@ export default function useObjectiveEngine() {
 
   const continueCurrentStep = useCallback(async () => {
     if (!current) {
-      return;
+      return null;
     }
     const operationId = startOperation();
 
@@ -161,23 +161,25 @@ export default function useObjectiveEngine() {
       const prefetched = prefetchedResolutionRef.current;
       if (prefetched && prefetched.sourceObjectiveId === current.objectiveId) {
         if (!isLatestOperation(operationId)) {
-          return;
+          return null;
         }
         prefetchedResolutionRef.current = null;
         applyResolution(prefetched.resolution);
-        return;
+        return prefetched.resolution;
       }
 
       const resolution = await advanceObjective(engineClient, current, null);
       if (!isLatestOperation(operationId)) {
-        return;
+        return null;
       }
       applyResolution(resolution);
+      return resolution;
     } catch (err) {
       if (!isLatestOperation(operationId)) {
-        return;
+        return null;
       }
       setError(resolveErrorMessage(err));
+      return null;
     } finally {
       if (isLatestOperation(operationId)) {
         setLoading(false);

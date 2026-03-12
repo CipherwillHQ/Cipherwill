@@ -7,8 +7,8 @@ import ScoreExplainer from "./ScoreExplainer";
 export default function ActionsPage() {
   return (
     <div className="w-full">
-      <DesktopAndMobilePageHeader title="Actions">
-        <SuggestionBox triggerText="Give feedback on actions" />
+      <DesktopAndMobilePageHeader title="Score">
+        <SuggestionBox triggerText="Give feedback on score" />
       </DesktopAndMobilePageHeader>
       <UserScore
         description="Your Cipherwill Score shows how prepared your digital legacy is. Add more details to increase your score and ensure everything is ready for your loved ones."
