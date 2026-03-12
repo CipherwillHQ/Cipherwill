@@ -43,6 +43,13 @@ export default async function perform_migrate_in(
       toast.error("Invalid beneficiary");
       return;
     }
+    // clear existing beneficiary keys once before paginated migration starts
+    await client.mutate({
+      mutation: DELETE_ALL_KEYS_FOR_BENEFICIARY,
+      variables: {
+        beneficiary_id,
+      },
+    });
   }
   while (has_more) {
     logger.info(`Migrate in for cursor:${cursor} and has_more:${has_more}`);
@@ -52,13 +59,6 @@ export default async function perform_migrate_in(
       publicKey: max_public_key,
     };
     if (beneficiary_id) {
-      // clear all existing keys for this beneficiary
-      await client.mutate({
-        mutation: DELETE_ALL_KEYS_FOR_BENEFICIARY,
-        variables: {
-          beneficiary_id,
-        },
-      });
       vars = {
         ...vars,
         for_beneficiary_migration: true,
@@ -75,28 +75,21 @@ export default async function perform_migrate_in(
       fetchPolicy: "network-only",
       variables: vars,
     });
-    if (
-      !res.data &&
-      !res.data.getKeyItemsByPublicKey &&
-      !res.data.getKeyItemsByPublicKey.items &&
-      res.data.getKeyItemsByPublicKey.items.length < 1
-    ) {
+    const items = res?.data?.getKeyItemsByPublicKey?.items || [];
+    if (items.length < 1) {
       toast.error("No data items to migrate");
       has_more = false;
       break;
     }
 
-    if (res.data.getKeyItemsByPublicKey.has_more) {
+    if (res?.data?.getKeyItemsByPublicKey?.has_more) {
       has_more = res.data.getKeyItemsByPublicKey.has_more;
-      cursor =
-        res.data.getKeyItemsByPublicKey.items[
-          res.data.getKeyItemsByPublicKey.items.length - 1
-        ].id;
+      cursor = items[items.length - 1].id;
     } else {
       has_more = false;
     }
 
-    const all_data = res.data.getKeyItemsByPublicKey.items;
+    const all_data = items;
     // decrypt each one with current privatekey
     const all_decrypted:any[] = [];
     for await (const item of all_data) {
@@ -132,8 +125,6 @@ export default async function perform_migrate_in(
     // encrypt for this one
     for await (const item of all_decrypted) {
       if (beneficiary_id && beneficiary_factors) {
-        console.log("*****", beneficiary_factors.data);
-        
         const beneficiary = beneficiary_factors.data.getBeneficiaryFactors.find(
           (x) => x.beneficiary_id === beneficiary_id
         );

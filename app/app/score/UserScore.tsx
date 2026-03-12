@@ -1,18 +1,12 @@
 "use client";
 
 import { CiUndo } from "react-icons/ci";
-import { useMutation, useQuery } from "@apollo/client/react";
-import GET_USER_SCORE from "@/graphql/ops/app/actions/queries/GET_USER_SCORE";
+import { useQuery } from "@apollo/client/react";
+import GET_USER_SCORE from "@/graphql/ops/app/score/queries/GET_USER_SCORE";
 import { GetUserScoreData } from "@/types/interfaces";
 import { twMerge } from "tailwind-merge";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import toast from "react-hot-toast";
-import RECHECK_ALL_ACTIONS from "@/graphql/ops/app/actions/mutations/RECHECK_ALL_ACTIONS";
-import GET_USER_ACTIONS from "@/graphql/ops/app/actions/queries/GET_USER_ACTIONS";
-import GET_IGNORED_ACTIONS from "@/graphql/ops/app/actions/queries/GET_IGNORED_ACTIONS";
-import GET_COMPLETED_ACTIONS from "@/graphql/ops/app/actions/queries/GET_COMPLETED_ACTIONS";
-import ConfirmationPopup from "@/components/app/smartwill/ConfirmationPopup";
 import { useTheme } from "@/contexts/ThemeSelector";
 import {
   Chart as ChartJS,
@@ -28,7 +22,7 @@ ChartJS.register(
   Tooltip,
   Legend,
   DoughnutController,
-  annotationPlugin
+  annotationPlugin,
 );
 
 interface UserScoreProps {
@@ -44,28 +38,24 @@ export default function UserScore({
   className = "",
   improveScrollLink = false,
 }: UserScoreProps) {
-  const { data, loading, error } = useQuery<GetUserScoreData>(GET_USER_SCORE);
-  const [recheckAllActions, { loading: rechecking }] = useMutation(
-    RECHECK_ALL_ACTIONS,
-    {
-      refetchQueries: [
-        { query: GET_USER_ACTIONS },
-        { query: GET_IGNORED_ACTIONS },
-        { query: GET_COMPLETED_ACTIONS },
-        {
-          query: GET_USER_SCORE,
-        },
-      ],
-    }
-  );
+  const { data, loading, error, refetch } =
+    useQuery<GetUserScoreData>(GET_USER_SCORE);
   const { current_theme } = useTheme();
 
-  const score = data?.getUserScore || 0;
+  const score:number =
+    data && data.getUserScore
+      ? // sum of all values of keys in object
+        Object.values(JSON.parse(data.getUserScore)).reduce(
+          (a: number, b: number) => a + b,
+          0,
+        ) as number
+      : 300;
+
   // Normalize score between 300 and maxScore (default 950)
   const minScore = 300;
   const percentage = Math.max(
     0,
-    Math.min(((score - minScore) / (maxScore - minScore)) * 100, 100)
+    Math.min(((score - minScore) / (maxScore - minScore)) * 100, 100),
   );
 
   // Colors: red for low, yellow for medium, green for high
@@ -77,7 +67,6 @@ export default function UserScore({
 
   // Animation state
   const [animatedPercentage, setAnimatedPercentage] = useState(0);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstanceRef = useRef<ChartJS | null>(null);
 
@@ -178,7 +167,7 @@ export default function UserScore({
       <div
         className={twMerge(
           "bg-secondary p-4 rounded-md border border-default h-96 overflow-auto customScrollbar flex flex-col gap-4",
-          className
+          className,
         )}
       >
         <div className="text-xl font-semibold pb-2">Cipherwill Score</div>
@@ -217,7 +206,7 @@ export default function UserScore({
       <div
         className={twMerge(
           "bg-secondary p-4 rounded-md border border-default h-96 overflow-auto customScrollbar animate-in fade-in duration-300 flex flex-col gap-4",
-          className
+          className,
         )}
       >
         <div className="text-xl flex justify-between">
@@ -226,20 +215,20 @@ export default function UserScore({
             {improveScrollLink && (
               <Link
                 className="ml-2 text-sm opacity-70 hover:underline"
-                href={"/app/actions"}
+                href={"/app/score"}
               >
                 Improve score
               </Link>
             )}
             <CiUndo
               className={`inline ${
-                rechecking
+                loading
                   ? "opacity-50 cursor-not-allowed"
                   : "hover:cursor-pointer"
               }`}
               onClick={() => {
-                if (rechecking) return;
-                setShowConfirmModal(true);
+                if (loading) return;
+                refetch();
               }}
             />
           </div>
@@ -265,19 +254,6 @@ export default function UserScore({
           </p>
         )}
       </div>
-
-      <ConfirmationPopup
-        isOpen={showConfirmModal}
-        onClose={() => setShowConfirmModal(false)}
-        onConfirm={() => {
-          toast.success("Score refresh initiated!");
-          recheckAllActions();
-        }}
-        title="Confirm Score Refresh"
-        message="Are you sure you want to refresh your score? This will recalculate your score based on your current activities."
-        confirmText="Refresh Score"
-        variant="info"
-      />
     </>
   );
 }

@@ -75,32 +75,6 @@ export interface BeneficiaryKeyCountData {
 export interface SmartWillFriendsData {
   getSmartWillFriends: string[];
 }
-
-export interface Action {
-  id: string;
-  action: string;
-  description?: string;
-  variable: string;
-  condition: string;
-  value: string;
-  completion_key: string;
-  created_at: string;
-  completed_at?: string;
-  ignored_at?: string;
-}
-
-export interface GetUserActionsData {
-  getUserActions: Action[];
-}
-
-export interface GetIgnoredActionsData {
-  getIgnoredActions: Action[];
-}
-
-export interface GetCompletedActionsData {
-  getCompletedActions: Action[];
-}
-
 export interface GetUserScoreData {
-  getUserScore: number;
+  getUserScore: string;
 }
