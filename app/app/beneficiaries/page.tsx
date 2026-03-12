@@ -1,18 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useLazyQuery, useMutation } from "@apollo/client/react";
-import ADD_SMARTWILL_BENEFICIARY from "../../../graphql/ops/app/smartwill/mutations/ADD_SMARTWILL_BENEFICIARY";
+import { useLazyQuery } from "@apollo/client/react";
 import BeneficiaryList from "../../../components/app/smartwill/BeneficiaryList";
 import PersonSelector from "../../../components/app/smartwill/PersonSelector";
-import toast from "react-hot-toast";
-import GET_SMARTWILL_BENEFICIARY from "../../../graphql/ops/app/smartwill/queries/GET_SMARTWILL_BENEFICIARY";
 import IncompleteProfile from "./IncompleProfile";
-import GET_BENEFICIARY_KEY_COUNT from "../../../graphql/ops/auth/queries/GET_BENEFICIARY_KEY_COUNT";
 import GET_MY_KEY_COUNT from "../../../graphql/ops/app/key/Queries/GET_MY_KEY_COUNT";
 import logger from "@/common/debug/logger";
 import SimpleButton from "@/components/common/SimpleButton";
 import DesktopAndMobilePageHeader from "@/components/app/common/page/DesktopAndMobilePageHeader";
 import { useUserContext } from "@/contexts/UserSetupContext";
+import useBeneficiaryAutoMigration from "./useBeneficiaryAutoMigration";
+import MigrationProgressPopup from "./MigrationProgressPopup";
 
 export default function Smartwill() {
   const [personSelectionDialogOpen, setPersonSelectionDialogOpen] = useState<
@@ -22,6 +20,14 @@ export default function Smartwill() {
   const {user,loading:user_loading} = useUserContext();
   const [max_publicKey, set_max_publicKey] = useState("null");
   const [max_key_count, set_max_key_count] = useState(0);
+  const {
+    isAddingBeneficiary,
+    migrationProgress,
+    closeMigrationProgress,
+    addAndMigrateBeneficiary,
+  } = useBeneficiaryAutoMigration({
+    maxPublicKey: max_publicKey,
+  });
 
   const [getKeyCount] = useLazyQuery(GET_MY_KEY_COUNT);
   useEffect(() => {
@@ -30,7 +36,7 @@ export default function Smartwill() {
       const data = result.data as any;
       if (data && data.getMyKeyCount) {
         let maxCount = 0;
-        let maxPublicKey = "";
+        let maxPublicKey = "null";
         for await (const c of data.getMyKeyCount) {
           if (c.count > maxCount) {
             maxCount = c.count;
@@ -43,8 +49,6 @@ export default function Smartwill() {
     })();
   }, [getKeyCount]);
 
-  const [addBeneficiary] = useMutation(ADD_SMARTWILL_BENEFICIARY);
-
   if (user_loading) return <div>Loading...</div>;
   if (user?.birth_date === "0") return <IncompleteProfile />;
 
@@ -52,11 +56,12 @@ export default function Smartwill() {
     <div className="w-full">
       <DesktopAndMobilePageHeader title="Beneficiaries">
         <SimpleButton
+          disabled={isAddingBeneficiary}
           onClick={() => {
             setPersonSelectionDialogOpen("beneficiary");
           }}
         >
-          Add a person
+          {isAddingBeneficiary ? "Adding..." : "Add a person"}
         </SimpleButton>
       </DesktopAndMobilePageHeader>
 
@@ -76,24 +81,10 @@ export default function Smartwill() {
         onClose={() => {
           setPersonSelectionDialogOpen(null);
         }}
-        response={(e) => {
+        response={async (e) => {
           if (e.field === "beneficiary") {
             if (e.person) {
-              addBeneficiary({
-                variables: {
-                  id: e.person,
-                },
-                refetchQueries: [
-                  {
-                    query: GET_SMARTWILL_BENEFICIARY,
-                  },
-                  {
-                    query: GET_BENEFICIARY_KEY_COUNT,
-                  },
-                ],
-              }).then(() => {
-                toast.success("Beneficiary Added");
-              });
+              await addAndMigrateBeneficiary(e.person);
             }
           }
 
@@ -103,6 +94,10 @@ export default function Smartwill() {
             }
           }
         }}
+      />
+      <MigrationProgressPopup
+        progress={migrationProgress}
+        onClose={closeMigrationProgress}
       />
     </div>
   );
