@@ -32,7 +32,7 @@ export default function GuidedButton({
     <button
       type="button"
       disabled={disabled}
-      className={`inline-flex min-h-11 items-center justify-center rounded-xl border px-5 py-2.5 text-sm md:text-base font-semibold tracking-[0.01em] transition-all duration-200 cursor-pointer ${variantClasses} ${className}`}
+      className={`inline-flex min-h-8 items-center justify-center rounded-xl border px-5 py-2 text-sm md:text-base font-semibold tracking-[0.01em] transition-all duration-200 cursor-pointer ${variantClasses} ${className}`}
       {...rest}
     >
       {children}
