@@ -13,8 +13,6 @@ export default function Gender({ gender, setGender }) {
           options={[
             { value: "male", label: "Male" },
             { value: "female", label: "Female" },
-            { value: "other", label: "Other" },
-            { value: "na", label: "Do not specify" },
           ]}
         />
       </div>

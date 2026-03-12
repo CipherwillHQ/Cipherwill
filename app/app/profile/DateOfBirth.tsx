@@ -1,125 +1,103 @@
-import Select from "@/components/ui/Select";
-import { BiErrorCircle } from "react-icons/bi";
+import { useRef } from "react";
+import { BiCalendar, BiErrorCircle } from "react-icons/bi";
 
 export default function DateOfBirth({ dob, setDob }) {
-  const monthIndex = new Date(dob).getMonth() + 1; // Months are zero-based in JavaScript
+  const dateInputRef = useRef<HTMLInputElement | null>(null);
+  const inputValue =
+    dob === null || !Number.isFinite(dob)
+      ? ""
+      : new Date(dob).toISOString().slice(0, 10);
+  const minDate = `${new Date().getFullYear() - 150}-01-01`;
+  const maxDate = new Date().toISOString().slice(0, 10);
+  const locale = Intl.DateTimeFormat().resolvedOptions().locale;
+  const selectedDateText =
+    dob === null || !Number.isFinite(dob)
+      ? ""
+      : new Date(dob).toLocaleDateString(locale, {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        });
 
   return (
     <>
-      <label className="mt-2 py-3 px-1 font-semibold text-sm">
-        Date of Birth
-      </label>
-      <div className="flex flex-col sm:flex-row gap-2 justify-between items-center">
-        {/* <input
-              data-cy="dob-input"
-              type="date"
-              placeholder="Date of Birth"
-              className="flex flex-1 p-2 bg-neutral-100 dark:bg-neutral-800 rounded-md"
-              value={
-                dob === 0
-                  ? ""
-                  : new Date(dob).toISOString().split("T")[0]
-              }
-              onChange={(e) => {
-                if (
-                  e.target.value.length > 0 &&
-                  e.target.value !== undefined &&
-                  e.target.value !== null
-                ) {
-                  setDob(+new Date(e.target.value));
-                }
-              }}
-            /> */}
-        <Select
-          value={dob === null ? "" : monthIndex.toString()}
-          placeholder="Month"
-          options={[
-            {
-              value: "1",
-              label: "January",
-            },
-            {
-              value: "2",
-              label: "February",
-            },
-            {
-              value: "3",
-              label: "March",
-            },
-            {
-              value: "4",
-              label: "April",
-            },
-            {
-              value: "5",
-              label: "May",
-            },
-            {
-              value: "6",
-              label: "June",
-            },
-            {
-              value: "7",
-              label: "July",
-            },
-            {
-              value: "8",
-              label: "August",
-            },
-            {
-              value: "9",
-              label: "September",
-            },
-            {
-              value: "10",
-              label: "October",
-            },
-            {
-              value: "11",
-              label: "November",
-            },
-            {
-              value: "12",
-              label: "December",
-            },
-          ]}
-          onChange={(val) => {
-            const newDate = new Date(dob);
-            newDate.setMonth(parseInt(val) - 1); // Months are zero-based in JavaScript
-            setDob(+newDate);
-          }}
-          className="w-full bg-neutral-100 dark:bg-neutral-800 rounded-md"
-        />
-        <Select
-          value={dob === null ? "" : new Date(dob).getDate().toString()}
-          placeholder="Day"
-          options={[...Array(31)].map((_, i) => ({
-            value: (i + 1).toString(),
-            label: (i + 1).toString(),
-          }))}
-          onChange={(val) => {
-            const newDate = new Date(dob);
-            newDate.setDate(parseInt(val));
-            setDob(+newDate);
-          }}
-          className="w-full bg-neutral-100 dark:bg-neutral-800 rounded-md"
-        />
-        <Select
-          value={dob === null ? "" : new Date(dob).getFullYear().toString()}
-          placeholder="Year"
-          options={[...Array(150)].map((_, i) => ({
-            value: (new Date().getFullYear() - (149 - i)).toString(),
-            label: (new Date().getFullYear() - (149 - i)).toString(),
-          }))}
-          onChange={(val) => {
-            const newDate = new Date(dob);
-            newDate.setFullYear(parseInt(val));
-            setDob(+newDate);
-          }}
-          className="w-full bg-neutral-100 dark:bg-neutral-800 rounded-md"
-        />
-        {dob === null && <BiErrorCircle className="text-red-500 m-1 min-w-fit" />}
+      <div className="mt-2 py-3 px-1 font-semibold text-sm flex items-center justify-between">
+        <span>Date of Birth</span>
+        {dob !== null && (
+          <button
+            type="button"
+            onClick={() => setDob(null)}
+            className="text-xs font-medium text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+          >
+            Clear
+          </button>
+        )}
       </div>
+      <div className="flex gap-2 justify-between items-center">
+        <div className="relative flex-1">
+        <input
+          ref={dateInputRef}
+          data-cy="dob-input"
+          type="date"
+          className="dob-date-input flex w-full p-2 pr-10 bg-neutral-100 dark:bg-neutral-800 rounded-md border border-default"
+          value={inputValue}
+          min={minDate}
+          max={maxDate}
+          onClick={() => {
+            const input = dateInputRef.current;
+            if (!input) return;
+            if (typeof input.showPicker === "function") {
+              input.showPicker();
+            } else {
+              input.focus();
+            }
+          }}
+          onFocus={() => {
+            const input = dateInputRef.current;
+            if (!input) return;
+            if (typeof input.showPicker === "function") {
+              input.showPicker();
+            }
+          }}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (!value) {
+              setDob(null);
+              return;
+            }
+            const [year, month, day] = value.split("-").map((part) => parseInt(part, 10));
+            const stamp = Date.UTC(year, month - 1, day);
+            const date = new Date(stamp);
+            const isExact =
+              date.getUTCFullYear() === year &&
+              date.getUTCMonth() + 1 === month &&
+              date.getUTCDate() === day;
+            if (!isExact || !Number.isFinite(stamp) || stamp <= 0) {
+              setDob(null);
+              return;
+            }
+            setDob(stamp);
+          }}
+        />
+        <BiCalendar className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-300" />
+        </div>
+        {dob === null && (
+          <BiErrorCircle className="text-red-500 m-1 min-w-fit" />
+        )}
+      </div>
+      {selectedDateText && (
+        <div className="px-1 pt-2 text-xs opacity-70">Selected: {selectedDateText}</div>
+      )}
+      <style jsx global>{`
+        .dob-date-input::-webkit-calendar-picker-indicator {
+          opacity: 0;
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          inset: 0;
+          cursor: pointer;
+        }
+      `}</style>
     </>
   );
 }
