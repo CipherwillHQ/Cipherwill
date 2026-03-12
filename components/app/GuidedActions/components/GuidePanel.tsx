@@ -13,6 +13,7 @@ type GuidePanelProps = {
   current: ObjectiveInProgress | null;
   loading: boolean;
   error: string | null;
+  postActionStatus: { title: string; subtext: string | null } | null;
   onClose: () => void;
   onRetry: () => void;
   onContinue: () => void;
@@ -45,6 +46,7 @@ export default function GuidePanel({
   current,
   loading,
   error,
+  postActionStatus,
   onClose,
   onRetry,
   onContinue,
@@ -52,6 +54,7 @@ export default function GuidePanel({
 }: GuidePanelProps) {
   const [inputValue, setInputValue] = useState("");
   const [showIntro, setShowIntro] = useState(true);
+  const [countdownSeconds, setCountdownSeconds] = useState<number>(0);
 
   const currentInput = current?.result.input ?? null;
   const canSubmit = useMemo(
@@ -62,8 +65,6 @@ export default function GuidePanel({
     !currentInput &&
     typeof current?.result.displayForMs === "number" &&
     current.result.displayForMs > 0;
-  const shouldAutoClose =
-    isTimedDisplayStep && Boolean(current?.result.closePanelAfterDisplay);
   const currentObjectiveId = current?.objectiveId ?? null;
 
   useEffect(() => {
@@ -74,6 +75,33 @@ export default function GuidePanel({
       setShowIntro(false);
     }
   }, [currentObjectiveId]);
+
+  useEffect(() => {
+    if (!isTimedDisplayStep) {
+      setCountdownSeconds(0);
+      return;
+    }
+
+    const durationMs = current?.result.displayForMs ?? 0;
+    const targetTime = Date.now() + durationMs;
+
+    const tick = () => {
+      const remainingMs = Math.max(0, targetTime - Date.now());
+      setCountdownSeconds(Math.ceil(remainingMs / 1000));
+    };
+
+    tick();
+    const interval = window.setInterval(tick, 200);
+    return () => {
+      window.clearInterval(interval);
+    };
+  }, [
+    isTimedDisplayStep,
+    current?.objectiveId,
+    current?.result.step,
+    current?.result.title,
+    current?.result.displayForMs,
+  ]);
 
   const contentStateKey = getContentStateKey({
     loading,
@@ -173,6 +201,7 @@ export default function GuidePanel({
                     inputValue={inputValue}
                     setInputValue={setInputValue}
                     submitValue={onSubmit}
+                    submitTextValue={submitWithCurrentValue}
                     loading={loading}
                   />
                   {!isTimedDisplayStep ? (
@@ -213,11 +242,21 @@ export default function GuidePanel({
           />
         </div>
       ) : null}
-      {!loading && !error && current && isTimedDisplayStep ? (
+      {!loading && !error && current && isTimedDisplayStep && !postActionStatus ? (
         <p className="absolute left-1/2 bottom-10 -translate-x-1/2 text-xs md:text-sm text-black/60 dark:text-white/60">
-          {shouldAutoClose ? "Closing" : "Continuing"} in{" "}
-          {Math.ceil((current.result.displayForMs ?? 0) / 1000)}s...
+          Continuing in{" "}
+          {Math.max(1, countdownSeconds)}s...
         </p>
+      ) : null}
+      {!loading && !error && current && postActionStatus ? (
+        <div className="absolute left-1/2 bottom-10 -translate-x-1/2 w-[min(90vw,40rem)] rounded-xl border border-default bg-secondary px-4 py-3 text-center shadow-sm">
+          <p className="text-sm md:text-base font-medium">{postActionStatus.title}</p>
+          {postActionStatus.subtext ? (
+            <p className="text-xs md:text-sm text-black/70 dark:text-white/70 mt-1">
+              {postActionStatus.subtext}
+            </p>
+          ) : null}
+        </div>
       ) : null}
     </motion.div>
   );

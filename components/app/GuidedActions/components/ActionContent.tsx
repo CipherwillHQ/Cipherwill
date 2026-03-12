@@ -7,6 +7,7 @@ export interface ActionContentProps {
   inputValue: string;
   setInputValue: (value: string) => void;
   submitValue: (value: unknown) => void;
+  submitTextValue: () => void;
   loading: boolean;
 }
 
@@ -15,6 +16,7 @@ export default function ActionContent({
   inputValue,
   setInputValue,
   submitValue,
+  submitTextValue,
   loading,
 }: ActionContentProps) {
   const inputSpec = stepResult.input;
@@ -41,6 +43,7 @@ export default function ActionContent({
         inputValue={inputValue}
         onChange={setInputValue}
         onSubmitBoolean={(value) => submitValue(value)}
+        onSubmitText={submitTextValue}
         loading={loading}
       />
     </motion.div>

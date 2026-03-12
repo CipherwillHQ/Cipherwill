@@ -9,12 +9,14 @@ export default function StepInputField({
   inputValue,
   onChange,
   onSubmitBoolean,
+  onSubmitText,
   loading,
 }: {
   inputSpec: ObjectiveInputSpec | null;
   inputValue: string;
   onChange: (value: string) => void;
   onSubmitBoolean: (value: boolean) => void;
+  onSubmitText: () => void;
   loading: boolean;
 }) {
   const inputType = inputSpec?.type ?? null;
@@ -43,6 +45,12 @@ export default function StepInputField({
         type={inputType === "email" ? "email" : "text"}
         value={inputValue}
         onChange={(event) => onChange(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            onSubmitText();
+          }
+        }}
         placeholder={inputSpec?.placeholder ?? "Enter value"}
         minLength={inputSpec?.minLength ?? undefined}
         maxLength={inputSpec?.maxLength ?? undefined}
