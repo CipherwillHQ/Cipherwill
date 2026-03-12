@@ -2,7 +2,6 @@ import { useRef } from "react";
 import { BiCalendar, BiErrorCircle } from "react-icons/bi";
 
 export default function DateOfBirth({ dob, setDob }) {
-  const dateInputRef = useRef<HTMLInputElement | null>(null);
   const pickerOpenedAtRef = useRef<number>(0);
   const ignoredInitialIosAutofillRef = useRef(false);
   const inputValue =
@@ -10,7 +9,10 @@ export default function DateOfBirth({ dob, setDob }) {
       ? ""
       : new Date(dob).toISOString().slice(0, 10);
   const minDate = `${new Date().getFullYear() - 150}-01-01`;
-  const maxDate = new Date().toISOString().slice(0, 10);
+  const localToday = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 10);
+  const maxDate = localToday;
   const locale = Intl.DateTimeFormat().resolvedOptions().locale;
   const selectedDateText =
     dob === null || !Number.isFinite(dob)
@@ -35,33 +37,20 @@ export default function DateOfBirth({ dob, setDob }) {
           </button>
         )}
       </div>
-      <div className="flex min-w-0 gap-2 justify-between items-center">
-        <div className="relative flex-1 min-w-0">
+      <div className="flex w-full min-w-0 gap-2 justify-between items-center">
+        <div className="relative flex-1 min-w-0 overflow-hidden">
         <input
-          ref={dateInputRef}
           data-cy="dob-input"
           type="date"
-          className="dob-date-input flex w-full min-w-0 p-2 pr-10 bg-neutral-100 dark:bg-neutral-800 rounded-md border border-default"
+          className="dob-date-input block w-full min-w-0 max-w-full box-border p-2 pr-10 bg-neutral-100 dark:bg-neutral-800 rounded-md border border-default"
           value={inputValue}
           min={minDate}
           max={maxDate}
           onPointerDown={() => {
             pickerOpenedAtRef.current = Date.now();
           }}
-          onClick={() => {
-            const input = dateInputRef.current;
-            if (!input) return;
-            if (typeof input.showPicker === "function") {
-              input.showPicker();
-            }
-          }}
           onFocus={() => {
             pickerOpenedAtRef.current = Date.now();
-            const input = dateInputRef.current;
-            if (!input) return;
-            if (typeof input.showPicker === "function") {
-              input.showPicker();
-            }
           }}
           onChange={(e) => {
             const value = e.target.value;
@@ -73,7 +62,7 @@ export default function DateOfBirth({ dob, setDob }) {
             // iOS can emit an immediate onChange with "today" when opening an empty date input.
             const looksLikeIosAutofill =
               inputValue === "" &&
-              value === maxDate &&
+              value === localToday &&
               !ignoredInitialIosAutofillRef.current &&
               Date.now() - pickerOpenedAtRef.current < 1500;
             if (looksLikeIosAutofill) {
@@ -105,6 +94,10 @@ export default function DateOfBirth({ dob, setDob }) {
         <div className="px-1 pt-2 text-xs opacity-70">Selected: {selectedDateText}</div>
       )}
       <style jsx global>{`
+        .dob-date-input {
+          max-width: 100%;
+          min-width: 0;
+        }
         .dob-date-input::-webkit-calendar-picker-indicator {
           opacity: 0;
           width: 100%;
