@@ -77,7 +77,8 @@ export default function DateOfBirth({ dob, setDob }) {
               date.getUTCMonth() + 1 === month &&
               date.getUTCDate() === day;
             if (!isExact || !Number.isFinite(stamp) || stamp <= 0) {
-              setDob(null);
+              // iOS date-wheel can emit transient invalid combos while scrolling.
+              // Ignore those intermediate states and keep the previous valid DOB.
               return;
             }
             ignoredInitialIosAutofillRef.current = false;
