@@ -1,5 +1,5 @@
-import SimpleButton from "@/components/common/SimpleButton";
 import { motion } from "framer-motion";
+import GuidedButton from "./GuidedButton";
 import type { ObjectiveProcessResult } from "./types";
 
 interface ActionControlsProps {
@@ -26,26 +26,26 @@ export default function ActionControls({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -6 }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
-      className="flex gap-4 items-center justify-center flex-wrap"
+      initial={{ opacity: 0, x: 40 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -40 }}
+      transition={{ duration: 0.24, ease: "easeOut" }}
+      className="flex gap-4 items-center justify-center flex-wrap mt-2"
     >
       {isSkippable && (
-        <SimpleButton onClick={handleSkip} disabled={loading}>
+        <GuidedButton variant="secondary" onClick={handleSkip} disabled={loading}>
           Skip
-        </SimpleButton>
+        </GuidedButton>
       )}
       {!hasInput ? (
-        <SimpleButton onClick={handleContinue} disabled={loading}>
+        <GuidedButton onClick={handleContinue} disabled={loading}>
           Continue
-        </SimpleButton>
+        </GuidedButton>
       ) : null}
-      {hasInput && !isBooleanInput && isInputValid ? (
-        <SimpleButton onClick={handleSubmit} disabled={loading}>
+      {hasInput && !isBooleanInput ? (
+        <GuidedButton onClick={handleSubmit} disabled={loading || !isInputValid}>
           Submit
-        </SimpleButton>
+        </GuidedButton>
       ) : null}
     </motion.div>
   );

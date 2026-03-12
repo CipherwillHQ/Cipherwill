@@ -1,9 +1,9 @@
 "use client";
 
-import SimpleButton from "@/components/common/SimpleButton";
 import { useState, useEffect, useCallback } from "react";
 import { AnimatePresence } from "framer-motion";
 import GuidePanel from "./GuidePanel";
+import GuidedButton from "./GuidedButton";
 import useObjectiveEngine from "./useObjectiveEngine";
 
 export default function GuidedActions() {
@@ -31,6 +31,27 @@ export default function GuidedActions() {
   }, [initialize]);
 
   useEffect(() => {
+    if (!showGuidedActions || !current) {
+      return;
+    }
+    if (!current.result.closePanelAfterDisplay) {
+      return;
+    }
+    const delay = current.result.displayForMs ?? 0;
+    if (delay <= 0) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      void handleCloseGuidedActions();
+    }, delay);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [current, showGuidedActions, handleCloseGuidedActions]);
+
+  useEffect(() => {
     if (showGuidedActions) {
       document.body.style.overflow = "hidden";
     } else {
@@ -51,9 +72,9 @@ export default function GuidedActions() {
         <span>Start guided actions</span>
         {error ? <span className="text-xs text-red-600">{error}</span> : null}
       </div>
-      <SimpleButton onClick={handleOpenGuidedActions} disabled={loading}>
+      <GuidedButton onClick={handleOpenGuidedActions} disabled={loading}>
         Start Now
-      </SimpleButton>
+      </GuidedButton>
       <AnimatePresence>
         {showGuidedActions && (
           <GuidePanel
@@ -64,7 +85,6 @@ export default function GuidedActions() {
             onRetry={initialize}
             onContinue={continueCurrentStep}
             onSubmit={submitCurrentStep}
-            onSkip={continueCurrentStep}
           />
         )}
       </AnimatePresence>

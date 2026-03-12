@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import SimpleButton from "@/components/common/SimpleButton";
+import GuidedButton from "./GuidedButton";
 import type { ObjectiveInputSpec, ObjectiveProcessResult } from "./types";
 
 interface ActionContentProps {
@@ -24,6 +24,9 @@ export function isInputValid(
   if (inputSpec.type === "choices") {
     const options = (inputSpec.choices ?? []).map((choice) => String(choice));
     return options.includes(normalized);
+  }
+  if (inputSpec.type === "email") {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized);
   }
   if (typeof inputSpec.minLength === "number" && normalized.length < inputSpec.minLength) {
     return false;
@@ -60,46 +63,39 @@ export default function ActionContent({
   return (
     <motion.div
       key={`${stepResult.step ?? "display"}-${stepResult.title ?? "objective-step"}`}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -6 }}
-      transition={{ duration: 0.25, ease: "easeOut" }}
-      className="flex w-full flex-col items-center gap-5 text-center"
+      initial={{ opacity: 0, x: 60 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -60 }}
+      transition={{ duration: 0.28, ease: "easeOut" }}
+      className="flex w-full max-w-4xl flex-col items-center gap-7 text-center"
     >
-      <h2 className="text-xl md:text-2xl font-medium">
+      <h2 className="text-3xl md:text-5xl font-semibold leading-tight">
         {stepResult.title || "Guided Action"}
       </h2>
       {stepResult.subtext ? (
-        <p className="max-w-xl text-sm md:text-base text-black/70 dark:text-white/70">
+        <p className="max-w-2xl text-base md:text-xl text-black/70 dark:text-white/70 leading-relaxed">
           {stepResult.subtext}
-        </p>
-      ) : null}
-      {typeof stepResult.stepsRemaining === "number" &&
-      typeof stepResult.stepsTotal === "number" ? (
-        <p className="text-xs md:text-sm text-black/60 dark:text-white/60">
-          {stepResult.stepsRemaining} step
-          {stepResult.stepsRemaining === 1 ? "" : "s"} left of {stepResult.stepsTotal}
         </p>
       ) : null}
       {inputType === "boolean" ? (
         <div className="flex flex-wrap justify-center gap-3">
-          <SimpleButton onClick={() => submitValue(true)} disabled={loading}>
+          <GuidedButton onClick={() => submitValue(true)} disabled={loading}>
             Yes
-          </SimpleButton>
-          <SimpleButton onClick={() => submitValue(false)} disabled={loading}>
+          </GuidedButton>
+          <GuidedButton variant="secondary" onClick={() => submitValue(false)} disabled={loading}>
             No
-          </SimpleButton>
+          </GuidedButton>
         </div>
       ) : null}
-      {inputType === "single_line_text" ? (
+      {inputType === "email" || inputType === "single_line_text" ? (
         <input
-          type="text"
+          type={inputType === "email" ? "email" : "text"}
           value={inputValue}
           onChange={(event) => setInputValue(event.target.value)}
           placeholder={inputSpec?.placeholder ?? "Enter value"}
           minLength={inputSpec?.minLength ?? undefined}
           maxLength={inputSpec?.maxLength ?? undefined}
-          className="w-full max-w-md rounded border border-default px-3 py-2"
+          className="w-full max-w-2xl rounded-xl border border-default px-4 py-3 text-lg md:text-xl"
         />
       ) : null}
       {inputType === "multi_line_text" ? (
@@ -110,14 +106,14 @@ export default function ActionContent({
           minLength={inputSpec?.minLength ?? undefined}
           maxLength={inputSpec?.maxLength ?? undefined}
           rows={5}
-          className="w-full max-w-md rounded border border-default px-3 py-2"
+          className="w-full max-w-2xl rounded-xl border border-default px-4 py-3 text-lg md:text-xl"
         />
       ) : null}
       {inputType === "choices" ? (
         <select
           value={inputValue}
           onChange={(event) => setInputValue(event.target.value)}
-          className="w-full max-w-md rounded border border-default px-3 py-2 bg-transparent"
+          className="w-full max-w-2xl rounded-xl border border-default px-4 py-3 bg-transparent text-lg md:text-xl"
         >
           <option value="" disabled>
             {inputSpec?.placeholder ?? "Select an option"}
@@ -137,7 +133,7 @@ export default function ActionContent({
           placeholder={inputSpec?.placeholder ?? "Enter number"}
           min={inputSpec?.min ?? undefined}
           max={inputSpec?.max ?? undefined}
-          className="w-full max-w-md rounded border border-default px-3 py-2"
+          className="w-full max-w-2xl rounded-xl border border-default px-4 py-3 text-lg md:text-xl"
         />
       ) : null}
     </motion.div>

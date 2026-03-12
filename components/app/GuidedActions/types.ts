@@ -1,6 +1,7 @@
 export type ObjectiveStatus = "already_complete" | "in_progress" | "complete";
 
 export type ObjectiveInputType =
+  | "email"
   | "single_line_text"
   | "multi_line_text"
   | "number"
@@ -31,8 +32,11 @@ export interface ObjectiveProcessResult {
   objectiveTitle: string | null;
   objectiveDescription: string | null;
   stepsCompleted: number | null;
+  stepsSkipped: number | null;
   stepsTotal: number | null;
   stepsRemaining: number | null;
+  displayForMs: number | null;
+  closePanelAfterDisplay: boolean | null;
   step: string | null;
   title: string | null;
   subtext: string | null;

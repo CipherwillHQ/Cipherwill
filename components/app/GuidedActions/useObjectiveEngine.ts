@@ -39,8 +39,11 @@ const PROCESS_OBJECTIVE_WITH_INPUT = gql`
       objectiveTitle
       objectiveDescription
       stepsCompleted
+      stepsSkipped
       stepsTotal
       stepsRemaining
+      displayForMs
+      closePanelAfterDisplay
       step
       title
       subtext
@@ -67,8 +70,11 @@ const PROCESS_OBJECTIVE_WITHOUT_INPUT = gql`
       objectiveTitle
       objectiveDescription
       stepsCompleted
+      stepsSkipped
       stepsTotal
       stepsRemaining
+      displayForMs
+      closePanelAfterDisplay
       step
       title
       subtext
