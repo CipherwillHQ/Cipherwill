@@ -105,7 +105,7 @@ export default function GuidedActions() {
 
   useBodyOverflowLock(showGuidedActions);
 
-  if (!hasObjective && !loading && !error) {
+  if (!hasObjective) {
     return null;
   }
 
