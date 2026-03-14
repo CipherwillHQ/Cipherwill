@@ -1,11 +1,10 @@
 "use client";
 
-import { CiUndo } from "react-icons/ci";
 import { useQuery } from "@apollo/client/react";
 import GET_USER_SCORE from "@/graphql/ops/app/score/queries/GET_USER_SCORE";
 import { GetUserScoreData } from "@/types/interfaces";
 import { twMerge } from "tailwind-merge";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useTheme } from "@/contexts/ThemeSelector";
 import {
@@ -32,69 +31,70 @@ interface UserScoreProps {
   improveScrollLink?: boolean;
 }
 
+const SCORE_COLORS = [
+  "rgb(231, 24, 49)",
+  "rgb(239, 198, 0)",
+  "rgb(140, 214, 16)",
+];
+
+function getColorIndex(perc: number) {
+  return perc < 33 ? 0 : perc < 66 ? 1 : 2;
+}
+
+function getScoreLabel(perc: number) {
+  if (perc < 33) return "Needs Work";
+  if (perc < 66) return "In Progress";
+  return "Strong";
+}
+
 export default function UserScore({
   maxScore = 950,
   description,
   className = "",
   improveScrollLink = false,
 }: UserScoreProps) {
-  const { data, loading, error, refetch } =
-    useQuery<GetUserScoreData>(GET_USER_SCORE);
+  const { data, loading, error } = useQuery<GetUserScoreData>(GET_USER_SCORE);
   const { current_theme } = useTheme();
 
-  const score:number =
+  const score: number =
     data && data.getUserScore
-      ? // sum of all values of keys in object
-        Object.values(JSON.parse(data.getUserScore)).reduce(
+      ? (Object.values(JSON.parse(data.getUserScore)).reduce(
           (a: number, b: number) => a + b,
           0,
-        ) as number
+        ) as number)
       : 300;
 
-  // Normalize score between 300 and maxScore (default 950)
   const minScore = 300;
   const percentage = Math.max(
     0,
     Math.min(((score - minScore) / (maxScore - minScore)) * 100, 100),
   );
 
-  // Colors: red for low, yellow for medium, green for high
-  const COLORS = ["rgb(231, 24, 49)", "rgb(239, 198, 0)", "rgb(140, 214, 16)"]; // red, yellow, green
-
-  function getColorIndex(perc: number) {
-    return perc < 33 ? 0 : perc < 66 ? 1 : 2; // red, yellow, green
-  }
-
-  // Animation state
-  const [animatedPercentage, setAnimatedPercentage] = useState(0);
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstanceRef = useRef<ChartJS | null>(null);
 
-  // Set percentage after loading
   useEffect(() => {
-    if (!loading) {
-      setAnimatedPercentage(percentage);
-    }
-  }, [loading, percentage]);
+    if (chartRef.current && !loading) {
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.destroy();
+        chartInstanceRef.current = null;
+      }
 
-  // Create chart
-  useEffect(() => {
-    if (chartRef.current && !loading && !chartInstanceRef.current) {
       const ctx = chartRef.current.getContext("2d");
       if (ctx) {
-        const data = {
+        const chartData = {
           datasets: [
             {
               data: [percentage, 100 - percentage],
-              backgroundColor(ctx: any) {
+              backgroundColor(bgCtx: any) {
                 const isDark = current_theme === "dark";
-                if (ctx.type !== "data") {
+                if (bgCtx.type !== "data") {
                   return;
                 }
-                if (ctx.index === 1) {
-                  return isDark ? "rgb(64, 64, 64)" : "rgb(234, 234, 234)"; // dark background for dark mode
+                if (bgCtx.index === 1) {
+                  return isDark ? "rgb(64, 64, 64)" : "rgb(234, 234, 234)";
                 }
-                return COLORS[getColorIndex(ctx.raw)];
+                return SCORE_COLORS[getColorIndex(bgCtx.raw)];
               },
               borderWidth: 0,
             },
@@ -105,7 +105,6 @@ export default function UserScore({
           type: "doughnutLabel",
           content: ({ chart }: any) => [
             chart.data.datasets[0].data[0].toFixed(1) + "%",
-            // 'Score',
           ],
           drawTime: "beforeDraw",
           position: {
@@ -113,14 +112,14 @@ export default function UserScore({
           },
           font: [{ size: 35, weight: "bold" }, { size: 20 }],
           color: ({ chart }: any) => [
-            COLORS[getColorIndex(chart.data.datasets[0].data[0])],
+            SCORE_COLORS[getColorIndex(chart.data.datasets[0].data[0])],
             "grey",
           ],
         };
 
         const config = {
           type: "doughnut" as const,
-          data,
+          data: chartData,
           options: {
             aspectRatio: 2,
             circumference: 180,
@@ -153,38 +152,20 @@ export default function UserScore({
         chartInstanceRef.current = null;
       }
     };
-  }, [loading, COLORS]);
-
-  // Update chart on theme change
-  useEffect(() => {
-    if (chartInstanceRef.current) {
-      chartInstanceRef.current.update();
-    }
-  }, [current_theme]);
+  }, [loading, current_theme, percentage]);
 
   if (loading) {
     return (
       <div
         className={twMerge(
-          "bg-secondary p-4 rounded-md border border-default h-96 overflow-auto customScrollbar flex flex-col gap-4",
+          "rounded-2xl border border-default bg-secondary p-5",
           className,
         )}
       >
-        <div className="text-xl font-semibold pb-2">Cipherwill Score</div>
-        <div className="space-y-3">
-          <div className="flex items-center justify-center space-x-2">
-            <div className="flex flex-col items-center space-y-1">
-              <div className="w-20 h-10 bg-neutral-300 dark:bg-neutral-600 rounded animate-pulse"></div>
-              <div className="w-16 h-4 bg-neutral-300 dark:bg-neutral-600 rounded animate-pulse"></div>
-            </div>
-          </div>
-
-          {/* Loading Gauge */}
-          <div className="flex items-center justify-center flex-1">
-            <div className="w-full h-full p-4">
-              <div className="w-full h-full bg-neutral-300 dark:bg-neutral-600 rounded animate-pulse"></div>
-            </div>
-          </div>
+        <div className="space-y-4">
+          <div className="h-6 w-40 animate-pulse rounded bg-neutral-300 dark:bg-neutral-600" />
+          <div className="mx-auto h-44 w-full max-w-[360px] animate-pulse rounded-xl bg-neutral-300 dark:bg-neutral-600" />
+          <div className="h-4 w-32 animate-pulse rounded bg-neutral-300 dark:bg-neutral-600" />
         </div>
       </div>
     );
@@ -192,7 +173,7 @@ export default function UserScore({
 
   if (error) {
     return (
-      <div className="bg-secondary p-4 rounded-md border border-default h-96 overflow-auto customScrollbar flex flex-col gap-4">
+      <div className="rounded-2xl border border-default bg-secondary p-5">
         <div className="text-xl font-semibold pb-2">Cipherwill Score</div>
         <div className="text-red-600 dark:text-red-400 text-sm">
           Failed to load Cipherwill score
@@ -202,58 +183,75 @@ export default function UserScore({
   }
 
   return (
-    <>
-      <div
-        className={twMerge(
-          "bg-secondary p-4 rounded-md border border-default h-96 overflow-auto customScrollbar animate-in fade-in duration-300 flex flex-col gap-4",
-          className,
-        )}
-      >
-        <div className="text-xl flex justify-between">
-          <h2 className="font-semibold">Cipherwill Score</h2>
-          <div className="flex gap-4">
-            {improveScrollLink && (
-              <Link
-                className="ml-2 text-sm opacity-70 hover:underline"
-                href={"/app/score"}
-              >
-                Improve score
-              </Link>
-            )}
-            <CiUndo
-              className={`inline ${
-                loading
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:cursor-pointer"
-              }`}
-              onClick={() => {
-                if (loading) return;
-                refetch();
+    <div
+      className={twMerge(
+        "rounded-2xl border border-default bg-secondary p-5 animate-in fade-in duration-300",
+        className,
+      )}
+    >
+      <div className="flex h-full flex-col gap-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h2 className="text-xl font-semibold">Cipherwill Score</h2>
+            <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+              Updated from your account completeness
+            </p>
+          </div>
+          {improveScrollLink && (
+            <Link
+              className="ml-auto shrink-0 whitespace-nowrap text-right text-sm text-primary hover:underline"
+              href="/app/score"
+            >
+              Improve score
+            </Link>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-center">
+          <div className="mx-auto h-[170px] w-full max-w-[360px] sm:h-[190px] md:h-[170px] lg:h-[190px]">
+            <canvas ref={chartRef} />
+          </div>
+          <div className="space-y-2 text-center md:text-left">
+            <p className="text-3xl font-semibold tracking-tight">{score}</p>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+              out of {maxScore} points
+            </p>
+            <span
+              className="inline-flex rounded-full px-3 py-1 text-xs font-medium"
+              style={{
+                backgroundColor: `${SCORE_COLORS[getColorIndex(percentage)]}22`,
+                color: SCORE_COLORS[getColorIndex(percentage)],
+              }}
+            >
+              {getScoreLabel(percentage)}
+            </span>
+          </div>
+        </div>
+
+        <div className="space-y-2 rounded-2xl border border-default p-3">
+          <div className="h-2 w-full rounded-full bg-neutral-200 dark:bg-neutral-700">
+            <div
+              className="h-full rounded-full transition-all duration-700"
+              style={{
+                width: `${percentage}%`,
+                backgroundColor: SCORE_COLORS[getColorIndex(percentage)],
               }}
             />
           </div>
-        </div>
-
-        {/* Score Display */}
-        <div className="flex items-center justify-center flex-1">
-          <div className="w-full h-full p-4">
-            <canvas ref={chartRef} />
+          <div className="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400">
+            <span>Low</span>
+            <span>Improving</span>
+            <span>Excellent</span>
           </div>
         </div>
 
-        {/* Score Text */}
-        <div className="text-center">
-          <span className="text-sm text-neutral-500 dark:text-neutral-400">
-            {score}/{maxScore} points
-          </span>
-        </div>
-
         {description && (
-          <p className="text-sm text-neutral-600 dark:text-neutral-300 animate-in fade-in duration-500 delay-500 border-t border-default pt-4">
+          <p className="border-t border-default pt-4 text-sm text-neutral-600 dark:text-neutral-300 animate-in fade-in duration-500 delay-500">
             {description}
           </p>
         )}
+
       </div>
-    </>
+    </div>
   );
 }

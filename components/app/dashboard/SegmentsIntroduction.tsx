@@ -3,7 +3,7 @@ import { TbCell } from "react-icons/tb";
 
 export default function SegmentsIntroduction() {
   return (
-    <div className="flex flex-col gap-4 bg-secondary border border-default rounded-md p-6 h-96 overflow-auto customScrollbar justify-center items-center text-center">
+    <div className="flex flex-col gap-4 bg-secondary border border-default rounded-2xl p-6 h-96 overflow-auto customScrollbar justify-center items-center text-center">
       <TbCell size={48} className="text-primary" />
       <h2 className="font-semibold text-xl">Discover Segments</h2>
       <div className="text-sm">
