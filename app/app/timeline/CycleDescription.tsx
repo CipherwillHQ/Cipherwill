@@ -46,7 +46,7 @@ export default function CycleDescription({
         <div className="flex justify-between items-center border-b border-default pb-4">
           <h2 className="font-semibold">Schedule (based on Birthdate)</h2>
 
-          <SimpleButton href="/app/profile" className="text-sm">
+          <SimpleButton href="/app/settings?tab=profile" className="text-sm">
             Edit profile
           </SimpleButton>
         </div>
