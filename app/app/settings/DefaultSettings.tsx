@@ -1,4 +1,5 @@
 import Appearance from "./Appearance";
+import FrontendPreferences from "./FrontendPreferences";
 
 export default function DefaultSettings() {
   return (
@@ -14,6 +15,7 @@ export default function DefaultSettings() {
         </Link>
       </div> */}
       <Appearance />
+      <FrontendPreferences />
     </div>
   );
 }
