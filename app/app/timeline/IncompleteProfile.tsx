@@ -48,7 +48,7 @@ export default function IncompleteProfile() {
         className="relative z-10"
       >
         <SimpleButton
-          href="/app/profile"
+          href="/app/settings?tab=profile"
           className="w-full justify-center gap-2 group"
           variant="primary"
         >

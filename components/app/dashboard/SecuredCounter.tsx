@@ -14,7 +14,7 @@ export default function SecuredCounter() {
 
   if (error)
     return (
-      <div className="flex flex-col gap-3 bg-secondary border border-default rounded-lg p-4 h-96 overflow-auto customScrollbar">
+      <div className="flex flex-col gap-3 bg-secondary border border-default rounded-2xl p-4 h-96 overflow-auto customScrollbar">
         <div className="flex items-center gap-3">
           <TbShieldCheck className="text-primary" size={24} />
           <h2 className="font-semibold text-lg">Secured Items</h2>
@@ -34,7 +34,7 @@ export default function SecuredCounter() {
   }
 
   return (
-    <div className="flex flex-col gap-4 justify-between bg-secondary border border-default rounded-lg p-4 h-96 overflow-auto customScrollbar">
+    <div className="flex flex-col gap-4 justify-between bg-secondary border border-default rounded-2xl p-4 h-96 overflow-auto customScrollbar">
       <div
       className="flex flex-col gap-2"
       >

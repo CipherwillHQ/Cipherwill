@@ -13,7 +13,7 @@ export default function CompleteProfileStep() {
     <div className="w-full max-w-sm">
       <Link
         className={`${is_complete ? "pointer-events-none" : ""}`}
-        href={"/app/profile"}
+        href={"/app/settings?tab=profile"}
       >
         <div className="flex py-1">
           {is_complete ? (

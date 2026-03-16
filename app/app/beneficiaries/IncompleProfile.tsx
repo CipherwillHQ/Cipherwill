@@ -6,7 +6,7 @@ export default function IncompleteProfile() {
       <div className="py-4">Profile is not completed</div>
       <Link
         className="bg-orange-200 hover:bg-orange-300 text-sm px-3 py-1 rounded-full mx-2 text-black"
-        href={"/app/profile"}
+        href={"/app/settings?tab=profile"}
       >
         Complete
       </Link>

@@ -113,6 +113,8 @@ export default function Profile() {
                 [key]: value,
               } as UpdateUserVariables["data"],
             },
+            refetchQueries: [{ query: ME }],
+            awaitRefetchQueries: true,
           });
 
           if (baselineRef.current) {
@@ -131,7 +133,7 @@ export default function Profile() {
           if (code === "COUNTRY_RESTRICTED_ACCORDING_TO_SUBSCRIPTION") {
             await refetch();
             setCountryRestrictionMessage(true);
-          } else {
+          } else if (code !== "BIRTH_DATE_IN_FUTURE") {
             toast.error("Could not auto-save profile changes");
           }
 

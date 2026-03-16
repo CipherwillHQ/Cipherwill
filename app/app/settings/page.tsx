@@ -1,20 +1,60 @@
 "use client";
 
-import { useState } from "react";
-import { useAuth } from "../../../contexts/AuthContext";
+import { useEffect, useState } from "react";
 import ApplicationSettings from "./ApplicationSettings";
 import DevOnly from "../../../components/debug/DevOnly";
 import WillEvents from "./WillEvents";
-import MobilePageHeader from "@/components/mobile/MobilePageHeader";
 import DefaultSettings from "./DefaultSettings";
 import DesktopAndMobilePageHeader from "@/components/app/common/page/DesktopAndMobilePageHeader";
 import ApplicationUsage from "./ApplicationUsage";
+import ProfileSettingsTab from "./ProfileSettingsTab";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import BackupPanel from "../backup/BackupPanel";
+
+type SettingsTab =
+  | "DEFAULT"
+  | "PROFILE"
+  | "BACKUP"
+  | "USAGE"
+  | "APPLICATION"
+  | "WILL_EVENTS";
+
+const TAB_QUERY_TO_TAB: Record<string, SettingsTab> = {
+  settings: "DEFAULT",
+  general: "DEFAULT",
+  profile: "PROFILE",
+  backup: "BACKUP",
+  usage: "USAGE",
+  application: "APPLICATION",
+  "will-events": "WILL_EVENTS",
+};
+
+const TAB_TO_QUERY: Record<SettingsTab, string> = {
+  DEFAULT: "general",
+  PROFILE: "profile",
+  BACKUP: "backup",
+  USAGE: "usage",
+  APPLICATION: "application",
+  WILL_EVENTS: "will-events",
+};
 
 export default function Settings() {
-  const { logout } = useAuth();
-  const [tab, setTab] = useState<"DEFAULT" | "USAGE" | "APPLICATION" | "WILL_EVENTS">(
-    "DEFAULT"
-  );
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [tab, setTab] = useState<SettingsTab>("DEFAULT");
+
+  useEffect(() => {
+    const requestedTab = searchParams?.get("tab")?.toLowerCase() || "general";
+    setTab(TAB_QUERY_TO_TAB[requestedTab] || "DEFAULT");
+  }, [searchParams]);
+
+  const changeTab = (nextTab: SettingsTab) => {
+    setTab(nextTab);
+    const params = new URLSearchParams(searchParams?.toString());
+    params.set("tab", TAB_TO_QUERY[nextTab]);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
 
   return (
     <div className="w-full">
@@ -26,15 +66,31 @@ export default function Settings() {
             className={`mx-2 hover:cursor-pointer
           ${tab === "DEFAULT" && "border-b-2 border-accent-500"}
           `}
-            onClick={() => setTab("DEFAULT")}
+            onClick={() => changeTab("DEFAULT")}
           >
-            Settings
+            General Settings
+          </button>
+          <button
+            className={`mx-2 hover:cursor-pointer
+          ${tab === "PROFILE" && "border-b-2 border-accent-500"}
+          `}
+            onClick={() => changeTab("PROFILE")}
+          >
+            Profile
+          </button>
+          <button
+            className={`mx-2 hover:cursor-pointer
+          ${tab === "BACKUP" && "border-b-2 border-accent-500"}
+          `}
+            onClick={() => changeTab("BACKUP")}
+          >
+            Backup
           </button>
           <button
             className={`mx-2 hover:cursor-pointer
           ${tab === "USAGE" && "border-b-2 border-accent-500"}
           `}
-            onClick={() => setTab("USAGE")}
+            onClick={() => changeTab("USAGE")}
           >
             Usage
           </button>
@@ -44,7 +100,7 @@ export default function Settings() {
               className={`mx-2 hover:cursor-pointer ${
                 tab === "APPLICATION" && "border-b-2 border-accent-500"
               }`}
-              onClick={() => setTab("APPLICATION")}
+              onClick={() => changeTab("APPLICATION")}
             >
               Application
             </button>
@@ -55,7 +111,7 @@ export default function Settings() {
               className={`mx-2 hover:cursor-pointer ${
                 tab === "WILL_EVENTS" && "border-b-2 border-accent-500"
               }`}
-              onClick={() => setTab("WILL_EVENTS")}
+              onClick={() => changeTab("WILL_EVENTS")}
             >
               Will Events
             </button>
@@ -63,6 +119,8 @@ export default function Settings() {
         </div>
         <div className="p-2">
           {tab === "DEFAULT" && <DefaultSettings />}
+          {tab === "PROFILE" && <ProfileSettingsTab />}
+          {tab === "BACKUP" && <BackupPanel />}
           {tab === "USAGE" && <ApplicationUsage />}
           {tab === "APPLICATION" && <ApplicationSettings />}
           {tab === "WILL_EVENTS" && <WillEvents />}

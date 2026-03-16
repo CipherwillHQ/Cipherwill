@@ -14,21 +14,21 @@ export default function ExecutorPermissions() {
   if (loading) return null;
   if (error)
     return (
-      <div className="bg-secondary border border-default rounded-lg p-4 h-96 overflow-auto customScrollbar">
+      <div className="bg-secondary border border-default rounded-2xl p-4 h-96 overflow-auto customScrollbar">
         Error : {JSON.stringify(error)}
       </div>
     );
   if (data && data.getAllBeneficiaryAccess.length === 0) return null;
 
   return (
-    <div className="bg-secondary border border-default rounded-lg p-4 h-96 overflow-auto customScrollbar flex flex-col gap-4">
+    <div className="bg-secondary border border-default rounded-2xl p-4 h-96 overflow-auto customScrollbar flex flex-col gap-4">
       {data &&
         data.getAllBeneficiaryAccess &&
         data.getAllBeneficiaryAccess.map((access) => {
           return (
             <div
               key={access.id}
-              className="flex items-center justify-between bg-white dark:bg-neutral-800 border border-default rounded-md p-4"
+              className="flex items-center justify-between bg-white dark:bg-neutral-800 border border-default rounded-2xl p-4"
             >
               <div>
                 <div>

@@ -1,95 +1,99 @@
 import { DateTime } from "luxon";
 import CustomCipherwillInterval from "./CustomCipherwillInterval";
-import Link from "next/link";
 import SimpleButton from "@/components/common/SimpleButton";
 import Timeline from "./Timeline/index";
+import IncompleteProfile from "./IncompleteProfile";
 
 export default function CycleDescription({
   birth_stamp,
   interval,
   last_accessed,
 }: {
-  birth_stamp: string;
+  birth_stamp: string | null;
   interval: number;
   last_accessed: string | null;
 }) {
-  const birthDate = new Date(parseInt(birth_stamp));
+  const hasBirthDate = Boolean(birth_stamp && birth_stamp !== "0");
+  const birthDate = hasBirthDate ? new Date(parseInt(birth_stamp as string)) : null;
 
   const today = new Date();
-  const age =
-    today.getFullYear() -
-    birthDate.getFullYear() -
-    (today <
-    new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate())
-      ? 1
-      : 0);
+  const age = birthDate
+    ? today.getFullYear() -
+      birthDate.getFullYear() -
+      (today <
+      new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate())
+        ? 1
+        : 0)
+    : 0;
 
-  const upcomingBday = new Date(
-    today.getFullYear(),
-    birthDate.getMonth(),
-    birthDate.getDate()
-  );
+  const upcomingBday = birthDate
+    ? new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate())
+    : null;
 
-  if (today > upcomingBday) {
+  if (upcomingBday && today > upcomingBday) {
     upcomingBday.setFullYear(today.getFullYear() + 1);
   }
 
   const one_day = 24 * 60 * 60 * 1000;
 
-  const daysLeft = Math.ceil(
-    (upcomingBday.getTime() - today.getTime()) / one_day
-  );
+  const daysLeft = upcomingBday
+    ? Math.ceil((upcomingBday.getTime() - today.getTime()) / one_day)
+    : 0;
 
   return (
     <>
-      <div className=" bg-secondary p-4 border border-default rounded-md w-full">
-        <div className="flex justify-between items-center border-b border-default pb-4">
-          <h2 className="font-semibold">Schedule (based on Birthdate)</h2>
+      {hasBirthDate && birthDate && upcomingBday ? (
+        <div className=" bg-secondary p-4 border border-default rounded-md w-full">
+          <div className="flex justify-between items-center border-b border-default pb-4">
+            <h2 className="font-semibold">Schedule (based on Birthdate)</h2>
 
-          <SimpleButton href="/app/profile" className="text-sm">
-            Edit profile
-          </SimpleButton>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 py-4 border-b border-default mb-6">
-          <div className="flex flex-col items-center justify-center">
-            <div className="text-5xl font-bold py-2">
-              {daysLeft}
-              <span className="text-base font-semibold ml-1">days</span>
-            </div>
-            <div className="text-center">Until your next birthday</div>
+            <SimpleButton href="/app/settings?tab=profile" className="text-sm">
+              Edit profile
+            </SimpleButton>
           </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 py-4 border-b border-default mb-6">
+            <div className="flex flex-col items-center justify-center">
+              <div className="text-5xl font-bold py-2">
+                {daysLeft}
+                <span className="text-base font-semibold ml-1">days</span>
+              </div>
+              <div className="text-center">Until your next birthday</div>
+            </div>
 
-          <div className="flex flex-col items-center justify-center">
-            <div className="text-5xl font-bold py-2">
-              {age}
-              <span className="text-base font-semibold ml-1">years</span>
+            <div className="flex flex-col items-center justify-center">
+              <div className="text-5xl font-bold py-2">
+                {age}
+                <span className="text-base font-semibold ml-1">years</span>
+              </div>
+              <div className="text-center">Your current age</div>
             </div>
-            <div className="text-center">Your current age</div>
-          </div>
 
-          <div className="flex flex-col items-center justify-center">
-            <div className="text-5xl font-bold py-2">
-              {age + 1}
-              <span className="text-base font-semibold ml-1">years</span>
+            <div className="flex flex-col items-center justify-center">
+              <div className="text-5xl font-bold py-2">
+                {age + 1}
+                <span className="text-base font-semibold ml-1">years</span>
+              </div>
+              <div className="text-center">You will be on next birthday</div>
             </div>
-            <div className="text-center">You will be on next birthday</div>
+          </div>
+          <div className=" flex flex-col gap-3">
+            <div className="flex flex-col sm:flex-row w-full justify-between items-center">
+              <div className="text-sm opacity-70 font-medium">Birth date</div>
+              <div className="text-sm" data-cy="next-update-date">
+                {birthDate.toDateString()}
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row w-full justify-between items-center">
+              <div className="text-sm opacity-70 font-medium">Next birthday</div>
+              <div className="text-sm" data-cy="next-update-date">
+                {upcomingBday.toDateString()}
+              </div>
+            </div>
           </div>
         </div>
-        <div className=" flex flex-col gap-3">
-          <div className="flex flex-col sm:flex-row w-full justify-between items-center">
-            <div className="text-sm opacity-70 font-medium">Birth date</div>
-            <div className="text-sm" data-cy="next-update-date">
-              {birthDate.toDateString()}
-            </div>
-          </div>
-          <div className="flex flex-col sm:flex-row w-full justify-between items-center">
-            <div className="text-sm opacity-70 font-medium">Next birthday</div>
-            <div className="text-sm" data-cy="next-update-date">
-              {upcomingBday.toDateString()}
-            </div>
-          </div>
-        </div>
-      </div>
+      ) : (
+        <IncompleteProfile />
+      )}
       <div className="flex flex-col gap-4 p-4 border border-default rounded-md bg-secondary">
         <div>
           <h2 className="font-semibold">Check In Interval</h2>

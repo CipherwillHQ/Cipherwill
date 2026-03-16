@@ -9,7 +9,8 @@ const ErrorsToHide = [
   "POD_NOT_FOUND",
   "EMAIL_NOT_VERIFIED",
   "COUNTRY_RESTRICTED_ACCORDING_TO_SUBSCRIPTION",
-  "USER_DEACTIVATED"
+  "USER_DEACTIVATED",
+  "BIRTH_DATE_IN_FUTURE"
 ] as string[]; // handled by application
 
 const errHandler = new ErrorLink(({ error, operation, forward }) => {

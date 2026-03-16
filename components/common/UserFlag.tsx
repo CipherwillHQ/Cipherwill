@@ -39,7 +39,7 @@ export default function UserFlag() {
       <div className="bg-secondary w-64 text-black dark:text-white border border-default p-2 shadow-lg rounded-md">
         <div className="flex flex-col gap-2 border-b border-default pb-2">
           <div className="font-semibold opacity-75">Signed in as</div>
-          <Link href={`/app/profile`}>
+          <Link href={`/app/settings?tab=profile`}>
             <div className="flex items-start gap-2 max-w-64">
               <div className="bg-accent-500 mt-1 h-8 w-8 min-h-8 min-w-8 rounded-full flex items-center justify-center">
                 {(user.first_name
@@ -57,7 +57,7 @@ export default function UserFlag() {
           </Link>
         </div>
         <Link
-          href={`/app/profile`}
+          href={`/app/settings?tab=profile`}
           className="flex items-center p-2 rounded-md justify-start hover:bg-neutral-100 dark:hover:bg-neutral-700"
         >
           <div className={`mr-2 text-xl`}>

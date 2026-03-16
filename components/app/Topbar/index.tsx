@@ -31,7 +31,7 @@ function ProfilePopup() {
     >
       <div className="bg-white dark:bg-neutral-800 dark:text-white rounded-md flex flex-col p-1 gap-1">
         <Link
-          href={`/app/profile`}
+          href={`/app/settings?tab=profile`}
           className="flex items-center p-2 rounded-md justify-start hover:bg-neutral-100 dark:hover:bg-neutral-700"
         >
           <div className={`mr-2 text-xl`}>
