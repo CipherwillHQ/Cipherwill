@@ -62,7 +62,7 @@ export default function TimelineReset() {
               onClick={() => setShowConfirm(true)}
               disabled={resetting || showConfirm}
               aria-label="Reset timeline preferences to defaults"
-              className="w-full sm:w-auto inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-neutral-800 text-gray-800 dark:text-gray-100 border border-default rounded-md text-sm disabled:opacity-60 hover:cursor-pointer"
+              className="hover:shadow w-full sm:w-auto inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-neutral-800 text-gray-800 dark:text-gray-100 border border-default rounded-md text-sm disabled:opacity-60 hover:cursor-pointer"
             >
               <FiRefreshCw /> Reset to defaults
             </button>

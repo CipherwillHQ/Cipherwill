@@ -113,6 +113,8 @@ export default function Profile() {
                 [key]: value,
               } as UpdateUserVariables["data"],
             },
+            refetchQueries: [{ query: ME }],
+            awaitRefetchQueries: true,
           });
 
           if (baselineRef.current) {

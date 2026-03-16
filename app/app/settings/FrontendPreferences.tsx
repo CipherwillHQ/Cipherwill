@@ -8,6 +8,7 @@ import {
   setUiPreferences,
   type UiPreferences,
 } from "@/common/uiPreferences";
+import toast from "react-hot-toast";
 
 type Option<T extends string> = {
   label: string;
@@ -66,6 +67,7 @@ export default function FrontendPreferences() {
     setPreferences(DEFAULT_UI_PREFERENCES);
     setUiPreferences(DEFAULT_UI_PREFERENCES);
     applyUiPreferences(DEFAULT_UI_PREFERENCES);
+    toast.success("Preferences reset to defaults")
   };
 
   return (
@@ -121,7 +123,7 @@ export default function FrontendPreferences() {
 
         <div className="pt-2">
           <button
-            className="text-sm border border-default px-3 py-1.5 rounded-md hover:bg-white/50 dark:hover:bg-white/10"
+            className="hover:cursor-pointer hover:shadow text-sm border border-default px-3 py-1.5 rounded-md hover:bg-white/50 dark:hover:bg-white/10"
             onClick={resetToDefault}
             type="button"
           >
