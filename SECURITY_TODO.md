@@ -5,7 +5,7 @@ Source: `security.md` (2026-03-17)
 ## Priority Queue
 
 - [x] **Issue 1 (Critical)**: Remove hardcoded SSR GraphQL authorization token and replace with secure server credential flow.
-- [ ] **Issue 2 (High)**: Eliminate stored XSS path in executor note rendering (`dangerouslySetInnerHTML` without sanitization).
+- [x] **Issue 2 (High)**: Eliminate stored XSS path in executor note rendering (`dangerouslySetInnerHTML` without sanitization).
 - [ ] **Issue 3 (High)**: Redesign factor derivation (master-password / metamask / passkey) with strong KDF and stronger entropy guarantees.
 - [ ] **Issue 4 (Medium)**: Add and enforce CSP with nonce/hash strategy for required inline scripts.
 - [ ] **Issue 5 (High)**: Patch critical/high runtime dependency vulnerabilities and pin transitive packages where needed.

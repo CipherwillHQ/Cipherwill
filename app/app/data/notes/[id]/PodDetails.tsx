@@ -6,6 +6,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useState } from "react";
 import Placeholder from "@tiptap/extension-placeholder";
+import sanitizeHtml from "@/common/security/sanitizeHtml";
 
 const NOTE_SAMPLE: NOTE_TYPE = {
   content: "Sample Note",
@@ -44,12 +45,13 @@ export default function PodDetails({
     content: "",
     onCreate: async ({ editor }) => {
       const data = await loadPod();
-      editor.commands.setContent(data?.content || "");
-      setinitialValue(data?.content || "");
-      setNewValue(data?.content || "");
+      const sanitizedContent = sanitizeHtml(data?.content || "");
+      editor.commands.setContent(sanitizedContent);
+      setinitialValue(sanitizedContent);
+      setNewValue(sanitizedContent);
     },
     onUpdate: ({ editor }) => {
-      setNewValue(editor.getHTML());
+      setNewValue(sanitizeHtml(editor.getHTML()));
     },
   });
 
@@ -71,7 +73,7 @@ export default function PodDetails({
     }
     debounceTimer = setTimeout(() => {
       if (!editor) return;
-      const updateData = editor.getHTML();
+      const updateData = sanitizeHtml(editor.getHTML());
       updatePod(
         {
           content: updateData,

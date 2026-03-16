@@ -7,6 +7,7 @@ import GET_GRANTED_METAMODEL from "../../../../../graphql/ops/app/executor/metam
 import { NOTE_TYPE } from "../../../../../types/pods/NOTE";
 import { useParams } from "next/navigation";
 import useDecryptedPod from "@/common/executor/hooks/useDecryptedPod";
+import sanitizeHtml from "@/common/security/sanitizeHtml";
 import type { 
   GetGrantedMetamodelQuery, 
   GetGrantedMetamodelVariables 
@@ -47,6 +48,10 @@ export default function ExecutorNoteView() {
   const parsed_data = JSON.parse(
     granted_metamodel.getGrantedMetamodel.metadata
   );
+  const sanitizedContent =
+    typeof decryptedValue === "string"
+      ? ""
+      : sanitizeHtml(decryptedValue.content ?? "");
 
   return (
     <div className="w-full">
@@ -69,7 +74,7 @@ export default function ExecutorNoteView() {
           ) : (
             <div
               dangerouslySetInnerHTML={{
-                __html: decryptedValue.content ?? "",
+                __html: sanitizedContent,
               }}
             ></div>
           )}
