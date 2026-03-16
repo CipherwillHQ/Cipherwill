@@ -12,6 +12,8 @@ const client_uploadLink = (getJWT: Function) =>
     },
   });
 
+const SSR_API_AUTH_TOKEN = process.env.SSR_API_AUTH_TOKEN;
+
 const ssr_uploadLink = (cache: any = "no-store") =>
   new UploadHttpLink({
     uri: process.env.NEXT_PUBLIC_API_HOST,
@@ -23,7 +25,17 @@ const ssr_uploadLink = (cache: any = "no-store") =>
       } else {
         options["cache"] = "no-store";
       }
-      options.headers["Authorization"] = "ratrio-srr-server";
+
+      if (!SSR_API_AUTH_TOKEN) {
+        throw new Error(
+          "Missing SSR_API_AUTH_TOKEN for secure SSR GraphQL authorization"
+        );
+      }
+
+      options.headers = {
+        ...(options.headers || {}),
+        Authorization: SSR_API_AUTH_TOKEN,
+      };
       return await fetch(uri, options);
     },
   });
