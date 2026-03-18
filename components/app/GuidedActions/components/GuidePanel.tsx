@@ -129,7 +129,7 @@ export default function GuidePanel({
 
   return (
     <motion.div
-      className="absolute z-50 top-0 left-0 h-full w-full border border-default bg-secondary p-4 pb-14 md:p-8 md:pb-16 flex flex-col justify-between overflow-hidden"
+      className="absolute z-50 top-0 left-0 h-screen w-full border border-default bg-secondary p-4 pb-14 md:p-8 md:pb-16 flex flex-col justify-between overflow-hidden"
       initial={{ y: "100%" }}
       animate={{ y: 0 }}
       exit={{ y: "100%" }}
