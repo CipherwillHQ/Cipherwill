@@ -8,41 +8,8 @@ import {
   setUiPreferences,
   type UiPreferences,
 } from "@/common/uiPreferences";
+import Select from "@/components/ui/Select";
 import toast from "react-hot-toast";
-
-type Option<T extends string> = {
-  label: string;
-  value: T;
-};
-
-function SelectControl<T extends string>({
-  label,
-  value,
-  options,
-  onChange,
-}: {
-  label: string;
-  value: T;
-  options: Option<T>[];
-  onChange: (value: T) => void;
-}) {
-  return (
-    <label className="flex items-center justify-between gap-4">
-      <span className="text-sm font-medium">{label}</span>
-      <select
-        className="minimal border border-default rounded-md bg-transparent px-3 py-2 text-sm min-w-[170px]"
-        value={value}
-        onChange={(e) => onChange(e.target.value as T)}
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    </label>
-  );
-}
 
 export default function FrontendPreferences() {
   const [preferences, setPreferences] = useState<UiPreferences>(
@@ -67,7 +34,7 @@ export default function FrontendPreferences() {
     setPreferences(DEFAULT_UI_PREFERENCES);
     setUiPreferences(DEFAULT_UI_PREFERENCES);
     applyUiPreferences(DEFAULT_UI_PREFERENCES);
-    toast.success("Preferences reset to defaults")
+    toast.success("Preferences reset to defaults");
   };
 
   return (
@@ -80,46 +47,72 @@ export default function FrontendPreferences() {
           These settings are saved in your browser and applied immediately.
         </p>
 
-        <SelectControl
-          label="Font size"
-          value={preferences.fontSize}
-          onChange={(value) => updatePreference("fontSize", value)}
-          options={[
-            { label: "Small", value: "small" },
-            { label: "Medium", value: "medium" },
-            { label: "Large", value: "large" },
-          ]}
-        />
+        <label className="flex items-center justify-between gap-4">
+          <span className="text-sm font-medium">Font size</span>
+          <Select
+            className="text-sm min-w-[170px]"
+            value={preferences.fontSize}
+            onChange={(value) =>
+              updatePreference("fontSize", value as UiPreferences["fontSize"])
+            }
+            options={[
+              { label: "Small", value: "small" },
+              { label: "Medium", value: "medium" },
+              { label: "Large", value: "large" },
+            ]}
+          />
+        </label>
 
-        <SelectControl
-          label="Motion"
-          value={preferences.motion}
-          onChange={(value) => updatePreference("motion", value)}
-          options={[
-            { label: "Full motion", value: "full" },
-            { label: "Reduced motion", value: "reduced" },
-          ]}
-        />
+        <label className="flex items-center justify-between gap-4">
+          <span className="text-sm font-medium">Motion</span>
+          <Select
+            className="text-sm min-w-[170px]"
+            value={preferences.motion}
+            onChange={(value) =>
+              updatePreference("motion", value as UiPreferences["motion"])
+            }
+            options={[
+              { label: "Full motion", value: "full" },
+              { label: "Reduced motion", value: "reduced" },
+            ]}
+          />
+        </label>
 
-        <SelectControl
-          label="Scrolling"
-          value={preferences.scrollBehavior}
-          onChange={(value) => updatePreference("scrollBehavior", value)}
-          options={[
-            { label: "Smooth", value: "smooth" },
-            { label: "Instant", value: "instant" },
-          ]}
-        />
+        <label className="flex items-center justify-between gap-4">
+          <span className="text-sm font-medium">Scrolling</span>
+          <Select
+            className="text-sm min-w-[170px]"
+            value={preferences.scrollBehavior}
+            onChange={(value) =>
+              updatePreference(
+                "scrollBehavior",
+                value as UiPreferences["scrollBehavior"]
+              )
+            }
+            options={[
+              { label: "Smooth", value: "smooth" },
+              { label: "Instant", value: "instant" },
+            ]}
+          />
+        </label>
 
-        <SelectControl
-          label="Content width"
-          value={preferences.contentWidth}
-          onChange={(value) => updatePreference("contentWidth", value)}
-          options={[
-            { label: "Full width", value: "full" },
-            { label: "Reading", value: "reading" },
-          ]}
-        />
+        <label className="flex items-center justify-between gap-4">
+          <span className="text-sm font-medium">Content width</span>
+          <Select
+            className="text-sm min-w-[170px]"
+            value={preferences.contentWidth}
+            onChange={(value) =>
+              updatePreference(
+                "contentWidth",
+                value as UiPreferences["contentWidth"]
+              )
+            }
+            options={[
+              { label: "Full width", value: "full" },
+              { label: "Reading", value: "reading" },
+            ]}
+          />
+        </label>
 
         <div className="pt-2">
           <button
