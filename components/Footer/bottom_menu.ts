@@ -98,6 +98,14 @@ const menu = [
     title: "Policies",
     items: [
       {
+        title: "Editorial Team",
+        path: "/i/editorial-team",
+      },
+      {
+        title: "Review Board",
+        path: "/i/review-board",
+      },
+      {
         title: "Cookie Policy",
         path: "/i/cookie-policy",
       },
