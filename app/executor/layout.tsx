@@ -10,7 +10,7 @@ export default function ExecutorLayout({ children }) {
         <ThemeSelector>
           <AuthRedirectProvider>
             <SessionProvider>
-              <div className="flex items-center overflow-hidden h-screen w-screen text-black dark:text-white">
+              <div className="flex items-center overflow-hidden w-screen text-black dark:text-white cw-vh-screen cw-app-safe-area">
                 <div className="flex h-full bg-secondary">
                   <ExecutorSidebar />
                 </div>

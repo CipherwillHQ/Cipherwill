@@ -27,7 +27,7 @@ export default function MobileFloatingMenu() {
         }}
       >
         <div
-          className={` flex flex-col bg-secondary border-r border-default h-screen w-[280px] px-2 pb-2 shadow-2xl`}
+          className={` flex flex-col bg-secondary border-r border-default cw-vh-screen w-[280px] px-2 pb-2 shadow-2xl`}
           onClick={(e) => {
             e.stopPropagation();
           }}

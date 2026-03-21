@@ -2,6 +2,11 @@
 
 @config '../tailwind.config.js';
 
+:root {
+  --cw-safe-top: env(safe-area-inset-top, 0px);
+  --cw-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 select {
   /* reset */
 
@@ -145,6 +150,21 @@ html.cw-reduced-motion * {
 
 .cw-content-width-wrapper {
   margin-inline: auto;
+}
+
+.cw-vh-screen {
+  min-height: 100vh;
+  height: 100dvh;
+}
+
+.cw-app-safe-area {
+  padding-top: var(--cw-safe-top);
+  padding-bottom: var(--cw-safe-bottom);
+}
+
+.cw-safe-overlay {
+  top: var(--cw-safe-top);
+  bottom: var(--cw-safe-bottom);
 }
 
 html[data-content-width='reading'] .cw-content-width-wrapper {

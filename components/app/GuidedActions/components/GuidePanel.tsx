@@ -156,13 +156,7 @@ export default function GuidePanel({
 
   return (
     <motion.div
-      className="fixed z-50 inset-x-0 top-0 w-full border border-default bg-secondary p-4 md:p-8 flex flex-col overflow-y-auto overscroll-contain"
-      style={{
-        minHeight: "100vh",
-        height: "100dvh",
-        paddingTop: "calc(env(safe-area-inset-top, 0px) + 0.75rem)",
-        paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 3.5rem)",
-      }}
+      className="fixed z-50 inset-x-0 cw-safe-overlay w-full border border-default bg-secondary p-4 pb-14 md:p-8 md:pb-16 flex flex-col overflow-y-auto overscroll-contain"
       initial={{ y: "100%" }}
       animate={{ y: 0 }}
       exit={{ y: "100%" }}
@@ -270,7 +264,7 @@ export default function GuidePanel({
       {!loading && !error && current ? (
         <div
           className="fixed left-1/2 z-10 -translate-x-1/2"
-          style={{ bottom: "calc(env(safe-area-inset-bottom) + 1rem)" }}
+          style={{ bottom: "calc(var(--cw-safe-bottom) + 1rem)" }}
         >
           <ProgressDots
             total={current.result.stepsTotal ?? null}
@@ -282,7 +276,7 @@ export default function GuidePanel({
       {!loading && !error && current && isTimedDisplayStep && !postActionStatus ? (
         <p
           className="fixed left-1/2 z-10 -translate-x-1/2 text-xs md:text-sm text-black/60 dark:text-white/60"
-          style={{ bottom: "calc(env(safe-area-inset-bottom) + 2.5rem)" }}
+          style={{ bottom: "calc(var(--cw-safe-bottom) + 2.5rem)" }}
         >
           Continuing in{" "}
           {Math.max(1, countdownSeconds)}s...
@@ -291,7 +285,7 @@ export default function GuidePanel({
       {!loading && !error && current && postActionStatus ? (
         <div
           className="fixed left-1/2 z-10 -translate-x-1/2 w-[min(90vw,40rem)] rounded-xl border border-default bg-secondary px-4 py-3 text-center shadow-sm"
-          style={{ bottom: "calc(env(safe-area-inset-bottom) + 2.5rem)" }}
+          style={{ bottom: "calc(var(--cw-safe-bottom) + 2.5rem)" }}
         >
           <p className="text-sm md:text-base font-medium">{postActionStatus.title}</p>
           {postActionStatus.subtext ? (
