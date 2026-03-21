@@ -95,6 +95,15 @@ const menu = [
     ],
   },
   {
+    title: "Free Tools",
+    items: [
+      {
+        title: "Digital Asset Checklist Generator",
+        path: "/tools/digital-asset-checklist-generator",
+      },
+    ],
+  },
+  {
     title: "Policies",
     items: [
       {

@@ -6,8 +6,8 @@ import LinkToTheTop from "../public/LinkToTheTop";
 export default function TopRow() {
   return (
     <section className="pt-10 font-medium">
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-12 gap-y-12 gap-x-8 xl:gap-x-12">
-        <div className="col-span-2 md:col-span-4 xl:pr-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-y-12 gap-x-8 xl:gap-x-12">
+        <div className="col-span-2 md:col-span-4 lg:col-span-2 xl:pr-8">
           <SymbolicLogo size={30} overrideTheme="light" />
           <p className={`my-4`}>
             We ensure secure and seamless transfer of your data to loved ones
@@ -40,7 +40,7 @@ export default function TopRow() {
         </div>
 
         {menu.map((column) => (
-          <div key={column.title} className="lg:col-span-2">
+          <div key={column.title} className="lg:col-span-1">
             <p className="font-bold">{column.title}</p>
 
             <ul className="mt-3 space-y-2">
