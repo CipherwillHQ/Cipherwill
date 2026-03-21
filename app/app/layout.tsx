@@ -35,7 +35,7 @@ export default function AppLayout({ children }) {
               <AuthRedirectProvider>
                 <SessionProvider>
                   <PaymentGatewayProvider>
-                    <div className="flex flex-col sm:flex-row sm:items-center overflow-hidden h-screen w-screen">
+                    <div className="flex flex-col sm:flex-row sm:items-center overflow-hidden w-screen cw-vh-screen cw-app-safe-area">
                       <div className="flex sm:h-full bg-white dark:bg-dark">
                         <Sidebar />
                       </div>

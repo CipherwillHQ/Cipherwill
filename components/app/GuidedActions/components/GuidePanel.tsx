@@ -52,9 +52,22 @@ export default function GuidePanel({
   onContinue,
   onSubmit,
 }: GuidePanelProps) {
+  const loadingPhrases = useMemo(
+    () => [
+      "Preparing your next step...",
+      "Reviewing what to do next...",
+      "Organizing your action plan...",
+      "Checking progress and context...",
+      "Getting the next task ready...",
+      "Syncing your latest updates...",
+      "Almost there, setting things up...",
+    ],
+    []
+  );
   const [inputValue, setInputValue] = useState("");
   const [showIntro, setShowIntro] = useState(true);
   const [countdownSeconds, setCountdownSeconds] = useState<number>(0);
+  const [loadingPhraseIndex, setLoadingPhraseIndex] = useState(0);
 
   const currentInput = current?.result.input ?? null;
   const canSubmit = useMemo(
@@ -103,6 +116,20 @@ export default function GuidePanel({
     current?.result.displayForMs,
   ]);
 
+  useEffect(() => {
+    if (!loading) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setLoadingPhraseIndex((prev) => (prev + 1) % loadingPhrases.length);
+    }, 1400);
+
+    return () => {
+      window.clearInterval(interval);
+    };
+  }, [loading, loadingPhrases]);
+
   const contentStateKey = getContentStateKey({
     loading,
     error,
@@ -129,14 +156,14 @@ export default function GuidePanel({
 
   return (
     <motion.div
-      className="absolute z-50 top-0 left-0 h-screen w-full border border-default bg-secondary p-4 pb-14 md:p-8 md:pb-16 flex flex-col justify-between overflow-hidden"
+      className="fixed z-50 inset-x-0 cw-safe-overlay w-full border border-default bg-secondary p-4 pb-14 md:p-8 md:pb-16 flex flex-col overflow-y-auto overscroll-contain"
       initial={{ y: "100%" }}
       animate={{ y: 0 }}
       exit={{ y: "100%" }}
       transition={{ duration: 0.35, ease: "easeOut" }}
     >
-      <div className="flex gap-2 items-center justify-between w-full">
-        <h1 className="text-xl md:text-2xl font-semibold">Guided Panel</h1>
+      <div className="sticky top-0 z-10 flex gap-2 items-center justify-between w-full bg-secondary pb-2">
+        <h1 className="text-xl md:text-2xl font-semibold">Assistant</h1>
         <div className="flex gap-2 items-center">
           <SwitchThemeIcon />
           <GuidedButton variant="secondary" onClick={onClose}>
@@ -153,9 +180,10 @@ export default function GuidePanel({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -70 }}
               transition={{ duration: 0.28, ease: "easeOut" }}
-              className="text-2xl md:text-3xl font-medium"
+              className="flex items-center gap-3 text-xl md:text-2xl font-medium text-black/55 dark:text-white/55"
             >
-              Loading guided action...
+              <span className="h-5 w-5 rounded-full border-2 border-current border-r-transparent animate-spin" />
+              {loadingPhrases[loadingPhraseIndex]}
             </motion.div>
           ) : null}
           {!loading && error ? (
@@ -234,7 +262,10 @@ export default function GuidePanel({
         </AnimatePresence>
       </div>
       {!loading && !error && current ? (
-        <div className="absolute left-1/2 bottom-4 md:bottom-5 -translate-x-1/2">
+        <div
+          className="fixed left-1/2 z-10 -translate-x-1/2"
+          style={{ bottom: "calc(var(--cw-safe-bottom) + 1rem)" }}
+        >
           <ProgressDots
             total={current.result.stepsTotal ?? null}
             completed={current.result.stepsCompleted ?? null}
@@ -243,13 +274,19 @@ export default function GuidePanel({
         </div>
       ) : null}
       {!loading && !error && current && isTimedDisplayStep && !postActionStatus ? (
-        <p className="absolute left-1/2 bottom-10 -translate-x-1/2 text-xs md:text-sm text-black/60 dark:text-white/60">
+        <p
+          className="fixed left-1/2 z-10 -translate-x-1/2 text-xs md:text-sm text-black/60 dark:text-white/60"
+          style={{ bottom: "calc(var(--cw-safe-bottom) + 2.5rem)" }}
+        >
           Continuing in{" "}
           {Math.max(1, countdownSeconds)}s...
         </p>
       ) : null}
       {!loading && !error && current && postActionStatus ? (
-        <div className="absolute left-1/2 bottom-10 -translate-x-1/2 w-[min(90vw,40rem)] rounded-xl border border-default bg-secondary px-4 py-3 text-center shadow-sm">
+        <div
+          className="fixed left-1/2 z-10 -translate-x-1/2 w-[min(90vw,40rem)] rounded-xl border border-default bg-secondary px-4 py-3 text-center shadow-sm"
+          style={{ bottom: "calc(var(--cw-safe-bottom) + 2.5rem)" }}
+        >
           <p className="text-sm md:text-base font-medium">{postActionStatus.title}</p>
           {postActionStatus.subtext ? (
             <p className="text-xs md:text-sm text-black/70 dark:text-white/70 mt-1">

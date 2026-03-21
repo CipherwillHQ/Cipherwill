@@ -19,7 +19,7 @@ export default function MobileFloatingMenu() {
       </button>
 
       <div
-        className={`absolute backdrop-blur-xs top-0 left-0 bottom-0 right-0 z-50 overflow-hidden transition-all duration-300 ease-in-out  
+        className={`fixed backdrop-blur-xs top-0 left-0 bottom-0 right-0 z-50 overflow-hidden transition-all duration-300 ease-in-out  
   ${open ? "w-full" : "w-0"}
   `}
         onClick={(e) => {
@@ -27,7 +27,11 @@ export default function MobileFloatingMenu() {
         }}
       >
         <div
-          className={` flex flex-col bg-secondary border-r border-default h-screen w-[280px] px-2 pb-2 shadow-2xl`}
+          className={`flex h-full w-[280px] max-w-[85vw] flex-col border-r border-default bg-secondary px-2 shadow-2xl overflow-y-auto`}
+          style={{
+            paddingTop: "calc(var(--cw-safe-top) + 0.25rem)",
+            paddingBottom: "calc(var(--cw-safe-bottom) + 0.5rem)",
+          }}
           onClick={(e) => {
             e.stopPropagation();
           }}
