@@ -21,12 +21,12 @@ type GuidePanelProps = {
 };
 
 function getContentStateKey(args: {
-  loading: boolean;
+  showLoadingState: boolean;
   error: string | null;
   current: ObjectiveInProgress | null;
   showIntro: boolean;
 }) {
-  if (args.loading) {
+  if (args.showLoadingState) {
     return "loading";
   }
   if (args.error) {
@@ -131,11 +131,15 @@ export default function GuidePanel({
   }, [loading, loadingPhrases]);
 
   const contentStateKey = getContentStateKey({
-    loading,
+    showLoadingState: loading && !current,
     error,
     current,
     showIntro,
   });
+  const showLoadingState = loading && !current;
+  const showErrorState = !showLoadingState && !!error;
+  const showCurrentState = !error && !!current;
+  const showEmptyState = !loading && !error && !current;
 
   const submitWithCurrentValue = () => {
     if (!currentInput || !canSubmit) {
@@ -172,8 +176,8 @@ export default function GuidePanel({
         </div>
       </div>
       <div className="flex flex-1 flex-col items-center justify-center text-center p-2 md:p-4">
-        <AnimatePresence mode="wait" initial={false}>
-          {loading ? (
+        <AnimatePresence initial={false}>
+          {showLoadingState ? (
             <motion.div
               key={contentStateKey}
               initial={{ opacity: 0, x: 70 }}
@@ -186,7 +190,7 @@ export default function GuidePanel({
               {loadingPhrases[loadingPhraseIndex]}
             </motion.div>
           ) : null}
-          {!loading && error ? (
+          {showErrorState ? (
             <motion.div
               key={contentStateKey}
               initial={{ opacity: 0, x: 70 }}
@@ -199,7 +203,7 @@ export default function GuidePanel({
               <GuidedButton onClick={onRetry}>Retry</GuidedButton>
             </motion.div>
           ) : null}
-          {!loading && !error && current ? (
+          {showCurrentState ? (
             <motion.div
               key={contentStateKey}
               initial={{ opacity: 0, x: 70 }}
@@ -246,7 +250,7 @@ export default function GuidePanel({
               )}
             </motion.div>
           ) : null}
-          {!loading && !error && !current ? (
+          {showEmptyState ? (
             <motion.div
               key={contentStateKey}
               initial={{ opacity: 0, x: 70 }}
@@ -261,7 +265,7 @@ export default function GuidePanel({
           ) : null}
         </AnimatePresence>
       </div>
-      {!loading && !error && current ? (
+      {!error && current ? (
         <div
           className="fixed left-1/2 z-10 -translate-x-1/2"
           style={{ bottom: "calc(var(--cw-safe-bottom) + 1rem)" }}
@@ -273,7 +277,7 @@ export default function GuidePanel({
           />
         </div>
       ) : null}
-      {!loading && !error && current && isTimedDisplayStep && !postActionStatus ? (
+      {!error && current && isTimedDisplayStep && !postActionStatus ? (
         <p
           className="fixed left-1/2 z-10 -translate-x-1/2 text-xs md:text-sm text-black/60 dark:text-white/60"
           style={{ bottom: "calc(var(--cw-safe-bottom) + 2.5rem)" }}
@@ -282,7 +286,7 @@ export default function GuidePanel({
           {Math.max(1, countdownSeconds)}s...
         </p>
       ) : null}
-      {!loading && !error && current && postActionStatus ? (
+      {!error && current && postActionStatus ? (
         <div
           className="fixed left-1/2 z-10 -translate-x-1/2 w-[min(90vw,40rem)] rounded-xl border border-default bg-secondary px-4 py-3 text-center shadow-sm"
           style={{ bottom: "calc(var(--cw-safe-bottom) + 2.5rem)" }}
