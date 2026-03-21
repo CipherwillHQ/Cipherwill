@@ -129,13 +129,19 @@ export default function GuidePanel({
 
   return (
     <motion.div
-      className="absolute z-50 top-0 left-0 h-screen w-full border border-default bg-secondary p-4 pb-14 md:p-8 md:pb-16 flex flex-col justify-between overflow-hidden"
+      className="fixed z-50 inset-x-0 top-0 w-full border border-default bg-secondary p-4 md:p-8 flex flex-col overflow-y-auto overscroll-contain"
+      style={{
+        minHeight: "100vh",
+        height: "100dvh",
+        paddingTop: "calc(env(safe-area-inset-top, 0px) + 0.75rem)",
+        paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 3.5rem)",
+      }}
       initial={{ y: "100%" }}
       animate={{ y: 0 }}
       exit={{ y: "100%" }}
       transition={{ duration: 0.35, ease: "easeOut" }}
     >
-      <div className="flex gap-2 items-center justify-between w-full">
+      <div className="sticky top-0 z-10 flex gap-2 items-center justify-between w-full bg-secondary pb-2">
         <h1 className="text-xl md:text-2xl font-semibold">Guided Panel</h1>
         <div className="flex gap-2 items-center">
           <SwitchThemeIcon />
@@ -144,7 +150,7 @@ export default function GuidePanel({
           </GuidedButton>
         </div>
       </div>
-      <div className="flex flex-1 flex-col items-center justify-center text-center p-2 md:p-4">
+      <div className="flex flex-1 flex-col items-center justify-start md:justify-center text-center p-2 md:p-4">
         <AnimatePresence mode="wait" initial={false}>
           {loading ? (
             <motion.div
@@ -234,7 +240,10 @@ export default function GuidePanel({
         </AnimatePresence>
       </div>
       {!loading && !error && current ? (
-        <div className="absolute left-1/2 bottom-4 md:bottom-5 -translate-x-1/2">
+        <div
+          className="absolute left-1/2 -translate-x-1/2"
+          style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 1rem)" }}
+        >
           <ProgressDots
             total={current.result.stepsTotal ?? null}
             completed={current.result.stepsCompleted ?? null}
@@ -243,13 +252,19 @@ export default function GuidePanel({
         </div>
       ) : null}
       {!loading && !error && current && isTimedDisplayStep && !postActionStatus ? (
-        <p className="absolute left-1/2 bottom-10 -translate-x-1/2 text-xs md:text-sm text-black/60 dark:text-white/60">
+        <p
+          className="absolute left-1/2 -translate-x-1/2 text-xs md:text-sm text-black/60 dark:text-white/60"
+          style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 2.5rem)" }}
+        >
           Continuing in{" "}
           {Math.max(1, countdownSeconds)}s...
         </p>
       ) : null}
       {!loading && !error && current && postActionStatus ? (
-        <div className="absolute left-1/2 bottom-10 -translate-x-1/2 w-[min(90vw,40rem)] rounded-xl border border-default bg-secondary px-4 py-3 text-center shadow-sm">
+        <div
+          className="absolute left-1/2 -translate-x-1/2 w-[min(90vw,40rem)] rounded-xl border border-default bg-secondary px-4 py-3 text-center shadow-sm"
+          style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 2.5rem)" }}
+        >
           <p className="text-sm md:text-base font-medium">{postActionStatus.title}</p>
           {postActionStatus.subtext ? (
             <p className="text-xs md:text-sm text-black/70 dark:text-white/70 mt-1">
