@@ -52,9 +52,22 @@ export default function GuidePanel({
   onContinue,
   onSubmit,
 }: GuidePanelProps) {
+  const loadingPhrases = useMemo(
+    () => [
+      "Preparing your next step...",
+      "Reviewing what to do next...",
+      "Organizing your action plan...",
+      "Checking progress and context...",
+      "Getting the next task ready...",
+      "Syncing your latest updates...",
+      "Almost there, setting things up...",
+    ],
+    []
+  );
   const [inputValue, setInputValue] = useState("");
   const [showIntro, setShowIntro] = useState(true);
   const [countdownSeconds, setCountdownSeconds] = useState<number>(0);
+  const [loadingPhraseIndex, setLoadingPhraseIndex] = useState(0);
 
   const currentInput = current?.result.input ?? null;
   const canSubmit = useMemo(
@@ -103,6 +116,20 @@ export default function GuidePanel({
     current?.result.displayForMs,
   ]);
 
+  useEffect(() => {
+    if (!loading) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setLoadingPhraseIndex((prev) => (prev + 1) % loadingPhrases.length);
+    }, 1400);
+
+    return () => {
+      window.clearInterval(interval);
+    };
+  }, [loading, loadingPhrases]);
+
   const contentStateKey = getContentStateKey({
     loading,
     error,
@@ -142,7 +169,7 @@ export default function GuidePanel({
       transition={{ duration: 0.35, ease: "easeOut" }}
     >
       <div className="sticky top-0 z-10 flex gap-2 items-center justify-between w-full bg-secondary pb-2">
-        <h1 className="text-xl md:text-2xl font-semibold">Guided Panel</h1>
+        <h1 className="text-xl md:text-2xl font-semibold">Action Assistant</h1>
         <div className="flex gap-2 items-center">
           <SwitchThemeIcon />
           <GuidedButton variant="secondary" onClick={onClose}>
@@ -159,9 +186,10 @@ export default function GuidePanel({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -70 }}
               transition={{ duration: 0.28, ease: "easeOut" }}
-              className="text-2xl md:text-3xl font-medium"
+              className="flex items-center gap-3 text-xl md:text-2xl font-medium text-black/55 dark:text-white/55"
             >
-              Loading guided action...
+              <span className="h-5 w-5 rounded-full border-2 border-current border-r-transparent animate-spin" />
+              {loadingPhrases[loadingPhraseIndex]}
             </motion.div>
           ) : null}
           {!loading && error ? (
