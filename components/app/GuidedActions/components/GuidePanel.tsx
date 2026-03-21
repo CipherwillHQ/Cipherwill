@@ -169,7 +169,7 @@ export default function GuidePanel({
       transition={{ duration: 0.35, ease: "easeOut" }}
     >
       <div className="sticky top-0 z-10 flex gap-2 items-center justify-between w-full bg-secondary pb-2">
-        <h1 className="text-xl md:text-2xl font-semibold">Action Assistant</h1>
+        <h1 className="text-xl md:text-2xl font-semibold">Assistant</h1>
         <div className="flex gap-2 items-center">
           <SwitchThemeIcon />
           <GuidedButton variant="secondary" onClick={onClose}>
