@@ -150,7 +150,7 @@ export default function GuidePanel({
           </GuidedButton>
         </div>
       </div>
-      <div className="flex flex-1 flex-col items-center justify-start md:justify-center text-center p-2 md:p-4">
+      <div className="flex flex-1 flex-col items-center justify-center text-center p-2 md:p-4">
         <AnimatePresence mode="wait" initial={false}>
           {loading ? (
             <motion.div
@@ -241,8 +241,8 @@ export default function GuidePanel({
       </div>
       {!loading && !error && current ? (
         <div
-          className="absolute left-1/2 -translate-x-1/2"
-          style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 1rem)" }}
+          className="fixed left-1/2 z-10 -translate-x-1/2"
+          style={{ bottom: "calc(env(safe-area-inset-bottom) + 1rem)" }}
         >
           <ProgressDots
             total={current.result.stepsTotal ?? null}
@@ -253,8 +253,8 @@ export default function GuidePanel({
       ) : null}
       {!loading && !error && current && isTimedDisplayStep && !postActionStatus ? (
         <p
-          className="absolute left-1/2 -translate-x-1/2 text-xs md:text-sm text-black/60 dark:text-white/60"
-          style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 2.5rem)" }}
+          className="fixed left-1/2 z-10 -translate-x-1/2 text-xs md:text-sm text-black/60 dark:text-white/60"
+          style={{ bottom: "calc(env(safe-area-inset-bottom) + 2.5rem)" }}
         >
           Continuing in{" "}
           {Math.max(1, countdownSeconds)}s...
@@ -262,8 +262,8 @@ export default function GuidePanel({
       ) : null}
       {!loading && !error && current && postActionStatus ? (
         <div
-          className="absolute left-1/2 -translate-x-1/2 w-[min(90vw,40rem)] rounded-xl border border-default bg-secondary px-4 py-3 text-center shadow-sm"
-          style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 2.5rem)" }}
+          className="fixed left-1/2 z-10 -translate-x-1/2 w-[min(90vw,40rem)] rounded-xl border border-default bg-secondary px-4 py-3 text-center shadow-sm"
+          style={{ bottom: "calc(env(safe-area-inset-bottom) + 2.5rem)" }}
         >
           <p className="text-sm md:text-base font-medium">{postActionStatus.title}</p>
           {postActionStatus.subtext ? (
