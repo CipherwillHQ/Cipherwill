@@ -6,6 +6,7 @@ import { Metadata } from "next";
 import { FULL_HOSTNAME } from "@/common/constant";
 import Link from "next/link";
 import CTA from "@/components/public/CTA";
+import Image from "next/image";
 
 function getDescription(job: string) {
   return `Learn how ${job} can easily create and manage a digital will to ensure their online accounts and assets are securely passed on to their chosen beneficiaries.`;
@@ -53,10 +54,12 @@ export default function PersonaPage({ params }) {
         <h2 className="text-2xl font-bold pb-2">
           Create your Digital will with Cipherwill
         </h2>
-        <img
+        <Image
           src="/og-img.png"
-          alt="og-img"
-          className="w-full max-w-4xl mx-auto rounded-md"
+          alt="Cipherwill preview"
+          width={1200}
+          height={630}
+          className="w-full max-w-4xl mx-auto rounded-md h-auto"
         />
         <div className="text-lg font-medium">
           Cipherwill is a digital platform where people add their data such as

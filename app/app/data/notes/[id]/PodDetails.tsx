@@ -4,14 +4,13 @@ import { NOTE_TYPE } from "../../../../../types/pods/NOTE";
 import { usePod } from "@/contexts/PodHelper";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Placeholder from "@tiptap/extension-placeholder";
 import sanitizeHtml from "@/common/security/sanitizeHtml";
 
 const NOTE_SAMPLE: NOTE_TYPE = {
   content: "Sample Note",
 };
-let debounceTimer: NodeJS.Timeout;
 
 export default function PodDetails({
   id,
@@ -22,6 +21,7 @@ export default function PodDetails({
 }) {
   const [initialValue, setinitialValue] = useState<string | null>(null);
   const [newValue, setNewValue] = useState<string | null>(null);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const { loading, error, updatePod, is_updating, loadPod } = usePod<NOTE_TYPE>(
     {
@@ -56,9 +56,12 @@ export default function PodDetails({
   });
 
   useEffect(() => {
-    if (error) setSaveStatus("ERROR");
+    if (error) {
+      setSaveStatus("ERROR");
+      return;
+    }
     setSaveStatus(is_updating ? "LOADING" : "SAVED");
-  }, [is_updating, error]);
+  }, [error, is_updating, setSaveStatus]);
 
   useEffect(() => {
     // debounce save
@@ -68,10 +71,10 @@ export default function PodDetails({
       setSaveStatus("SAVED");
       return;
     }
-    if (debounceTimer) {
-      clearTimeout(debounceTimer);
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
     }
-    debounceTimer = setTimeout(() => {
+    debounceTimerRef.current = setTimeout(() => {
       if (!editor) return;
       const updateData = sanitizeHtml(editor.getHTML());
       updatePod(
@@ -91,7 +94,12 @@ export default function PodDetails({
           logger.error(err);
         });
     }, 3000);
-  }, [newValue]);
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [newValue, initialValue, editor, updatePod, id, setSaveStatus]);
 
   if (loading)
     return (

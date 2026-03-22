@@ -8,11 +8,12 @@ import toast from "react-hot-toast";
 export default function QuestionFeedback({ question }: { question: string }) {
   const [sendFeedback] = useMutation(SEND_FEEDBACK);
   const { user } = useUserContext();
+  const userEmail = user?.email;
 
   const sendFeedbackHandler = useCallback((message: string) => {
     sendFeedback({
       variables: {
-        email: user?.email,
+        email: userEmail,
         message: `${message}`,
       },
     })
@@ -22,7 +23,7 @@ export default function QuestionFeedback({ question }: { question: string }) {
       .catch((err) => {
         toast.error("Something went wrong!!! Please send us a email.");
       });
-  }, []);
+  }, [sendFeedback, userEmail]);
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-6">
