@@ -14,10 +14,12 @@
     "test:build": "cross-env NODE_ENV=test next build"
   },
   "resolutions": {
-    "prosemirror-model": "1.25.4"
+    "prosemirror-model": "1.25.4",
+    "sharp": "0.34.5"
   },
   "overrides": {
-    "prosemirror-model": "1.25.4"
+    "prosemirror-model": "1.25.4",
+    "sharp": "0.34.5"
   },
   "dependencies": {
     "@apollo/client": "^4.0.3",
