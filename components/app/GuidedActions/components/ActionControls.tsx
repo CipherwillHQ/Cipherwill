@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import GuidedButton from "./GuidedButton";
 import type { ObjectiveProcessResult } from "../core/types";
 
@@ -25,13 +24,7 @@ export default function ActionControls({
   const isSkippable = !!inputSpec?.skippable;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 40 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -40 }}
-      transition={{ duration: 0.24, ease: "easeOut" }}
-      className="flex gap-4 items-center justify-center flex-wrap mt-2"
-    >
+    <div className="flex gap-4 items-center justify-center flex-wrap mt-2">
       {isSkippable && (
         <GuidedButton variant="secondary" onClick={handleSkip} disabled={loading}>
           Skip
@@ -47,6 +40,6 @@ export default function ActionControls({
           Submit
         </GuidedButton>
       ) : null}
-    </motion.div>
+    </div>
   );
 }

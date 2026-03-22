@@ -176,7 +176,7 @@ export default function GuidePanel({
         </div>
       </div>
       <div className="flex flex-1 flex-col items-center justify-center text-center p-2 md:p-4">
-        <AnimatePresence initial={false}>
+        <AnimatePresence initial={false} mode="wait">
           {showLoadingState ? (
             <motion.div
               key={contentStateKey}
