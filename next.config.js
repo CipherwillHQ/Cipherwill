@@ -35,8 +35,8 @@ const nextConfig = {
       },
     ];
   },
-  publicRuntimeConfig: {
-    version: `v${version}`,
+  env: {
+    NEXT_PUBLIC_APP_VERSION: `v${version}`,
   },
   webpack: (config, { isServer }) => {
     config.module = {
