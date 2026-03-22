@@ -22,7 +22,7 @@
   "dependencies": {
     "@apollo/client": "^4.0.3",
     "@metamask/sdk-react": "^0.33.0",
-    "@notionhq/client": "^4.0.2",
+    "@notionhq/client": "^5.14.0",
     "@paddle/paddle-js": "^1.4.2",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@sentry/nextjs": "10",

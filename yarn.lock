@@ -1489,10 +1489,10 @@
   resolved "https://registry.yarnpkg.com/@nolyfill/is-core-module/-/is-core-module-1.0.39.tgz#3dc35ba0f1e66b403c00b39344f870298ebb1c8e"
   integrity sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==
 
-"@notionhq/client@^4.0.2":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@notionhq/client/-/client-4.0.2.tgz#d03b82ed7bae0e4025358f0cdb6c3a29afd32a67"
-  integrity sha512-4pk3dm4umhjsRI0umCnJ8lCZh0TMiaMdkY0rz6FV4OqVuTsmYFV3pk+YTR5S8792ZY2Rm4lJHlLj05HQVKDuIg==
+"@notionhq/client@^5.14.0":
+  version "5.14.0"
+  resolved "https://registry.yarnpkg.com/@notionhq/client/-/client-5.14.0.tgz#fcf3862da870f208dc695af0e456faa592dc6bf3"
+  integrity sha512-9bbH7/9M6D9YlHMYCZ1aAFxRCWiKRBpP/XOnAHFtBCFDf00PPhpWRSsGE1FfmjYCNW2BFRj19WshJFH5IFfNvg==
 
 "@opentelemetry/api-logs@0.203.0":
   version "0.203.0"
