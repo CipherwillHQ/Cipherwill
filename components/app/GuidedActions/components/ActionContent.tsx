@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import StepInputField from "./StepInputField";
 import type { ObjectiveProcessResult } from "../core/types";
 
@@ -22,14 +21,7 @@ export default function ActionContent({
   const inputSpec = stepResult.input;
 
   return (
-    <motion.div
-      key={`${stepResult.step ?? "display"}-${stepResult.title ?? "objective-step"}`}
-      initial={{ opacity: 0, x: 60 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -60 }}
-      transition={{ duration: 0.28, ease: "easeOut" }}
-      className="flex w-full max-w-4xl flex-col items-center gap-7 text-center"
-    >
+    <div className="flex w-full max-w-4xl flex-col items-center gap-7 text-center">
       <h2 className="text-3xl md:text-5xl font-semibold leading-tight">
         {stepResult.title || "Guided Action"}
       </h2>
@@ -46,6 +38,6 @@ export default function ActionContent({
         onSubmitText={submitTextValue}
         loading={loading}
       />
-    </motion.div>
+    </div>
   );
 }

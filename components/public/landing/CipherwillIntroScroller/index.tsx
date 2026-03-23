@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import delivery_img from "./delivery.webp";
 import e2e_img from "./e2e.webp";
 import beyond from "./beyond.webp";
@@ -70,10 +71,13 @@ export default function StickyImageScroll() {
             key={index}
             className="text-section flex flex-col md:h-screen max-h-[1000px] justify-start p-4"
           >
-            <img
+            <Image
               src={section.image}
               alt={`Image ${index + 1}`}
-              className="md:hidden object-cover p-4"
+              width={1200}
+              height={800}
+              sizes="100vw"
+              className="md:hidden object-cover p-4 h-auto"
             />
             <div className="p-2 rounded-full w-fit mt-8 uppercase text-black/50 font-bold mx-4">
               {section.capsule}
@@ -93,17 +97,23 @@ export default function StickyImageScroll() {
       </div>
       <div className="hidden md:block md:w-1/2 h-[80vh] max-h-[1000px] sticky top-20 p-8 -z-10">
         <div className="relative w-full h-full flex items-center justify-center">
-          <AnimatePresence>
-            <motion.img
+          <AnimatePresence mode="wait">
+            <motion.div
               key={sections[activeIndex].image}
-              src={sections[activeIndex].image}
-              alt={`Image ${activeIndex + 1}`}
-              className="absolute w-full"
+              className="absolute inset-0"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
-            />
+            >
+              <Image
+                src={sections[activeIndex].image}
+                alt={`Image ${activeIndex + 1}`}
+                fill
+                sizes="50vw"
+                className="object-contain"
+              />
+            </motion.div>
           </AnimatePresence>
         </div>
       </div>

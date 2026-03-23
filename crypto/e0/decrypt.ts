@@ -14,5 +14,6 @@ export default async function decrypt(
     iv,
     mac,
   });
-  return decrypted.toString();
+  // eccrypto v7 returns Uint8Array (not Buffer), so decode via Buffer for stable UTF-8 string output.
+  return Buffer.from(decrypted).toString("utf8");
 }

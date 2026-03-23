@@ -29,14 +29,16 @@ export default async function handler(
 
     const recordMap = await withTimeout(notion.getPage(id), 9000);
     const formated_id = Object.keys(recordMap.block)[0];
-    const block = recordMap.block[formated_id].value;
+    const blockEntry = recordMap.block[formated_id];
+    const block =
+      blockEntry && "value" in blockEntry ? blockEntry.value : blockEntry;
 
-    const title = block?.properties?.title?.[0]?.[0] || "Untitled";
-    const description = block?.properties?.EUjp?.[0]?.[0] || "";
-    const db_slug = block?.properties?.BlqG?.[0]?.[0] || "";
-    const cover = block?.format?.page_cover || "";
-    const created_time = block?.created_time;
-    const last_edited_time = block?.last_edited_time;
+    const title = (block as any)?.properties?.title?.[0]?.[0] || "Untitled";
+    const description = (block as any)?.properties?.EUjp?.[0]?.[0] || "";
+    const db_slug = (block as any)?.properties?.BlqG?.[0]?.[0] || "";
+    const cover = (block as any)?.format?.page_cover || "";
+    const created_time = (block as any)?.created_time;
+    const last_edited_time = (block as any)?.last_edited_time;
 
     const final_cover = cover.startsWith("/")
       ? `https://www.notion.so${cover}`

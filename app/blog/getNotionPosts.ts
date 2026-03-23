@@ -25,10 +25,26 @@ export async function getNotionPosts({
     has_more: false,
     next_cursor: null,
   };
-  const response = await getNotionClient().databases.query({
+
+  const database = await getNotionClient().databases.retrieve({
     database_id: databaseId,
+  });
+
+  const dataSourceId =
+    "data_sources" in database ? database.data_sources?.[0]?.id : undefined;
+  if (!dataSourceId) {
+    return {
+      pages: [],
+      has_more: false,
+      next_cursor: null,
+    };
+  }
+
+  const response = await getNotionClient().dataSources.query({
+    data_source_id: dataSourceId,
     page_size: size,
     start_cursor: cursor,
+    result_type: "page",
     filter: {
       property: "Publish",
       checkbox: {

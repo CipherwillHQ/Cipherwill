@@ -35,8 +35,8 @@ const nextConfig = {
       },
     ];
   },
-  publicRuntimeConfig: {
-    version: `v${version}`,
+  env: {
+    NEXT_PUBLIC_APP_VERSION: `v${version}`,
   },
   webpack: (config, { isServer }) => {
     config.module = {
@@ -90,8 +90,8 @@ module.exports = withSentryConfig(module.exports, {
   // org: "*****",
   // project: "****",
 
-  // Only print logs for uploading source maps in CI
-  silent: !process.env.CI,
+  // Silence Sentry build plugin logs (including source map file upload logs)
+  silent: true,
 
   // For all available options, see:
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
@@ -105,12 +105,15 @@ module.exports = withSentryConfig(module.exports, {
   // side errors will fail.
   tunnelRoute: "/monitoring",
 
-  // Automatically tree-shake Sentry logger statements to reduce bundle size
-  disableLogger: true,
-
-  // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
-  // See the following for more information:
-  // https://docs.sentry.io/product/crons/
-  // https://vercel.com/docs/cron-jobs
-  automaticVercelMonitors: true,
+  webpack: {
+    // Automatically tree-shake Sentry logger statements to reduce bundle size
+    treeshake: {
+      removeDebugLogging: true,
+    },
+    // Enables automatic instrumentation of Vercel Cron Monitors.
+    // See the following for more information:
+    // https://docs.sentry.io/product/crons/
+    // https://vercel.com/docs/cron-jobs
+    automaticVercelMonitors: true,
+  },
 });
