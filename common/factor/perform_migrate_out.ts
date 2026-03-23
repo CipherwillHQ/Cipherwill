@@ -56,12 +56,8 @@ export default async function perform_migrate_out(
               publicKey,
             },
       });
-      if (
-        !res.data &&
-        !res.data.getKeyItemsByPublicKey &&
-        !res.data.getKeyItemsByPublicKey.items &&
-        res.data.getKeyItemsByPublicKey.items.length < 1
-      ) {
+      const items = res?.data?.getKeyItemsByPublicKey?.items || [];
+      if (items.length < 1) {
         toast.error("No data items to migrate");
         has_more = false;
         break;
@@ -70,30 +66,45 @@ export default async function perform_migrate_out(
       if (res.data.getKeyItemsByPublicKey.has_more) {
         has_more = res.data.getKeyItemsByPublicKey.has_more;
         cursor =
-          res.data.getKeyItemsByPublicKey.items[
-            res.data.getKeyItemsByPublicKey.items.length - 1
+          items[
+            items.length - 1
           ].id;
       } else {
         has_more = false;
       }
 
-      const all_keys = res.data.getKeyItemsByPublicKey.items;
+      const all_keys = items;
       // decrypt each one with current privatekey
       const all_decrypted: Key[] = [];
       for await (const item of all_keys) {
-        const encrypted_string = JSON.parse(item.key);
-        all_decrypted.push({
-          ref_id: item.ref_id,
-          beneficiary_id: item.beneficiary_id,
-          publicKey: "null",
-          key: await decrypt(
-            privateKey,
-            Buffer.from(encrypted_string.ciphertext, "base64"),
-            Buffer.from(encrypted_string.ephemPublicKey, "base64"),
-            Buffer.from(encrypted_string.iv, "base64"),
-            Buffer.from(encrypted_string.mac, "base64")
-          ),
-        });
+        try {
+          let decryptedKey = item.key;
+          if (typeof item.key === "string" && item.key.startsWith("{")) {
+            const encrypted_string = JSON.parse(item.key);
+            if (encrypted_string.type === "E0") {
+              decryptedKey = await decrypt(
+                privateKey,
+                Buffer.from(encrypted_string.ciphertext, "base64"),
+                Buffer.from(encrypted_string.ephemPublicKey, "base64"),
+                Buffer.from(encrypted_string.iv, "base64"),
+                Buffer.from(encrypted_string.mac, "base64")
+              );
+            }
+          }
+          all_decrypted.push({
+            ref_id: item.ref_id,
+            beneficiary_id: item.beneficiary_id,
+            publicKey: "null",
+            key: decryptedKey,
+          });
+        } catch (error) {
+          logger.error("Failed to migrate key while migrating out", {
+            ref_id: item?.ref_id,
+            publicKey: item?.publicKey,
+            error,
+          });
+          throw error;
+        }
 
         // throw new Error("Not implemented");
       }

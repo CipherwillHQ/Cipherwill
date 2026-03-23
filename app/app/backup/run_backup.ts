@@ -11,6 +11,7 @@ import { POSSIBLE_STATUS } from "./types";
 import getMyKeyCount from "../../../factory/key/getMyKeyCount";
 import CryptoJS from "crypto-js";
 import getAllMetamodels from "../../../factory/metamodel/getAllMetamodels";
+import logger from "../../../common/debug/logger";
 
 export default async function run_backup({
   status,
@@ -101,31 +102,45 @@ export default async function run_backup({
       continue;
     }
     let key = key_obj.key;
-    if (key_obj.key.startsWith("{")) {
-      const parsedData = JSON.parse(key_obj.key);
-      if (parsedData.type === "E0") {
-        key = await decrypt(
-          session.privateKey,
-          Buffer.from(parsedData.ciphertext, "base64"),
-          Buffer.from(parsedData.ephemPublicKey, "base64"),
-          Buffer.from(parsedData.iv, "base64"),
-          Buffer.from(parsedData.mac, "base64")
-        );
+    try {
+      if (typeof key_obj.key === "string" && key_obj.key.startsWith("{")) {
+        const parsedData = JSON.parse(key_obj.key);
+        if (parsedData.type === "E0") {
+          if (!session?.privateKey) {
+            throw new Error("Session private key is required for E0 decryption");
+          }
+          key = await decrypt(
+            session.privateKey,
+            Buffer.from(parsedData.ciphertext, "base64"),
+            Buffer.from(parsedData.ephemPublicKey, "base64"),
+            Buffer.from(parsedData.iv, "base64"),
+            Buffer.from(parsedData.mac, "base64")
+          );
+        }
       }
+      const final_content = JSON.parse(
+        CryptoJS.AES.decrypt(encrypted_data, key).toString(CryptoJS.enc.Utf8)
+      );
+      let decryped_data: any = "";
+      if (final_content.data !== undefined) {
+        decryped_data = final_content;
+      }
+      backup_data.push({
+        id: metamodel.id,
+        type: metamodel.type,
+        metadata: metamodel.metadata,
+        data: decryped_data,
+      });
+    } catch (error) {
+      logger.error("Backup failed while decrypting pod", {
+        metamodel_id: metamodel?.id,
+        publicKey: key_obj?.publicKey,
+        error,
+      });
+      toast.error("Error while decrypting data during backup");
+      setStatus("Error while backing up");
+      return;
     }
-    const final_content = JSON.parse(
-      CryptoJS.AES.decrypt(encrypted_data, key).toString(CryptoJS.enc.Utf8)
-    );
-    let decryped_data = "";
-    if (final_content.data !== undefined) {
-      decryped_data = final_content;
-    }
-    backup_data.push({
-      id: metamodel.id,
-      type: metamodel.type,
-      metadata: metamodel.metadata,
-      data: decryped_data,
-    });
   }
 
   if (backup_data.length !== data_count.count) {

@@ -100,18 +100,33 @@ export default async function perform_migrate_in(
           );
           break;
         }
-        const decrypted_string = JSON.parse(item.key);
-        all_decrypted.push({
-          ref_id: item.ref_id,
-          beneficiary_id: item.beneficiary_id,
-          key: await decrypt(
-            privateKey,
-            Buffer.from(decrypted_string.ciphertext, "base64"),
-            Buffer.from(decrypted_string.ephemPublicKey, "base64"),
-            Buffer.from(decrypted_string.iv, "base64"),
-            Buffer.from(decrypted_string.mac, "base64")
-          ),
-        });
+        try {
+          let decryptedKey = item.key;
+          if (typeof item.key === "string" && item.key.startsWith("{")) {
+            const decrypted_string = JSON.parse(item.key);
+            if (decrypted_string.type === "E0") {
+              decryptedKey = await decrypt(
+                privateKey,
+                Buffer.from(decrypted_string.ciphertext, "base64"),
+                Buffer.from(decrypted_string.ephemPublicKey, "base64"),
+                Buffer.from(decrypted_string.iv, "base64"),
+                Buffer.from(decrypted_string.mac, "base64")
+              );
+            }
+          }
+          all_decrypted.push({
+            ref_id: item.ref_id,
+            beneficiary_id: item.beneficiary_id,
+            key: decryptedKey,
+          });
+        } catch (error) {
+          logger.error("Failed to migrate key while migrating in", {
+            ref_id: item?.ref_id,
+            publicKey: item?.publicKey,
+            error,
+          });
+          throw error;
+        }
       } else {
         all_decrypted.push({
           ref_id: item.ref_id,
