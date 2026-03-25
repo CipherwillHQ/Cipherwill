@@ -24,6 +24,9 @@ export default async function perform_migrate_in(
   privateKey: string | null,
   beneficiary_id?: string
 ) {
+  const migration_operation_prefix = `migrate-in:${
+    beneficiary_id || "self"
+  }:${encrypt_for_public_key}`;
   logger.info(
     `Performing migrate in for ${
       beneficiary_id
@@ -187,6 +190,9 @@ export default async function perform_migrate_in(
     await recurring_upload({
       client,
       key_cluster: re_encrypted_data,
+      operation_id_prefix: `${migration_operation_prefix}:cursor:${
+        cursor || "start"
+      }`,
     });
   }
 }

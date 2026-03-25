@@ -15,6 +15,7 @@ export default async function perform_migrate_out(
   publicKey: string,
   privateKey: string
 ) {
+  const migration_operation_prefix = `migrate-out:${publicKey}`;
   // get factors count
   const factors = await client.query<GetFactorsQuery>({
     fetchPolicy: "network-only",
@@ -114,6 +115,9 @@ export default async function perform_migrate_out(
       await recurring_upload({
         client,
         key_cluster: all_decrypted,
+        operation_id_prefix: `${migration_operation_prefix}:cursor:${
+          cursor || "start"
+        }`,
       });
     }
   } else {

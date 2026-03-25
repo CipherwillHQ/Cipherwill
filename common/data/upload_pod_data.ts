@@ -1,13 +1,20 @@
 import { ApolloClient } from "@apollo/client";
-import recurring_upload from "./recurring_upload";
 import { DataItem, EncryptionKeys, Key } from "./types";
 import generate_encryption_keys from "./generate_encryption_keys";
 import generate_keys_for_beneficiaries from "./generate_keys_for_beneficiaries";
 import generate_keys_for_own_factors from "./generate_keys_for_own_factors";
-import encrypt_and_upload_pod from "./encrypt_and_upload_pod";
+import { create_encrypted_file } from "./encrypt_and_upload_pod";
 import logger from "../debug/logger";
 import GET_METAMODEL from "@/graphql/ops/app/metamodel/queries/GET_METAMODEL";
 import { GetMetamodelQuery, GetMetamodelVariables } from "@/types";
+import UPSERT_POD_WITH_KEYS from "@/graphql/ops/app/pod/mutations/UPSERT_POD_WITH_KEYS";
+
+function get_operation_id(ref_id: string): string {
+  if (typeof globalThis !== "undefined" && globalThis.crypto?.randomUUID) {
+    return globalThis.crypto.randomUUID();
+  }
+  return `${ref_id}-${Date.now()}-${Math.floor(Math.random() * 1000000)}`;
+}
 
 export default async function upload_pod_data({
   data_items,
@@ -23,9 +30,6 @@ export default async function upload_pod_data({
   let encryption_keys: EncryptionKeys = await generate_encryption_keys({
     data_items,
   });
-
-  // encrypt each data item with generated random key and upload pod
-  await encrypt_and_upload_pod({ encryption_keys, data_items, client });
 
   // create empty key cluster
   let key_cluster: Key[] = [];
@@ -61,6 +65,48 @@ export default async function upload_pod_data({
     ignored_beneficiaries,
   });
 
-  // upload cluster keys
-  await recurring_upload({ client, key_cluster });
+  for await (const item of data_items) {
+    const encrypted_file = await create_encrypted_file({
+      encryption_keys,
+      item,
+    });
+    if (!encrypted_file) {
+      throw new Error(`Failed to encrypt data for ${item.ref_id}`);
+    }
+
+    const keys_for_ref = key_cluster.filter((key_item) => {
+      return key_item.ref_id === item.ref_id;
+    });
+    if (keys_for_ref.length === 0) {
+      throw new Error(`No keys generated for ${item.ref_id}`);
+    }
+
+    const operation_id = get_operation_id(item.ref_id);
+    logger.info(`Atomic pod+key upload started`, {
+      ref_id: item.ref_id,
+      operation_id,
+      key_count: keys_for_ref.length,
+    });
+
+    await client.mutate({
+      mutation: UPSERT_POD_WITH_KEYS,
+      variables: {
+        data_model_version: item.data_model_version,
+        ref_id: item.ref_id,
+        file: encrypted_file,
+        key_cluster: keys_for_ref,
+        operation_id,
+      },
+      context: {
+        headers: {
+          "apollo-require-preflight": true,
+        },
+      },
+    });
+
+    logger.info(`Atomic pod+key upload completed`, {
+      ref_id: item.ref_id,
+      operation_id,
+    });
+  }
 }

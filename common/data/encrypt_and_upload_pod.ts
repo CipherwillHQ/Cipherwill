@@ -62,7 +62,7 @@ async function inform_backend_of_upload(
   }
 }
 
-async function create_encrypted_file({
+export async function create_encrypted_file({
   encryption_keys,
   item,
 }: {
