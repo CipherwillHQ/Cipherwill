@@ -59,6 +59,10 @@ const nextConfig = {
   },
   async rewrites() {
     return [
+      {
+        source: "/blogs-sitemap.xml",
+        destination: "https://media.cipherwill.com/sitemap/blogs-sitemap.xml",
+      },
       // Using custom endpoint for PostHog
       // do not need this
 
