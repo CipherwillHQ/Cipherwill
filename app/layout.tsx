@@ -42,12 +42,12 @@ export const viewport: Viewport = {
   minimumScale: 1,
   maximumScale: 5,
   userScalable: true,
+  themeColor: "#FFFFFF",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <meta name="theme-color" content="#FFFFFF" />
+    <html lang="en" suppressHydrationWarning>
       {/* <meta
         name="adopt-website-id"
         content="b339be64-92db-44ef-a97a-bb6470fbd9f5"

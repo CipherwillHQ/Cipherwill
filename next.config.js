@@ -55,6 +55,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "www.notion.so",
       },
+      {
+        protocol: "https",
+        hostname: "**.amazonaws.com",
+      }
     ],
   },
   async rewrites() {
