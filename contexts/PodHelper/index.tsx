@@ -3,13 +3,8 @@ import { useApolloClient } from "@apollo/client/react";
 import { useCallback, useEffect, useState } from "react";
 import { useSession } from "../SessionContext";
 import GET_POD from "@/graphql/ops/app/pod/queries/GET_POD";
-import toast from "react-hot-toast";
 import GET_KEY_BY_REF_ID from "@/graphql/ops/app/key/Queries/GET_KEY_BY_REF_ID";
-import decrypt from "@/crypto/e0/decrypt";
 import logger from "@/common/debug/logger";
-import CryptoJS from "crypto-js";
-import { POD_TYPE } from "@/types/POD";
-import parseToLatestDataModel from "./parseToLatestDataModel";
 import upload_pod_data from "@/common/data/upload_pod_data";
 import {
   GetKeyByRefIdQuery,
@@ -17,27 +12,22 @@ import {
   GetPodQuery,
   GetPodVariables,
 } from "@/types/interfaces/metamodel";
+import { getPodHookOptions } from "./defaults";
+import {
+  decryptPodJson,
+  getPodContent,
+  isPodNotFoundError,
+  parsePodJsonToModel,
+  pickAllowedPodData,
+  resolveDecryptionKey,
+} from "./helpers";
+import { PodHookConfig, PodHookOptions } from "./types";
 
 export function usePod<POD_DATA_TYPE>(
-  config: {
-    TYPE: POD_TYPE;
-    VERSION: string;
-    REF_ID: string;
-    DATA_SAMPLE: POD_DATA_TYPE;
-  },
-  options?: {
-    onComplete?: (data: null | POD_DATA_TYPE) => void;
-    lazy?: boolean;
-  }
+  config: PodHookConfig<POD_DATA_TYPE>,
+  options?: PodHookOptions<POD_DATA_TYPE>,
 ) {
-  const defaultOptions = {
-    onComplete: (data) => {},
-    lazy: false,
-  };
-  const { onComplete, lazy } = {
-    ...defaultOptions,
-    ...options,
-  };
+  const { onComplete, lazy } = getPodHookOptions(options);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<null | string>(null);
   const [data, setData] = useState<null | POD_DATA_TYPE>(null);
@@ -59,12 +49,7 @@ export function usePod<POD_DATA_TYPE>(
         },
       });
     } catch (error) {
-      if (
-        error &&
-        error.errors &&
-        error.errors[0] &&
-        error.errors[0].extensions.code === "POD_NOT_FOUND"
-      ) {
+      if (isPodNotFoundError(error)) {
         setData(null);
         onComplete(null);
         setLoading(false);
@@ -74,13 +59,13 @@ export function usePod<POD_DATA_TYPE>(
         throw error;
       }
     }
-    if (!pod || !pod.data || !pod.data.getPod || !pod.data.getPod.content) {
+    const content = getPodContent(pod);
+    if (!content) {
       setData(null);
       onComplete(null);
       setLoading(false);
       return null;
     }
-    const content = pod.data.getPod.content;
 
     const encryption_key = await client.query<
       GetKeyByRefIdQuery,
@@ -98,27 +83,12 @@ export function usePod<POD_DATA_TYPE>(
             publicKey: "null",
           },
     });
+    
     let key = "";
+    const encryptedKey = encryption_key.data?.getKeyByRefId?.key;
 
-    if (
-      encryption_key.data &&
-      encryption_key.data.getKeyByRefId &&
-      encryption_key.data.getKeyByRefId.key
-    ) {
-      if (encryption_key.data.getKeyByRefId.key.startsWith("{")) {
-        const parsedData = JSON.parse(encryption_key.data.getKeyByRefId.key);
-        if (parsedData.type === "E0") {
-          key = await decrypt(
-            session.privateKey,
-            Buffer.from(parsedData.ciphertext, "base64"),
-            Buffer.from(parsedData.ephemPublicKey, "base64"),
-            Buffer.from(parsedData.iv, "base64"),
-            Buffer.from(parsedData.mac, "base64")
-          );
-        }
-      } else {
-        key = encryption_key.data.getKeyByRefId.key;
-      }
+    if (encryptedKey) {
+      key = await resolveDecryptionKey(encryptedKey, session);
     } else {
       setData(null);
       onComplete(null);
@@ -127,15 +97,7 @@ export function usePod<POD_DATA_TYPE>(
       setLoading(false);
       return null;
     }
-    let json_string;
-    try {
-      json_string = CryptoJS.AES.decrypt(content, key).toString(
-        CryptoJS.enc.Utf8
-      );
-    } catch (error) {
-      toast.error("Error while decrypting data");
-      logger.error("Error while decrypting data", error);
-    }
+    const json_string = decryptPodJson(content, key);
     if (!json_string) {
       setData(null);
       onComplete(null);
@@ -143,33 +105,8 @@ export function usePod<POD_DATA_TYPE>(
       return null;
     }
 
-    let final_content: {
-      type: string;
-      version: string;
-      data: any;
-    } = {
-      type: config.TYPE,
-      version: config.VERSION,
-      data: {},
-    };
-
-    if (json_string.startsWith("{")) {
-      const parsed_pod_data = JSON.parse(json_string);
-
-      final_content.type = parsed_pod_data?.type || config.TYPE;
-      final_content.version = parsed_pod_data?.version || "0.0.1";
-      if (parsed_pod_data?.data) {
-        // perfrom historical version conversion to current version
-        final_content.data = parseToLatestDataModel({
-          type: parsed_pod_data?.type || config.TYPE,
-          data_version: parsed_pod_data?.version || "0.0.1",
-          expected_version: config.VERSION,
-          data: parsed_pod_data.data,
-        });
-      } else {
-        final_content.data = {};
-      }
-    } else {
+    const final_content = parsePodJsonToModel(json_string, config);
+    if (!final_content) {
       // decrypted data is not a valid json string
       // reset the pod data
       logger.error("Decrypted data is not a valid json string");
@@ -205,15 +142,10 @@ export function usePod<POD_DATA_TYPE>(
       metamodel_id,
     }: {
       metamodel_id: string;
-    }
+    },
   ) {
     // strip out all fields that are not in the type
-    let final_data = {};
-    for await (const key of Object.keys(config.DATA_SAMPLE as any)) {
-      if (upated_data[key]) {
-        final_data[key] = upated_data[key];
-      }
-    }
+    const final_data = pickAllowedPodData(upated_data, config.DATA_SAMPLE);
     // json validate final_data
     // TODO: add json validation
 
