@@ -11,6 +11,7 @@ import DELETE_KEY_BY_PUBLIC_KEY from "../../../graphql/ops/app/key/Mutations/DEL
 import GET_ALL_KEY_COUNT from "../../../graphql/ops/app/key/Queries/GET_ALL_KEY_COUNT";
 import Popup from "reactjs-popup";
 import getShortKey from "@/factory/publicKey/getShortKey";
+import SimpleButton from "@/components/common/SimpleButton";
 
 export default function OptionsMenu({
   factor_id,
@@ -32,10 +33,7 @@ export default function OptionsMenu({
     <Popup
       trigger={
         <div className="flex items-center">
-          <BsThreeDotsVertical
-            className="cursor-pointer"
-            size={20}
-          />
+          <BsThreeDotsVertical className="cursor-pointer" size={20} />
         </div>
       }
       modal
@@ -44,7 +42,7 @@ export default function OptionsMenu({
         <h2 className="text-sm font-semibold mb-2">
           Factor : {getShortKey(factor_publicKey)}
         </h2>
-        <button
+        <SimpleButton
           className="flex items-center border-t p-1 hover:opacity-80 w-full"
           onClick={async () => {
             const cnf = confirm("Are you sure you want to remove this factor?");
@@ -55,7 +53,7 @@ export default function OptionsMenu({
                 session.publicKey,
                 session.privateKey,
                 factor_id,
-                factor_publicKey
+                factor_publicKey,
               );
 
               setIsDeleting(false);
@@ -66,10 +64,10 @@ export default function OptionsMenu({
             <div className="w-4 h-4 border-2 border-dashed rounded-full animate-spin border-red-500 mr-2" />
           )}
           Remove
-        </button>
+        </SimpleButton>
 
         {/* Can delete factor if no data items */}
-
+        <h2 className="text-sm font-semibold my-2">Advance Options</h2>
         <button
           className="flex items-center border-t p-1 hover:opacity-80 w-full"
           onClick={() => {
@@ -92,7 +90,7 @@ export default function OptionsMenu({
             className="flex items-center border-t p-1 hover:opacity-80 w-full"
             onClick={async () => {
               const cnf = confirm(
-                "Are you sure you want to migrate in this factor?"
+                "Are you sure you want to migrate in this factor?",
               );
               if (!cnf) return;
               if (isMigrating) return;
@@ -103,7 +101,7 @@ export default function OptionsMenu({
               ) {
                 toast.error(
                   "You need to login session with key " +
-                    max_publicKey.slice(-8)
+                    max_publicKey.slice(-8),
                 );
                 return;
               }
@@ -117,13 +115,13 @@ export default function OptionsMenu({
                     max_publicKey === "null"
                       ? "Unencrypted vault"
                       : max_publicKey
-                  }`
+                  }`,
                 );
                 await perform_migrate_in(
                   max_publicKey,
                   client,
                   factor_publicKey,
-                  session ? session.privateKey : null
+                  session ? session.privateKey : null,
                 );
                 // refetch query
                 await client.query({
@@ -136,11 +134,11 @@ export default function OptionsMenu({
                     max_publicKey === "null"
                       ? "Unencrypted vault"
                       : max_publicKey
-                  }`
+                  }`,
                 );
               } else {
                 toast.error(
-                  `You need to login with factor key: ${max_publicKey}`
+                  `You need to login with factor key: ${max_publicKey}`,
                 );
                 setIsMigrating(false);
               }
@@ -153,12 +151,12 @@ export default function OptionsMenu({
           </button>
         )}
 
-        {my_count > 0 && session.publicKey === factor_publicKey && (
+        {my_count > 0 && (
           <button
             className="flex items-center border-t p-1 hover:opacity-80 w-full"
             onClick={async () => {
               const cnf = confirm(
-                "Are you sure you want to delete all data in this factor?"
+                "Are you sure you want to delete all data in this factor?",
               );
               if (!cnf) return;
               if (isMigrating) return;
@@ -175,7 +173,7 @@ export default function OptionsMenu({
                 ],
               });
               toast.success(
-                `Delete all data for ${factor_publicKey.slice(-8)}`
+                `Delete all data for ${factor_publicKey.slice(-8)}`,
               );
             }}
           >
@@ -183,19 +181,19 @@ export default function OptionsMenu({
           </button>
         )}
         {/* Can migrate out if more than 0 data points */}
-        {my_count > 0 && session.publicKey === factor_publicKey && (
+        {my_count > 0 && (
           <button
             className="flex items-center border-t p-1 hover:opacity-80 w-full"
             onClick={async () => {
               const cnf = confirm(
-                "Are you sure you want to migrate out this factor?"
+                "Are you sure you want to migrate out this factor?",
               );
               if (!cnf) return;
               if (isMigrating) return;
               if (session.publicKey !== factor_publicKey) {
                 toast.error(
                   "You need to login session with key " +
-                    factor_publicKey.slice(-8)
+                    factor_publicKey.slice(-8),
                 );
                 return;
               }
@@ -203,7 +201,7 @@ export default function OptionsMenu({
               await perform_migrate_out(
                 client,
                 factor_publicKey,
-                session.privateKey
+                session.privateKey,
               );
               setIsMigrating(false);
               window.location.reload();

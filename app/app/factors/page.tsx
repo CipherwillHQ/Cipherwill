@@ -18,7 +18,7 @@ export default function Factors() {
       <div className="px-4">
         <KeyCount />
         <FactorsList />
-        <FactorNotice className="text-sm font-semibold text-red-700 max-w-xl mx-auto" />
+        <FactorNotice className="text-sm font-semibold text-red-700 max-w-xl mx-auto mt-8" />
       </div>
     </div>
   );
