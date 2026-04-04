@@ -49,7 +49,7 @@ export default function FrequentlyAskedQuestions() {
             <br />
             to answer your questions
           </h2>
-          <div className="flex flex-1 w-full min-w-[300px] max-w-md">
+          <div className="flex flex-1 w-full min-w-75 max-w-md">
             <AskAQuestion />
           </div>
         </div>
