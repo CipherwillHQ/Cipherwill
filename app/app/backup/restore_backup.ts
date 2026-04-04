@@ -6,6 +6,7 @@ import GET_METAMODEL from "../../../graphql/ops/app/metamodel/queries/GET_METAMO
 import CREATE_METAMODEL from "../../../graphql/ops/app/metamodel/mutations/CREATE_METAMODEL";
 import logger from "../../../common/debug/logger";
 import upload_pod_data from "@/common/data/upload_pod_data";
+import type { GraphQLErrorLike } from "@/types/interfaces/graphql";
 
 export default async function restore_backup({
   backupFile,
@@ -110,7 +111,8 @@ async function run_restore_0_0_1({
         },
       });
     } catch (error) {
-      if (error.errors[0].extensions.code === "MODEL_NOT_FOUND") {
+      const errorCode = (error as GraphQLErrorLike)?.errors?.[0]?.extensions?.code;
+      if (errorCode === "MODEL_NOT_FOUND") {
         // create note
         await client
           .mutate({
@@ -186,7 +188,8 @@ async function run_restore_0_0_2({
         },
       });
     } catch (error) {
-      if (error.errors[0].extensions.code === "MODEL_NOT_FOUND") {
+      const errorCode = (error as GraphQLErrorLike)?.errors?.[0]?.extensions?.code;
+      if (errorCode === "MODEL_NOT_FOUND") {
         // create note
         await client
           .mutate({

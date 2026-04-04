@@ -16,6 +16,7 @@ import type {
   GetPodQuery,
   GetPodVariables
 } from "@/types/interfaces/metamodel";
+import type { GraphQLErrorLike } from "@/types/interfaces/graphql";
 
 export default function useDecryptedPod({
   access_id,
@@ -78,8 +79,9 @@ export default function useDecryptedPod({
                 ref_id: metamodel_id,
               },
             });
-          } catch (error: any) {
-            if (error.errors?.[0]?.extensions?.code === "POD_NOT_FOUND") {
+          } catch (error) {
+            const errorCode = (error as GraphQLErrorLike)?.errors?.[0]?.extensions?.code;
+            if (errorCode === "POD_NOT_FOUND") {
               return;
             } else {
               throw error;

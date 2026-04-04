@@ -8,6 +8,7 @@ import FoldersList from "@/components/app/data/storage/FoldersList";
 import GET_FOLDER from "@/graphql/ops/app/storage/queries/GET_FOLDER";
 import { useQuery } from "@apollo/client/react";
 import { GetFolderQuery, GetFolderVariables } from "@/types/interfaces";
+import type { GraphQLErrorLike } from "@/types/interfaces/graphql";
 import { useParams } from "next/navigation";
 
 export default function StorageFolderPage() {
@@ -20,8 +21,8 @@ export default function StorageFolderPage() {
   });
 
   // Handle folder not found error
-  if (error && 'errors' in error && error.errors && error.errors[0]) {
-    const error_code = error.errors[0].extensions?.code;
+  if (error) {
+    const error_code = (error as GraphQLErrorLike)?.errors?.[0]?.extensions?.code;
     if (error_code === "FOLDER_NOT_FOUND") {
       window.location.href = "/app/data/storage";
     }

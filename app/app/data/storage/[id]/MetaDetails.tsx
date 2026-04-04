@@ -17,6 +17,7 @@ import {
   UpdateMetamodelVariables,
   MetamodelMetadata,
 } from "../../../../../types/interfaces";
+import type { GraphQLErrorLike } from "@/types/interfaces/graphql";
 import {
   parseMetamodelMetadata,
   stringifyMetamodelMetadata,
@@ -52,13 +53,8 @@ export default function MetaDetails({ id }: MetaDetailsProps) {
   });
 
   // Handle model not found error
-  if (
-    error &&
-    "errors" in error &&
-    error.errors &&
-    error.errors[0] &&
-    error.errors[0].extensions?.code === "MODEL_NOT_FOUND"
-  ) {
+  const errorCode = (error as GraphQLErrorLike | undefined)?.errors?.[0]?.extensions?.code;
+  if (errorCode === "MODEL_NOT_FOUND") {
     window.location.href = "/app/data/storage";
   }
 
