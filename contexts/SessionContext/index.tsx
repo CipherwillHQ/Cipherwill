@@ -16,6 +16,7 @@ import { MetaMaskProvider } from "@metamask/sdk-react";
 import Passkey from "./Passkey";
 import DeactivatedUserWarning from "./DeactivatedUserWarning";
 import type { GetFactorsQuery } from "@/types/interfaces/metamodel";
+import type { GraphQLErrorLike } from "@/types/interfaces/graphql";
 
 const SessionContext = createContext<any>({});
 
@@ -40,11 +41,10 @@ export function SessionProvider({ children }) {
 
   // Handle factors error
   useEffect(() => {
-    if (factorsError && 'errors' in factorsError && Array.isArray(factorsError.errors)) {
-      const code = factorsError.errors[0]?.extensions?.code;
-      if (code === "USER_DEACTIVATED") {
-        set_inactive_user(code);
-      }
+    const graphqlError = factorsError as GraphQLErrorLike | undefined;
+    const code = graphqlError?.errors?.[0]?.extensions?.code;
+    if (code === "USER_DEACTIVATED") {
+      set_inactive_user(code);
     }
   }, [factorsError]);
 

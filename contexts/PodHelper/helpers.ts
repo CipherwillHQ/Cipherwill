@@ -5,14 +5,11 @@ import CryptoJS from "crypto-js";
 import parseToLatestDataModel from "./parseToLatestDataModel";
 import { ParsedPodContent, PodHookConfig } from "./types";
 import type { GetPodQuery } from "@/types/interfaces/metamodel";
+import type { GraphQLErrorLike } from "@/types/interfaces/graphql";
 
-export function isPodNotFoundError(error: any) {
-  return (
-    error &&
-    error.errors &&
-    error.errors[0] &&
-    error.errors[0].extensions.code === "POD_NOT_FOUND"
-  );
+export function isPodNotFoundError(error: unknown) {
+  const graphqlError = error as GraphQLErrorLike;
+  return graphqlError?.errors?.[0]?.extensions?.code === "POD_NOT_FOUND";
 }
 
 export function getPodContent(
@@ -27,10 +24,14 @@ export function getPodContent(
 
 export async function resolveDecryptionKey(
   encryptedKey: string,
-  session: { privateKey: string }
+  session: { privateKey: string } | null | undefined
 ): Promise<string> {
   if (!encryptedKey.startsWith("{")) {
     return encryptedKey;
+  }
+
+  if (!session) {
+    return "";
   }
 
   const parsedData = JSON.parse(encryptedKey);
@@ -90,15 +91,21 @@ export function parsePodJsonToModel<POD_DATA_TYPE>(
 }
 
 export function pickAllowedPodData<POD_DATA_TYPE>(
-  updated_data: POD_DATA_TYPE,
-  data_sample: POD_DATA_TYPE
+  updatedData: POD_DATA_TYPE,
+  dataSample: POD_DATA_TYPE
 ) {
-  const final_data = {};
-  const editable_data = updated_data as any;
-  for (const key of Object.keys(data_sample as any)) {
-    if (editable_data[key]) {
-      final_data[key] = editable_data[key];
+  const finalData: Record<string, unknown> = {};
+  const editableData = updatedData as Record<string, unknown>;
+  const sampleData = dataSample as Record<string, unknown>;
+
+  for (const key of Object.keys(sampleData)) {
+    if (
+      Object.prototype.hasOwnProperty.call(editableData, key) &&
+      editableData[key] !== undefined
+    ) {
+      finalData[key] = editableData[key];
     }
   }
-  return final_data;
+
+  return finalData;
 }

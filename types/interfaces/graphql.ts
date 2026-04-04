@@ -1,5 +1,16 @@
 // GraphQL response type definitions
 
+export interface GraphQLErrorLike {
+  errors?: Array<{
+    message?: string;
+    extensions?: {
+      code?: string;
+      [key: string]: unknown;
+    };
+    [key: string]: unknown;
+  }>;
+}
+
 export interface MeData {
   me?: {
     id: string;
