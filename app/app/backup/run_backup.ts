@@ -1,17 +1,10 @@
-import toast from "react-hot-toast";
-import { sleep } from "../../../common/time/sleep";
-import JSZip from "jszip";
-import { ApolloClient } from "@apollo/client";
-import getShortKey from "../../../factory/publicKey/getShortKey";
-import getAllKeys from "../../../factory/key/getAllKeys";
-import getPod from "../../../factory/pod/getPod";
-import decrypt from "../../../crypto/e0/decrypt";
-import { saveAs } from "file-saver";
-import { POSSIBLE_STATUS } from "./types";
-import getMyKeyCount from "../../../factory/key/getMyKeyCount";
-import CryptoJS from "crypto-js";
-import getAllMetamodels from "../../../factory/metamodel/getAllMetamodels";
-import logger from "../../../common/debug/logger";
+import { collectBackupData } from "./run_backup_pipeline/collect";
+import { decryptBackupData } from "./run_backup_pipeline/decrypt";
+import { finalizeBackup } from "./run_backup_pipeline/finalize";
+import { handleBackupError } from "./run_backup_pipeline/handle_error";
+import { packageBackupData } from "./run_backup_pipeline/package";
+import { validateBackupInput } from "./run_backup_pipeline/validate";
+import { RunBackupArgs } from "./run_backup_pipeline/types";
 
 export default async function run_backup({
   status,
@@ -21,155 +14,28 @@ export default async function run_backup({
   client,
   setDataPoints,
   close,
-}: {
-  status: string;
-  setStatus: (status: POSSIBLE_STATUS) => void;
-  setProgress: (progress: number) => void;
-  session: any;
-  client: ApolloClient;
-  setDataPoints: (count: number) => void;
-  close: () => void;
-}) {
-  if (status !== "Not started") {
-    if (status === "Completed backup") {
-      toast.error("Backup already completed");
-    } else {
-      toast.error("Backup already in progress");
-    }
-    return;
-  }
-
-  setStatus("Calculating data points");
-  setProgress(5);
-  const data_count = await getMyKeyCount(client);
-  // Check if count is not 0
-  if (data_count.count < 1) {
-    close();
-    toast.success("No data to backup");
-    return;
-  }
-  if (session === null) {
-    if (!data_count.publicKey.includes("null")) {
-      close();
-      toast.success(
-        "Please start session with " + getShortKey(data_count.publicKey[0])
-      );
-      return;
-    }
-  } else if (!data_count.publicKey.includes(session.publicKey)) {
-    // Check if current session can decrypt max data
-    close();
-    toast.success(
-      "Please start session with " + getShortKey(data_count.publicKey[0])
-    );
-    return;
-  }
-  setDataPoints(data_count.count);
-  setStatus("Downloading encrypted data");
-  setProgress(10);
-  // get all data
-  let keys = await getAllKeys({
+}: RunBackupArgs) {
+  const input: RunBackupArgs = {
+    status,
+    setStatus,
+    setProgress,
+    session,
     client,
-    maxPublicKey: session ? session.publicKey : "null",
-  });
-  keys = keys.reduce((a, v) => ({ ...a, [v.ref_id]: v }), {});
-  await sleep(1000);
-  setStatus("Downloading metadata");
-  setProgress(20);
-  // get all notes
-  let models_arr = await getAllMetamodels({
-    client,
-  });
-  await sleep(1000);
-  setStatus("Mapping metadata to pods");
-  setProgress(40);
-  // map all notes
-  let backup_data: {
-    id: string;
-    type: string;
-    metadata: string;
-    data: string;
-  }[] = [];
-  for await (const metamodel of models_arr) {
-    let encrypted_data = await getPod(metamodel.id, client);
-    if (encrypted_data === null || encrypted_data === undefined) {
-      encrypted_data = "";
-    }
+    setDataPoints,
+    close,
+  };
 
-    let key_obj = keys[metamodel.id];
-    if(key_obj === undefined) {
-      // skip if pod is not there
-      continue;
-    }
-    let key = key_obj.key;
-    try {
-      if (typeof key_obj.key === "string" && key_obj.key.startsWith("{")) {
-        const parsedData = JSON.parse(key_obj.key);
-        if (parsedData.type === "E0") {
-          if (!session?.privateKey) {
-            throw new Error("Session private key is required for E0 decryption");
-          }
-          key = await decrypt(
-            session.privateKey,
-            Buffer.from(parsedData.ciphertext, "base64"),
-            Buffer.from(parsedData.ephemPublicKey, "base64"),
-            Buffer.from(parsedData.iv, "base64"),
-            Buffer.from(parsedData.mac, "base64")
-          );
-        }
-      }
-      const final_content = JSON.parse(
-        CryptoJS.AES.decrypt(encrypted_data, key).toString(CryptoJS.enc.Utf8)
-      );
-      let decryped_data: any = "";
-      if (final_content.data !== undefined) {
-        decryped_data = final_content;
-      }
-      backup_data.push({
-        id: metamodel.id,
-        type: metamodel.type,
-        metadata: metamodel.metadata,
-        data: decryped_data,
-      });
-    } catch (error) {
-      logger.error("Backup failed while decrypting pod", {
-        metamodel_id: metamodel?.id,
-        publicKey: key_obj?.publicKey,
-        error,
-      });
-      toast.error("Error while decrypting data during backup");
-      setStatus("Error while backing up");
-      return;
-    }
-  }
-
-  if (backup_data.length !== data_count.count) {
-    toast.error("Missing data while backing up");
-    setStatus("Error while backing up");
+  const validation = await validateBackupInput(input);
+  if (validation === null) {
     return;
   }
-  await sleep(1000);
-  setStatus("Creating a zip file");
-  setProgress(80);
-  // create a zip
-  var zip = new JSZip();
-  zip.file(
-    "backup.json",
-    JSON.stringify(
-      {
-        type: "CIPHERWILL_BACKUP",
-        version: "0.0.2",
-        data: backup_data,
-      },
-      null,
-      2
-    )
-  );
-  zip.generateAsync({ type: "blob" }).then(function (content) {
-    // see FileSaver.js
-    saveAs(content, "backup.zip");
-  });
-  await sleep(1000);
-  setStatus("Completed backup");
-  setProgress(100);
+
+  try {
+    const collected = await collectBackupData(input, validation);
+    const decrypted = await decryptBackupData(input, validation, collected);
+    await packageBackupData(input, decrypted);
+    await finalizeBackup(input);
+  } catch (error) {
+    handleBackupError(error, input);
+  }
 }

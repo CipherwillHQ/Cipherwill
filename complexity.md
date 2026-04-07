@@ -1,0 +1,187 @@
+# Complexity Reduction Tasks
+
+Purpose: assign these tasks to agents to reduce unnecessary complexity without changing business behavior.
+
+
+
+## Task 2: Consolidate Backup Restore Versions
+- Priority: P0
+- Files:
+  - `app/app/backup/restore_backup.ts`
+- Problem:
+  - `run_restore_0_0_1` and `run_restore_0_0_2` duplicate most logic and mix `async/await` with `.then`.
+- Deliverable:
+  - Create shared restore loop + version adapter for payload differences.
+  - Use `async/await` consistently.
+- Acceptance Criteria:
+  - Both versions still restore correctly.
+  - Duplicate logic significantly reduced.
+  - No `.then` chains inside async workflow.
+- Effort: high
+
+## Task 3: Decompose Beneficiary Auto-Migration Orchestration
+- Priority: P0
+- Files:
+  - `app/app/beneficiaries/useBeneficiaryAutoMigration.ts`
+- Problem:
+  - `addAndMigrateBeneficiary` is a large procedural block with query/mutation/diff/validation/progress/toast logic.
+- Deliverable:
+  - Extract focused helpers (`createBeneficiary`, `resolveAddedBeneficiary`, `canAutoMigrate`, `runMigration`).
+- Acceptance Criteria:
+  - Same UX and toasts.
+  - Main action function reads as clear step-by-step orchestration.
+- Effort: medium
+
+## Task 4: Simplify Beneficiary Tile Migration Flow
+- Priority: P0
+- Files:
+  - `components/app/smartwill/BeneficiaryList.tsx`
+- Problem:
+  - `PersonTile` click handler has deeply nested conditionals and repeated migration checks.
+- Deliverable:
+  - Move migration validation and execution into reusable helper(s) with guard clauses.
+- Acceptance Criteria:
+  - No nested condition chain beyond simple guards.
+  - Repeated session/key checks are centralized.
+- Effort: medium
+
+## Task 5: Split GuidePanel by UI State
+- Priority: P1
+- Files:
+  - `components/app/GuidedActions/components/GuidePanel.tsx`
+- Problem:
+  - One large component handles loading/error/empty/intro/step/timed states inline.
+- Deliverable:
+  - Extract state-specific presentational components and keep one state selector.
+- Acceptance Criteria:
+  - `GuidePanel` is significantly shorter.
+  - State transitions and render paths are easier to read.
+- Effort: high
+
+## Task 6: Decompose SessionProvider Responsibilities
+- Priority: P1
+- Files:
+  - `contexts/SessionContext/index.tsx`
+- Problem:
+  - Provider currently combines factor fetch, error handling, auth UI, and session state publication.
+- Deliverable:
+  - Extract fetch and selection UI to dedicated hook/component; keep provider focused on context state.
+- Acceptance Criteria:
+  - Provider contains minimal branching.
+  - Existing session flow remains unchanged.
+- Effort: medium
+
+## Task 7: Decompose AuthProvider Responsibilities
+- Priority: P1
+- Files:
+  - `contexts/AuthContext/index.tsx`
+- Problem:
+  - Provider contains route guard, analytics, token listeners, and auth action implementations.
+- Deliverable:
+  - Split into `useAuthState`, `useAuthActions`, and guard/wrapper concerns.
+- Acceptance Criteria:
+  - Auth actions are easier to test in isolation.
+  - Route guarding logic is separate from action logic.
+- Effort: medium
+
+## Task 8: Replace Firebase Error if/else Ladder
+- Priority: P1
+- Files:
+  - `contexts/AuthContext/index.tsx`
+- Problem:
+  - `handle_firebase_error` uses a long branch chain for code-to-message mapping.
+- Deliverable:
+  - Convert to map-based lookup with single fallback.
+- Acceptance Criteria:
+  - Same user-facing error strings.
+  - Function size and branching reduced.
+- Effort: low
+
+## Task 9: Deduplicate Objective Engine Operation Lifecycle
+- Priority: P1
+- Files:
+  - `components/app/GuidedActions/hooks/useObjectiveEngine.ts`
+- Problem:
+  - `initialize`, `continueCurrentStep`, and `submitCurrentStep` repeat operation lifecycle code.
+- Deliverable:
+  - Introduce a shared wrapper for stale-op checks/loading/error handling.
+- Acceptance Criteria:
+  - Duplicate try/catch/finally logic removed.
+  - Objective behavior unchanged.
+- Effort: medium
+
+## Task 10: Replace Multi-Effect Autosave Pattern
+- Priority: P2
+- Files:
+  - `app/app/profile/Profile.tsx`
+- Problem:
+  - Six near-identical `useEffect` blocks schedule saves field-by-field.
+- Deliverable:
+  - Use a single autosave effect or unified field-change pipeline.
+- Acceptance Criteria:
+  - Autosave still works per field.
+  - Repetitive effects removed.
+- Effort: low
+
+## Task 11: Simplify BeneficiaryChoice Popup Duplication
+- Priority: P2
+- Files:
+  - `components/app/data/DataHeader/BeneficiaryChoice.tsx`
+- Problem:
+  - Restricted and normal popup branches duplicate trigger/content structure.
+- Deliverable:
+  - Consolidate to one popup shell with conditional content body.
+- Acceptance Criteria:
+  - Same UX for premium and restricted states.
+  - Fewer duplicated JSX blocks.
+- Effort: low
+
+## Task 12: Fix Debounce Timer State Smell
+- Priority: P2
+- Files:
+  - `components/app/smartwill/PersonSelector.tsx`
+- Problem:
+  - Debounce timer is module-level shared mutable state (`let timeout`).
+- Deliverable:
+  - Replace with per-instance `useRef` timer + cleanup.
+- Acceptance Criteria:
+  - No module-level timer variable.
+  - No cross-instance interference risk.
+- Effort: low
+
+## Task 13: Split UserSetup Effect by Concern
+- Priority: P2
+- Files:
+  - `contexts/UserSetupContext/index.tsx`
+- Problem:
+  - Single effect combines analytics identify, preference fetch, signup conversion, and country mutation.
+- Deliverable:
+  - Break into focused effects/hooks by responsibility.
+- Acceptance Criteria:
+  - Each effect has one concern.
+  - Existing setup behavior preserved.
+- Effort: low
+
+## Task 14: Remove Dead Beneficiary Callback Branch
+- Priority: P3
+- Files:
+  - `app/app/beneficiaries/page.tsx`
+- Problem:
+  - `"friend"` branch in selector response is currently unreachable.
+- Deliverable:
+  - Remove dead branch or wire a real friend flow.
+- Acceptance Criteria:
+  - No dead conditional branch left in callback.
+- Effort: low
+
+## Systemic Follow-up Task (Cross-Cutting)
+- Priority: P1
+- Scope:
+  - Migration/session validation logic appears in multiple files.
+- Deliverable:
+  - Create shared domain helpers for key/session migration guards and reuse them.
+- Acceptance Criteria:
+  - At least `BeneficiaryList.tsx` and `useBeneficiaryAutoMigration.ts` consume shared guard logic.
+  - User-facing messages stay consistent.
+- Effort: medium
+
