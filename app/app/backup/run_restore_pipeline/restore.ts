@@ -5,7 +5,7 @@ import logger from "../../../../common/debug/logger";
 import { sleep } from "../../../../common/time/sleep";
 import upload_pod_data from "@/common/data/upload_pod_data";
 import type { GraphQLErrorLike } from "@/types/interfaces/graphql";
-import { resolveRestoreAdapter } from "./adapters";
+import { resolveMetamodelAdapter, resolveRestoreAdapter } from "./adapters";
 import { RestoreStepError } from "./errors";
 import { LoadedBackupPayload, RunRestoreArgs } from "./types";
 
@@ -16,9 +16,12 @@ export async function runRestoreLoop(
   logger.info(`Restoring backup file version ${payload.version}`);
   const totalCount = payload.data.length;
   let currentCount = 0;
+  const metamodelAdapter = resolveMetamodelAdapter({
+    backupVersion: payload.version,
+  });
 
   for (const item of payload.data) {
-    const adapter = resolveRestoreAdapter({
+    const dataAdapter = resolveRestoreAdapter({
       item,
     });
 
@@ -53,11 +56,11 @@ export async function runRestoreLoop(
         variables: {
           id: item.id,
           type: item.type,
-          metadata: adapter.getMetadata(item),
+          metadata: metamodelAdapter.getMetadata(item),
         },
       });
 
-      if (adapter.shouldUploadData && !adapter.shouldUploadData(item)) {
+      if (dataAdapter.shouldUploadData && !dataAdapter.shouldUploadData(item)) {
         logger.info("Skipping uploading data for pod", item.id);
         continue;
       }
@@ -66,9 +69,9 @@ export async function runRestoreLoop(
         data_items: [
           {
             ref_id: item.id,
-            data_model_version: adapter.getDataModelVersion(item),
+            data_model_version: dataAdapter.getDataModelVersion(item),
             publicKey: session ? session.publicKey : undefined,
-            data: adapter.getUploadData(item),
+            data: dataAdapter.getUploadData(item),
           },
         ],
         client,

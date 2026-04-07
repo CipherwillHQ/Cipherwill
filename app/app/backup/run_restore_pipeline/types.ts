@@ -26,8 +26,12 @@ export type LoadedBackupPayload = {
 
 export type RestoreAdapter = {
   version: BackupVersion;
-  getMetadata: (item: BackupItem) => string;
   getUploadData: (item: BackupItem) => string;
   getDataModelVersion: (item: BackupItem) => string;
   shouldUploadData?: (item: BackupItem) => boolean;
+};
+
+export type MetamodelAdapter = {
+  version: BackupVersion;
+  getMetadata: (item: BackupItem) => string;
 };

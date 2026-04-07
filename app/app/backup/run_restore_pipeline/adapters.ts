@@ -1,4 +1,9 @@
-import { BackupItem, BackupVersion, RestoreAdapter } from "./types";
+import {
+  BackupItem,
+  BackupVersion,
+  MetamodelAdapter,
+  RestoreAdapter,
+} from "./types";
 
 const defaultMetadata = (item: BackupItem) =>
   item.metadata ||
@@ -18,26 +23,34 @@ const isDataEmpty = (data: unknown) =>
 const genericRestoreAdapters: Record<BackupVersion, RestoreAdapter> = {
   "0.0.1": {
     version: "0.0.1",
-    getMetadata: (item) => defaultMetadata(item),
     getUploadData: (item) => JSON.stringify(item.data),
     getDataModelVersion: (item) => item.data?.version || "0.0.1",
     shouldUploadData: (item) => !isDataEmpty(item.data),
   },
   "0.0.2": {
     version: "0.0.2",
-    getMetadata: (item) => defaultMetadata(item),
     getUploadData: (item) => JSON.stringify(item.data),
     getDataModelVersion: (item) => item.data?.version || "0.0.2",
     shouldUploadData: (item) => !isDataEmpty(item.data),
   },
 };
 
+const metamodelAdapters: Record<BackupVersion, MetamodelAdapter> = {
+  "0.0.1": {
+    version: "0.0.1",
+    getMetadata: (item) =>
+      JSON.stringify({
+        title: item.title,
+      }),
+  },
+  "0.0.2": {
+    version: "0.0.2",
+    getMetadata: (item) => defaultMetadata(item),
+  },
+};
+
 const legacyNoteRestoreAdapter001: RestoreAdapter = {
   version: "0.0.1",
-  getMetadata: (item) =>
-    JSON.stringify({
-      title: item.title,
-    }),
   getUploadData: (item) =>
     JSON.stringify({
       type: "note",
@@ -85,4 +98,12 @@ export function resolveRestoreAdapter({
   }
 
   return genericRestoreAdapters[adapterVersion];
+}
+
+export function resolveMetamodelAdapter({
+  backupVersion,
+}: {
+  backupVersion: BackupVersion;
+}): MetamodelAdapter {
+  return metamodelAdapters[backupVersion];
 }
