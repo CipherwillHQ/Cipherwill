@@ -3,19 +3,6 @@
 Purpose: assign these tasks to agents to reduce unnecessary complexity without changing business behavior.
 
 
-## Task 3: Decompose Beneficiary Auto-Migration Orchestration
-- Priority: P0
-- Files:
-  - `app/app/beneficiaries/useBeneficiaryAutoMigration.ts`
-- Problem:
-  - `addAndMigrateBeneficiary` is a large procedural block with query/mutation/diff/validation/progress/toast logic.
-- Deliverable:
-  - Extract focused helpers (`createBeneficiary`, `resolveAddedBeneficiary`, `canAutoMigrate`, `runMigration`).
-- Acceptance Criteria:
-  - Same UX and toasts.
-  - Main action function reads as clear step-by-step orchestration.
-- Effort: medium
-
 ## Task 4: Simplify Beneficiary Tile Migration Flow
 - Priority: P0
 - Files:

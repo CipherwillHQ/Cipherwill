@@ -3,7 +3,7 @@
 import BasicPopup from "@/components/BasicPopup";
 import LoadingIndicator from "@/components/common/LoadingIndicator";
 import SimpleButton from "@/components/common/SimpleButton";
-import { MigrationProgressState } from "./useBeneficiaryAutoMigration";
+import { MigrationProgressState } from "./autoMigration/types";
 
 export default function MigrationProgressPopup({
   progress,
