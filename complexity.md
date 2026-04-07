@@ -3,22 +3,6 @@
 Purpose: assign these tasks to agents to reduce unnecessary complexity without changing business behavior.
 
 
-
-## Task 2: Consolidate Backup Restore Versions
-- Priority: P0
-- Files:
-  - `app/app/backup/restore_backup.ts`
-- Problem:
-  - `run_restore_0_0_1` and `run_restore_0_0_2` duplicate most logic and mix `async/await` with `.then`.
-- Deliverable:
-  - Create shared restore loop + version adapter for payload differences.
-  - Use `async/await` consistently.
-- Acceptance Criteria:
-  - Both versions still restore correctly.
-  - Duplicate logic significantly reduced.
-  - No `.then` chains inside async workflow.
-- Effort: high
-
 ## Task 3: Decompose Beneficiary Auto-Migration Orchestration
 - Priority: P0
 - Files:
