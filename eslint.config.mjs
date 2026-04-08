@@ -27,5 +27,11 @@ export default defineConfig([
       eqeqeq: ["error", "always", { null: "ignore" }],
     },
   },
+  {
+    files: ["checks/**/*.{js,mjs,cjs,ts,tsx}"],
+    rules: {
+      "no-console": "off",
+    },
+  },
   globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
 ]);

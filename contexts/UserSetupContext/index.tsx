@@ -38,7 +38,6 @@ export function UserSetupProvider({ children }: Props) {
     if ((window as any).GoogleConverted) {
       await (window as any).GoogleConverted();
     } else {
-      console.log((window as any).GoogleConverted);
       logger.error("GoogleConverted is not defined");
     }
     // if ((window as any).uetq) {

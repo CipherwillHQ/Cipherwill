@@ -23,7 +23,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const { title, description, cover, error } = await getPost(slug);
   if (error) {
-    console.log("error", error);
+    console.error("error", error);
     return redirect("/blog");
   }
 
@@ -55,7 +55,7 @@ export default async function BlogPost({ params }) {
     error,
   } = await getPost(slug);
   if (error) {
-    console.log("error", error);
+    console.error("error", error);
     return redirect("/blog");
   }
 
