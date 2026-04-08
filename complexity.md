@@ -4,18 +4,6 @@ Purpose: assign these tasks to agents to reduce unnecessary complexity without c
 
 
 
-## Task 11: Simplify BeneficiaryChoice Popup Duplication
-- Priority: P2
-- Files:
-  - `components/app/data/DataHeader/BeneficiaryChoice.tsx`
-- Problem:
-  - Restricted and normal popup branches duplicate trigger/content structure.
-- Deliverable:
-  - Consolidate to one popup shell with conditional content body.
-- Acceptance Criteria:
-  - Same UX for premium and restricted states.
-  - Fewer duplicated JSX blocks.
-- Effort: low
 
 ## Task 12: Fix Debounce Timer State Smell
 - Priority: P2
