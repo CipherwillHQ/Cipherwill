@@ -3,18 +3,6 @@
 Purpose: assign these tasks to agents to reduce unnecessary complexity without changing business behavior.
 
 
-## Task 4: Simplify Beneficiary Tile Migration Flow
-- Priority: P0
-- Files:
-  - `components/app/smartwill/BeneficiaryList.tsx`
-- Problem:
-  - `PersonTile` click handler has deeply nested conditionals and repeated migration checks.
-- Deliverable:
-  - Move migration validation and execution into reusable helper(s) with guard clauses.
-- Acceptance Criteria:
-  - No nested condition chain beyond simple guards.
-  - Repeated session/key checks are centralized.
-- Effort: medium
 
 ## Task 5: Split GuidePanel by UI State
 - Priority: P1

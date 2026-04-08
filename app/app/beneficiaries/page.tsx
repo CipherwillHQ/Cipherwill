@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client/react";
-import BeneficiaryList from "../../../components/app/smartwill/BeneficiaryList";
+import BeneficiaryList from "../../../components/app/smartwill/beneficiary-list/BeneficiaryList";
 import PersonSelector from "../../../components/app/smartwill/PersonSelector";
 import IncompleteProfile from "./IncompleProfile";
 import GET_MY_KEY_COUNT from "../../../graphql/ops/app/key/Queries/GET_MY_KEY_COUNT";

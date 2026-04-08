@@ -97,7 +97,7 @@ export default function BeneficiaryChoice({
             );
           }
           return (
-            <BeneficiaryList
+            <Beneficiaries
               ignored_beneficiaries={ignored_beneficiaries}
               beneficiaries={
                 data && data.getSmartWillBeneficiaries
@@ -113,7 +113,7 @@ export default function BeneficiaryChoice({
   );
 }
 
-function BeneficiaryList({
+function Beneficiaries({
   beneficiaries,
   metamodel_id,
   ignored_beneficiaries,
