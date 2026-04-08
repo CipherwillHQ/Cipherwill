@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import ApplicationSettings from "./ApplicationSettings";
 import DevOnly from "../../../components/debug/DevOnly";
 import WillEvents from "./WillEvents";
@@ -42,15 +41,10 @@ export default function Settings() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [tab, setTab] = useState<SettingsTab>("DEFAULT");
-
-  useEffect(() => {
-    const requestedTab = searchParams?.get("tab")?.toLowerCase() || "general";
-    setTab(TAB_QUERY_TO_TAB[requestedTab] || "DEFAULT");
-  }, [searchParams]);
+  const requestedTab = searchParams?.get("tab")?.toLowerCase() || "general";
+  const tab = TAB_QUERY_TO_TAB[requestedTab] || "DEFAULT";
 
   const changeTab = (nextTab: SettingsTab) => {
-    setTab(nextTab);
     const params = new URLSearchParams(searchParams?.toString());
     params.set("tab", TAB_TO_QUERY[nextTab]);
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });

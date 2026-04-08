@@ -1,126 +1,15 @@
-# TODO: Atomic Pod + Key Write Flow (Frontend + Backend)
+[ ] upload pod and keys in single mutation while upload ( multi step failure ) | files: common/data/upload_pod_data.ts, common/data/encrypt_and_upload_pod.ts | exact solution: add backend mutation `UPSERT_POD_WITH_KEYS` that accepts `ref_id + encrypted_pod_payload + key_items[]` and commits pod + keys in one DB transaction; replace `encrypt_and_upload_pod -> recurring_upload` chain with one mutation call per pod
 
-## Problem
-Current upload flow is non-atomic:
-1. Pod content is uploaded first.
-2. Encryption keys are uploaded next.
+[ ] do delete keys and delete factor in single mutation ( multi step failure ) | files: common/factor/remove_factor.ts | exact solution: add backend mutation `DELETE_FACTOR_WITH_KEYS(factor_id, publicKey)` that deletes factor row + all keys for that public key in one transaction; replace separate `DELETE_KEY_BY_PUBLIC_KEY` then `DELETE_FACTOR`
 
-If step 2 fails, pod content can exist without a complete keyset, causing decryption/access issues.
+[ ] do delete beneficiary keys and migrate beneficiary keys in single mutation ( multi step failure ) | files: common/factor/perform_migrate_in.ts | exact solution: replace upfront `DELETE_ALL_KEYS_FOR_BENEFICIARY` + paginated re-upload with staging migration: write new keys to temp version, validate expected key count, then atomic swap (`beneficiary_key_version = new_version`) and delete old version in same transaction
 
-## Goal
-Make pod + key writes atomic and idempotent across backend and frontend so a pod is never left in a partially written state.
+[ ] do recurring key upload in resumable/atomic way across chunks ( multi step failure ) | files: common/data/recurring_upload.ts | exact solution: add upload session protocol: `startKeyUploadSession -> appendKeyChunk(session_id, chunk_no, items) -> commitKeyUploadSession(session_id)`; backend only exposes new keys after commit; client retries chunk by `session_id + chunk_no`
 
----
+[ ] do create file metamodel and upload file pod in single mutation ( multi step failure ) | files: components/app/data/storage/AddFile.tsx, common/data/upload_pod_data.ts | exact solution: add mutation `CREATE_FILE_WITH_POD_AND_KEYS(type, metadata, file_payload, key_items[])` to create metamodel + pod + keys atomically; remove current two-step `CREATE_METAMODEL` then `upload_pod_data`
 
-## Phase 1 (Preferred): Atomic Backend Mutation
+[ ] do restore backup create metamodel and upload pod in single mutation ( multi step failure ) | files: app/app/backup/restore_backup.ts | exact solution: replace per-item `CREATE_METAMODEL` + `upload_pod_data` with single mutation `RESTORE_BACKUP_ITEM(id, type, metadata, pod_payload, key_items[])`; return per-item status so failed items can be retried idempotently
 
-### Backend Tasks
-- Add a single mutation (example): `upsertPodWithKeys(input)`.
-- Mutation should perform in one DB transaction:
-  - Upsert pod/metamodel content.
-  - Upsert all related key rows (owner + beneficiary key cluster).
-  - Commit only if all succeed.
-  - Roll back everything on any failure.
-- Add idempotency support:
-  - Accept `operation_id` (or `request_id`).
-  - If same operation is retried, return previous success safely without duplicate keys.
-- Add backend validation:
-  - Ensure payload key count/structure is valid.
-  - Reject malformed E0/E1 key payloads.
-- Add backend logging:
-  - Correlate with `operation_id`.
-  - Log failure stage (`pod_write`, `key_write`, `commit`).
+[ ] do swap file metadata update and file pod upload in single mutation ( multi step failure ) | files: app/app/data/storage/[id]/SwapFile.tsx | exact solution: add mutation `SWAP_FILE_CONTENT(id, metadata, new_pod_payload, key_items[])` that updates metamodel metadata + pod blob + keys in one transaction; remove separate `UPDATE_METAMODEL` then `upload_pod_data`
 
-### Frontend Tasks
-- Replace current two-step upload flow:
-  - Current: `encrypt_and_upload_pod` + `recurring_upload`.
-  - Target: single `upsertPodWithKeys` call.
-- Keep current client-side key generation logic, but send pod + full key_cluster in one request.
-- Pass generated `operation_id` per upload action.
-- Show user states:
-  - `Saving...`
-  - `Saved`
-  - `Failed (retry)`
-
-### API Contract (Draft)
-- Input:
-  - `metamodel_id`
-  - `data_items` / encrypted pod payload
-  - `key_cluster`
-  - `operation_id`
-- Output:
-  - `success`
-  - `written_pod_ids`
-  - `written_key_count`
-  - `operation_id`
-
----
-
-## Phase 2 (Interim Safety, if atomic backend is delayed)
-
-### Backend/Schema Tasks
-- Add sync status fields:
-  - `pending_key_sync: boolean`
-  - `key_sync_attempts: number`
-  - `last_key_sync_error: string | null`
-- Mark pod as `pending_key_sync=true` immediately after pod write.
-- Set `pending_key_sync=false` only after full key upload succeeds.
-
-### Frontend Tasks
-- If `pending_key_sync=true`, show clear state:
-  - “Securing keys, please retry in a moment.”
-- Add retry action for failed key sync.
-- Prevent destructive actions on pending pods (optional, recommended).
-
-### Repair/Recovery Tasks
-- Add background repair job:
-  - Find pods with `pending_key_sync=true`.
-  - Recompute and upload missing key rows.
-  - Mark resolved on success.
-- Add admin/ops command for one-user repair.
-
----
-
-## Related Cleanup Task: Pod Delete Cascade
-- Confirm backend delete behavior for `deleteMetamodel`:
-  - Must cascade delete pod + key rows for the same `ref_id`.
-- If not guaranteed, add explicit backend cleanup transaction.
-- Add post-delete integrity check in logs/tests.
-
----
-
-## Test Plan (Must Pass)
-
-### Backend Tests
-- Transaction rollback when key write fails.
-- No duplicate rows on idempotent retry with same `operation_id`.
-- Mixed owner/beneficiary key clusters persist correctly.
-
-### Frontend/Integration Tests
-- Upload success path writes decryptable pod.
-- Simulated network failure during write does not leave unreadable state.
-- Retry with same `operation_id` succeeds without duplication.
-- Migration + backup still work with new write API.
-
-### Manual QA
-- Create pod with 0 factors and with 1+ factors.
-- Add beneficiary and confirm access.
-- Run backup, migrate_in, migrate_out after uploads.
-- Delete pod and verify keys are gone.
-
----
-
-## Acceptance Criteria
-- No pod exists in production without a valid required keyset.
-- Upload endpoint is idempotent and safe to retry.
-- Decryption error rate from partial-write state goes to zero.
-- Migration/backup flows work on both legacy and new data.
-
----
-
-## Suggested Rollout
-1. Implement backend mutation + tests behind a feature flag.
-2. Ship frontend support to staging.
-3. Run targeted migration/backup regression suite.
-4. Enable for a small percentage / internal users.
-5. Full rollout after monitoring window.
+[ ] do factor migrate-in and insecure null key deletion in single mutation ( multi step failure ) | files: components/app/factors/add/continuousFactorIn.ts, components/app/FactorsSyncStatus.tsx | exact solution: add mutation `MIGRATE_FROM_NULL_AND_PURGE_NULL(target_publicKey)` that copies all null keys to target factor, verifies migrated count equals source count, then deletes null keys in same transaction

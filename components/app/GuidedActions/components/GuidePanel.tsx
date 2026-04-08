@@ -1,10 +1,19 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { SwitchThemeIcon } from "@/contexts/ThemeSelector";
 import { useEffect, useMemo, useState } from "react";
-import ActionContent from "./ActionContent";
-import ActionControls from "./ActionControls";
 import GuidedButton from "./GuidedButton";
-import ProgressDots from "./ProgressDots";
+import {
+  EmptyState,
+  ErrorState,
+  IntroState,
+  LoadingState,
+  StepState,
+} from "./GuidePanelContentStates";
+import {
+  PostActionFooter,
+  ProgressFooter,
+  TimedCountdownFooter,
+} from "./GuidePanelFooters";
 import { coerceValueForInput } from "../core/engineCore";
 import { isInputValid } from "../core/inputValidation";
 import type { ObjectiveInProgress } from "../core/types";
@@ -20,12 +29,29 @@ type GuidePanelProps = {
   onSubmit: (value: unknown) => void;
 };
 
+type PanelViewState = "loading" | "error" | "empty" | "intro" | "step" | "timed";
+
 function getContentStateKey(args: {
+  viewState: PanelViewState;
+  current: ObjectiveInProgress | null;
+}) {
+  if (!args.current) {
+    return args.viewState;
+  }
+  if (args.viewState === "intro") {
+    return `intro-${args.current.objectiveId}`;
+  }
+
+  return `objective-${args.current.objectiveId}-${args.current.result.step ?? "display"}-${args.current.result.title ?? ""}`;
+}
+
+function getPanelViewState(args: {
   showLoadingState: boolean;
   error: string | null;
   current: ObjectiveInProgress | null;
   showIntro: boolean;
-}) {
+  isTimedDisplayStep: boolean;
+}): PanelViewState {
   if (args.showLoadingState) {
     return "loading";
   }
@@ -36,10 +62,12 @@ function getContentStateKey(args: {
     return "empty";
   }
   if (args.showIntro) {
-    return `intro-${args.current.objectiveId}`;
+    return "intro";
   }
-
-  return `objective-${args.current.objectiveId}-${args.current.result.step ?? "display"}-${args.current.result.title ?? ""}`;
+  if (args.isTimedDisplayStep) {
+    return "timed";
+  }
+  return "step";
 }
 
 export default function GuidePanel({
@@ -65,7 +93,7 @@ export default function GuidePanel({
     []
   );
   const [inputValue, setInputValue] = useState("");
-  const [showIntro, setShowIntro] = useState(true);
+  const [dismissedIntroObjectiveId, setDismissedIntroObjectiveId] = useState<string | null>(null);
   const [countdownSeconds, setCountdownSeconds] = useState<number>(0);
   const [loadingPhraseIndex, setLoadingPhraseIndex] = useState(0);
 
@@ -79,19 +107,11 @@ export default function GuidePanel({
     typeof current?.result.displayForMs === "number" &&
     current.result.displayForMs > 0;
   const currentObjectiveId = current?.objectiveId ?? null;
-
-  useEffect(() => {
-    if (currentObjectiveId) {
-      setShowIntro(true);
-      setInputValue("");
-    } else {
-      setShowIntro(false);
-    }
-  }, [currentObjectiveId]);
+  const showIntro =
+    !!currentObjectiveId && dismissedIntroObjectiveId !== currentObjectiveId;
 
   useEffect(() => {
     if (!isTimedDisplayStep) {
-      setCountdownSeconds(0);
       return;
     }
 
@@ -130,16 +150,16 @@ export default function GuidePanel({
     };
   }, [loading, loadingPhrases]);
 
-  const contentStateKey = getContentStateKey({
-    showLoadingState: loading && !current,
+  const showLoadingState = loading && !current;
+  const viewState = getPanelViewState({
+    showLoadingState,
     error,
     current,
     showIntro,
+    isTimedDisplayStep,
   });
-  const showLoadingState = loading && !current;
-  const showErrorState = !showLoadingState && !!error;
-  const showCurrentState = !error && !!current;
-  const showEmptyState = !loading && !error && !current;
+  const contentStateKey = getContentStateKey({ viewState, current });
+  const canShowProgress = !error && !!current;
 
   const submitWithCurrentValue = () => {
     if (!currentInput || !canSubmit) {
@@ -156,6 +176,64 @@ export default function GuidePanel({
     }
     onSubmit(null);
     setInputValue("");
+  };
+
+  const renderState = () => {
+    switch (viewState) {
+      case "loading":
+        return <LoadingState stateKey={contentStateKey} phrase={loadingPhrases[loadingPhraseIndex]} />;
+      case "error":
+        return <ErrorState stateKey={contentStateKey} error={error ?? "Something went wrong."} onRetry={onRetry} />;
+      case "empty":
+        return <EmptyState stateKey={contentStateKey} onClose={onClose} />;
+      case "intro":
+        return current ? (
+          <IntroState
+            stateKey={contentStateKey}
+            current={current}
+            onStart={() => {
+              if (current?.objectiveId) {
+                setDismissedIntroObjectiveId(current.objectiveId);
+              }
+              setInputValue("");
+            }}
+          />
+        ) : null;
+      case "timed":
+        return current ? (
+          <StepState
+            stateKey={contentStateKey}
+            current={current}
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+            onSubmit={onSubmit}
+            submitWithCurrentValue={submitWithCurrentValue}
+            skipCurrentStep={skipCurrentStep}
+            onContinue={onContinue}
+            canSubmit={canSubmit}
+            loading={loading}
+            showControls={false}
+          />
+        ) : null;
+      case "step":
+        return current ? (
+          <StepState
+            stateKey={contentStateKey}
+            current={current}
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+            onSubmit={onSubmit}
+            submitWithCurrentValue={submitWithCurrentValue}
+            skipCurrentStep={skipCurrentStep}
+            onContinue={onContinue}
+            canSubmit={canSubmit}
+            loading={loading}
+            showControls
+          />
+        ) : null;
+      default:
+        return null;
+    }
   };
 
   return (
@@ -179,131 +257,17 @@ export default function GuidePanel({
         <motion.div
           layout
           transition={{ layout: { duration: 0.24, ease: "easeOut" } }}
-          className="w-full max-w-4xl min-h-[18rem] md:min-h-[22rem] flex flex-col items-center justify-center"
+          className="w-full max-w-4xl min-h-72 md:min-h-88 flex flex-col items-center justify-center"
         >
-          <AnimatePresence initial={false} mode="wait">
-            {showLoadingState ? (
-              <motion.div
-                key={contentStateKey}
-                initial={{ opacity: 0, x: 70 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -70 }}
-                transition={{ duration: 0.28, ease: "easeOut" }}
-                className="flex items-center gap-3 text-xl md:text-2xl font-medium text-black/55 dark:text-white/55"
-              >
-                <span className="h-5 w-5 rounded-full border-2 border-current border-r-transparent animate-spin" />
-                {loadingPhrases[loadingPhraseIndex]}
-              </motion.div>
-            ) : null}
-            {showErrorState ? (
-              <motion.div
-                key={contentStateKey}
-                initial={{ opacity: 0, x: 70 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -70 }}
-                transition={{ duration: 0.28, ease: "easeOut" }}
-                className="flex flex-col items-center gap-3 max-w-md"
-              >
-                <p className="text-base md:text-xl">{error}</p>
-                <GuidedButton onClick={onRetry}>Retry</GuidedButton>
-              </motion.div>
-            ) : null}
-            {showCurrentState ? (
-              <motion.div
-                key={contentStateKey}
-                initial={{ opacity: 0, x: 70 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -70 }}
-                transition={{ duration: 0.28, ease: "easeOut" }}
-                className="w-full flex flex-col items-center gap-4"
-              >
-                {showIntro ? (
-                  <div className="w-full max-w-4xl p-1 md:p-2 flex flex-col gap-5 text-center">
-                    <h2 className="text-3xl md:text-5xl font-semibold leading-tight">
-                      {current.result.objectiveTitle ?? "Guided objective"}
-                    </h2>
-                    <p className="text-base md:text-xl text-black/70 dark:text-white/70 leading-relaxed max-w-3xl mx-auto">
-                      {current.result.objectiveDescription ?? "Let's complete this objective step by step."}
-                    </p>
-                    <div className="pt-1 flex justify-center">
-                      <GuidedButton onClick={() => setShowIntro(false)}>
-                        Start
-                      </GuidedButton>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <ActionContent
-                      stepResult={current.result}
-                      inputValue={inputValue}
-                      setInputValue={setInputValue}
-                      submitValue={onSubmit}
-                      submitTextValue={submitWithCurrentValue}
-                      loading={loading}
-                    />
-                    {!isTimedDisplayStep ? (
-                      <ActionControls
-                        stepResult={current.result}
-                        isInputValid={canSubmit}
-                        handleSkip={skipCurrentStep}
-                        handleSubmit={submitWithCurrentValue}
-                        handleContinue={onContinue}
-                        loading={loading}
-                      />
-                    ) : null}
-                  </>
-                )}
-              </motion.div>
-            ) : null}
-            {showEmptyState ? (
-              <motion.div
-                key={contentStateKey}
-                initial={{ opacity: 0, x: 70 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -70 }}
-                transition={{ duration: 0.28, ease: "easeOut" }}
-                className="flex flex-col items-center gap-3"
-              >
-                <p className="text-xl md:text-2xl">No guided actions available right now.</p>
-                <GuidedButton onClick={onClose}>Done</GuidedButton>
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
+          <AnimatePresence initial={false} mode="wait">{renderState()}</AnimatePresence>
         </motion.div>
       </div>
-      {!error && current ? (
-        <div
-          className="fixed left-1/2 z-10 -translate-x-1/2"
-          style={{ bottom: "calc(var(--cw-safe-bottom) + 1rem)" }}
-        >
-          <ProgressDots
-            total={current.result.stepsTotal ?? null}
-            completed={current.result.stepsCompleted ?? null}
-            skipped={current.result.stepsSkipped ?? null}
-          />
-        </div>
+      {canShowProgress && current ? <ProgressFooter current={current} /> : null}
+      {canShowProgress && current && isTimedDisplayStep && !postActionStatus ? (
+        <TimedCountdownFooter countdownSeconds={countdownSeconds} />
       ) : null}
-      {!error && current && isTimedDisplayStep && !postActionStatus ? (
-        <p
-          className="fixed left-1/2 z-10 -translate-x-1/2 text-xs md:text-sm text-black/60 dark:text-white/60"
-          style={{ bottom: "calc(var(--cw-safe-bottom) + 2.5rem)" }}
-        >
-          Continuing in{" "}
-          {Math.max(1, countdownSeconds)}s...
-        </p>
-      ) : null}
-      {!error && current && postActionStatus ? (
-        <div
-          className="fixed left-1/2 z-10 -translate-x-1/2 w-[min(90vw,40rem)] rounded-xl border border-default bg-secondary px-4 py-3 text-center shadow-sm"
-          style={{ bottom: "calc(var(--cw-safe-bottom) + 2.5rem)" }}
-        >
-          <p className="text-sm md:text-base font-medium">{postActionStatus.title}</p>
-          {postActionStatus.subtext ? (
-            <p className="text-xs md:text-sm text-black/70 dark:text-white/70 mt-1">
-              {postActionStatus.subtext}
-            </p>
-          ) : null}
-        </div>
+      {canShowProgress && current && postActionStatus ? (
+        <PostActionFooter postActionStatus={postActionStatus} />
       ) : null}
     </motion.div>
   );

@@ -26,6 +26,14 @@ type ProfileFormState = {
 };
 
 const AUTOSAVE_DELAY_MS = 700;
+const PROFILE_FORM_FIELDS: Array<keyof ProfileFormState> = [
+  "first_name",
+  "middle_name",
+  "last_name",
+  "gender",
+  "country",
+  "birth_date",
+];
 
 export default function Profile() {
   const [email, setEmail] = useState<string>("");
@@ -76,11 +84,18 @@ export default function Profile() {
       return;
     }
     const normalized = normalizeProfile(profileData.me);
-    setEmail(profileData.me.email || "");
-    setForm(normalized);
     baselineRef.current = normalized;
     hasHydratedFromServer.current = true;
-    setSaveStatus("idle");
+
+    const hydrateTimer = window.setTimeout(() => {
+      setEmail(profileData.me.email || "");
+      setForm(normalized);
+      setSaveStatus("idle");
+    }, 0);
+
+    return () => {
+      window.clearTimeout(hydrateTimer);
+    };
   }, [normalizeProfile, profileData]);
 
   const scheduleSaveForField = useCallback(
@@ -127,6 +142,7 @@ export default function Profile() {
           if (saveId === saveSequenceRef.current) {
             setSaveStatus("saved");
             setLastSavedAt(Date.now());
+            setSaveTick(0);
           }
         } catch (err: any) {
           const code = err?.graphQLErrors?.[0]?.extensions?.code;
@@ -164,28 +180,10 @@ export default function Profile() {
   }, [lastSavedAt]);
 
   useEffect(() => {
-    scheduleSaveForField("first_name", form.first_name);
-  }, [form.first_name, scheduleSaveForField]);
-
-  useEffect(() => {
-    scheduleSaveForField("middle_name", form.middle_name);
-  }, [form.middle_name, scheduleSaveForField]);
-
-  useEffect(() => {
-    scheduleSaveForField("last_name", form.last_name);
-  }, [form.last_name, scheduleSaveForField]);
-
-  useEffect(() => {
-    scheduleSaveForField("gender", form.gender);
-  }, [form.gender, scheduleSaveForField]);
-
-  useEffect(() => {
-    scheduleSaveForField("country", form.country);
-  }, [form.country, scheduleSaveForField]);
-
-  useEffect(() => {
-    scheduleSaveForField("birth_date", form.birth_date);
-  }, [form.birth_date, scheduleSaveForField]);
+    PROFILE_FORM_FIELDS.forEach((field) => {
+      scheduleSaveForField(field, form[field]);
+    });
+  }, [form, scheduleSaveForField]);
 
   const dob = useMemo(
     () => {
@@ -206,7 +204,8 @@ export default function Profile() {
 
   const savedAgoText = (() => {
     if (!lastSavedAt || saveStatus === "saving") return "";
-    const seconds = Math.max(0, Math.floor((Date.now() - lastSavedAt) / 1000));
+    const elapsedMs = saveTick * 1000;
+    const seconds = Math.max(0, Math.floor(elapsedMs / 1000));
     if (seconds < 5) return "Saved just now";
     if (seconds < 60) return `Saved ${seconds}s ago`;
     const minutes = Math.floor(seconds / 60);

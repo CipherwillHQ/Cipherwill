@@ -15,7 +15,13 @@ import OptionsMenu from "./OptionsMenu";
 import remove_factor from "../../../common/factor/remove_factor";
 import getShortKey from "../../../factory/publicKey/getShortKey";
 import GET_ALL_KEY_COUNT from "../../../graphql/ops/app/key/Queries/GET_ALL_KEY_COUNT";
-import { GetFactorsQuery, GetAllKeyCountQuery, UpdateFactorMutation, UpdateFactorVariables } from "../../../types/interfaces";
+import {
+  GetFactorsQuery,
+  GetAllKeyCountQuery,
+  UpdateFactorMutation,
+  UpdateFactorVariables,
+} from "../../../types/interfaces";
+import ConfirmationButton from "@/components/common/ConfirmationButton";
 
 export default function FactorsList() {
   const { session } = useSession();
@@ -26,30 +32,40 @@ export default function FactorsList() {
     value: 0,
   });
   const { data, loading, error } = useQuery<GetFactorsQuery>(GET_FACTORS);
-  const [getKeyCount, { data: count }] = useLazyQuery<GetAllKeyCountQuery>(GET_ALL_KEY_COUNT);
+  const [getKeyCount, { data: count }] =
+    useLazyQuery<GetAllKeyCountQuery>(GET_ALL_KEY_COUNT);
 
-  const [updateFactor] = useMutation<UpdateFactorMutation, UpdateFactorVariables>(UPDATE_FACTOR);
+  const [updateFactor] = useMutation<
+    UpdateFactorMutation,
+    UpdateFactorVariables
+  >(UPDATE_FACTOR);
 
   useEffect(() => {
-    getKeyCount().then((result) => {
-      if (result.data && result.data.getAllKeyCount.length > 0) {
-        let max = 0;
-        let publicKey = "null";
-        for (let index = 0; index < result.data.getAllKeyCount.length; index++) {
-          const element = result.data.getAllKeyCount[index];
-          if (element.count > max) {
-            max = element.count;
-            publicKey = element.publicKey;
+    getKeyCount()
+      .then((result) => {
+        if (result.data && result.data.getAllKeyCount.length > 0) {
+          let max = 0;
+          let publicKey = "null";
+          for (
+            let index = 0;
+            index < result.data.getAllKeyCount.length;
+            index++
+          ) {
+            const element = result.data.getAllKeyCount[index];
+            if (element.count > max) {
+              max = element.count;
+              publicKey = element.publicKey;
+            }
           }
+          setMaxKeyCount({
+            publicKey,
+            value: max,
+          });
         }
-        setMaxKeyCount({
-          publicKey,
-          value: max,
-        });
-      }
-    }).catch((error) => {
-      console.error('Failed to get key count:', error);
-    });
+      })
+      .catch((error) => {
+        console.error("Failed to get key count:", error);
+      });
   }, [getKeyCount]);
 
   if (loading) return <div>Loading...</div>;
@@ -67,9 +83,10 @@ export default function FactorsList() {
       <div className="flex flex-wrap gap-2">
         {data.getFactors.map((factor) => {
           const data_count =
-            count &&
-            count.getAllKeyCount
-              ? count.getAllKeyCount.find((a) => a.publicKey === factor.publicKey)?.count || 0
+            count && count.getAllKeyCount
+              ? count.getAllKeyCount.find(
+                  (a) => a.publicKey === factor.publicKey,
+                )?.count || 0
               : 0;
 
           return (
@@ -89,7 +106,7 @@ export default function FactorsList() {
                   <div>
                     Name:{" "}
                     <div
-                      id="factor-name"
+                      id={`factor-name-${factor.id}`}
                       className="inline-block outline-hidden"
                       contentEditable
                       suppressContentEditableWarning
@@ -97,7 +114,8 @@ export default function FactorsList() {
                         const new_name = e.target.innerText;
 
                         if (new_name.length === 0) {
-                          const nameElem = document.getElementById("factor-name");
+                          const nameElem =
+                            document.getElementById("factor-name");
                           if (nameElem) {
                             nameElem.innerText = factor.name;
                           }
@@ -126,7 +144,9 @@ export default function FactorsList() {
                     className="text-xs mx-1 px-1"
                     onClick={() => {
                       // focus on name
-                      document.getElementById("factor-name")?.focus();
+                      document
+                        .getElementById(`factor-name-${factor.id}`)
+                        ?.focus();
                     }}
                   >
                     <TbEdit size={16} />
@@ -138,32 +158,26 @@ export default function FactorsList() {
                   Data count:{" "}
                   <span data-cy="factor-key-count">{data_count}</span>
                 </div>
-                <button
+                <ConfirmationButton
                   data-cy="remove-factor"
                   className="flex items-center border border-red-700 hover:bg-red-200 text-red-500 p-1 rounded-sm px-2 text-sm mt-2"
-                  onClick={async () => {
-                    const cnf = confirm(
-                      "Are you sure you want to remove this factor?"
+                  onConfirm={async () => {
+                    setIsDeleting(true);
+                    await remove_factor(
+                      client,
+                      session.publicKey,
+                      session.privateKey,
+                      factor.id,
+                      factor.publicKey,
                     );
-                    if (cnf) {
-                      setIsDeleting(true);
-                      await remove_factor(
-                        client,
-                        session.publicKey,
-                        session.privateKey,
-                        factor.id,
-                        factor.publicKey
-                      );
-
-                      setIsDeleting(false);
-                    }
+                    setIsDeleting(false);
                   }}
                 >
                   {isDeleting && (
                     <div className="w-4 h-4 border-2 border-dashed rounded-full animate-spin border-red-700 mr-2" />
                   )}
                   Remove
-                </button>
+                </ConfirmationButton>
               </div>
               <OptionsMenu
                 factor_id={factor.id}

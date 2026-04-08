@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   applyUiPreferences,
   DEFAULT_UI_PREFERENCES,
@@ -12,13 +12,9 @@ import Select from "@/components/ui/Select";
 import toast from "react-hot-toast";
 
 export default function FrontendPreferences() {
-  const [preferences, setPreferences] = useState<UiPreferences>(
-    DEFAULT_UI_PREFERENCES
+  const [preferences, setPreferences] = useState<UiPreferences>(() =>
+    getUiPreferences()
   );
-
-  useEffect(() => {
-    setPreferences(getUiPreferences());
-  }, []);
 
   const updatePreference = <K extends keyof UiPreferences>(
     key: K,
@@ -50,7 +46,7 @@ export default function FrontendPreferences() {
         <label className="flex items-center justify-between gap-4">
           <span className="text-sm font-medium">Font size</span>
           <Select
-            className="text-sm min-w-[170px]"
+            className="text-sm min-w-42.5"
             value={preferences.fontSize}
             onChange={(value) =>
               updatePreference("fontSize", value as UiPreferences["fontSize"])
@@ -66,7 +62,7 @@ export default function FrontendPreferences() {
         <label className="flex items-center justify-between gap-4">
           <span className="text-sm font-medium">Motion</span>
           <Select
-            className="text-sm min-w-[170px]"
+            className="text-sm min-w-42.5"
             value={preferences.motion}
             onChange={(value) =>
               updatePreference("motion", value as UiPreferences["motion"])
@@ -81,7 +77,7 @@ export default function FrontendPreferences() {
         <label className="flex items-center justify-between gap-4">
           <span className="text-sm font-medium">Scrolling</span>
           <Select
-            className="text-sm min-w-[170px]"
+            className="text-sm min-w-42.5"
             value={preferences.scrollBehavior}
             onChange={(value) =>
               updatePreference(
@@ -99,7 +95,7 @@ export default function FrontendPreferences() {
         <label className="flex items-center justify-between gap-4">
           <span className="text-sm font-medium">Content width</span>
           <Select
-            className="text-sm min-w-[170px]"
+            className="text-sm min-w-42.5"
             value={preferences.contentWidth}
             onChange={(value) =>
               updatePreference(

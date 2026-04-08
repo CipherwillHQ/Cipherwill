@@ -1,15 +1,10 @@
 "use client";
 import { useApolloClient } from "@apollo/client/react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSession } from "../SessionContext";
 import GET_POD from "@/graphql/ops/app/pod/queries/GET_POD";
-import toast from "react-hot-toast";
 import GET_KEY_BY_REF_ID from "@/graphql/ops/app/key/Queries/GET_KEY_BY_REF_ID";
-import decrypt from "@/crypto/e0/decrypt";
 import logger from "@/common/debug/logger";
-import CryptoJS from "crypto-js";
-import { POD_TYPE } from "@/types/POD";
-import parseToLatestDataModel from "./parseToLatestDataModel";
 import upload_pod_data from "@/common/data/upload_pod_data";
 import {
   GetKeyByRefIdQuery,
@@ -17,237 +12,195 @@ import {
   GetPodQuery,
   GetPodVariables,
 } from "@/types/interfaces/metamodel";
+import { getPodHookOptions } from "./defaults";
+import {
+  decryptPodJson,
+  getPodContent,
+  isPodNotFoundError,
+  parsePodJsonToModel,
+  pickAllowedPodData,
+  resolveDecryptionKey,
+} from "./helpers";
+import { PodHookConfig, PodHookOptions } from "./types";
 
 export function usePod<POD_DATA_TYPE>(
-  config: {
-    TYPE: POD_TYPE;
-    VERSION: string;
-    REF_ID: string;
-    DATA_SAMPLE: POD_DATA_TYPE;
-  },
-  options?: {
-    onComplete?: (data: null | POD_DATA_TYPE) => void;
-    lazy?: boolean;
-  }
+  config: PodHookConfig<POD_DATA_TYPE>,
+  options?: PodHookOptions<POD_DATA_TYPE>,
 ) {
-  const defaultOptions = {
-    onComplete: (data) => {},
-    lazy: false,
-  };
-  const { onComplete, lazy } = {
-    ...defaultOptions,
-    ...options,
-  };
+  const { onComplete, lazy } = getPodHookOptions(options);
+  const {
+    TYPE: type,
+    VERSION: version,
+    REF_ID: refId,
+    DATA_SAMPLE: dataSample,
+  } = config;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<null | string>(null);
   const [data, setData] = useState<null | POD_DATA_TYPE>(null);
 
-  const [is_updating, setIsUpdating] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const client = useApolloClient();
   const { session } = useSession();
+  const onCompleteRef = useRef(onComplete);
 
-  const load_data = useCallback(async () => {
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
+  const loadData = useCallback(async () => {
     setLoading(true);
-    let pod;
+    setError(null);
+
     try {
-      pod = await client.query<GetPodQuery, GetPodVariables>({
+      const pod = await client.query<GetPodQuery, GetPodVariables>({
         query: GET_POD,
         fetchPolicy: "network-only",
         variables: {
-          ref_id: config.REF_ID,
+          ref_id: refId,
         },
       });
-    } catch (error) {
-      if (
-        error &&
-        error.errors &&
-        error.errors[0] &&
-        error.errors[0].extensions.code === "POD_NOT_FOUND"
-      ) {
+
+      const content = getPodContent(pod);
+      if (!content) {
         setData(null);
-        onComplete(null);
-        setLoading(false);
+        onCompleteRef.current(null);
         return null;
-      } else {
-        setError(error.message || "Something went wrong");
-        throw error;
       }
-    }
-    if (!pod || !pod.data || !pod.data.getPod || !pod.data.getPod.content) {
-      setData(null);
-      onComplete(null);
-      setLoading(false);
-      return null;
-    }
-    const content = pod.data.getPod.content;
 
-    const encryption_key = await client.query<
-      GetKeyByRefIdQuery,
-      GetKeyByRefIdVariables
-    >({
-      query: GET_KEY_BY_REF_ID,
-      fetchPolicy: "network-only",
-      variables: session
-        ? {
-            ref_id: config.REF_ID,
-            publicKey: session.publicKey,
-          }
-        : {
-            ref_id: config.REF_ID,
-            publicKey: "null",
-          },
-    });
-    let key = "";
+      const encryptionKey = await client.query<
+        GetKeyByRefIdQuery,
+        GetKeyByRefIdVariables
+      >({
+        query: GET_KEY_BY_REF_ID,
+        fetchPolicy: "network-only",
+        variables: session
+          ? {
+              ref_id: refId,
+              publicKey: session.publicKey,
+            }
+          : {
+              ref_id: refId,
+              publicKey: "null",
+            },
+      });
 
-    if (
-      encryption_key.data &&
-      encryption_key.data.getKeyByRefId &&
-      encryption_key.data.getKeyByRefId.key
-    ) {
-      if (encryption_key.data.getKeyByRefId.key.startsWith("{")) {
-        const parsedData = JSON.parse(encryption_key.data.getKeyByRefId.key);
-        if (parsedData.type === "E0") {
-          key = await decrypt(
-            session.privateKey,
-            Buffer.from(parsedData.ciphertext, "base64"),
-            Buffer.from(parsedData.ephemPublicKey, "base64"),
-            Buffer.from(parsedData.iv, "base64"),
-            Buffer.from(parsedData.mac, "base64")
-          );
-        }
-      } else {
-        key = encryption_key.data.getKeyByRefId.key;
+      const encryptedKey = encryptionKey.data?.getKeyByRefId?.key;
+      if (!encryptedKey) {
+        setData(null);
+        onCompleteRef.current(null);
+        setError(`You don't have access to this note`);
+        return null;
       }
-    } else {
-      setData(null);
-      onComplete(null);
-      setError(`You don't have access to this note`);
 
-      setLoading(false);
-      return null;
-    }
-    let json_string;
-    try {
-      json_string = CryptoJS.AES.decrypt(content, key).toString(
-        CryptoJS.enc.Utf8
-      );
-    } catch (error) {
-      toast.error("Error while decrypting data");
-      logger.error("Error while decrypting data", error);
-    }
-    if (!json_string) {
-      setData(null);
-      onComplete(null);
-      setLoading(false);
-      return null;
-    }
-
-    let final_content: {
-      type: string;
-      version: string;
-      data: any;
-    } = {
-      type: config.TYPE,
-      version: config.VERSION,
-      data: {},
-    };
-
-    if (json_string.startsWith("{")) {
-      const parsed_pod_data = JSON.parse(json_string);
-
-      final_content.type = parsed_pod_data?.type || config.TYPE;
-      final_content.version = parsed_pod_data?.version || "0.0.1";
-      if (parsed_pod_data?.data) {
-        // perfrom historical version conversion to current version
-        final_content.data = parseToLatestDataModel({
-          type: parsed_pod_data?.type || config.TYPE,
-          data_version: parsed_pod_data?.version || "0.0.1",
-          expected_version: config.VERSION,
-          data: parsed_pod_data.data,
-        });
-      } else {
-        final_content.data = {};
+      if (!session && encryptedKey.startsWith("{")) {
+        setData(null);
+        onCompleteRef.current(null);
+        setError("Session is required to decrypt this pod");
+        return null;
       }
-    } else {
-      // decrypted data is not a valid json string
-      // reset the pod data
-      logger.error("Decrypted data is not a valid json string");
-      setData(null);
-      onComplete(null);
-      setLoading(false);
-      return null;
-    }
 
-    if (final_content.type === config.TYPE) {
-      setData(final_content.data);
-      onComplete(final_content.data);
-      setLoading(false);
-      return final_content.data;
-    } else {
-      // parsed data is not of the correct type
-      // reset the pod data
+      const key = await resolveDecryptionKey(encryptedKey, session);
+      const jsonString = decryptPodJson(content, key);
+
+      if (!jsonString) {
+        setData(null);
+        onCompleteRef.current(null);
+        return null;
+      }
+
+      const finalContent = parsePodJsonToModel(jsonString, {
+        TYPE: type,
+        VERSION: version,
+        REF_ID: refId,
+        DATA_SAMPLE: dataSample,
+      });
+
+      if (!finalContent) {
+        logger.error("Decrypted data is not a valid json string");
+        setData(null);
+        onCompleteRef.current(null);
+        return null;
+      }
+
+      if (finalContent.type === type) {
+        setData(finalContent.data);
+        onCompleteRef.current(finalContent.data);
+        return finalContent.data;
+      }
+
       logger.error("Parsed pod data is not of the correct type");
       setData(null);
-      onComplete(null);
-      setLoading(false);
+      onCompleteRef.current(null);
       return null;
+    } catch (error) {
+      if (isPodNotFoundError(error)) {
+        setData(null);
+        onCompleteRef.current(null);
+        return null;
+      }
+
+      const message =
+        error instanceof Error ? error.message : "Something went wrong";
+      setError(message);
+      logger.error("Failed to load pod", error);
+      return null;
+    } finally {
+      setLoading(false);
     }
-  }, []);
+  }, [client, refId, session, type, version, dataSample]);
 
   useEffect(() => {
-    if (!lazy) load_data();
-  }, []);
+    if (!lazy) {
+      void loadData();
+    }
+  }, [lazy, loadData]);
 
   async function updatePod(
-    upated_data: POD_DATA_TYPE,
+    updatedData: POD_DATA_TYPE,
     {
       metamodel_id,
     }: {
       metamodel_id: string;
-    }
+    },
   ) {
     // strip out all fields that are not in the type
-    let final_data = {};
-    for await (const key of Object.keys(config.DATA_SAMPLE as any)) {
-      if (upated_data[key]) {
-        final_data[key] = upated_data[key];
-      }
-    }
+    const finalData = pickAllowedPodData(updatedData, dataSample);
     // json validate final_data
     // TODO: add json validation
 
-    const final_pods = [
+    const finalPods = [
       {
-        ref_id: config.REF_ID,
-        data_model_version: config.VERSION,
+        ref_id: refId,
+        data_model_version: version,
         publicKey: session ? session.publicKey : undefined,
         data: JSON.stringify({
-          type: config.TYPE,
-          version: config.VERSION,
-          data: final_data,
+          type,
+          version,
+          data: finalData,
         }),
       },
     ];
     setIsUpdating(true);
-    if (Object.keys(final_data).length > 0) {
-      await upload_pod_data({
-        data_items: final_pods,
-        client,
-        metamodel_id,
-      });
+    try {
+      if (Object.keys(finalData).length > 0) {
+        await upload_pod_data({
+          data_items: finalPods,
+          client,
+          metamodel_id,
+        });
+      }
+    } finally {
+      setIsUpdating(false);
     }
-    setIsUpdating(false);
   }
 
   return {
     data,
     loading,
     error,
-    is_updating,
+    is_updating: isUpdating,
     updatePod,
-    loadPod: () => {
-      return load_data();
-    },
+    loadPod: loadData,
   };
 }

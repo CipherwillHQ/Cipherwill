@@ -10,6 +10,7 @@ import {
   SmartWillBeneficiary,
 } from "@/types";
 import { useQuery, useMutation } from "@apollo/client/react";
+import { ReactNode } from "react";
 import { BiCheckCircle } from "react-icons/bi";
 import Popup from "reactjs-popup";
 
@@ -53,67 +54,53 @@ export default function BeneficiaryChoice({
       )}
     </div>
   );
+  const restrictedContent: ReactNode = (
+    <div className="bg-secondary text-black dark:text-white p-2">
+      <p className="text-sm pt-1 pb-2 border-b border-default">
+        You can choose which beneficiaries will get access to this data item
+        after your Cipherwill execution is triggered.
+      </p>
+      <div className="py-2">
+        <div className="text-sm">
+          This feature is available for Premium plan users. Please upgrade your
+          plan to access beneficiary choices.
+        </div>
+        <SimpleButton className="mt-2 w-full" href={"/app/billing"}>
+          Upgrade Plan
+        </SimpleButton>
+      </div>
+    </div>
+  );
+
+  const premiumContent: ReactNode =
+    data && data.getSmartWillBeneficiaries.length === 0 ? (
+      <div className="bg-secondary text-black dark:text-white p-3 max-h-[50vh] overflow-y-auto customScrollbar flex flex-col gap-2">
+        <div>
+          You have no beneficiaries set up. Please add beneficiaries in the
+          Cipherwill section to manage beneficiary choices.
+        </div>
+        <SimpleButton href={"/app/beneficiaries"}>Add Beneficiaries</SimpleButton>
+      </div>
+    ) : (
+      <Beneficiaries
+        ignored_beneficiaries={ignored_beneficiaries}
+        beneficiaries={
+          data && data.getSmartWillBeneficiaries
+            ? data.getSmartWillBeneficiaries
+            : []
+        }
+        metamodel_id={metamodel_id}
+      />
+    );
+
   return (
-    <PlanRestricted
-      placeholder={
-        <Popup trigger={popupTrigger} position="bottom right">
-          {/* @ts-ignore */}
-          {(close) => {
-            return (
-              <div className="bg-secondary text-black dark:text-white p-2">
-                <p className="text-sm pt-1 pb-2 border-b border-default">
-                  You can choose which beneficiaries will get access to this
-                  data item after your Cipherwill execution is triggered.
-                </p>
-                <div className="py-2">
-                  <div className="text-sm">
-                    This feature is available for Premium plan users. Please
-                    upgrade your plan to access beneficiary choices.
-                  </div>
-                  <SimpleButton className="mt-2 w-full" href={"/app/billing"}>
-                    Upgrade Plan
-                  </SimpleButton>
-                </div>
-              </div>
-            );
-          }}
-        </Popup>
-      }
-    >
-      <Popup trigger={popupTrigger} position="bottom right">
-        {/* @ts-ignore */}
-        {(close) => {
-          if (data && data.getSmartWillBeneficiaries.length === 0) {
-            return (
-              <div className="bg-secondary text-black dark:text-white p-3 max-h-[50vh] overflow-y-auto customScrollbar flex flex-col gap-2">
-                <div>
-                  You have no beneficiaries set up. Please add beneficiaries in
-                  the Cipherwill section to manage beneficiary choices.
-                </div>
-                <SimpleButton href={"/app/beneficiaries"}>
-                  Add Beneficiaries
-                </SimpleButton>
-              </div>
-            );
-          }
-          return (
-            <BeneficiaryList
-              ignored_beneficiaries={ignored_beneficiaries}
-              beneficiaries={
-                data && data.getSmartWillBeneficiaries
-                  ? data.getSmartWillBeneficiaries
-                  : []
-              }
-              metamodel_id={metamodel_id}
-            />
-          );
-        }}
-      </Popup>
-    </PlanRestricted>
+    <Popup trigger={popupTrigger} position="bottom right">
+      <PlanRestricted placeholder={restrictedContent}>{premiumContent}</PlanRestricted>
+    </Popup>
   );
 }
 
-function BeneficiaryList({
+function Beneficiaries({
   beneficiaries,
   metamodel_id,
   ignored_beneficiaries,

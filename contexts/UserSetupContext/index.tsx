@@ -38,7 +38,6 @@ export function UserSetupProvider({ children }: Props) {
     if ((window as any).GoogleConverted) {
       await (window as any).GoogleConverted();
     } else {
-      console.log((window as any).GoogleConverted);
       logger.error("GoogleConverted is not defined");
     }
     // if ((window as any).uetq) {
@@ -47,7 +46,7 @@ export function UserSetupProvider({ children }: Props) {
     // }
     if (mixpanel) mixpanel.track("signup");
     posthog.capture("signup");
-  }, [mixpanel]);
+  }, [mixpanel, posthog]);
   const [
     setupPreferences,
     { data: preferences_data, loading: loading_preferences },

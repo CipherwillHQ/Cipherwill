@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect } from "react";
 import { useAuth } from "../AuthContext";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -13,7 +13,7 @@ export function AuthRedirectProvider({ children }) {
   const router = useRouter();
 
   const { user, isLoading } = useAuth();
-  const [isLoggedin, setisLoggedin] = useState(false);
+  const isLoggedin = !!user;
 
   const value = {};
 
@@ -21,13 +21,9 @@ export function AuthRedirectProvider({ children }) {
     if (!isLoading && !user) {
       router.replace("/auth?redirect=" + pathname);
     }
-    if (!isLoading && user) {
-      setisLoggedin(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, user]);
+  }, [isLoading, user, pathname, router]);
 
-  if (!isLoggedin) return <FullscreenLoader />;
+  if (isLoading || !isLoggedin) return <FullscreenLoader />;
   // return <FullscreenLoader />;
 
   return (

@@ -3,17 +3,10 @@
 import { useUserContext } from "@/contexts/UserSetupContext";
 import CycleDescription from "./CycleDescription";
 import DesktopAndMobilePageHeader from "@/components/app/common/page/DesktopAndMobilePageHeader";
-import { useEffect, useState } from "react";
 
 export default function TimelinePage() {
   const { user, preferences } = useUserContext();
-  const [interval, setInterval] = useState(365);
-
-  useEffect(() => {
-    if (preferences?.check_in_interval) {
-      setInterval(preferences.check_in_interval as number);
-    }
-  }, [preferences]);
+  const interval = (preferences?.check_in_interval as number) || 365;
   return (
     <div className="w-full">
       <DesktopAndMobilePageHeader title="Cipherwill Timeline" />

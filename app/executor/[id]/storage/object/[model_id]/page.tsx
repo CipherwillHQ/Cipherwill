@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery } from "@apollo/client/react";
-import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import GET_GRANTED_METAMODEL from "@/graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODEL";
 import getTimeAgo from "@/common/time/getTimeAgo";
@@ -16,8 +15,6 @@ export default function ExecutorObjectView() {
   const access_id: string = params?.id;
   const object_id: string = params?.model_id;
 
-  const [keyMetadata, setKeyMetadata] = useState<any | null>(null);
-
   const { data: granted_metamodel, loading, error } = useQuery<GetGrantedMetamodelQuery, GetGrantedMetamodelVariables>(
     GET_GRANTED_METAMODEL, 
     {
@@ -28,16 +25,11 @@ export default function ExecutorObjectView() {
     }
   );
 
-  useEffect(() => {
-    if (granted_metamodel?.getGrantedMetamodel) {
-      setKeyMetadata(granted_metamodel.getGrantedMetamodel);
-    }
-  }, [granted_metamodel]);
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
   if (!granted_metamodel?.getGrantedMetamodel) return <div>No data available</div>;
 
+  const keyMetadata = granted_metamodel.getGrantedMetamodel;
   const parsed_data = JSON.parse(
     granted_metamodel.getGrantedMetamodel.metadata
   );

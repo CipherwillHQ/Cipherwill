@@ -9,7 +9,6 @@ import { localstorage_get, localstorage_set } from "@/common/localstorage";
 
 const ThemeContext = createContext({
   current_theme: DEFAULT_THEME,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setCurrentTheme: (_theme: string) => {},
 });
 

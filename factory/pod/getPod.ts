@@ -1,6 +1,7 @@
 import { ApolloClient } from "@apollo/client";
 import GET_POD from "../../graphql/ops/app/pod/queries/GET_POD";
 import { GetPodQuery, GetPodVariables } from "../../types/interfaces/metamodel";
+import type { GraphQLErrorLike } from "../../types/interfaces/graphql";
 
 export default async function getPod(
   ref_id: string,
@@ -19,8 +20,9 @@ export default async function getPod(
     } else {
       return pod.data?.getPod?.content || null;
     }
-  } catch (error: any) {
-    if (error?.errors?.[0]?.extensions?.code === "POD_NOT_FOUND") {
+  } catch (error) {
+    const errorCode = (error as GraphQLErrorLike)?.errors?.[0]?.extensions?.code;
+    if (errorCode === "POD_NOT_FOUND") {
       return null;
     } else {
       throw error;
