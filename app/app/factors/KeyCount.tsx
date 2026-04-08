@@ -1,16 +1,13 @@
 "use client";
 
 import { useLazyQuery, useMutation } from "@apollo/client/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import toast from "react-hot-toast";
 import DELETE_KEY_BY_PUBLIC_KEY from "../../../graphql/ops/app/key/Mutations/DELETE_KEY_BY_PUBLIC_KEY";
 import GET_ALL_KEY_COUNT from "../../../graphql/ops/app/key/Queries/GET_ALL_KEY_COUNT";
 import { GetAllKeyCountQuery, DeleteKeyByPublicKeyMutation, DeleteKeyByPublicKeyVariables } from "../../../types/interfaces";
 
 export default function KeyCount() {
-  const [unencrypted_key_count, set_unencrypted_key_count] = useState(0);
-  const [max_key_count, set_max_key_count] = useState(0);
-
   const [getKeyCount, { data, loading, error }] = useLazyQuery<GetAllKeyCountQuery>(GET_ALL_KEY_COUNT);
 
   const [deleteKeyForPublicKey] = useMutation<DeleteKeyByPublicKeyMutation, DeleteKeyByPublicKeyVariables>(DELETE_KEY_BY_PUBLIC_KEY, {
@@ -21,20 +18,19 @@ export default function KeyCount() {
     ],
   });
 
-  // Handle key count data processing
-  useEffect(() => {
-    if (data && data.getAllKeyCount) {
-      const current = data.getAllKeyCount.find((c) => c.publicKey === "null");
-      set_unencrypted_key_count(current ? current.count : 0);
-
-      let maxCount = 0;
-      for (const c of data.getAllKeyCount) {
-        if (c.count >= maxCount && c.publicKey !== "null") {
-          maxCount = c.count;
-        }
+  const { unencrypted_key_count, max_key_count } = useMemo(() => {
+    const counts = data?.getAllKeyCount ?? [];
+    const current = counts.find((c) => c.publicKey === "null");
+    let maxCount = 0;
+    for (const c of counts) {
+      if (c.publicKey !== "null" && c.count >= maxCount) {
+        maxCount = c.count;
       }
-      set_max_key_count(maxCount);
     }
+    return {
+      unencrypted_key_count: current ? current.count : 0,
+      max_key_count: maxCount,
+    };
   }, [data]);
 
   useEffect(() => {

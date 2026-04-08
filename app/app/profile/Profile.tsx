@@ -76,11 +76,18 @@ export default function Profile() {
       return;
     }
     const normalized = normalizeProfile(profileData.me);
-    setEmail(profileData.me.email || "");
-    setForm(normalized);
     baselineRef.current = normalized;
     hasHydratedFromServer.current = true;
-    setSaveStatus("idle");
+
+    const hydrateTimer = window.setTimeout(() => {
+      setEmail(profileData.me.email || "");
+      setForm(normalized);
+      setSaveStatus("idle");
+    }, 0);
+
+    return () => {
+      window.clearTimeout(hydrateTimer);
+    };
   }, [normalizeProfile, profileData]);
 
   const scheduleSaveForField = useCallback(
@@ -127,6 +134,7 @@ export default function Profile() {
           if (saveId === saveSequenceRef.current) {
             setSaveStatus("saved");
             setLastSavedAt(Date.now());
+            setSaveTick(0);
           }
         } catch (err: any) {
           const code = err?.graphQLErrors?.[0]?.extensions?.code;
@@ -206,7 +214,8 @@ export default function Profile() {
 
   const savedAgoText = (() => {
     if (!lastSavedAt || saveStatus === "saving") return "";
-    const seconds = Math.max(0, Math.floor((Date.now() - lastSavedAt) / 1000));
+    const elapsedMs = saveTick * 1000;
+    const seconds = Math.max(0, Math.floor(elapsedMs / 1000));
     if (seconds < 5) return "Saved just now";
     if (seconds < 60) return `Saved ${seconds}s ago`;
     const minutes = Math.floor(seconds / 60);

@@ -1,5 +1,6 @@
 "use client";
 import { useMutation, useQuery } from "@apollo/client/react";
+import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { BiEditAlt } from "react-icons/bi";
 import { FiMoreHorizontal } from "react-icons/fi";
@@ -23,12 +24,14 @@ import {
   stringifyMetamodelMetadata,
 } from "../../../../../common/metamodel/utils";
 import BeneficiaryChoice from "@/components/app/data/DataHeader/BeneficiaryChoice";
+import { useRouter } from "next/navigation";
 
 interface MetaDetailsProps {
   id: string;
 }
 
 export default function MetaDetails({ id }: MetaDetailsProps) {
+  const router = useRouter();
   const { data, loading, error } = useQuery<
     GetMetamodelQuery,
     GetMetamodelVariables
@@ -54,9 +57,12 @@ export default function MetaDetails({ id }: MetaDetailsProps) {
 
   // Handle model not found error
   const errorCode = (error as GraphQLErrorLike | undefined)?.errors?.[0]?.extensions?.code;
-  if (errorCode === "MODEL_NOT_FOUND") {
-    window.location.href = "/app/data/storage";
-  }
+  useEffect(() => {
+    if (errorCode === "MODEL_NOT_FOUND") {
+      router.replace("/app/data/storage");
+    }
+  }, [errorCode, router]);
+  if (errorCode === "MODEL_NOT_FOUND") return null;
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{JSON.stringify(error)}</div>;

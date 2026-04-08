@@ -14,11 +14,15 @@ import useBodyOverflowLock from "./hooks/useBodyOverflowLock";
 
 export default function GuidedActions() {
   const [showGuidedActions, setShowGuidedActions] = useState(false);
+  const [pendingCloseAction, setPendingCloseAction] = useState<
+    "reload" | "reinitialize" | null
+  >(null);
   const [postActionStatus, setPostActionStatus] = useState<{
     title: string;
     subtext: string | null;
   } | null>(null);
   const completedObjectiveInSessionRef = useRef(false);
+  const hasShownCurrentInOpenSessionRef = useRef(false);
   const client = useApolloClient();
   const { session } = useSession();
   const { clearHandledActions, runStepAction } = useGuidedActionRunner({
@@ -36,27 +40,42 @@ export default function GuidedActions() {
     submitCurrentStep,
   } = useObjectiveEngine();
 
-  const handleCloseGuidedActions = useCallback(async () => {
+  const handleCloseGuidedActions = useCallback(() => {
+    if (!showGuidedActions) {
+      return;
+    }
     const shouldReload = completedObjectiveInSessionRef.current;
     setShowGuidedActions(false);
     setPostActionStatus(null);
+    setPendingCloseAction(shouldReload ? "reload" : "reinitialize");
+  }, [showGuidedActions]);
+
+  const handlePanelExitComplete = useCallback(async () => {
+    if (!pendingCloseAction) {
+      return;
+    }
+
     clearHandledActions();
     completedObjectiveInSessionRef.current = false;
+    hasShownCurrentInOpenSessionRef.current = false;
     reset();
 
-    if (shouldReload) {
+    if (pendingCloseAction === "reload") {
       window.location.reload();
       return;
     }
 
     await initialize({ ignorePersisted: true });
-  }, [clearHandledActions, initialize, reset]);
+    setPendingCloseAction(null);
+  }, [clearHandledActions, initialize, pendingCloseAction, reset]);
 
   const handleOpenGuidedActions = useCallback(async () => {
+    hasShownCurrentInOpenSessionRef.current = false;
     setShowGuidedActions(true);
     setPostActionStatus(null);
     clearHandledActions();
     completedObjectiveInSessionRef.current = false;
+    setPendingCloseAction(null);
     await initialize({ ignorePersisted: true });
   }, [clearHandledActions, initialize]);
 
@@ -73,6 +92,7 @@ export default function GuidedActions() {
     if (!showGuidedActions || !current) {
       return;
     }
+    hasShownCurrentInOpenSessionRef.current = true;
     if (current.result.action === "complete") {
       completedObjectiveInSessionRef.current = true;
     }
@@ -93,8 +113,16 @@ export default function GuidedActions() {
     if (loading || error || current) {
       return;
     }
+    if (!hasShownCurrentInOpenSessionRef.current) {
+      return;
+    }
+    const closeTimer = window.setTimeout(() => {
+      handleCloseGuidedActions();
+    }, 0);
 
-    void handleCloseGuidedActions();
+    return () => {
+      window.clearTimeout(closeTimer);
+    };
   }, [showGuidedActions, loading, error, current, handleCloseGuidedActions]);
 
   useGuidedStepAutoActions({
@@ -105,7 +133,7 @@ export default function GuidedActions() {
 
   useBodyOverflowLock(showGuidedActions);
 
-  if (!hasObjective) {
+  if (!hasObjective && !showGuidedActions && !pendingCloseAction) {
     return null;
   }
 
@@ -121,7 +149,7 @@ export default function GuidedActions() {
       <GuidedButton onClick={handleOpenGuidedActions} disabled={loading}>
         Start
       </GuidedButton>
-      <AnimatePresence>
+      <AnimatePresence onExitComplete={handlePanelExitComplete}>
         {showGuidedActions && (
           <GuidePanel
             current={current}

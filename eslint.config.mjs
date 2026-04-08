@@ -4,12 +4,22 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 export default defineConfig([
   ...nextVitals,
   {
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
+  {
     rules: {
-      "react/no-unescaped-entities": "off",
-      "react-hooks/immutability": "off",
-      "react-hooks/purity": "off",
-      "react-hooks/preserve-manual-memoization": "off",
-      "react-hooks/set-state-in-effect": "off",
+      "react/no-unescaped-entities": "warn",
+      "react-hooks/immutability": "error",
+      "react-hooks/purity": "error",
+      "react-hooks/preserve-manual-memoization": "error",
+      "react-hooks/set-state-in-effect": "error",
+      "no-console": ["warn", { allow: ["warn", "error"] }],
+      eqeqeq: ["error", "always", { null: "ignore" }],
     },
   },
   globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),

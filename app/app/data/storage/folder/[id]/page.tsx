@@ -9,9 +9,11 @@ import GET_FOLDER from "@/graphql/ops/app/storage/queries/GET_FOLDER";
 import { useQuery } from "@apollo/client/react";
 import { GetFolderQuery, GetFolderVariables } from "@/types/interfaces";
 import type { GraphQLErrorLike } from "@/types/interfaces/graphql";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function StorageFolderPage() {
+  const router = useRouter();
   const params = useParams();
   const id = params?.id as string;
   const { data, loading, error, fetchMore } = useQuery<GetFolderQuery, GetFolderVariables>(GET_FOLDER, {
@@ -21,12 +23,13 @@ export default function StorageFolderPage() {
   });
 
   // Handle folder not found error
-  if (error) {
-    const error_code = (error as GraphQLErrorLike)?.errors?.[0]?.extensions?.code;
+  const error_code = (error as GraphQLErrorLike)?.errors?.[0]?.extensions?.code;
+  useEffect(() => {
     if (error_code === "FOLDER_NOT_FOUND") {
-      window.location.href = "/app/data/storage";
+      router.replace("/app/data/storage");
     }
-  }
+  }, [error_code, router]);
+  if (error_code === "FOLDER_NOT_FOUND") return null;
 
   if (loading) return null;
   if (error) return <div>{JSON.stringify(error)}</div>;

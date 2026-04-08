@@ -38,7 +38,12 @@ export default function LiveChatBox({ className }: { className?: string }) {
     if (typeof window === "undefined" || !CRISP_TOKEN) return;
 
     if (Crisp.isCrispInjected()) {
-      setIsCrispLoaded(true);
+      const loadTimer = window.setTimeout(() => {
+        setIsCrispLoaded(true);
+      }, 0);
+      return () => {
+        window.clearTimeout(loadTimer);
+      };
     } else {
       Crisp.load();
       Crisp.session.onLoaded(() => {
@@ -80,7 +85,13 @@ export default function LiveChatBox({ className }: { className?: string }) {
     // Only run on client side and if Crisp is available
     if (typeof window !== "undefined" && window.$crisp?.get && isCrispLoaded) {
       try {
-        setUnreadCount(Crisp.chat.unreadCount() || 0);
+        const initialCount = Crisp.chat.unreadCount() || 0;
+        const unreadTimer = window.setTimeout(() => {
+          setUnreadCount(initialCount);
+        }, 0);
+        return () => {
+          window.clearTimeout(unreadTimer);
+        };
       } catch (error) {
         console.warn("Failed to get initial unread count:", error);
       }

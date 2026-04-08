@@ -131,15 +131,10 @@ export function AuthProvider({ children }: Props) {
         method: method,
       });
     },
-    [mixpanel]
+    [mixpanel, posthog]
   );
 
-  useEffect(() => {
-    // check initial user
-    loadAuth();
-  }, []);
-
-  async function loadAuth() {
+  const loadAuth = useCallback(async () => {
     authApp.onIdTokenChanged(async (user) => {
       if (user && user.email) {
         setUser({
@@ -151,7 +146,12 @@ export function AuthProvider({ children }: Props) {
       }
       setIsLoading(false);
     });
-  }
+  }, []);
+
+  useEffect(() => {
+    // check initial user
+    void loadAuth();
+  }, [loadAuth]);
 
   // Will be passed down to Signup, Login and App components
   const value = {

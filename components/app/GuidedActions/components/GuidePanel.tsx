@@ -93,7 +93,7 @@ export default function GuidePanel({
     []
   );
   const [inputValue, setInputValue] = useState("");
-  const [showIntro, setShowIntro] = useState(true);
+  const [dismissedIntroObjectiveId, setDismissedIntroObjectiveId] = useState<string | null>(null);
   const [countdownSeconds, setCountdownSeconds] = useState<number>(0);
   const [loadingPhraseIndex, setLoadingPhraseIndex] = useState(0);
 
@@ -107,19 +107,11 @@ export default function GuidePanel({
     typeof current?.result.displayForMs === "number" &&
     current.result.displayForMs > 0;
   const currentObjectiveId = current?.objectiveId ?? null;
-
-  useEffect(() => {
-    if (currentObjectiveId) {
-      setShowIntro(true);
-      setInputValue("");
-    } else {
-      setShowIntro(false);
-    }
-  }, [currentObjectiveId]);
+  const showIntro =
+    !!currentObjectiveId && dismissedIntroObjectiveId !== currentObjectiveId;
 
   useEffect(() => {
     if (!isTimedDisplayStep) {
-      setCountdownSeconds(0);
       return;
     }
 
@@ -196,7 +188,16 @@ export default function GuidePanel({
         return <EmptyState stateKey={contentStateKey} onClose={onClose} />;
       case "intro":
         return current ? (
-          <IntroState stateKey={contentStateKey} current={current} onStart={() => setShowIntro(false)} />
+          <IntroState
+            stateKey={contentStateKey}
+            current={current}
+            onStart={() => {
+              if (current?.objectiveId) {
+                setDismissedIntroObjectiveId(current.objectiveId);
+              }
+              setInputValue("");
+            }}
+          />
         ) : null;
       case "timed":
         return current ? (

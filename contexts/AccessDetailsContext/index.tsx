@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import { useQuery } from "@apollo/client/react";
 import GET_ACCESS_DETAILS from "../../graphql/ops/app/executor/access/queries/GET_ACCESS_DETAILS";
 import type { 
@@ -22,8 +22,6 @@ interface Props {
 }
 
 export function AccessDetailsProvider({ children, access_id }: Props) {
-  const [accessDetails, setAccessDetails] = useState<AccessDetails | null>(null);
-
   const { loading, error, data } = useQuery<GetAccessDetailsQuery, GetAccessDetailsVariables>(
     GET_ACCESS_DETAILS, 
     {
@@ -34,11 +32,7 @@ export function AccessDetailsProvider({ children, access_id }: Props) {
     }
   );
 
-  useEffect(() => {
-    if (data?.getAccessDetails) {
-      setAccessDetails(data.getAccessDetails);
-    }
-  }, [data]);
+  const accessDetails: AccessDetails | null = data?.getAccessDetails ?? null;
 
   return (
     <AccessDetailsContext.Provider value={{ accessDetails, loading, error }}>

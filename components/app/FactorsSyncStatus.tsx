@@ -1,7 +1,7 @@
 "use client";
 
 import { useApolloClient, useLazyQuery, useMutation } from "@apollo/client/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSession } from "../../contexts/SessionContext";
 import toast from "react-hot-toast";
 import perform_migrate_in from "../../common/factor/perform_migrate_in";
@@ -24,41 +24,43 @@ export default function FactorsSyncStatus() {
   const client = useApolloClient();
   const [isMigrating, setIsMigrating] = useState(false);
 
-  const [unencrypted_keys_count, set_unencrypted_data_count] = useState(0);
-  const [maxPublicKeysList, setMaxPublicKeysList] = useState<any[]>([]);
-  const [max_keys, set_max_keys] = useState({
-    count: 0,
-    publicKey: "null",
-  });
-
   const [getKeyCount, { data, loading, error }] = useLazyQuery<GetAllKeyCountQuery>(
     GET_ALL_KEY_COUNT
   );
 
-  // Handle data processing when query completes
-  useEffect(() => {
-    if (data && data.getAllKeyCount) {
-      const current = data.getAllKeyCount.find(
-        (c) => c.publicKey === "null"
-      );
-      set_unencrypted_data_count(current ? current.count : 0);
-
-      let maxCount = 0;
-      let maxPublicKey = "null";
-      let maxKeyList: any[] = [];
-      for (const c of data.getAllKeyCount) {
-        if (c.count >= maxCount) {
-          maxCount = c.count;
-          maxPublicKey = c.publicKey;
-          maxKeyList.push(c.publicKey);
-        }
+  const {
+    unencryptedKeysCount,
+    maxPublicKeysList,
+    maxKeys,
+    is_all_in_sync,
+    is_insucure,
+  } = useMemo(() => {
+    const counts = data?.getAllKeyCount ?? [];
+    const current = counts.find((c) => c.publicKey === "null");
+    let maxCount = 0;
+    let maxPublicKey = "null";
+    const maxKeyList: string[] = [];
+    for (const c of counts) {
+      if (c.count >= maxCount) {
+        maxCount = c.count;
+        maxPublicKey = c.publicKey;
+        maxKeyList.push(c.publicKey);
       }
-      set_max_keys({
+    }
+
+    return {
+      unencryptedKeysCount: current ? current.count : 0,
+      maxPublicKeysList: maxKeyList,
+      maxKeys: {
         count: maxCount,
         publicKey: maxPublicKey,
-      });
-      setMaxPublicKeysList(maxKeyList);
-    }
+      },
+      is_all_in_sync:
+        counts.length > 0
+          ? counts.every((c) => c.count === maxCount || c.publicKey === "null")
+          : false,
+      is_insucure: counts.length === 1,
+    };
   }, [data]);
   const [deleteDataForPublicKey, { data: deleteData, loading: deleteLoading, error: deleteError }] = useMutation<DeleteKeyMutationResponse, DeleteKeyByPublicKeyVariables>(DELETE_KEY_BY_PUBLIC_KEY, {
     refetchQueries: [
@@ -81,16 +83,6 @@ export default function FactorsSyncStatus() {
 
   const currentPublicKey =
     session && session.publicKey ? session.publicKey : "null";
-
-  const is_all_in_sync =
-    data && data.getAllKeyCount
-      ? data.getAllKeyCount.every(
-          (c) => c.count === max_keys.count || c.publicKey === "null"
-        )
-      : false;
-
-  const is_insucure =
-    data && data.getAllKeyCount && data.getAllKeyCount.length === 1;
 
   if (loading) return null;
   if (is_insucure)
@@ -122,7 +114,7 @@ export default function FactorsSyncStatus() {
         </div>
       </div>
       {maxPublicKeysList.length > 1 &&
-        unencrypted_keys_count > 0 &&
+        unencryptedKeysCount > 0 &&
         is_all_in_sync && (
           <div className="flex items-center justify-between border p-2 rounded-2xl">
             <div>You've some insecure data that you need to delete</div>
@@ -156,7 +148,7 @@ export default function FactorsSyncStatus() {
             >
               <div>Factor {c.publicKey.slice(-8).toUpperCase()}</div>
               <div>
-                {c.count < unencrypted_keys_count ? (
+                {c.count < unencryptedKeysCount ? (
                   <button
                     className="flex items-center px-4 py-1 rounded-full text-sm bg-blue-100 hover:bg-blue-200 text-blue-500 whitespace-nowrap"
                     onClick={async () => {
@@ -195,13 +187,13 @@ export default function FactorsSyncStatus() {
                     Needs Migration
                   </button>
                 ) : (
-                  c.count < max_keys.count &&
-                  (max_keys.publicKey !== currentPublicKey ? (
+                  c.count < maxKeys.count &&
+                  (maxKeys.publicKey !== currentPublicKey ? (
                     <button
                       className="bg-red-200 hover:bg-red-300 p-1 text-xs rounded-full text-red-700 px-2"
                       onClick={() => {
                         toast.error(
-                          `Start Session with Factor key ${max_keys.publicKey
+                          `Start Session with Factor key ${maxKeys.publicKey
                             .slice(-8)
                             .toUpperCase()} to start migration`
                         );
@@ -216,12 +208,12 @@ export default function FactorsSyncStatus() {
                         setIsMigrating(true);
 
                         toast.success(
-                          `Migration Started from -> ${max_keys.publicKey.slice(
+                          `Migration Started from -> ${maxKeys.publicKey.slice(
                             -8
                           )}`
                         );
                         await perform_migrate_in(
-                          max_keys.publicKey,
+                          maxKeys.publicKey,
                           client,
                           c.publicKey,
                           session ? session.privateKey : null
@@ -234,7 +226,7 @@ export default function FactorsSyncStatus() {
                         setIsMigrating(false);
 
                         toast.success(
-                          `Migration Completed from -> ${max_keys.publicKey.slice(
+                          `Migration Completed from -> ${maxKeys.publicKey.slice(
                             -8
                           )}`
                         );
@@ -248,7 +240,7 @@ export default function FactorsSyncStatus() {
                   ))
                 )}
 
-                {c.count >= max_keys.count && (
+                {c.count >= maxKeys.count && (
                   <div className="text-green-700 p-1">
                     <BiCheckShield size={20} />
                   </div>
