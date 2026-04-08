@@ -2,20 +2,6 @@
 
 Purpose: assign these tasks to agents to reduce unnecessary complexity without changing business behavior.
 
-
-## Task 9: Deduplicate Objective Engine Operation Lifecycle
-- Priority: P1
-- Files:
-  - `components/app/GuidedActions/hooks/useObjectiveEngine.ts`
-- Problem:
-  - `initialize`, `continueCurrentStep`, and `submitCurrentStep` repeat operation lifecycle code.
-- Deliverable:
-  - Introduce a shared wrapper for stale-op checks/loading/error handling.
-- Acceptance Criteria:
-  - Duplicate try/catch/finally logic removed.
-  - Objective behavior unchanged.
-- Effort: medium
-
 ## Task 10: Replace Multi-Effect Autosave Pattern
 - Priority: P2
 - Files:

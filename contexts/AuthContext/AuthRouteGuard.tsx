@@ -21,12 +21,12 @@ export function AuthRouteGuard({
 
   useEffect(() => {
     if (isPrivateRoute && !isLoading && !user) {
-      router.replace("/login?redirect=" + pathname);
+      router.replace("/auth?redirect=" + pathname);
     }
   }, [isLoading, isPrivateRoute, pathname, router, user]);
 
   if (!isPrivateRoute) return <>{children}</>;
-  if (isLoading) return <div>Auth Context Loading...</div>;
+  if (isLoading) return null;
   if (!user) return null;
 
   return <>{children}</>;
