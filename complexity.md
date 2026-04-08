@@ -3,19 +3,6 @@
 Purpose: assign these tasks to agents to reduce unnecessary complexity without changing business behavior.
 
 
-## Task 6: Decompose SessionProvider Responsibilities
-- Priority: P1
-- Files:
-  - `contexts/SessionContext/index.tsx`
-- Problem:
-  - Provider currently combines factor fetch, error handling, auth UI, and session state publication.
-- Deliverable:
-  - Extract fetch and selection UI to dedicated hook/component; keep provider focused on context state.
-- Acceptance Criteria:
-  - Provider contains minimal branching.
-  - Existing session flow remains unchanged.
-- Effort: medium
-
 ## Task 7: Decompose AuthProvider Responsibilities
 - Priority: P1
 - Files:
