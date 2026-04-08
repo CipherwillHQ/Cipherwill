@@ -82,7 +82,7 @@ export default async function BlogPost({ params }) {
           <div className="max-w-4xl" suppressHydrationWarning>
             <RenderPlate recordMap={recordMap} />
           </div>
-          <div className="hidden xl:flex flex-col items-center w-[350px] my-10 ml-2">
+          <div className="hidden xl:flex flex-col items-center w-87.5 my-10 ml-2">
             <div className="sticky top-20 bottom-0">
               <BlogAd />
             </div>

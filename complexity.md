@@ -3,18 +3,7 @@
 Purpose: assign these tasks to agents to reduce unnecessary complexity without changing business behavior.
 
 
-## Task 7: Decompose AuthProvider Responsibilities
-- Priority: P1
-- Files:
-  - `contexts/AuthContext/index.tsx`
-- Problem:
-  - Provider contains route guard, analytics, token listeners, and auth action implementations.
-- Deliverable:
-  - Split into `useAuthState`, `useAuthActions`, and guard/wrapper concerns.
-- Acceptance Criteria:
-  - Auth actions are easier to test in isolation.
-  - Route guarding logic is separate from action logic.
-- Effort: medium
+
 
 ## Task 8: Replace Firebase Error if/else Ladder
 - Priority: P1

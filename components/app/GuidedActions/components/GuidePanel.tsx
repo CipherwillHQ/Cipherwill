@@ -257,7 +257,7 @@ export default function GuidePanel({
         <motion.div
           layout
           transition={{ layout: { duration: 0.24, ease: "easeOut" } }}
-          className="w-full max-w-4xl min-h-[18rem] md:min-h-[22rem] flex flex-col items-center justify-center"
+          className="w-full max-w-4xl min-h-72 md:min-h-88 flex flex-col items-center justify-center"
         >
           <AnimatePresence initial={false} mode="wait">{renderState()}</AnimatePresence>
         </motion.div>
