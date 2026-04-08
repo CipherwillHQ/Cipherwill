@@ -3,21 +3,6 @@
 Purpose: assign these tasks to agents to reduce unnecessary complexity without changing business behavior.
 
 
-
-
-## Task 8: Replace Firebase Error if/else Ladder
-- Priority: P1
-- Files:
-  - `contexts/AuthContext/index.tsx`
-- Problem:
-  - `handle_firebase_error` uses a long branch chain for code-to-message mapping.
-- Deliverable:
-  - Convert to map-based lookup with single fallback.
-- Acceptance Criteria:
-  - Same user-facing error strings.
-  - Function size and branching reduced.
-- Effort: low
-
 ## Task 9: Deduplicate Objective Engine Operation Lifecycle
 - Priority: P1
 - Files:
