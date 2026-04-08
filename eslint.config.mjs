@@ -13,7 +13,12 @@ export default defineConfig([
   },
   {
     rules: {
-      "react/no-unescaped-entities": "warn",
+      "react/no-unescaped-entities": [
+        "warn",
+        {
+          forbid: [">", "}"],
+        },
+      ],
       "react-hooks/immutability": "error",
       "react-hooks/purity": "error",
       "react-hooks/preserve-manual-memoization": "error",
