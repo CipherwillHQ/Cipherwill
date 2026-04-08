@@ -2,18 +2,7 @@
 
 Purpose: assign these tasks to agents to reduce unnecessary complexity without changing business behavior.
 
-## Task 10: Replace Multi-Effect Autosave Pattern
-- Priority: P2
-- Files:
-  - `app/app/profile/Profile.tsx`
-- Problem:
-  - Six near-identical `useEffect` blocks schedule saves field-by-field.
-- Deliverable:
-  - Use a single autosave effect or unified field-change pipeline.
-- Acceptance Criteria:
-  - Autosave still works per field.
-  - Repetitive effects removed.
-- Effort: low
+
 
 ## Task 11: Simplify BeneficiaryChoice Popup Duplication
 - Priority: P2

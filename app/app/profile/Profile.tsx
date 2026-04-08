@@ -26,6 +26,14 @@ type ProfileFormState = {
 };
 
 const AUTOSAVE_DELAY_MS = 700;
+const PROFILE_FORM_FIELDS: Array<keyof ProfileFormState> = [
+  "first_name",
+  "middle_name",
+  "last_name",
+  "gender",
+  "country",
+  "birth_date",
+];
 
 export default function Profile() {
   const [email, setEmail] = useState<string>("");
@@ -172,28 +180,10 @@ export default function Profile() {
   }, [lastSavedAt]);
 
   useEffect(() => {
-    scheduleSaveForField("first_name", form.first_name);
-  }, [form.first_name, scheduleSaveForField]);
-
-  useEffect(() => {
-    scheduleSaveForField("middle_name", form.middle_name);
-  }, [form.middle_name, scheduleSaveForField]);
-
-  useEffect(() => {
-    scheduleSaveForField("last_name", form.last_name);
-  }, [form.last_name, scheduleSaveForField]);
-
-  useEffect(() => {
-    scheduleSaveForField("gender", form.gender);
-  }, [form.gender, scheduleSaveForField]);
-
-  useEffect(() => {
-    scheduleSaveForField("country", form.country);
-  }, [form.country, scheduleSaveForField]);
-
-  useEffect(() => {
-    scheduleSaveForField("birth_date", form.birth_date);
-  }, [form.birth_date, scheduleSaveForField]);
+    PROFILE_FORM_FIELDS.forEach((field) => {
+      scheduleSaveForField(field, form[field]);
+    });
+  }, [form, scheduleSaveForField]);
 
   const dob = useMemo(
     () => {
