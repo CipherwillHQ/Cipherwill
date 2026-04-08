@@ -3,20 +3,6 @@
 Purpose: assign these tasks to agents to reduce unnecessary complexity without changing business behavior.
 
 
-
-## Task 5: Split GuidePanel by UI State
-- Priority: P1
-- Files:
-  - `components/app/GuidedActions/components/GuidePanel.tsx`
-- Problem:
-  - One large component handles loading/error/empty/intro/step/timed states inline.
-- Deliverable:
-  - Extract state-specific presentational components and keep one state selector.
-- Acceptance Criteria:
-  - `GuidePanel` is significantly shorter.
-  - State transitions and render paths are easier to read.
-- Effort: high
-
 ## Task 6: Decompose SessionProvider Responsibilities
 - Priority: P1
 - Files:
