@@ -8,15 +8,22 @@ import Link from "next/link";
 import CTA from "@/components/public/CTA";
 import Image from "next/image";
 
+type PersonaRouteParams = {
+  slug: string;
+};
+
+type PersonaPageProps = {
+  params: Promise<PersonaRouteParams>;
+};
+
 function getDescription(job: string) {
   return `Learn how ${job} can easily create and manage a digital will to ensure their online accounts and assets are securely passed on to their chosen beneficiaries.`;
 }
 
 export async function generateMetadata({
   params,
-  searchParams,
-}): Promise<Metadata> {
-  const slug = params.slug;
+}: PersonaPageProps): Promise<Metadata> {
+  const { slug } = await params;
   const persona = personas.find((persona) => persona.slug === slug);
   if (!persona) return redirect("/i/personas");
   const { title: persona_title, persona: job } = persona;
@@ -36,8 +43,8 @@ export async function generateMetadata({
   };
 }
 
-export default function PersonaPage({ params }) {
-  const slug = params.slug;
+export default async function PersonaPage({ params }: PersonaPageProps) {
+  const { slug } = await params;
   const persona = personas.find((persona) => persona.slug === slug);
   if (!persona) return redirect("/i/personas");
 
