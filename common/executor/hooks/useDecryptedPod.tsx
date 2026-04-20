@@ -1,11 +1,11 @@
 import { useSession } from "@/contexts/SessionContext";
 import GET_BENEFICIARY_ENCRYPTION_KEY from "@/graphql/ops/app/executor/access/queries/GET_BENEFICIARY_ENCRYPTION_KEY";
+import GET_GRANTED_POD from "@/graphql/ops/app/executor/access/queries/GET_GRANTED_POD";
 import GET_KEY_BY_REF_ID from "@/graphql/ops/app/key/Queries/GET_KEY_BY_REF_ID";
 import { useApolloClient, useQuery } from "@apollo/client/react";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import get_pod_decryption_key from "../data/get_pod_decryption_key";
-import GET_POD from "@/graphql/ops/app/pod/queries/GET_POD";
 import CryptoJS from "crypto-js";
 import logger from "@/common/debug/logger";
 import type {
@@ -13,8 +13,8 @@ import type {
   GetKeyByRefIdVariables,
   GetBeneficiaryEncryptionKeyQuery,
   GetBeneficiaryEncryptionKeyVariables,
-  GetPodQuery,
-  GetPodVariables
+  GetGrantedPodQuery,
+  GetGrantedPodVariables
 } from "@/types/interfaces/metamodel";
 import type { GraphQLErrorLike } from "@/types/interfaces/graphql";
 
@@ -72,10 +72,11 @@ export default function useDecryptedPod({
           });
           let pod;
           try {
-            pod = await client.query<GetPodQuery, GetPodVariables>({
-              query: GET_POD,
+            pod = await client.query<GetGrantedPodQuery, GetGrantedPodVariables>({
+              query: GET_GRANTED_POD,
               fetchPolicy: "network-only",
               variables: {
+                access_id,
                 ref_id: metamodel_id,
               },
             });
@@ -88,9 +89,11 @@ export default function useDecryptedPod({
             }
           }
           
-          if (!pod) return;
-          
-          const content = pod.data.getPod.content;
+          if (!pod?.data?.getGrantedPod?.content) {
+            return;
+          }
+
+          const content = pod.data.getGrantedPod.content;
           let final_content;
           try {
             final_content = JSON.parse(

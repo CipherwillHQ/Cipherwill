@@ -1,12 +1,14 @@
 import { ApolloClient } from "@apollo/client";
-import recurring_upload from "./recurring_upload";
 import { DataItem, EncryptionKeys, Key } from "./types";
 import generate_encryption_keys from "./generate_encryption_keys";
 import generate_keys_for_beneficiaries from "./generate_keys_for_beneficiaries";
 import generate_keys_for_own_factors from "./generate_keys_for_own_factors";
-import encrypt_and_upload_pod from "./encrypt_and_upload_pod";
+import encrypt_and_upload_pod, {
+  PodUploadCommitPayload,
+} from "./encrypt_and_upload_pod";
 import logger from "../debug/logger";
 import GET_METAMODEL from "@/graphql/ops/app/metamodel/queries/GET_METAMODEL";
+import COMMIT_POD_AND_KEYS from "@/graphql/ops/app/pod/mutations/COMMIT_POD_AND_KEYS";
 import { GetMetamodelQuery, GetMetamodelVariables } from "@/types";
 
 export default async function upload_pod_data({
@@ -24,8 +26,12 @@ export default async function upload_pod_data({
     data_items,
   });
 
-  // encrypt each data item with generated random key and upload pod
-  await encrypt_and_upload_pod({ encryption_keys, data_items, client });
+  // encrypt each data item and perform the upload phase
+  const uploaded_pods: PodUploadCommitPayload[] = await encrypt_and_upload_pod({
+    encryption_keys,
+    data_items,
+    client,
+  });
 
   // create empty key cluster
   let key_cluster: Key[] = [];
@@ -61,6 +67,35 @@ export default async function upload_pod_data({
     ignored_beneficiaries,
   });
 
-  // upload cluster keys
-  await recurring_upload({ client, key_cluster });
+  const keys_by_ref = new Map<string, Key[]>();
+  for await (const key_item of key_cluster) {
+    const existing_items = keys_by_ref.get(key_item.ref_id) || [];
+    existing_items.push(key_item);
+    keys_by_ref.set(key_item.ref_id, existing_items);
+  }
+
+  // atomically commit pod metadata + keys per ref_id
+  for await (const uploaded_pod of uploaded_pods) {
+    const keys_for_ref = keys_by_ref.get(uploaded_pod.ref_id) || [];
+    if (keys_for_ref.length === 0) {
+      throw new Error(`No keys generated for ref_id ${uploaded_pod.ref_id}`);
+    }
+
+    const commit_res = await client.mutate({
+      mutation: COMMIT_POD_AND_KEYS,
+      variables: {
+        ref_id: uploaded_pod.ref_id,
+        data_model_version: uploaded_pod.data_model_version,
+        mode: uploaded_pod.mode,
+        encrypted_text:
+          uploaded_pod.mode === "TEXT" ? uploaded_pod.encrypted_text : null,
+        items: keys_for_ref,
+      },
+    });
+
+    if (!(commit_res.data as any)?.commitPodAndKeys) {
+      logger.error(`Failed to commit pod and keys for ${uploaded_pod.ref_id}`);
+      throw new Error("Failed to commit pod and keys");
+    }
+  }
 }

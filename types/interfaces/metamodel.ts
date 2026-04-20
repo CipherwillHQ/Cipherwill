@@ -120,6 +120,15 @@ export interface GetPodVariables {
   ref_id: string;
 }
 
+export interface GetGrantedPodQuery {
+  getGrantedPod: Pod;
+}
+
+export interface GetGrantedPodVariables {
+  access_id: string;
+  ref_id: string;
+}
+
 // Folder related interfaces
 export interface Folder {
   id: string;

@@ -3,12 +3,10 @@
 import logger from "@/common/debug/logger";
 import SimpleButton from "@/components/common/SimpleButton";
 import { useSession } from "@/contexts/SessionContext";
-import GET_POD from "@/graphql/ops/app/pod/queries/GET_POD";
 import { useApolloClient } from "@apollo/client/react";
 import toast from "react-hot-toast";
 import crypto from "crypto";
 import GET_KEY_BY_REF_ID from "@/graphql/ops/app/key/Queries/GET_KEY_BY_REF_ID";
-import GET_METAMODEL from "@/graphql/ops/app/metamodel/queries/GET_METAMODEL";
 import GET_GRANTED_METAMODEL from "@/graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODEL";
 import GET_BENEFICIARY_ENCRYPTION_KEY from "@/graphql/ops/app/executor/access/queries/GET_BENEFICIARY_ENCRYPTION_KEY";
 import get_pod_decryption_key from "@/common/executor/data/get_pod_decryption_key";
@@ -21,6 +19,28 @@ import type {
   GetGrantedMetamodelVariables,
 } from "@/types/interfaces/metamodel";
 import GET_GRANTED_STORAGE_OBJECT_DOWNLOAD_URL from "@/graphql/ops/app/executor/access/queries/GET_GRANTED_STORAGE_OBJECT_DOWNLOAD_URL";
+
+const MIME_EXTENSION_MAP: Record<string, string> = {
+  "text/plain": "txt",
+  "text/csv": "csv",
+  "application/pdf": "pdf",
+  "application/json": "json",
+  "image/png": "png",
+  "image/jpeg": "jpg",
+  "image/jpg": "jpg",
+  "image/gif": "gif",
+  "image/webp": "webp",
+  "video/mp4": "mp4",
+};
+
+function resolveExtension(metadata: { file_ext?: string; type?: string }): string {
+  const fileExt = metadata.file_ext?.trim();
+  if (fileExt) {
+    return fileExt.replace(/^\./, "");
+  }
+  const inferred = metadata.type ? MIME_EXTENSION_MAP[metadata.type] : "";
+  return inferred || "";
+}
 
 export default function DownloadGrantedObject({
   access_id,
@@ -179,38 +199,24 @@ export default function DownloadGrantedObject({
 
         // save decrypted file
         const blob = new Blob([decrypted], { type: parsed_metadata.type });
-        let suffix;
-        switch (parsed_metadata.type) {
-          case "text/plain":
-            suffix = ".txt";
-            break;
-          case "image/png":
-            suffix = ".png";
-            break;
-          case "image/jpeg":
-            suffix = ".jpg";
-            break;
-          case "image/jpg":
-            suffix = ".jpg";
-            break;
-          case "video/mp4":
-            suffix = ".mp4";
-            break;
-          case "image/gif":
-            suffix = ".gif";
-            break;
-          default:
-            logger.error("Unknown file type", parsed_metadata.type);
-            break;
+        const resolvedExtension = resolveExtension(parsed_metadata);
+        const suffix = resolvedExtension ? `.${resolvedExtension}` : "";
+
+        if (!resolvedExtension && parsed_metadata.type) {
+          logger.warn(
+            "Could not infer extension from metadata, downloading without suffix",
+            parsed_metadata.type
+          );
         }
 
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement("a");
         document.body.appendChild(a);
         a.href = url;
-        a.download = parsed_metadata.title.endsWith(suffix)
-          ? parsed_metadata.title
-          : parsed_metadata.title + suffix;
+        const title = String(parsed_metadata.title || "download");
+        const hasSuffix =
+          suffix.length > 0 && title.toLowerCase().endsWith(suffix.toLowerCase());
+        a.download = hasSuffix ? title : `${title}${suffix}`;
         a.click();
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
