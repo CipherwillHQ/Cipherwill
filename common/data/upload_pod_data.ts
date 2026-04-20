@@ -80,10 +80,15 @@ export default async function upload_pod_data({
     if (keys_for_ref.length === 0) {
       throw new Error(`No keys generated for ref_id ${uploaded_pod.ref_id}`);
     }
+    if (uploaded_pod.mode === "STORAGE" && !uploaded_pod.upload_id) {
+      throw new Error(`No upload_id found for storage ref_id ${uploaded_pod.ref_id}`);
+    }
 
     const commit_res = await client.mutate({
       mutation: COMMIT_POD_AND_KEYS,
       variables: {
+        upload_id:
+          uploaded_pod.mode === "STORAGE" ? uploaded_pod.upload_id : null,
         ref_id: uploaded_pod.ref_id,
         data_model_version: uploaded_pod.data_model_version,
         mode: uploaded_pod.mode,

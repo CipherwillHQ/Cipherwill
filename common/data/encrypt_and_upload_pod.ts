@@ -7,10 +7,16 @@ import toast from "react-hot-toast";
 import GET_PRESIGNED_POD_UPLOAD_URL from "@/graphql/ops/app/pod/mutations/GET_PRESIGNED_POD_UPLOAD_URL";
 
 export type PodUploadCommitPayload = {
+  upload_id?: string;
   ref_id: string;
   data_model_version: string;
   mode: "TEXT" | "STORAGE";
   encrypted_text?: string;
+};
+
+type PresignedUploadPayload = {
+  upload_id: string;
+  upload_url: string;
 };
 
 async function get_presigned_url(
@@ -19,7 +25,7 @@ async function get_presigned_url(
   ref_id: string,
   mime_type: string,
   allowed_space: number
-): Promise<string> {
+): Promise<PresignedUploadPayload> {
   const res = await client.mutate({
     mutation: GET_PRESIGNED_POD_UPLOAD_URL,
     variables: {
@@ -29,7 +35,11 @@ async function get_presigned_url(
       allowed_space,
     },
   });
-  return (res.data as any).getPresignedPodUploadUrl;
+  const payload = (res.data as any)?.getPresignedPodUploadUrl;
+  if (!payload?.upload_id || !payload?.upload_url) {
+    throw new Error("Invalid presigned upload payload");
+  }
+  return payload;
 }
 
 async function upload_via_presigned_url(
@@ -122,18 +132,22 @@ export default async function encrypt_and_upload_pod({
         // use direct r2 upload
         const allowed_space = encrypted_file.size;
         // upload directly to r2 using pre-signed url
-        const upload_url = await get_presigned_url(
+        const presigned_payload = await get_presigned_url(
           client,
           item.data_model_version,
           item.ref_id,
           mime_type,
           allowed_space
         );
-        await upload_via_presigned_url(upload_url, encrypted_file);
+        await upload_via_presigned_url(
+          presigned_payload.upload_url,
+          encrypted_file
+        );
         logger.info(
           `Uploaded encrypted file via presigned url for ${item.ref_id}`
         );
         uploaded_pods.push({
+          upload_id: presigned_payload.upload_id,
           ref_id: item.ref_id,
           data_model_version: item.data_model_version,
           mode: "STORAGE",

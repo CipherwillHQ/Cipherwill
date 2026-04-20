@@ -12,7 +12,10 @@ const GET_PRESIGNED_POD_UPLOAD_URL = gql`
       ref_id: $ref_id
       mime_type: $mime_type
       allowed_space: $allowed_space
-    )
+    ) {
+      upload_id
+      upload_url
+    }
   }
 `;
 
