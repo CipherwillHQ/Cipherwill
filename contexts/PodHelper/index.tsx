@@ -169,23 +169,21 @@ export function usePod<POD_DATA_TYPE>(
     // json validate final_data
     // TODO: add json validation
 
-    const finalPods = [
-      {
-        ref_id: refId,
-        data_model_version: version,
-        publicKey: session ? session.publicKey : undefined,
-        data: JSON.stringify({
-          type,
-          version,
-          data: finalData,
-        }),
-      },
-    ];
+    const finalPod = {
+      ref_id: refId,
+      data_model_version: version,
+      publicKey: session ? session.publicKey : undefined,
+      data: JSON.stringify({
+        type,
+        version,
+        data: finalData,
+      }),
+    };
     setIsUpdating(true);
     try {
       if (Object.keys(finalData).length > 0) {
         await upload_pod_data({
-          data_items: finalPods,
+          data_item: finalPod,
           client,
           metamodel_id,
         });

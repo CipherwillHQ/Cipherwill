@@ -66,14 +66,12 @@ export async function runRestoreLoop(
       }
 
       await upload_pod_data({
-        data_items: [
-          {
-            ref_id: item.id,
-            data_model_version: dataAdapter.getDataModelVersion(item),
-            publicKey: session ? session.publicKey : undefined,
-            data: dataAdapter.getUploadData(item),
-          },
-        ],
+        data_item: {
+          ref_id: item.id,
+          data_model_version: dataAdapter.getDataModelVersion(item),
+          publicKey: session ? session.publicKey : undefined,
+          data: dataAdapter.getUploadData(item),
+        },
         client,
         metamodel_id: (response.data as any).createMetamodel.id,
       });

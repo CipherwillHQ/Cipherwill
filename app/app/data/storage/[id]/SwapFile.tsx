@@ -61,14 +61,12 @@ export default function SwapFile({ id }) {
                 });
                 // upload data
                 await upload_pod_data({
-                  data_items: [
-                    {
-                      ref_id: id,
-                      data_model_version: "0.0.1",
-                      publicKey: session ? session.publicKey : undefined,
-                      data: file,
-                    },
-                  ],
+                  data_item: {
+                    ref_id: id,
+                    data_model_version: "0.0.1",
+                    publicKey: session ? session.publicKey : undefined,
+                    data: file,
+                  },
                   client,
                   metamodel_id: id,
                 }).catch((error) => {

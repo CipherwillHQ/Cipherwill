@@ -1,5 +1,5 @@
 import { ApolloClient } from "@apollo/client";
-import { DataItem, EncryptionKeys, Key } from "./types";
+import { DataItem, EncryptionKey } from "./types";
 import AES from "crypto-js/aes";
 import crypto from "crypto";
 import logger from "../debug/logger";
@@ -58,23 +58,17 @@ async function inform_backend_of_upload(
   if (!(res.data as any).completedPodUpload) {
     toast.error("Error while informing backend of completed upload");
     logger.error("Error while informing backend of completed upload");
-    return;
+    throw new Error("Error while informing backend of completed upload");
   }
 }
 
 async function create_encrypted_file({
-  encryption_keys,
+  encryption_key,
   item,
 }: {
-  encryption_keys: EncryptionKeys;
-  item: any;
+  encryption_key: EncryptionKey;
+  item: DataItem;
 }) {
-  const encryption_key = encryption_keys[item.ref_id];
-  if (!encryption_key) {
-    logger.error(`Encrpytion key not found for data item`);
-    toast.error("Encrpytion key not found for data item");
-    return;
-  }
   let encrypted_file;
   if (typeof item.data === "string") {
     const file_data = AES.encrypt(item.data, encryption_key.key).toString();
@@ -103,76 +97,75 @@ async function create_encrypted_file({
 }
 
 export default async function encrypt_and_upload_pod({
-  encryption_keys,
-  data_items,
+  encryption_key,
+  data_item,
   client,
 }: {
-  encryption_keys: EncryptionKeys;
-  data_items: DataItem[];
+  encryption_key: EncryptionKey;
+  data_item: DataItem;
   client: ApolloClient;
 }) {
-  for await (const item of data_items) {
-    // encrypt data with random key
-    const encrypted_file = await create_encrypted_file({
-      encryption_keys,
-      item,
-    });
-    if (encrypted_file === undefined) {
-      logger.error(`Error while encrypting file`);
-      toast.error("Error while encrypting file");
-      return;
-    }
-    const mime_type = encrypted_file.type;
-    if (mime_type === "text/plain") {
-      // use backend upload
+  // encrypt data with random key
+  const encrypted_file = await create_encrypted_file({
+    encryption_key,
+    item: data_item,
+  });
+  if (encrypted_file === undefined) {
+    logger.error(`Error while encrypting file`);
+    toast.error("Error while encrypting file");
+    throw new Error("Error while encrypting file");
+  }
+  const mime_type = encrypted_file.type;
+  if (mime_type === "text/plain") {
+    // use backend upload
 
-      // upload encrypted pod
-      await client
-        .mutate({
-          mutation: UPDATE_POD,
-          variables: {
-            data_model_version: item.data_model_version,
-            ref_id: item.ref_id,
-            file: encrypted_file,
+    // upload encrypted pod
+    await client
+      .mutate({
+        mutation: UPDATE_POD,
+        variables: {
+          data_model_version: data_item.data_model_version,
+          ref_id: data_item.ref_id,
+          file: encrypted_file,
+        },
+        context: {
+          headers: {
+            "apollo-require-preflight": true,
           },
-          context: {
-            headers: {
-              "apollo-require-preflight": true,
-            },
-          },
-        })
-        .then((res) => {
-          logger.info(`Encrypted file uploaded for ${item.ref_id}`);
-        })
-        .catch((error) => {
-          logger.error(`Error while uploading encrypted file`, error);
-        });
-    } else {
-      // use direct r2 upload
+        },
+      })
+      .then(() => {
+        logger.info(`Encrypted file uploaded for ${data_item.ref_id}`);
+      })
+      .catch((error) => {
+        logger.error(`Error while uploading encrypted file`, error);
+        throw error;
+      });
+  } else {
+    // use direct r2 upload
 
-      const allowed_space = encrypted_file.size;
-      // upload directly to r2 using pre-signed url and update details on backend
-      const upload_url = await get_presigned_url(
-        client,
-        item.data_model_version,
-        item.ref_id,
-        mime_type,
-        allowed_space
+    const allowed_space = encrypted_file.size;
+    // upload directly to r2 using pre-signed url and update details on backend
+    const upload_url = await get_presigned_url(
+      client,
+      data_item.data_model_version,
+      data_item.ref_id,
+      mime_type,
+      allowed_space
+    );
+    try {
+      await upload_via_presigned_url(upload_url, encrypted_file);
+      logger.info(
+        `Uploaded encrypted file via presigned url for ${data_item.ref_id}`
       );
-      try {
-        await upload_via_presigned_url(upload_url, encrypted_file);
-        logger.info(
-          `Uploaded encrypted file via presigned url for ${item.ref_id}`
-        );
-        await inform_backend_of_upload(client, item.ref_id);
-      } catch (error) {
-        logger.error(
-          `Error while uploading encrypted file via presigned url`,
-          error
-        );
-        toast.error("Error while uploading encrypted file");
-        return;
-      }
+      await inform_backend_of_upload(client, data_item.ref_id);
+    } catch (error) {
+      logger.error(
+        `Error while uploading encrypted file via presigned url`,
+        error
+      );
+      toast.error("Error while uploading encrypted file");
+      throw error;
     }
   }
 }

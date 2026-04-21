@@ -13,10 +13,7 @@ export type Key = {
   key: string;
 };
 
-export type EncryptionKeys = Record<
-  string,
-  {
-    metamodel_ref_id: string;
-    key: string;
-  }
->;
+export type EncryptionKey = {
+  metamodel_ref_id: string;
+  key: string;
+};
