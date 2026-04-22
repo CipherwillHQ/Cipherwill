@@ -16,9 +16,9 @@ export default defineConfig({
   webServer: process.env.PLAYWRIGHT_BASE_URL
     ? undefined
     : {
-        command: `yarn test:dev --port ${port}`,
+        command: `yarn test:build && yarn test:start --port ${port}`,
         url: baseURL,
-        reuseExistingServer: !process.env.CI,
+        reuseExistingServer: false,
         timeout: 120_000,
       },
   projects: [

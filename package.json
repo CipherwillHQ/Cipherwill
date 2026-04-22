@@ -11,7 +11,8 @@
     "prebuild": "tsx checks/prebuild-checks.ts",
     "postbuild": "next-sitemap",
     "test:dev": "cross-env NODE_ENV=test next dev",
-    "test:build": "cross-env NODE_ENV=test next build"
+    "test:build": "cross-env NODE_ENV=test next build",
+    "test:start": "cross-env NODE_ENV=test next start"
   },
   "resolutions": {
     "prosemirror-model": "1.25.4",
