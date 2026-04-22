@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "test": "playwright test",
     "prebuild": "tsx checks/prebuild-checks.ts",
     "postbuild": "next-sitemap",
     "test:dev": "cross-env NODE_ENV=test next dev",
@@ -77,6 +78,7 @@
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/mixpanel-browser": "^2.66.0",
     "@types/node": "^25.5.0",
