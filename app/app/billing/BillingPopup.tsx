@@ -3,7 +3,7 @@ import { IoClose } from "react-icons/io5";
 export default function BillingPopup() {
   return (
     <div className="flex flex-col w-full max-w-4xl max-h-[80vh] bg-white text-black rounded-sm px-4 py-2 shadow-sm">
-      <div className="w-[5000px]" />
+      <div className="w-1250" />
       <div className="w-full flex justify-between items-center">
         <div className="text-xl font-semibold">++</div>
         <IoClose size={25} />
@@ -50,7 +50,7 @@ export default function BillingPopup() {
           />
 
           <div className="text-xs">
-            By providing your card information, you allow Notion Labs, Inc. to
+            By providing your card information, you allow Cipherwill to
             charge your card for future payments in accordance with their terms.
           </div>
         </div>
