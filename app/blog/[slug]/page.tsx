@@ -1,6 +1,3 @@
-import RenderPlate from "./RenderPlate";
-import CheckURL from "./CheckURL";
-import getPost from "./getPost";
 import Footer from "../../../components/Footer";
 import Header from "../../../components/Header";
 import getTimeAgo from "@/common/time/getTimeAgo";
@@ -9,7 +6,9 @@ import CTA from "@/components/public/CTA";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import dynamic from "next/dynamic";
+import parse from "html-react-parser";
 import BlogAd from "./BlogAd";
+import getPost from "./getPost";
 
 const CoverImage = dynamic(() => import("./CoverImage"));
 
@@ -21,7 +20,7 @@ export async function generateMetadata({
   searchParams,
 }): Promise<Metadata> {
   const { slug } = await params;
-  const { title, description, cover, error } = await getPost(slug);
+  const { title, description, error } = await getPost(slug);
   if (error) {
     console.error("error", error);
     return redirect("/blog");
@@ -34,7 +33,7 @@ export async function generateMetadata({
       type: "article",
       title,
       description,
-      images: [cover],
+      images: ["https://www.cipherwill.com/og-img.png"],
       url: `${FULL_HOSTNAME}/blog/${slug}`,
     },
   };
@@ -46,12 +45,9 @@ export default async function BlogPost({ params }) {
     id,
     title,
     description,
-    db_slug,
-    cover,
     created_time,
     last_edited_time,
-    recordMap,
-    nonce,
+    htmlContent,
     error,
   } = await getPost(slug);
   if (error) {
@@ -63,24 +59,32 @@ export default async function BlogPost({ params }) {
     <div>
       <Header />
       <div className="py-20">
-        <CheckURL slug={db_slug} id={id} />
-        {/* {JSON.stringify(recordMap.block)} */}
         <div className="text-center max-w-4xl mx-auto p-2 my-8">
-          {/* Blog Post for {slug} and {id} */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold py-8 leading-normal sm:leading-normal md:leading-normal">
+          <h1
+            className="text-3xl sm:text-4xl md:text-5xl font-semibold py-8 leading-normal sm:leading-normal md:leading-normal"
+          >
             {title}
           </h1>
           <p className="max-w-3xl mx-auto text-lg font-medium">{description}</p>
           <div className="text-xs sm:text-sm text-gray-500 py-4">
-            Created - {getTimeAgo(created_time, true)}
+            Created - {created_time ? getTimeAgo(created_time, true) : ""}
             {" | "}
-            Updated - {getTimeAgo(last_edited_time, true)}
+            Updated -{" "}
+            {last_edited_time ? getTimeAgo(last_edited_time, true) : ""}
           </div>
         </div>
-        <CoverImage cover={cover} title={title} />
-        <div className="flex justify-center max-w-7xl mx-auto" suppressHydrationWarning>
-          <div className="max-w-4xl" suppressHydrationWarning>
-            <RenderPlate recordMap={recordMap} />
+        <CoverImage
+          cover={`https://blogs.cipherwill.com/${slug}/index.png`}
+          title={title}
+        />
+        <div className="flex justify-center max-w-7xl mx-auto">
+          <div className="max-w-4xl w-full p-4" suppressHydrationWarning>
+            <div
+              className="blog-content"
+              suppressHydrationWarning
+            >
+              {parse(htmlContent || "")}
+            </div>
           </div>
           <div className="hidden xl:flex flex-col items-center w-87.5 my-10 ml-2">
             <div className="sticky top-20 bottom-0">
