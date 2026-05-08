@@ -1328,6 +1328,11 @@
     "@emnapi/runtime" "^1.7.1"
     "@tybys/wasm-util" "^0.10.1"
 
+"@neondatabase/serverless@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@neondatabase/serverless/-/serverless-1.1.0.tgz#35046d1125932153dd306bd3d7c269306914e005"
+  integrity sha512-r3ZZhRjEcfEdKIZnoB1RusNgvHuaBRqfCzV4Gi+5A9yUX0S4HTws/ASWqt13wL4y4I+0rqsWGdA2w7EQXHi3+Q==
+
 "@next/env@16.2.1":
   version "16.2.1"
   resolved "https://registry.yarnpkg.com/@next/env/-/env-16.2.1.tgz#3896715e28c850355b7b1c9c687beb9d7e9cdc40"

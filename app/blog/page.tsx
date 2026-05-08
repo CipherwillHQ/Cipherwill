@@ -6,7 +6,7 @@ import getTimeAgo from "@/common/time/getTimeAgo";
 import { FULL_HOSTNAME } from "@/common/constant";
 import CTA from "@/components/public/CTA";
 import FirstPost from "@/components/app/blog/FirstPost";
-import { getNotionPosts } from "./getNotionPosts";
+import getBlogPosts from "./getBlogPosts";
 
 // Page cache configs
 export const revalidate = 3600; // 1 hour
@@ -29,9 +29,9 @@ export const metadata = {
 
 export default async function Blog({ params, searchParams }: any) {
   const { cursor } = await searchParams;
-  const { pages, has_more, next_cursor } = await getNotionPosts({cursor});
-  const first_page = pages[0];
-  const remaining_pages = pages.slice(1);
+  const { pages, has_more, next_cursor } = await getBlogPosts({ cursor });
+  const first_page = pages ? pages[0] : null;
+  const remaining_pages = pages ? pages.slice(1) : [];
 
   return (
     <div>
@@ -50,22 +50,17 @@ export default async function Blog({ params, searchParams }: any) {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 px-2 py-10 gap-2 max-w-7xl mx-auto">
         {remaining_pages.map((page: any) => {
-          const title = page.properties.Name.title[0].text.content;
-          const slug = page.properties.slug.rich_text[0].text.content;
-          const created = new Date(page.created_time);
-          const updated = new Date(page.last_edited_time);
-          const banner =
-            page.cover.type === "external"
-              ? page.cover.external.url
-              : page.cover.type === "file"
-              ? page.cover.file.url
-              : "https://www.cipherwill.com/og-img.png";
+          const title = page.meta_title;
+          const slug = page.slug;
+          const created = new Date(parseInt(page.created_at));
+          const updated = new Date(parseInt(page.updated_at));
+          const banner = `https://blogs.cipherwill.com/${page.slug}/index.png`;
           let banner_url = new URL(banner);
           banner_url.search = "";
 
           return (
             <Link
-              href={`/blog/${slug}-${page.id.replaceAll("-", "")}`}
+              href={`/blog/${slug}`}
               key={page.id}
               className="border-b last:border-0 sm:last:border sm:border sm:rounded-lg my-8 sm:my-0"
             >
@@ -73,22 +68,16 @@ export default async function Blog({ params, searchParams }: any) {
                 <Image
                   width={400}
                   height={225}
-                  className="aspect-video p-2 sm:p-0 max-h-[250px] w-full object-cover rounded-t-lg"
-                  src={
-                    banner_url.href.startsWith("https://www.cipherwill.com")
-                      ? banner_url.href
-                      : `https://www.notion.so/image/${encodeURIComponent(
-                          banner_url.href
-                        )}?table=block&id=${page.id}&cache=v2`
-                  }
-                  alt={`Cover for ${title}`}
+                  className="aspect-video p-2 sm:p-0 max-h-62.5 w-full object-cover rounded-t-lg"
+                  src={banner_url.href}
+                  alt={title}
                 />
                 <div className="p-2">
                   <h2 className="text-xl font-semibold line-clamp-2">
                     {title}
                   </h2>
                   <p className="line-clamp-3">
-                    {page.properties.Description.rich_text[0].text.content}
+                    {page.meta_desc}
                   </p>
                   {/* Crated at : {created.toLocaleString()} */}
 

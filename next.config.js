@@ -49,6 +49,10 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "blogs.cipherwill.com",
+      },
+      {
+        protocol: "https",
         hostname: "media.cipherwill.com",
       },
       {
