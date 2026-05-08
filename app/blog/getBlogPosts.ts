@@ -9,9 +9,9 @@ async function getBlogPosts({ cursor }: { cursor?: string }) {
   
   let response;
   if (cursor) {
-    response = await sql`SELECT * FROM blogs WHERE id < ${cursor} ORDER BY id DESC LIMIT 21`;
+    response = await sql`SELECT * FROM blogs WHERE id < ${cursor} AND is_published = true ORDER BY id DESC LIMIT 21`;
   } else {
-    response = await sql`SELECT * FROM blogs ORDER BY id DESC LIMIT 21`;
+    response = await sql`SELECT * FROM blogs WHERE is_published = true ORDER BY id DESC LIMIT 21`;
   }
 
   const pages = response.slice(0, 20);
