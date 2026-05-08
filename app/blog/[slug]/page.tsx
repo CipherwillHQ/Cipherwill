@@ -33,7 +33,7 @@ export async function generateMetadata({
       type: "article",
       title,
       description,
-      images: ["https://www.cipherwill.com/og-img.png"],
+      images: [`https://blogs.cipherwill.com/${slug}/index.png`],
       url: `${FULL_HOSTNAME}/blog/${slug}`,
     },
   };
