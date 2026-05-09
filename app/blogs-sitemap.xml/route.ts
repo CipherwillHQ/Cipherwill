@@ -1,20 +1,30 @@
-import { neon } from "@neondatabase/serverless";
 import { FULL_HOSTNAME } from "@/common/constant";
+import { getSupabaseServerClient } from "@/common/supabase/server";
 
 export async function GET() {
-  if (process.env.DATABASE_URL === undefined) {
-    return new Response("DATABASE_URL is not defined", { status: 500 });
+  const { client: supabase, error: supabaseClientError } =
+    getSupabaseServerClient();
+  if (supabaseClientError || !supabase) {
+    return new Response(supabaseClientError, { status: 500 });
   }
 
-  const sql = neon(process.env.DATABASE_URL);
-  const blogs =
-    await sql`SELECT slug, updated_at FROM blogs WHERE is_published = true ORDER BY id DESC`;
+  const { data: blogs, error } = await supabase
+    .from("blogs")
+    .select("slug,updated_at")
+    .eq("is_published", true)
+    .order("id", { ascending: false });
+
+  if (error) {
+    return new Response(error.message, { status: 500 });
+  }
+
+  const safeBlogs = blogs ?? [];
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  ${blogs
+  ${safeBlogs
     .map((blog) => {
-      const updated = new Date(parseInt(blog.updated_at));
+      const updated = new Date(Number(blog.updated_at));
       return `
   <url>
     <loc>${FULL_HOSTNAME}/blog/${blog.slug}</loc>

@@ -25,10 +25,11 @@
   "dependencies": {
     "@apollo/client": "^4.1.6",
     "@metamask/sdk-react": "^0.33.1",
-    "@neondatabase/serverless": "^1.1.0",
     "@paddle/paddle-js": "^1.6.2",
     "@react-native-async-storage/async-storage": "^3.0.1",
     "@sentry/nextjs": "^10.45.0",
+    "@supabase/ssr": "^0.10.3",
+    "@supabase/supabase-js": "^2.105.4",
     "@tiptap/core": "^3.20.4",
     "@tiptap/extension-placeholder": "^3.20.4",
     "@tiptap/pm": "^3.20.4",

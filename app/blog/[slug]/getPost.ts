@@ -1,21 +1,30 @@
-import { neon } from "@neondatabase/serverless";
 import { cache } from "react";
+import { getSupabaseServerClient } from "@/common/supabase/server";
 
 const getPost = cache(async (slug: string) => {
   if (!slug) return { error: "Slug not passed" };
-  if (process.env.DATABASE_URL === undefined)
+  const { client: supabase, error: supabaseClientError } =
+    getSupabaseServerClient();
+  if (supabaseClientError || !supabase)
     return {
-      error: "DATABASE_URL is not defined",
+      error: supabaseClientError,
     };
-  const sql = neon(process.env.DATABASE_URL);
-  const response = await sql`SELECT * FROM blogs WHERE slug = ${slug} AND is_published = true LIMIT 1`;
-  
-  if (response.length === 0) {
+
+  const { data: post, error } = await supabase
+    .from("blogs")
+    .select("*")
+    .eq("slug", slug)
+    .eq("is_published", true)
+    .maybeSingle();
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  if (!post) {
     return { error: "Post not found" };
   }
 
-  const post = response[0];
-  
   // Fetch the HTML content from S3
   const htmlResponse = await fetch(`https://blogs.cipherwill.com/${post.slug}/index.html`);
   if (!htmlResponse.ok) {
@@ -28,8 +37,8 @@ const getPost = cache(async (slug: string) => {
     title: post.meta_title,
     description: post.meta_desc,
     slug: post.slug,
-    created_time: parseInt(post.created_at),
-    last_edited_time: parseInt(post.updated_at),
+    created_time: Number(post.created_at),
+    last_edited_time: Number(post.updated_at),
     htmlContent,
   };
 });
