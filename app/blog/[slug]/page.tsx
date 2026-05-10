@@ -9,6 +9,7 @@ import dynamic from "next/dynamic";
 import parse from "html-react-parser";
 import BlogAd from "./BlogAd";
 import getPost from "./getPost";
+import TableOfContents from "./TableOfContents";
 
 const CoverImage = dynamic(() => import("./CoverImage"));
 
@@ -78,7 +79,8 @@ export default async function BlogPost({ params }) {
           title={title}
         />
         <div className="flex justify-center max-w-7xl mx-auto">
-          <div className="max-w-4xl w-full p-4" suppressHydrationWarning>
+          <div className="max-w-4xl w-full p-4 xl:p-0 xl:pr-4  text-lg" suppressHydrationWarning>
+            <TableOfContents />
             <div
               className="blog-content"
               suppressHydrationWarning
