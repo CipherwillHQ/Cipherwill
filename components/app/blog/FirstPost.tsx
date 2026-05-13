@@ -22,6 +22,7 @@ export default function FirstPost({ page }: { page: any }) {
             className="sm:rounded-xl aspect-video w-full sm:w-1/2 object-cover max-h-62.5"
             src={banner_url.href}
             alt={title}
+            unoptimized
           />
           <div className="flex flex-col justify-between py-4 sm:px-4 sm:pt-0 border-b sm:border-b-0 w-full sm:w-1/2">
             <div>
