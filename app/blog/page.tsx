@@ -71,6 +71,7 @@ export default async function Blog({ params, searchParams }: any) {
                   className="aspect-video p-2 sm:p-0 max-h-62.5 w-full object-cover rounded-t-lg"
                   src={banner_url.href}
                   alt={title}
+                  unoptimized
                 />
                 <div className="p-2">
                   <h2 className="text-xl font-semibold line-clamp-2">
