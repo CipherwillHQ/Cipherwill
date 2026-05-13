@@ -49,11 +49,11 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "media.cipherwill.com",
+        hostname: "blogs.cipherwill.com",
       },
       {
         protocol: "https",
-        hostname: "www.notion.so",
+        hostname: "media.cipherwill.com",
       },
       {
         protocol: "https",
@@ -63,10 +63,6 @@ const nextConfig = {
   },
   async rewrites() {
     return [
-      {
-        source: "/blogs-sitemap.xml",
-        destination: "https://media.cipherwill.com/sitemap/blogs-sitemap.xml",
-      },
       // Using custom endpoint for PostHog
       // do not need this
 

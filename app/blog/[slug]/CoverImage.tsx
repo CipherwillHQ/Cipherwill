@@ -14,7 +14,7 @@ export default function CoverImage({
         height={1280}
         src={cover}
         alt={`Cover for ${title}`}
-        className="rounded-lg max-h-[400px] object-cover object-center"
+        className="rounded-lg max-h-100 object-cover object-center"
         priority
       />
     </div>
