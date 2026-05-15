@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const port = Number(process.env.PLAYWRIGHT_PORT || 3100);
+const port = Number(process.env.PLAYWRIGHT_PORT || 3000);
 const baseURL = process.env.PLAYWRIGHT_BASE_URL || `http://localhost:${port}`;
 
 export default defineConfig({
@@ -18,7 +18,7 @@ export default defineConfig({
     : {
         command: `yarn test:build && yarn test:start --port ${port}`,
         url: baseURL,
-        reuseExistingServer: false,
+        reuseExistingServer: true,
         timeout: 120_000,
       },
   projects: [
