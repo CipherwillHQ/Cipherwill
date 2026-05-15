@@ -12,11 +12,11 @@ async function getBlogPosts({ cursor }: { cursor?: string }) {
     .from("blogs")
     .select("*")
     .eq("is_published", true)
-    .order("id", { ascending: false })
+    .order("created_at", { ascending: false })
     .limit(21);
 
   if (cursor) {
-    query = query.lt("id", cursor);
+    query = query.lt("created_at", cursor);
   }
 
   const { data, error } = await query;
@@ -29,7 +29,7 @@ async function getBlogPosts({ cursor }: { cursor?: string }) {
   const response = data ?? [];
   const pages = response.slice(0, 20);
   const has_more = response.length > 20;
-  const next_cursor = has_more ? pages[pages.length - 1].id : null;
+  const next_cursor = has_more ? pages[pages.length - 1].created_at : null;
 
   return {
     pages,
