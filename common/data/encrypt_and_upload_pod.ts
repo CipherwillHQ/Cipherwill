@@ -56,9 +56,12 @@ async function inform_backend_of_upload(
     },
   });
   if (!(res.data as any).completedPodUpload) {
-    toast.error("Error while informing backend of completed upload");
-    logger.error("Error while informing backend of completed upload");
-    return;
+    const error = new Error(
+      `Backend finalize failed for uploaded pod with ref_id ${ref_id}`
+    );
+    toast.error("Error while finalizing uploaded file");
+    logger.error("Error while informing backend of completed upload", error);
+    throw error;
   }
 }
 
@@ -68,12 +71,13 @@ async function create_encrypted_file({
 }: {
   encryption_keys: EncryptionKeys;
   item: any;
-}) {
+}): Promise<Blob> {
   const encryption_key = encryption_keys[item.ref_id];
   if (!encryption_key) {
-    logger.error(`Encrpytion key not found for data item`);
+    const error = new Error(`Encryption key not found for ref_id ${item.ref_id}`);
+    logger.error(`Encrpytion key not found for data item`, error);
     toast.error("Encrpytion key not found for data item");
-    return;
+    throw error;
   }
   let encrypted_file;
   if (typeof item.data === "string") {
@@ -117,18 +121,13 @@ export default async function encrypt_and_upload_pod({
       encryption_keys,
       item,
     });
-    if (encrypted_file === undefined) {
-      logger.error(`Error while encrypting file`);
-      toast.error("Error while encrypting file");
-      return;
-    }
     const mime_type = encrypted_file.type;
     if (mime_type === "text/plain") {
       // use backend upload
 
       // upload encrypted pod
-      await client
-        .mutate({
+      try {
+        await client.mutate({
           mutation: UPDATE_POD,
           variables: {
             data_model_version: item.data_model_version,
@@ -140,13 +139,13 @@ export default async function encrypt_and_upload_pod({
               "apollo-require-preflight": true,
             },
           },
-        })
-        .then((res) => {
-          logger.info(`Encrypted file uploaded for ${item.ref_id}`);
-        })
-        .catch((error) => {
-          logger.error(`Error while uploading encrypted file`, error);
         });
+        logger.info(`Encrypted file uploaded for ${item.ref_id}`);
+      } catch (error) {
+        logger.error(`Error while uploading encrypted file`, error);
+        toast.error("Error while uploading encrypted file");
+        throw error;
+      }
     } else {
       // use direct r2 upload
 
@@ -171,7 +170,7 @@ export default async function encrypt_and_upload_pod({
           error
         );
         toast.error("Error while uploading encrypted file");
-        return;
+        throw error;
       }
     }
   }

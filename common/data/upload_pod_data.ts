@@ -24,8 +24,13 @@ export default async function upload_pod_data({
     data_items,
   });
 
-  // encrypt each data item with generated random key and upload pod
-  await encrypt_and_upload_pod({ encryption_keys, data_items, client });
+  // Abort key generation/upload unless all pod uploads finalize successfully.
+  try {
+    await encrypt_and_upload_pod({ encryption_keys, data_items, client });
+  } catch (error) {
+    logger.error("Pod upload failed, aborting key upload flow", error);
+    throw error;
+  }
 
   // create empty key cluster
   let key_cluster: Key[] = [];
