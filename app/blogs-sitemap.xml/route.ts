@@ -12,7 +12,7 @@ export async function GET() {
     .from("blogs")
     .select("slug,updated_at")
     .eq("is_published", true)
-    .order("id", { ascending: false });
+    .order("created_at", { ascending: false });
 
   if (error) {
     return new Response(error.message, { status: 500 });
