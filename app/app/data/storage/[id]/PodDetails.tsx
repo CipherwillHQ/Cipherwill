@@ -9,7 +9,6 @@ import GET_POD from "@/graphql/ops/app/pod/queries/GET_POD";
 import { useApolloClient } from "@apollo/client/react";
 import toast from "react-hot-toast";
 import crypto from "crypto";
-import SwapFile from "./SwapFile";
 import GET_METAMODEL from "@/graphql/ops/app/metamodel/queries/GET_METAMODEL";
 import { TbDownload, TbFile, TbShieldCheck } from "react-icons/tb";
 import { useState } from "react";
@@ -340,8 +339,6 @@ export default function PodDetails({ id }: PodDetailsProps) {
         </div>
       </div>
 
-      {/* TODO: Degraded functionality */}
-      {/* <SwapFile id={id} /> */}
     </div>
   );
 }
