@@ -44,11 +44,18 @@ async function upload_text_pod(
   session_id: string,
   file: Blob
 ): Promise<void> {
+  const uploadable_file =
+    typeof File !== "undefined"
+      ? new File([file], "encrypted-text-pod.txt", {
+          type: file.type || "text/plain",
+        })
+      : file;
+
   await client.mutate({
     mutation: UPLOAD_SESSION_POD,
     variables: {
       session_id,
-      file,
+      file: uploadable_file,
     },
     context: {
       headers: {
