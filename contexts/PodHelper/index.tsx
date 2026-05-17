@@ -156,7 +156,7 @@ export function usePod<POD_DATA_TYPE>(
     }
   }, [lazy, loadData]);
 
-  async function updatePod(
+  async function savePod(
     updatedData: POD_DATA_TYPE,
     {
       metamodel_id,
@@ -200,7 +200,8 @@ export function usePod<POD_DATA_TYPE>(
     loading,
     error,
     is_updating: isUpdating,
-    updatePod,
+    savePod,
     loadPod: loadData,
   };
 }
+

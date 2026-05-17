@@ -15,7 +15,7 @@ const SEED_PHRASE_SAMPLE: SEED_PHRASE_TYPE = {
 
 export default function PodDetails({ id }) {
   const [data, setData] = useState<SEED_PHRASE_TYPE>({});
-  const { loading, error, updatePod, is_updating } = usePod<SEED_PHRASE_TYPE>(
+  const { loading, error, savePod, is_updating } = usePod<SEED_PHRASE_TYPE>(
     {
       TYPE: "seed_phrase",
       VERSION: "0.0.1",
@@ -145,7 +145,7 @@ export default function PodDetails({ id }) {
         <button
           className="flex items-center justify-center gap-2 bg-black text-white font-bold py-2 px-4 rounded-sm w-full"
           onClick={() => {
-            updatePod({
+            savePod({
               phrase: data.phrase,
               public_key: data.public_key,
               note: data.note,
@@ -162,3 +162,4 @@ export default function PodDetails({ id }) {
     </div>
   );
 }
+

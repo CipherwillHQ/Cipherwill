@@ -17,7 +17,7 @@ const PAYMENT_CARD_SAMPLE: PAYMENT_CARD_TYPE = {
 
 export default function PodDetails({ id }) {
   const [data, setData] = useState<PAYMENT_CARD_TYPE>({});
-  const { loading, error, updatePod, is_updating } = usePod<PAYMENT_CARD_TYPE>(
+  const { loading, error, savePod, is_updating } = usePod<PAYMENT_CARD_TYPE>(
     {
       TYPE: "payment_card",
       VERSION: "0.0.1",
@@ -137,7 +137,7 @@ export default function PodDetails({ id }) {
         <button
           className="flex items-center justify-center gap-2 bg-black text-white font-bold py-2 px-4 rounded-sm w-full"
           onClick={() => {
-            updatePod({
+            savePod({
               type: data.type,
               card_holder_name: data.card_holder_name,
               card_number: data.card_number,
@@ -158,3 +158,4 @@ export default function PodDetails({ id }) {
     </div>
   );
 }
+

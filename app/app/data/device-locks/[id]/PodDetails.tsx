@@ -12,7 +12,7 @@ const DEVICE_LOCK_SAMPLE: DEVICE_LOCK = {
 
 export default function PodDetails({ id }) {
   const [data, setData] = useState<DEVICE_LOCK>({});
-  const { loading, error, updatePod, is_updating } = usePod<DEVICE_LOCK>(
+  const { loading, error, savePod, is_updating } = usePod<DEVICE_LOCK>(
     {
       TYPE: "device_lock",
       VERSION: "0.0.1",
@@ -72,7 +72,7 @@ export default function PodDetails({ id }) {
         <button
           className="flex items-center justify-center gap-2 bg-black text-white font-bold py-2 px-4 rounded-sm w-full"
           onClick={() => {
-            updatePod({
+            savePod({
               password: data.password,
               pin: data.pin,
               note: data.note,
@@ -89,3 +89,4 @@ export default function PodDetails({ id }) {
     </div>
   );
 }
+
