@@ -1,30 +1,61 @@
 import { ApolloClient } from "@apollo/client";
-import { DataItem, EncryptionKeys, Key } from "./types";
+import { DataItem, EncryptionKeys } from "./types";
 import AES from "crypto-js/aes";
 import crypto from "crypto";
 import logger from "../debug/logger";
 import toast from "react-hot-toast";
-import UPDATE_POD from "@/graphql/ops/app/pod/mutations/UPDATE_POD";
-import GET_PRESIGNED_POD_UPLOAD_URL from "@/graphql/ops/app/pod/mutations/GET_PRESIGNED_POD_UPLOAD_URL";
-import COMPLETED_POD_UPLOAD from "@/graphql/ops/app/pod/mutations/COMPLETED_POD_UPLOAD";
+import CREATE_UPLOAD_POD_SESSION from "@/graphql/ops/app/pod/mutations/CREATE_UPLOAD_POD_SESSION";
+import UPLOAD_SESSION_POD from "@/graphql/ops/app/pod/mutations/UPLOAD_SESSION_POD";
 
-async function get_presigned_url(
+type UploadSessionType = "STORAGE_POD" | "TEXT_POD";
+
+type UploadSessionResponse = {
+  id: string;
+  status: "CREATED" | "PODS_UPLOADED" | "KEYS_UPLOADED" | "COMPLETED";
+  type: UploadSessionType;
+  presigned_upload_url: string | null;
+};
+
+export type PreparedPodUploadSession = {
+  ref_id: string;
+  session_id: string;
+  type: UploadSessionType;
+};
+
+async function create_upload_session(
   client: ApolloClient,
   data_model_version: string,
   ref_id: string,
-  mime_type: string,
-  allowed_space: number
-): Promise<string> {
+  required_space: number
+): Promise<UploadSessionResponse> {
   const res = await client.mutate({
-    mutation: GET_PRESIGNED_POD_UPLOAD_URL,
+    mutation: CREATE_UPLOAD_POD_SESSION,
     variables: {
       data_model_version,
       ref_id,
-      mime_type,
-      allowed_space,
+      required_space,
     },
   });
-  return (res.data as any).getPresignedPodUploadUrl;
+  return (res.data as any).createUploadPodSession;
+}
+
+async function upload_text_pod(
+  client: ApolloClient,
+  session_id: string,
+  file: Blob
+): Promise<void> {
+  await client.mutate({
+    mutation: UPLOAD_SESSION_POD,
+    variables: {
+      session_id,
+      file,
+    },
+    context: {
+      headers: {
+        "apollo-require-preflight": true,
+      },
+    },
+  });
 }
 
 async function upload_via_presigned_url(
@@ -42,26 +73,6 @@ async function upload_via_presigned_url(
     throw new Error(
       `Failed to upload file: ${response.status} ${response.statusText}`
     );
-  }
-}
-
-async function inform_backend_of_upload(
-  client: ApolloClient,
-  ref_id: string
-): Promise<void> {
-  const res = await client.mutate({
-    mutation: COMPLETED_POD_UPLOAD,
-    variables: {
-      ref_id,
-    },
-  });
-  if (!(res.data as any).completedPodUpload) {
-    const error = new Error(
-      `Backend finalize failed for uploaded pod with ref_id ${ref_id}`
-    );
-    toast.error("Error while finalizing uploaded file");
-    logger.error("Error while informing backend of completed upload", error);
-    throw error;
   }
 }
 
@@ -114,64 +125,50 @@ export default async function encrypt_and_upload_pod({
   encryption_keys: EncryptionKeys;
   data_items: DataItem[];
   client: ApolloClient;
-}) {
+}): Promise<PreparedPodUploadSession[]> {
+  const upload_sessions: PreparedPodUploadSession[] = [];
   for await (const item of data_items) {
     // encrypt data with random key
     const encrypted_file = await create_encrypted_file({
       encryption_keys,
       item,
     });
-    const mime_type = encrypted_file.type;
-    if (mime_type === "text/plain") {
-      // use backend upload
-
-      // upload encrypted pod
-      try {
-        await client.mutate({
-          mutation: UPDATE_POD,
-          variables: {
-            data_model_version: item.data_model_version,
-            ref_id: item.ref_id,
-            file: encrypted_file,
-          },
-          context: {
-            headers: {
-              "apollo-require-preflight": true,
-            },
-          },
-        });
-        logger.info(`Encrypted file uploaded for ${item.ref_id}`);
-      } catch (error) {
-        logger.error(`Error while uploading encrypted file`, error);
-        toast.error("Error while uploading encrypted file");
-        throw error;
-      }
-    } else {
-      // use direct r2 upload
-
-      const allowed_space = encrypted_file.size;
-      // upload directly to r2 using pre-signed url and update details on backend
-      const upload_url = await get_presigned_url(
+    try {
+      const upload_session = await create_upload_session(
         client,
         item.data_model_version,
         item.ref_id,
-        mime_type,
-        allowed_space
+        encrypted_file.size
       );
-      try {
-        await upload_via_presigned_url(upload_url, encrypted_file);
+
+      if (upload_session.type === "TEXT_POD") {
+        await upload_text_pod(client, upload_session.id, encrypted_file);
+        logger.info(`Encrypted text pod uploaded for ${item.ref_id}`);
+      } else {
+        if (!upload_session.presigned_upload_url) {
+          throw new Error(
+            `Missing presigned upload URL for storage pod ${item.ref_id}`
+          );
+        }
+        await upload_via_presigned_url(
+          upload_session.presigned_upload_url,
+          encrypted_file
+        );
         logger.info(
           `Uploaded encrypted file via presigned url for ${item.ref_id}`
         );
-        await inform_backend_of_upload(client, item.ref_id);
-      } catch (error) {
-        logger.error(
-          `Error while uploading encrypted file via presigned url`,
-          error
-        );
-        toast.error("Error while uploading encrypted file");
-        throw error;
       }
+
+      upload_sessions.push({
+        ref_id: item.ref_id,
+        session_id: upload_session.id,
+        type: upload_session.type,
+      });
+    } catch (error) {
+      logger.error("Error while staging encrypted pod upload", error);
+      toast.error("Error while uploading encrypted file");
+      throw error;
     }
   }
+  return upload_sessions;
 }
