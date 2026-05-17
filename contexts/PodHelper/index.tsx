@@ -156,44 +156,47 @@ export function usePod<POD_DATA_TYPE>(
     }
   }, [lazy, loadData]);
 
-  async function savePod(
-    updatedData: POD_DATA_TYPE,
-    {
-      metamodel_id,
-    }: {
-      metamodel_id: string;
-    },
-  ) {
-    // strip out all fields that are not in the type
-    const finalData = pickAllowedPodData(updatedData, dataSample);
-    // json validate final_data
-    // TODO: add json validation
-
-    const finalPods = [
+  const savePod = useCallback(
+    async (
+      updatedData: POD_DATA_TYPE,
       {
-        ref_id: refId,
-        data_model_version: version,
-        publicKey: session ? session.publicKey : undefined,
-        data: JSON.stringify({
-          type,
-          version,
-          data: finalData,
-        }),
+        metamodel_id,
+      }: {
+        metamodel_id: string;
       },
-    ];
-    setIsUpdating(true);
-    try {
-      if (Object.keys(finalData).length > 0) {
-        await upload_pod_data({
-          data_items: finalPods,
-          client,
-          metamodel_id,
-        });
+    ) => {
+      // strip out all fields that are not in the type
+      const finalData = pickAllowedPodData(updatedData, dataSample);
+      // json validate final_data
+      // TODO: add json validation
+
+      const finalPods = [
+        {
+          ref_id: refId,
+          data_model_version: version,
+          publicKey: session ? session.publicKey : undefined,
+          data: JSON.stringify({
+            type,
+            version,
+            data: finalData,
+          }),
+        },
+      ];
+      setIsUpdating(true);
+      try {
+        if (Object.keys(finalData).length > 0) {
+          await upload_pod_data({
+            data_items: finalPods,
+            client,
+            metamodel_id,
+          });
+        }
+      } finally {
+        setIsUpdating(false);
       }
-    } finally {
-      setIsUpdating(false);
-    }
-  }
+    },
+    [client, dataSample, refId, session, type, version],
+  );
 
   return {
     data,

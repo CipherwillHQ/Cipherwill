@@ -4,7 +4,7 @@ import { NOTE_TYPE } from "../../../../../types/pods/NOTE";
 import { usePod } from "@/contexts/PodHelper";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Placeholder from "@tiptap/extension-placeholder";
 import sanitizeHtml from "@/common/security/sanitizeHtml";
 
@@ -22,6 +22,8 @@ export default function PodDetails({
   const [initialValue, setinitialValue] = useState<string | null>(null);
   const [newValue, setNewValue] = useState<string | null>(null);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const isSavingRef = useRef(false);
+  const pendingSaveRef = useRef<string | null>(null);
 
   const { loading, error, savePod, is_updating, loadPod } = usePod<NOTE_TYPE>(
     {
@@ -63,6 +65,44 @@ export default function PodDetails({
     setSaveStatus(is_updating ? "LOADING" : "SAVED");
   }, [error, is_updating, setSaveStatus]);
 
+  const saveContent = useCallback(
+    async (content: string) => {
+      pendingSaveRef.current = content;
+      if (isSavingRef.current) {
+        return;
+      }
+
+      isSavingRef.current = true;
+      try {
+        while (pendingSaveRef.current !== null) {
+          const nextContent = pendingSaveRef.current;
+          pendingSaveRef.current = null;
+
+          try {
+            await savePod(
+              {
+                content: nextContent,
+              },
+              {
+                metamodel_id: id,
+              },
+            );
+            setinitialValue(nextContent);
+            setSaveStatus("SAVED");
+          } catch (err) {
+            setSaveStatus("ERROR");
+            logger.error(err);
+            pendingSaveRef.current = null;
+            break;
+          }
+        }
+      } finally {
+        isSavingRef.current = false;
+      }
+    },
+    [id, savePod, setSaveStatus],
+  );
+
   useEffect(() => {
     // debounce save
     if (newValue !== initialValue) {
@@ -77,29 +117,14 @@ export default function PodDetails({
     debounceTimerRef.current = setTimeout(() => {
       if (!editor) return;
       const updateData = sanitizeHtml(editor.getHTML());
-      savePod(
-        {
-          content: updateData,
-        },
-        {
-          metamodel_id: id,
-        }
-      )
-        .then((res) => {
-          setinitialValue(updateData);
-          setSaveStatus("SAVED");
-        })
-        .catch((err) => {
-          setSaveStatus("ERROR");
-          logger.error(err);
-        });
+      void saveContent(updateData);
     }, 3000);
     return () => {
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
       }
     };
-  }, [newValue, initialValue, editor, savePod, id, setSaveStatus]);
+  }, [newValue, initialValue, editor, saveContent, setSaveStatus]);
 
   if (loading)
     return (
