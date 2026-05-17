@@ -16,7 +16,7 @@ const PASSWORD_SAMPLE: PASSWORD = {
 
 export default function PodDetails({ id }) {
   const [data, setData] = useState<PASSWORD>({});
-  const { loading, error, updatePod, is_updating } = usePod<PASSWORD>(
+  const { loading, error, savePod, is_updating } = usePod<PASSWORD>(
     {
       TYPE: "password",
       VERSION: "0.0.1",
@@ -155,7 +155,7 @@ export default function PodDetails({ id }) {
         <button
           className="flex items-center justify-center gap-2 bg-black text-white font-bold py-2 px-4 rounded-sm w-full"
           onClick={() => {
-            updatePod({
+            savePod({
               username: data.username,
               password: data.password,
               totp_secret: data.totp_secret,
@@ -173,3 +173,4 @@ export default function PodDetails({ id }) {
     </div>
   );
 }
+

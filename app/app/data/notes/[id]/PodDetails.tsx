@@ -23,7 +23,7 @@ export default function PodDetails({
   const [newValue, setNewValue] = useState<string | null>(null);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const { loading, error, updatePod, is_updating, loadPod } = usePod<NOTE_TYPE>(
+  const { loading, error, savePod, is_updating, loadPod } = usePod<NOTE_TYPE>(
     {
       TYPE: "note",
       VERSION: "0.0.2",
@@ -77,7 +77,7 @@ export default function PodDetails({
     debounceTimerRef.current = setTimeout(() => {
       if (!editor) return;
       const updateData = sanitizeHtml(editor.getHTML());
-      updatePod(
+      savePod(
         {
           content: updateData,
         },
@@ -99,7 +99,7 @@ export default function PodDetails({
         clearTimeout(debounceTimerRef.current);
       }
     };
-  }, [newValue, initialValue, editor, updatePod, id, setSaveStatus]);
+  }, [newValue, initialValue, editor, savePod, id, setSaveStatus]);
 
   if (loading)
     return (
@@ -123,7 +123,7 @@ export default function PodDetails({
           className="flex items-center justify-center bg-black text-white font-bold py-2 px-4 rounded-sm"
           onClick={() => {
             const updateData = editor.getHTML();
-            updatePod({
+            savePod({
               content: updateData,
             }).then((res) => {
               toast.success("Saved");
@@ -140,3 +140,4 @@ export default function PodDetails({
     </div>
   );
 }
+

@@ -21,7 +21,7 @@ const EMAIL_ACCOUNT_SAMPLE: EMAIL_ACCOUNT_TYPE = {
 
 export default function PodDetails({ id }) {
   const [data, setData] = useState<EMAIL_ACCOUNT_TYPE>({});
-  const { loading, error, updatePod, is_updating } = usePod<EMAIL_ACCOUNT_TYPE>(
+  const { loading, error, savePod, is_updating } = usePod<EMAIL_ACCOUNT_TYPE>(
     {
       TYPE: "email_account",
       VERSION: "0.0.1",
@@ -282,7 +282,7 @@ export default function PodDetails({ id }) {
         <button
           className="flex items-center justify-center gap-2 bg-black text-white font-bold py-2 px-4 rounded-sm w-full"
           onClick={() => {
-            updatePod({
+            savePod({
               email: data.email,
               password: data.password,
               provider: data.provider,
@@ -308,3 +308,4 @@ export default function PodDetails({ id }) {
     </div>
   );
 }
+

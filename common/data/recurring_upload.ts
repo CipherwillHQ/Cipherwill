@@ -1,6 +1,6 @@
 import { ApolloClient } from "@apollo/client";
 import logger from "../debug/logger";
-import UPDATE_KEY from "../../graphql/ops/app/key/Mutations/UPDATE_KEY";
+import UPSERT_KEYS from "../../graphql/ops/app/key/Mutations/UPSERT_KEYS";
 import { Key } from "./types";
 
 export default async function recurring_upload({
@@ -22,7 +22,7 @@ export default async function recurring_upload({
         `Step data upload ${size / 1024} kB and ${current_stack.length} items`
       );
       await client.mutate({
-        mutation: UPDATE_KEY,
+        mutation: UPSERT_KEYS,
         variables: {
           items: current_stack,
         },
@@ -37,7 +37,7 @@ export default async function recurring_upload({
       `Step data upload ${size / 1024} kB and ${current_stack.length} items`
     );
     await client.mutate({
-      mutation: UPDATE_KEY,
+      mutation: UPSERT_KEYS,
       variables: {
         items: current_stack,
       },

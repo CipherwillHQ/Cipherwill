@@ -20,7 +20,7 @@ export default function PodDetails({ id }) {
   const [data, setData] = useState<DEFI_STACKING>({});
   const [showPassword, setShowPassword] = useState(false);
 
-  const { loading, error, updatePod, is_updating } = usePod<DEFI_STACKING>(
+  const { loading, error, savePod, is_updating } = usePod<DEFI_STACKING>(
     {
       TYPE: "defi_staking",
       VERSION: "0.0.1",
@@ -148,7 +148,7 @@ export default function PodDetails({ id }) {
         <button
           className="flex items-center justify-center gap-2 bg-black text-white font-bold py-2 px-4 rounded-sm w-full"
           onClick={() => {
-            updatePod({
+            savePod({
               platform: data.platform,
               asset_amount: data.asset_amount,
               asset_name: data.asset_name,
@@ -170,3 +170,4 @@ export default function PodDetails({ id }) {
     </div>
   );
 }
+
