@@ -1,6 +1,21 @@
 const { version } = require("./package.json");
 const path = require('path')
 
+const siteCacheHeaders = [
+  {
+    key: "Cache-Control",
+    value: "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400",
+  },
+  {
+    key: "CDN-Cache-Control",
+    value: "public, s-maxage=3600, stale-while-revalidate=86400",
+  },
+  {
+    key: "Vercel-CDN-Cache-Control",
+    value: "public, s-maxage=3600, stale-while-revalidate=86400",
+  },
+];
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   turbopack: {
@@ -8,6 +23,14 @@ const nextConfig = {
   },
   async headers() {
     return [
+      {
+        source: "/",
+        headers: siteCacheHeaders,
+      },
+      {
+        source: "/:path((?!app(?:/|$)|executor(?:/|$)).+)",
+        headers: siteCacheHeaders,
+      },
       {
         source: "/:path*",
         headers: [
