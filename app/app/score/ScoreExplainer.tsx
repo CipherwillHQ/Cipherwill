@@ -112,7 +112,7 @@ export default function ScoreExplainer() {
     },
     {
       description: "Add your date of birth to complete your personal profile.",
-      value: scoreDetails.dateOfBirth,
+      value: scoreDetails.birthDate,
       pointsLabel: "+100",
       actionHref: "/app/settings?tab=profile",
       actionLabel: "Add",
