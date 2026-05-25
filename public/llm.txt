@@ -1,0 +1,46 @@
+# Cipherwill
+
+> Cipherwill is an end-to-end encrypted digital legacy platform and dead man's switch service. It helps people securely store digital asset access details, define beneficiaries, and automate transfer workflows when lifecycle conditions are met.
+
+## Core Product Pages
+
+- [Home](https://www.cipherwill.com/): Product overview, positioning, and key benefits.
+- [Dead Man's Switch](https://www.cipherwill.com/dead-mans-switch): Explains the core switch model and activation flow.
+- [How It Works](https://www.cipherwill.com/how-it-works): End-to-end workflow walkthrough for setup and transfer.
+- [How Security Factors Work](https://www.cipherwill.com/how-factors-work): Security factor and encryption model explanation.
+- [Pricing](https://www.cipherwill.com/pricing): Plans and pricing details.
+- [Download](https://www.cipherwill.com/download): Installation paths for web app and extension.
+
+## Security and Reliability
+
+- [Time Capsule Encryption](https://www.cipherwill.com/i/time-capsule-encryption): Time-locked encryption model.
+- [Cascade Encryption](https://www.cipherwill.com/i/cascade-encryption): Multi-layer encryption architecture.
+- [Execution Timeline](https://www.cipherwill.com/i/how-execution-timeline-works): Trigger and timeline behavior.
+- [Shard Switch](https://www.cipherwill.com/i/shard-switch): Operational safety and recovery mechanics.
+- [Live Status](https://www.cipherwill.com/i/live-status): Platform status and uptime visibility.
+
+## Help and Learning
+
+- [Support](https://www.cipherwill.com/support): Contact and help center entry point.
+- [FAQ Hub](https://www.cipherwill.com/i/frequently-asked-questions): Common questions and answers.
+- [Persona Guides](https://www.cipherwill.com/i/personas): Role-based digital will guidance.
+- [Blog](https://www.cipherwill.com/blog): Digital legacy and security articles.
+
+## Trust, Company, and Legal
+
+- [About Us](https://www.cipherwill.com/i/about-us): Mission, team context, and company background.
+- [Editorial Team](https://www.cipherwill.com/i/editorial-team): Content authorship and editorial ownership.
+- [Third-Party Processors](https://www.cipherwill.com/i/third-party-processors): External service processor disclosures.
+- [Privacy Policy](https://www.cipherwill.com/i/privacy-policy): Data handling and privacy terms.
+- [Terms of Service](https://www.cipherwill.com/i/terms-of-service): Platform usage terms.
+- [Cookie Policy](https://www.cipherwill.com/i/cookie-policy): Cookie and tracking disclosures.
+- [Refund Policy](https://www.cipherwill.com/i/refund-policy): Billing and refund terms.
+
+## Optional
+
+- [Main Sitemap](https://www.cipherwill.com/sitemap.xml): XML sitemap index.
+- [Blogs Sitemap](https://www.cipherwill.com/blogs-sitemap.xml): Blog URL index.
+- [FAQ Sitemap](https://www.cipherwill.com/i/frequently-asked-questions/sitemap.xml): FAQ URL index.
+- [Personas Sitemap](https://www.cipherwill.com/i/personas/sitemap.xml): Persona guide URL index.
+- [Careers](https://www.cipherwill.com/careers): Open roles and hiring information.
+- [Careers Sitemap](https://www.cipherwill.com/careers/sitemap.xml): Careers URL index.
