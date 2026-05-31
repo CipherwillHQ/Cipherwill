@@ -53,7 +53,9 @@ export default function UserScore({
   className = "",
   improveScrollLink = false,
 }: UserScoreProps) {
-  const { data, loading, error } = useQuery<GetUserScoreData>(GET_USER_SCORE);
+  const { data, loading, error } = useQuery<GetUserScoreData>(GET_USER_SCORE, {
+    fetchPolicy: "cache-and-network",
+  });
   const { current_theme } = useTheme();
 
   const score: number =
@@ -250,7 +252,6 @@ export default function UserScore({
             {description}
           </p>
         )}
-
       </div>
     </div>
   );
