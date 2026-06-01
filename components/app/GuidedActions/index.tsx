@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useApolloClient } from "@apollo/client/react";
 import { AnimatePresence } from "framer-motion";
+import { usePostHog } from "posthog-js/react";
 import { useSession } from "@/contexts/SessionContext";
 import GuidePanel from "./components/GuidePanel";
 import GuidedButton from "./components/GuidedButton";
@@ -22,8 +23,10 @@ export default function GuidedActions() {
     subtext: string | null;
   } | null>(null);
   const completedObjectiveInSessionRef = useRef(false);
+  const trackedCompletedObjectiveIdsRef = useRef(new Set<string>());
   const hasShownCurrentInOpenSessionRef = useRef(false);
   const client = useApolloClient();
+  const posthog = usePostHog();
   const { session } = useSession();
   const { clearHandledActions, runStepAction } = useGuidedActionRunner({
     client,
@@ -45,10 +48,14 @@ export default function GuidedActions() {
       return;
     }
     const shouldReload = completedObjectiveInSessionRef.current;
+    posthog.capture("assistant_closed", {
+      source: "guided_actions",
+      completed_objective_in_session: shouldReload,
+    });
     setShowGuidedActions(false);
     setPostActionStatus(null);
     setPendingCloseAction(shouldReload ? "reload" : "reinitialize");
-  }, [showGuidedActions]);
+  }, [posthog, showGuidedActions]);
 
   const handlePanelExitComplete = useCallback(async () => {
     if (!pendingCloseAction) {
@@ -71,13 +78,16 @@ export default function GuidedActions() {
 
   const handleOpenGuidedActions = useCallback(async () => {
     hasShownCurrentInOpenSessionRef.current = false;
+    posthog.capture("assistant_opened", {
+      source: "guided_actions",
+    });
     setShowGuidedActions(true);
     setPostActionStatus(null);
     clearHandledActions();
     completedObjectiveInSessionRef.current = false;
     setPendingCloseAction(null);
     await initialize({ ignorePersisted: true });
-  }, [clearHandledActions, initialize]);
+  }, [clearHandledActions, initialize, posthog]);
 
   const handleContinue = useCallback(async () => {
     const shouldCloseAfterAdvance = current?.result.closePanelAfterDisplay === true;
@@ -95,8 +105,16 @@ export default function GuidedActions() {
     hasShownCurrentInOpenSessionRef.current = true;
     if (current.result.action === "complete") {
       completedObjectiveInSessionRef.current = true;
+      if (!trackedCompletedObjectiveIdsRef.current.has(current.objectiveId)) {
+        trackedCompletedObjectiveIdsRef.current.add(current.objectiveId);
+        posthog.capture("objective_completed", {
+          source: "guided_actions",
+          objective_id: current.objectiveId,
+          objective_title: current.result.objectiveTitle,
+        });
+      }
     }
-  }, [showGuidedActions, current]);
+  }, [showGuidedActions, current, posthog]);
 
   useGuidedTimedDisplay({
     showGuidedActions,
