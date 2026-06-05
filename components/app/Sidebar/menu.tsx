@@ -13,7 +13,6 @@ import { BsFilePerson } from "react-icons/bs";
 import segments from "@/app/app/segments/segments";
 import { Divider, Segment } from "@/types/Segments";
 import { RiNotificationBadgeLine } from "react-icons/ri";
-import { MdTaskAlt } from "react-icons/md";
 
 const menu: (Divider | Segment)[] = [
   {
@@ -23,14 +22,6 @@ const menu: (Divider | Segment)[] = [
     plan_required: "free",
     preference_key: null,
     path: "/app",
-  },
-  {
-    icon: <MdTaskAlt />,
-    title: "Score",
-    description: "Cipherwill Score",
-    plan_required: "free",
-    preference_key: null,
-    path: "/app/score",
   },
   {
     icon: <TbCell />,
