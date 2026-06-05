@@ -7,15 +7,15 @@ import { TbBorderCornerSquare } from "react-icons/tb";
 
 const companyNames = [
   "Yubikeys",
-  "Passswords",
-  "FiDo2 Keys",
+  "Passwords",
+  "FIDO2 Keys",
   "Hardware wallets",
   "Apple Keychain",
   "Google Titan",
   "Ledger Wallet",
   "Trezor Wallet",
   "On device biometrics",
-  "Password managaer",
+  "Password manager",
 ];
 export default function FactorsListView() {
   const sectionRef = useRef(null);

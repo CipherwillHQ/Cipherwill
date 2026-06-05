@@ -159,8 +159,8 @@ export default function GuidedActions() {
     <div className="w-full border border-default bg-secondary p-4 rounded-lg flex items-center justify-between mb-2">
       <div className="flex flex-col gap-1">
         <span>Open Assistant</span>
-        <span className="text-xs text-black/65 dark:text-white/65">
-          We&apos;ve got a task you should complete.
+          <span className="text-xs text-black/65 dark:text-white/65">
+          {current?.result.objectiveDescription ?? "We've got a task you should complete!"}
         </span>
         {error ? <span className="text-xs text-red-600">{error}</span> : null}
       </div>
