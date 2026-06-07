@@ -1,6 +1,5 @@
 # Cipherwill Design Core Guidelines
 
-
 ## 🎨 Colors
 - **Primary**: Blue (#003ecb, 11 shades)  
 - **Accent**: Orange (#f97316)  
@@ -13,7 +12,7 @@
 - **Code**: System monospace  
 
 ## 🎭 Motion
-- **Framework**: Framer Motion (animations), Lenis (smooth scroll)  
+- **Framework**: Framer Motion (animations), Lenis (smooth scroll), GSAP
 - **Interactions**: Subtle hover/scale, arrow gap expansion  
 - **Transitions**: Smooth page and component animations  
 - **States**: Skeleton loaders, spinners for feedback  
