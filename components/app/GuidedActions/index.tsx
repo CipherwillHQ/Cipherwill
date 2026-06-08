@@ -6,7 +6,7 @@ import { AnimatePresence } from "framer-motion";
 import { usePostHog } from "posthog-js/react";
 import { useSession } from "@/contexts/SessionContext";
 import GuidePanel from "./components/GuidePanel";
-import GuidedButton from "./components/GuidedButton";
+import ObjectiveLaunchCard from "./components/ObjectiveLaunchCard";
 import useObjectiveEngine from "./hooks/useObjectiveEngine";
 import useGuidedActionRunner from "./hooks/useGuidedActionRunner";
 import useGuidedStepAutoActions from "./hooks/useGuidedStepAutoActions";
@@ -156,17 +156,15 @@ export default function GuidedActions() {
   }
 
   return (
-    <div className="w-full border border-default bg-secondary p-4 rounded-lg flex items-center justify-between mb-2">
-      <div className="flex flex-col gap-1">
-        <span>Open Assistant</span>
-          <span className="text-xs text-black/65 dark:text-white/65">
-          {current?.result.objectiveDescription ?? "We've got a task you should complete!"}
-        </span>
-        {error ? <span className="text-xs text-red-600">{error}</span> : null}
-      </div>
-      <GuidedButton onClick={handleOpenGuidedActions} disabled={loading}>
-        Start
-      </GuidedButton>
+    <>
+      {current ? (
+        <ObjectiveLaunchCard
+          current={current}
+          loading={loading}
+          error={error}
+          onOpen={handleOpenGuidedActions}
+        />
+      ) : null}
       <AnimatePresence onExitComplete={handlePanelExitComplete}>
         {showGuidedActions && (
           <GuidePanel
@@ -181,6 +179,6 @@ export default function GuidedActions() {
           />
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 }
