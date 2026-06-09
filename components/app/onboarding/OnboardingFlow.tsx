@@ -8,7 +8,7 @@
 
 import { AnimatePresence } from "framer-motion";
 import { useMutation, useQuery } from "@apollo/client/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import COMPLETE_MY_ONBOARDING from "@/graphql/ops/auth/mutations/COMPLETE_MY_ONBOARDING";
@@ -19,7 +19,6 @@ import {
   normalizeOptionArray,
   isStepOneComplete,
   isStepTwoComplete,
-  normalizeStringArray,
   toggleStringInList,
   shuffle,
 } from "./onboardingUtils";
@@ -32,7 +31,6 @@ import { OnboardingOption } from "./types";
 
 export default function OnboardingFlow() {
   const router = useRouter();
-  const hydratedFromServer = useRef(false);
   const [step, setStep] = useState(1);
   const [heardFromOptionId, setHeardFromOptionId] = useState("");
   const [heardFromCustom, setHeardFromCustom] = useState("");
@@ -55,23 +53,6 @@ export default function OnboardingFlow() {
     setHeardFromOptions(shuffle([...rawHeardFromOptions]));
     setExpectationOptions(shuffle([...rawExpectationOptions]));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onboarding]);
-
-  useEffect(() => {
-    if (!onboarding || hydratedFromServer.current) return;
-    hydratedFromServer.current = true;
-    const hydrationFrame = window.requestAnimationFrame(() => {
-      setHeardFromOptionId(onboarding.heard_from_option_id || "");
-      setHeardFromCustom(onboarding.heard_from_custom || "");
-      setExpectationsSelectedIds(
-        normalizeStringArray(onboarding.expectations_selected_ids)
-      );
-      setExpectationsCustom(onboarding.expectations_custom || "");
-      if (onboarding.heard_from_option_id) {
-        setStep(2);
-      }
-    });
-    return () => window.cancelAnimationFrame(hydrationFrame);
   }, [onboarding]);
 
   useEffect(() => {
