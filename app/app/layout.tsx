@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 export default function AppLayout({ children }) {
   return (
     <div id="app-theme-layout">
-      <div className="select-none text-black dark:text-white">
+      <div className="select-none text-forest dark:text-cream">
         <ThemeSelector>
           <AppUiPreferencesBootstrap />
           <OfflineContext>
@@ -41,7 +41,7 @@ export default function AppLayout({ children }) {
                         <div className="flex sm:h-full bg-white dark:bg-dark">
                           <Sidebar />
                         </div>
-                        <div className="flex flex-col h-full w-full dark:bg-black/95 bg-dark-50">
+                        <div className="flex flex-col h-full w-full bg-cream dark:bg-navy">
                           {/* <div className="bg-red-400 p-4">Top Bar</div> */}
                           <div className="flex flex-col pb-40 flex-1 h-full overflow-y-auto customScrollbar">
                             <div className="cw-content-width-wrapper w-full">

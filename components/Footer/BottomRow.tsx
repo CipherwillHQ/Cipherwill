@@ -1,72 +1,116 @@
 import Link from "next/link";
-import { BiLogoGithub, BiLogoYoutube, BiSupport, BiX } from "react-icons/bi";
-import { FaXTwitter } from "react-icons/fa6";
+import { TbLockBolt } from "react-icons/tb";
+
+const link_style =
+  "text-cream/70 hover:text-cream underline underline-offset-4 decoration-cream/20 hover:decoration-cream/50 transition-colors";
 
 export default function BottomRow() {
   return (
-    <div className="flex flex-col sm:flex-row items-start justify-between pb-6">
-      <div
-        className={`flex flex-col sm:flex-row gap-3 sm:gap-2 items-start text-sm`}
-      >
-        <div className="text-center">
-          Copyright © {new Date().getFullYear()} Zetapad Technologies
+    <div className="grid grid-cols-1 lg:grid-cols-2 lg:items-end gap-8 lg:gap-12">
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <TbLockBolt className="text-sage" size={20} />
+          <div className="text-base font-semibold text-cream">
+            Your data is secured with
+          </div>
         </div>
-        <div className="hidden sm:flex border-l border-white/25 h-4" />
-        <Link href="/i/privacy-policy" className="text-center">
-          Privacy Policy
-        </Link>
-        <div className="hidden sm:flex border-l border-white/25  h-4" />
-        <Link href="/i/terms-of-service" className="text-center">
-          Terms of Service
-        </Link>
-        <div className="hidden sm:flex border-l border-white/25  h-4" />
-        <Link
-          target="_blank"
-          href="https://github.com/CipherwillHQ/Cipherwill"
-          className="text-center"
-        >
-          Open Source Client
-        </Link>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-sm">
+          <Link
+            href="https://en.wikipedia.org/wiki/Advanced_Encryption_Standard"
+            className={link_style}
+          >
+            256-bit AES Encryption
+          </Link>
+          &bull;
+          <Link
+            href="https://en.wikipedia.org/wiki/Zero-knowledge_proof"
+            className={link_style}
+          >
+            Zero Knowledge Proofs
+          </Link>
+          &bull;
+          <span>
+            <Link
+              href="https://en.wikipedia.org/wiki/Elliptic-curve_cryptography"
+              className={link_style}
+            >
+              Elliptic Curve Cryptography
+            </Link>
+            <span className="text-cream/40">
+              {" "}
+              (
+              <Link
+                href="https://hackmd.io/@benjaminion/bls12-381"
+                className={link_style}
+              >
+                BLS12-381
+              </Link>
+              {" "}&amp;{" "}
+              <Link
+                href="https://en.bitcoin.it/wiki/Secp256k1"
+                className={link_style}
+              >
+                SECP256K1
+              </Link>
+              {" "}Curves)
+            </span>
+          </span>
+          &bull;
+          <Link
+            href="https://en.wikipedia.org/wiki/One-time_pad"
+            className={link_style}
+          >
+            One Time Pad Encryption
+          </Link>
+          &bull;
+          <span>
+            <Link
+              href="https://en.wikipedia.org/wiki/Lattice-based_cryptography"
+              className={link_style}
+            >
+              Lattice based Encryption
+            </Link>
+            <span className="text-cream/40">
+              {" "}
+              (
+              <Link
+                href="https://pq-crystals.org/kyber/"
+                className={link_style}
+              >
+                CRYSTALS-KYBER
+              </Link>
+              )
+            </span>
+          </span>
+        </div>
       </div>
-      <ul className="flex items-center mt-5 space-x-3 md:order-3 sm:mt-0">
-        <li>
-          <Link
-            href="mailto:support@cipherwill.com"
-            target="_blank"
-            className="flex items-center justify-center border border-black/25 rounded-full w-7 h-7"
-          >
-            <BiSupport />
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="https://x.com/CipherwillHQ"
-            target="_blank"
-            className="flex items-center justify-center border border-black/25 rounded-full w-7 h-7"
-          >
-            <FaXTwitter />
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="https://www.youtube.com/@CipherwillHQ"
-            target="_blank"
-            className="flex items-center justify-center text-red-600 border border-black/25 rounded-full w-7 h-7"
-          >
-            <BiLogoYoutube />
-          </Link>
-        </li>
 
-        <li>
+      <div className="flex flex-col justify-end space-y-3">
+        <div className="flex flex-wrap gap-x-4 gap-y-2 lg:justify-end text-base">
           <Link
-            href="https://github.com/CipherwillHQ/Cipherwill"
-            target="_blank"
-            className="flex items-center justify-center text-white border border-white/25 rounded-full w-7 h-7"
+            href="/i/terms-of-service"
+            className="text-cream/70 hover:text-cream underline underline-offset-4 decoration-cream/30 hover:decoration-cream/60 transition-colors"
           >
-            <BiLogoGithub />
+            Terms of Service
           </Link>
-        </li>
-      </ul>
+          <Link
+            href="/i/privacy-policy"
+            className="text-cream/70 hover:text-cream underline underline-offset-4 decoration-cream/30 hover:decoration-cream/60 transition-colors"
+          >
+            Privacy Policy
+          </Link>
+          <Link
+            href="/i/cookie-policy"
+            className="text-cream/70 hover:text-cream underline underline-offset-4 decoration-cream/30 hover:decoration-cream/60 transition-colors"
+          >
+            Accessibility
+          </Link>
+        </div>
+        <p className="text-base text-cream/50 lg:text-right">
+          &copy; {new Date().getFullYear()} Zetapad Technologies. All rights
+          reserved.
+        </p>
+      </div>
     </div>
   );
 }

@@ -6,15 +6,15 @@ import { SessionProvider } from "../../contexts/SessionContext";
 export default function ExecutorLayout({ children }) {
   return (
     <div id="app-theme-layout">
-      <div className="select-none text-black dark:text-white">
+      <div className="select-none text-forest dark:text-cream">
         <ThemeSelector>
           <AuthRedirectProvider>
             <SessionProvider>
-              <div className="flex items-center overflow-hidden w-screen text-black dark:text-white cw-vh-screen cw-app-safe-area">
-                <div className="flex h-full bg-secondary">
+              <div className="flex items-center overflow-hidden w-screen cw-vh-screen cw-app-safe-area">
+                <div className="flex h-full bg-white dark:bg-dark">
                   <ExecutorSidebar />
                 </div>
-                <div className="flex flex-1 h-full overflow-y-auto dark:bg-black/95 bg-dark-50 p-4">
+                <div className="flex flex-1 h-full overflow-y-auto bg-cream dark:bg-navy p-4">
                   {children}
                 </div>
               </div>

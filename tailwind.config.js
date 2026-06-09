@@ -13,11 +13,30 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        playfair: ["var(--font-playfair-display)", "serif"],
+        gilroy: ["var(--font-gilroy)", "sans-serif"],
+        mono: ["JetBrains Mono", "Geist Mono", "monospace"],
+      },
       height: {
         screen: [
           "100vh", // fallback for IR and Opera
           "100dvh", // supported dynamic height
         ],
+      },
+      boxShadow: {
+        "level-1": "0 2px 8px rgba(0,0,0,0.08)",
+        "level-2": "0 8px 24px rgba(0,0,0,0.12)",
+        "level-3": "0 16px 48px rgba(0,0,0,0.16)",
+      },
+      zIndex: {
+        sticky: "100",
+        dropdown: "200",
+        modal: "300",
+        toast: "400",
+      },
+      transitionTimingFunction: {
+        "cw-ease": "cubic-bezier(0.25, 1, 0.5, 1)",
       },
       colors: {
         primary: {
@@ -74,6 +93,30 @@ module.exports = {
           900: "#7c3d12",
           950: "#432007",
         },
+        navy: {
+          DEFAULT: "#0B1B2B",
+          50: "#f0f4f8",
+          100: "#dbe4ed",
+          200: "#bacce0",
+          300: "#94b0d0",
+          400: "#6e93bf",
+          500: "#4e79ab",
+          600: "#3c6090",
+          700: "#2d4a70",
+          800: "#1c3350",
+          900: "#112236",
+          950: "#0B1B2B",
+        },
+        cream: "#FBF9F1",
+        parchment: "#F4F1EA",
+        forest: "#2A363B",
+        mahogany: "#2C1A0E",
+        sage: "#7AA089",
+        clay: "#D4A390",
+        error: "#C0392B",
+        warning: "#C87941",
+        success: "#7AA089",
+        info: "#003ecb",
       },
     },
   },
@@ -82,13 +125,13 @@ module.exports = {
       addComponents([
         {
           ".border-default": {
-            "@apply border-neutral-300 dark:border-neutral-800": {},
+            "@apply border-forest/10 dark:border-cream/10": {},
           },
           ".bg-primary": {
-            "@apply bg-primary-50 dark:bg-primary-950": {},
+            "@apply bg-cream dark:bg-navy": {},
           },
           ".bg-secondary": {
-            "@apply bg-white dark:bg-secondary-950": {},
+            "@apply bg-white dark:bg-navy-900": {},
           },
           ".bg-accent": {
             "@apply bg-accent-500": {},
