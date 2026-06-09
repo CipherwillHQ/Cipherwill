@@ -95,7 +95,7 @@ export default function Segments() {
                           },
                         });
                       }}
-                      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer ${
                         user_preference
                           ? "bg-primary-500"
                           : "bg-neutral-300 dark:bg-neutral-600"
