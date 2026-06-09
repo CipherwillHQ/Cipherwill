@@ -104,11 +104,20 @@ export default function OnboardingFlow() {
     }
     // Step 2: skip completes onboarding
     try {
+      const payload = canContinueStepOne
+        ? {
+            heard_from_option_id: heardFromOptionId,
+            heard_from_custom: heardFromCustom || null,
+            expectations_selected_ids: null,
+            expectations_custom: null,
+          }
+        : {
+            skip_questions: true,
+          };
+
       await completeMyOnboarding({
         variables: {
-          data: {
-            skip_questions: true,
-          },
+          data: payload,
         },
       });
       await refetch();
@@ -120,7 +129,7 @@ export default function OnboardingFlow() {
   };
 
   const handleSubmit = async () => {
-    if (!canContinueStepOne || !canSubmit) {
+    if (!canSubmit) {
       toast.error("Please complete all required onboarding answers.");
       return;
     }
@@ -128,10 +137,10 @@ export default function OnboardingFlow() {
       await completeMyOnboarding({
         variables: {
           data: {
-            heard_from_option_id: heardFromOptionId,
-            heard_from_custom: heardFromCustom,
+            heard_from_option_id: heardFromOptionId || null,
+            heard_from_custom: heardFromCustom || null,
             expectations_selected_ids: expectationsSelectedIds,
-            expectations_custom: expectationsCustom,
+            expectations_custom: expectationsCustom || null,
           },
         },
       });
