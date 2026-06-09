@@ -10,6 +10,7 @@
 - **File size cap** - keep files under 200 lines; if a file is growing past that, it's a signal to split by responsibility
 - **Co-locate related files** - component, types, and test live in the same folder
 - **No throwaway inline functions** - do not write single-use helper functions inside a file; if logic needs extracting, it goes into a shared global utility module where it can be reused across the codebase
+- Do not make changes to AGENTS.md or Design.md or app.design.md ask before you do 
 
 
 ## LLM Readability
