@@ -2,18 +2,16 @@
 import DesktopAndMobilePageHeader from "@/components/app/common/page/DesktopAndMobilePageHeader";
 import segments from "./segments";
 import { useUserContext } from "@/contexts/UserSetupContext";
-import SimpleButton from "@/components/common/SimpleButton";
 import Popup from "reactjs-popup";
-import { IoArrowUpCircleOutline } from "react-icons/io5";
 import { useMutation, useQuery } from "@apollo/client/react";
 import GET_PREFERENCES from "@/graphql/ops/auth/queries/GET_PREFERENCES";
 import UPDATE_PREFERENCES from "@/graphql/ops/auth/mutations/UPDATE_PREFERENCES";
 import Link from "next/link";
 import PremiumPopup from "./PremiumPopup";
 import { Divider, Segment } from "@/types/Segments";
-import type { 
-  GetPreferencesQuery, 
-  UpdatePreferencesMutation, 
+import type {
+  GetPreferencesQuery,
+  UpdatePreferencesMutation,
   UpdatePreferencesVariables,
 } from "@/types/interfaces/metamodel";
 import SuggestionBox from "@/components/app/dashboard/SuggestionBox";
@@ -33,135 +31,105 @@ export default function Segments() {
       <DesktopAndMobilePageHeader title="Segments">
         <SuggestionBox triggerText="💡 Suggest a segment" />
       </DesktopAndMobilePageHeader>
-      <div className="flex flex-wrap px-4 gap-2">
-        {segments.map((segment) => {
-          if ((segment as Divider).divider) {
+      <div className="flex flex-col px-2 sm:px-4">
+        {segments.map((item) => {
+          if ((item as Divider).divider) {
             return (
               <div
-                key={(segment as Divider).divider}
-                className="flex basis-[100%] font-semibold py-2 px-1"
+                key={(item as Divider).divider}
+                className="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 pt-6 pb-1.5 px-2"
               >
-                {(segment as Divider).divider}
+                {(item as Divider).divider}
               </div>
             );
           }
+
+          const seg = item as Segment;
           const user_preference =
-            (segment as Segment).preference_key === null
+            seg.preference_key === null
               ? null
-              : preferences[(segment as Segment).preference_key as string];
+              : preferences[seg.preference_key as string];
 
           const is_available_to_user =
-            current_user_plan === (segment as Segment).plan_required ||
-            (segment as Segment).plan_required === "free";
+            current_user_plan === seg.plan_required ||
+            seg.plan_required === "free";
+
+          const is_enabled =
+            user_preference === null || user_preference === true;
+
           return (
             <div
-              key={(segment as Segment).title}
-              className="border border-default rounded-md p-2 flex gap-2 flex-col bg-secondary w-full sm:w-80 h-fit"
+              key={seg.title}
+              className="flex items-center justify-between px-2 py-2.5 border-b border-default hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors gap-3"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  {(segment as Segment).icon}
-                  <div className="ml-2">{(segment as Segment).title}</div>
-                </div>
-                {is_available_to_user ? (
-                  user_preference === null || user_preference === true ? (
-                    <Link
-                      className="hover:underline text-sm"
-                      href={(segment as Segment).path}
-                    >
-                      Access
-                    </Link>
-                  ) : null
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="text-lg flex-shrink-0">{seg.icon}</span>
+                {is_available_to_user && is_enabled ? (
+                  <Link
+                    href={seg.path}
+                    className="text-sm font-medium hover:underline truncate"
+                  >
+                    {seg.title}
+                  </Link>
                 ) : (
-                  // available in user's plan
-                  <div>
-                    <Popup
-                      trigger={
-                        <div className="flex items-center gap-1 cursor-pointer w-[22px] overflow-hidden hover:w-20 transition-all duration-500 ease-out text-yellow-500 hover:text-yellow-600">
-                          <div className="w-[22px] h-[22px]">
-                            <IoArrowUpCircleOutline size={22} />
-                          </div>
-                          <span className="text-xs font-semibold">Upgrade</span>
-                        </div>
-                      }
-                      modal
-                    >
-                      <PremiumPopup
-                        path={(segment as Segment).path}
-                        plan_required={(segment as Segment).plan_required}
-                      />
-                    </Popup>
-                  </div>
+                  <span className="text-sm font-medium truncate">
+                    {seg.title}
+                  </span>
                 )}
               </div>
 
-              <div className="text-sm">{(segment as Segment).description}</div>
-              {is_available_to_user ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-full">
-                    {user_preference === null ? (
-                      <div className="p-2 text-xs font-bold text-center rounded-md bg-primary text-white w-full">
-                        Enabled by default
-                      </div>
-                    ) : (
-                      <div>
-                        {user_preference ? (
-                          <SimpleButton
-                            className="w-full text-center"
-                            onClick={() => {
-                              if (updating) return;
-                              const preferenceKey = (segment as Segment).preference_key;
-                              if (!preferenceKey) return;
-                              updatePreferences({
-                                variables: {
-                                  key: preferenceKey,
-                                  value: "false",
-                                },
-                              });
-                            }}
-                          >
-                            Disable
-                          </SimpleButton>
-                        ) : (
-                          <SimpleButton
-                            className="w-full text-center"
-                            onClick={() => {
-                              if (updating) return;
-                              const preferenceKey = (segment as Segment).preference_key;
-                              if (!preferenceKey) return;
-                              updatePreferences({
-                                variables: {
-                                  key: preferenceKey,
-                                  value: "true",
-                                },
-                              });
-                            }}
-                          >
-                            Enable
-                          </SimpleButton>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <Popup
-                  trigger={
-                    <button className="border border-default rounded-md p-2 text-sm bg-primary text-white">
-                      Segment is not available in your plan
+              <div className="flex-shrink-0">
+                {is_available_to_user ? (
+                  user_preference === null ? (
+                    <span className="text-xs text-neutral-400 dark:text-neutral-500">
+                      Default
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        if (updating || !seg.preference_key) return;
+                        updatePreferences({
+                          variables: {
+                            key: seg.preference_key,
+                            value: user_preference ? "false" : "true",
+                          },
+                        });
+                      }}
+                      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                        user_preference
+                          ? "bg-primary-500"
+                          : "bg-neutral-300 dark:bg-neutral-600"
+                      }`}
+                    >
+                      <span
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform ${
+                          user_preference
+                            ? "translate-x-[18px]"
+                            : "translate-x-[2px]"
+                        }`}
+                      />
                     </button>
-                  }
-                  modal
-                >
-                  <PremiumPopup
-                    path={(segment as Segment).path}
-                    plan_required={(segment as Segment).plan_required}
-                  />
-                </Popup>
-              )}
+                  )
+                ) : (
+                  <Popup
+                    trigger={
+                      <span className="text-xs font-medium text-amber-500 cursor-pointer hover:underline">
+                        Upgrade
+                      </span>
+                    }
+                    modal
+                  >
+                    <PremiumPopup
+                      path={seg.path}
+                      plan_required={seg.plan_required}
+                    />
+                  </Popup>
+                )}
+              </div>
             </div>
           );
         })}
+        <div className="h-4" />
       </div>
     </div>
   );
