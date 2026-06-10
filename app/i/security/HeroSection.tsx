@@ -8,10 +8,10 @@
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-cream pt-24 pb-16 sm:pt-32 sm:pb-24">
+    <section className="relative overflow-hidden bg-cream pt-32 pb-16 sm:pb-24">
       {/* Background Subtle Editorial Accent */}
-      <div className="absolute top-0 right-0 -z-10 h-[500px] w-[500px] rounded-full bg-sage/5 blur-3xl animate-pulse duration-[8000ms]" />
-      <div className="absolute bottom-0 left-0 -z-10 h-[300px] w-[300px] rounded-full bg-clay/5 blur-2xl" />
+      <div className="absolute top-0 right-0 -z-10 h-125 w-125 rounded-full bg-sage/5 blur-3xl animate-pulse duration-[8000ms]" />
+      <div className="absolute bottom-0 left-0 -z-10 h-125 w-125 rounded-full bg-clay/5 blur-2xl" />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
         {/* Editorial Sub-Header */}
