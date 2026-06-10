@@ -1,4 +1,5 @@
 # Notes for LLM
+> Design System is written in Design.md and app.design.md 
 
 ## Types and Interfaces
 - Always use `types/interfaces/` directory for TypeScript interfaces
