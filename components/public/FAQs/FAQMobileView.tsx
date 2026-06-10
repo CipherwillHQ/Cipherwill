@@ -120,7 +120,7 @@ export default function FAQMobileView({
               <button
                 key={question.slug}
                 onClick={() => onQuestionSelect(question.slug)}
-                className="w-full text-left p-4 hover:bg-neutral-50 flex items-start gap-3 active:bg-neutral-50 transition-colors duration-150"
+                className="w-full text-left p-4 hover:bg-neutral-50 flex items-start gap-3 active:bg-neutral-50 transition-colors duration-150 cursor-pointer"
               >
                 {question.icon && (
                   <span className="text-lg text-primary shrink-0 mt-0.5">
@@ -154,7 +154,7 @@ export default function FAQMobileView({
                     <button
                       key={question.slug}
                       onClick={() => onQuestionSelect(question.slug)}
-                      className="w-full text-left p-4 hover:bg-neutral-50 flex items-start gap-3 active:bg-neutral-50 transition-colors duration-150"
+                      className="w-full text-left p-4 hover:bg-neutral-50 flex items-start gap-3 active:bg-neutral-50 transition-colors duration-150 cursor-pointer"
                     >
                       {question.icon && (
                         <span className="text-lg text-primary shrink-0 mt-0.5">
@@ -180,7 +180,7 @@ export default function FAQMobileView({
         {/* Ask Custom Question Option at bottom */}
         <button
           onClick={() => onQuestionSelect("ask-a-question")}
-          className="w-full text-left p-4 bg-[#F4F1EA] rounded-xl border border-dashed border-neutral-300 flex flex-col gap-1 active:scale-[0.98] transition-transform duration-100 mt-6"
+          className="w-full text-left p-4 bg-[#F4F1EA] rounded-xl border border-dashed border-neutral-300 flex flex-col gap-1 active:scale-[0.98] transition-transform duration-100 mt-6 cursor-pointer"
         >
           <span className="text-xs uppercase tracking-wider font-bold text-primary">
             Can't find your answer?

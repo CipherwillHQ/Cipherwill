@@ -29,7 +29,7 @@ export default function QuestionFeedback({ question }: { question: string }) {
     <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-6">
       <h3 className="font-semibold">Did this answer your question?</h3>
       <button
-        className="border rounded-md py-2 px-4 text-sm font-semibold hover:bg-slate-100"
+        className="border rounded-md py-2 px-4 text-sm font-semibold hover:bg-slate-100 cursor-pointer"
         onClick={() => {
           sendFeedbackHandler(`Question: ${question} - Answered my question`);
         }}
@@ -37,7 +37,7 @@ export default function QuestionFeedback({ question }: { question: string }) {
         Yes
       </button>
       <button
-        className="border rounded-md py-2 px-4 text-sm font-semibold hover:bg-slate-100"
+        className="border rounded-md py-2 px-4 text-sm font-semibold hover:bg-slate-100 cursor-pointer"
         onClick={() => {
           sendFeedbackHandler(
             `Question: ${question} - Did not answer my question`

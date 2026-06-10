@@ -89,7 +89,7 @@ export default function FAQLeftPanel({
                 <button
                   key={question.slug}
                   onClick={() => onQuestionSelect(question.slug)}
-                  className={`w-full text-left py-3 px-4 rounded-xl border-l-4 transition-all duration-200 flex items-start gap-3 group ${
+                  className={`w-full text-left py-3 px-4 rounded-xl border-l-4 transition-all duration-200 flex items-start gap-3 group cursor-pointer ${
                     isSelected
                       ? "border-primary bg-primary/5 text-primary"
                       : "border-transparent text-[#2A363B] hover:bg-neutral-50"
@@ -147,7 +147,7 @@ export default function FAQLeftPanel({
                       <button
                         key={question.slug}
                         onClick={() => onQuestionSelect(question.slug)}
-                        className={`w-full text-left py-3 px-4 rounded-xl border-l-4 transition-all duration-200 flex items-start gap-3 group ${
+                        className={`w-full text-left py-3 px-4 rounded-xl border-l-4 transition-all duration-200 flex items-start gap-3 group cursor-pointer ${
                           isSelected
                             ? "border-primary bg-primary/5 text-primary"
                             : "border-transparent text-[#2A363B] hover:bg-neutral-50"

@@ -32,7 +32,7 @@ export default function FrequentlyAskedQuestions() {
       <Header />
 
       {/* Hero Section */}
-      <section className="pt-28 pb-16 sm:pt-32 sm:pb-24 md:pt-24 md:pb-24 px-4 border-b border-black/3">
+      <section className="pt-32 pb-16 sm:pb-24 px-4 border-b border-black/3">
         <div className="max-w-7xl mx-auto flex flex-col items-center justify-center text-center">
           <span className="font-mono text-[10px] sm:text-xs uppercase tracking-widest text-sage font-bold mb-4">
             Security & Continuity Support

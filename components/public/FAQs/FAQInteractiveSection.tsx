@@ -144,7 +144,7 @@ export default function FAQInteractiveSection({
           {/* Inline Ask-a-question trigger below the left list on desktop */}
           <button
             onClick={() => handleQuestionSelect("ask-a-question")}
-            className={`w-full text-left mt-6 p-4 rounded-xl border border-dashed transition-all duration-200 flex flex-col gap-1 ${
+            className={`w-full text-left mt-6 p-4 rounded-xl border border-dashed transition-all duration-200 flex flex-col gap-1 cursor-pointer ${
               selectedSlug === "ask-a-question"
                 ? "border-primary bg-primary/5 text-primary"
                 : "border-neutral-300 bg-[#F4F1EA] text-[#2A363B] hover:bg-neutral-100"
