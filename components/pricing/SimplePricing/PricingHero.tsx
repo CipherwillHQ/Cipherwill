@@ -18,16 +18,6 @@ export default function PricingHero() {
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
-        {/* Editorial Sub-Header Badge */}
-        <motion.span
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="inline-block font-mono text-xs uppercase tracking-widest text-[#003ecb] font-bold bg-[#003ecb]/10 px-4 py-1.5 rounded-full"
-        >
-          Value & Infrastructure Access
-        </motion.span>
-
         {/* Playfair Typography Heading */}
         <motion.h1
           initial={{ opacity: 0, y: 15 }}

@@ -1,13 +1,21 @@
-import { FULL_HOSTNAME } from "@/common/constant";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
-import jobs from "@/components/app/careers/jobs_data";
-import Link from "next/link";
-import { LuBriefcaseBusiness, LuBuilding2, LuMapPin } from "react-icons/lu";
+/**
+ * Main public Careers page route (/careers).
+ * Owns the high-level layout, page metadata, and core editorial structure.
+ * Does NOT own individual section logic, filtering algorithms, or job cards.
+ */
 
-const title = "Careers";
+import React from "react";
+import { FULL_HOSTNAME } from "@/common/constant";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import jobs from "@/components/app/careers/jobs_data";
+import CareersHero from "@/components/public/careers/CareersHero";
+import CareersPillars from "@/components/public/careers/CareersPillars";
+import JobsFilterList from "@/components/public/careers/JobsFilterList";
+
+const title = "Careers | Cipherwill";
 const description =
-  "Join Cipherwill and help shape the future of digital legacy management. Be part of a passionate team creating secure solutions for transferring digital assets to loved ones";
+  "Join Cipherwill and help shape the future of digital legacy management. Be part of a passionate team creating secure, elegant solutions for transferring digital assets to loved ones.";
 
 export const metadata = {
   title,
@@ -23,61 +31,20 @@ export const metadata = {
 
 export default function Careers() {
   return (
-    <div className="w-full">
+    <div className="w-full min-h-screen bg-cream text-forest font-gilroy flex flex-col">
       <Header />
-      <div className="mt-40 mb-6 p-4">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center">
-          Join the Cipherwill team
-        </h1>
-        <div className="p-4 text-center text-xl font-semibold">
-          Help shape the future of Legacy Management
-        </div>
+      
+      <main className="flex-grow">
+        {/* Section 1: Hero Section (Light Warm Cream bg-cream) */}
+        <CareersHero />
 
-        <p className="max-w-xl mx-auto py-2 text-center sm:text-lg font-medium dark:font-normal">
-          Cipherwill is a team of passionate peoples, creating secure solutions
-          for transferring digital assets to loved ones. Join us in our mission
-          to create a secure digital legacy for everyone.
-        </p>
-      </div>
+        {/* Section 2: Core Philosophy Pillars (Dark Forest Slate bg-forest) */}
+        <CareersPillars />
 
-      <div className="max-w-4xl mx-auto p-4">
-        <h2 className="text-xl font-bold">Open Positions</h2>
-        <div className="grid grid-cols-1 gap-4 py-8">
-          {jobs.map((job) => (
-            <div key={job.id} className="p-4 border rounded-md shadow-lg">
-              <h3 className="text-2xl font-bold">{job.title}</h3>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 py-2">
-                <div className="text-lg font-semibold flex items-center gap-2">
-                  <LuBuilding2 />
-                  {job.division}
-                </div>
-                <div className="text-lg font-semibold flex items-center gap-2">
-                  <LuMapPin />
-                  {job.location}
-                </div>
-                <div className="text-lg font-semibold flex items-center gap-2">
-                  <LuBriefcaseBusiness />
-                  {job.level}
-                </div>
-              </div>
-              <div className="py-2">
-                <h4 className="text-md font-bold">Minimum Qualifications</h4>
-                <ul className="list-disc list-inside">
-                  {job.min_qualifications.map((qualification) => (
-                    <li key={qualification}>{qualification}</li>
-                  ))}
-                </ul>
-              </div>
-              <Link
-                className="text-blue-600 font-semibold hover:underline "
-                href={`/careers/${job.id}`}
-              >
-                Read More
-              </Link>
-            </div>
-          ))}
-        </div>
-      </div>
+        {/* Section 3: Open Positions list with interactive filtering (Light Warm Cream bg-cream) */}
+        <JobsFilterList jobs={jobs} />
+      </main>
+
       <Footer />
     </div>
   );

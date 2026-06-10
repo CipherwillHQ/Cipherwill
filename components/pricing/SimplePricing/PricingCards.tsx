@@ -83,7 +83,7 @@ export default function PricingCards({ isPremiumRecommended }: PricingCardsProps
                 </span>
               </div>
               <span className="text-xs font-mono font-extrabold text-sage block mt-2 uppercase tracking-wide">
-                100% Free Forever — No Credit Card
+                100% Free Forever - No Credit Card
               </span>
               <span className="text-[11px] font-gilroy font-semibold text-forest/50 block mt-1">
                 Access your secure vault at any time. Completely risk-free.

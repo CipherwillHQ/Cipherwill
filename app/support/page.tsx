@@ -1,3 +1,9 @@
+/**
+ * Support page at /support.
+ * Owns the main help center layout, assembling header, contact form, FAQs, and footer.
+ * Does NOT own the individual sub-component layout logic or interactive form states.
+ */
+
 import { FULL_HOSTNAME } from "@/common/constant";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";

@@ -14,11 +14,6 @@ export default function HeroSection() {
       <div className="absolute bottom-0 left-0 -z-10 h-125 w-125 rounded-full bg-clay/5 blur-2xl" />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-        {/* Editorial Sub-Header */}
-        <span className="font-mono text-xs uppercase tracking-widest text-sage font-semibold bg-sage/10 px-3 py-1.5 rounded-full">
-          Platform Security & Encryption
-        </span>
-
         {/* High-Breathing Bold Serif Title */}
         <h1 className="mt-8 font-playfair text-4xl sm:text-6xl lg:text-7xl font-bold text-forest tracking-tight leading-none max-w-5xl mx-auto">
           Zero-Knowledge.<br />
