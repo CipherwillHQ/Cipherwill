@@ -43,3 +43,6 @@ next-env.d.ts
 .sentryclirc
 # Sentry Config File
 .env.sentry-build-plugin
+
+# sitemaps
+/public/sitemap*.xml

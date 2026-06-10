@@ -1,10 +1,27 @@
+/**
+ * General FAQ questions for the public-facing FAQ sections.
+ * Owns the content, titles, custom icons, and slugs for the general questions.
+ * Does NOT own the display layouts or FAQ page structure.
+ */
+
 import Link from "next/link";
-import { BiQuestionMark } from "react-icons/bi";
+import { 
+  FiBookOpen, 
+  FiShield, 
+  FiFolder, 
+  FiClock, 
+  FiEyeOff, 
+  FiEdit, 
+  FiPhoneCall, 
+  FiHardDrive, 
+  FiUsers, 
+  FiPlay 
+} from "react-icons/fi";
 
 const name = "General";
 const questions = [
   {
-    icon: <BiQuestionMark />,
+    icon: <FiBookOpen />,
     title: "What is Cipherwill?",
     slug: "what-is-cipherwill",
     description:
@@ -30,7 +47,7 @@ const questions = [
     ),
   },
   {
-    icon: <BiQuestionMark />,
+    icon: <FiShield />,
     title: "How does Cipherwill protect my data?",
     slug: "how-does-cipherwill-protect-my-data",
     description:
@@ -58,7 +75,7 @@ const questions = [
     ),
   },
   {
-    icon: <BiQuestionMark />,
+    icon: <FiFolder />,
     title: "What kind of information can I store on Cipherwill?",
     slug: "what-kind-of-information-can-i-store-on-cipherwill",
     description:
@@ -106,7 +123,7 @@ const questions = [
     ),
   },
   {
-    icon: <BiQuestionMark />,
+    icon: <FiClock />,
     slug: "how-does-cipherwill-work-after-i-pass-away",
     title: "How does Cipherwill work after I pass away?",
     description:
@@ -137,7 +154,7 @@ const questions = [
     ),
   },
   {
-    icon: <BiQuestionMark />,
+    icon: <FiEyeOff />,
     slug: "is-cipherwill-accessible-to-my-beneficiaries-without-my-consent",
     title: "Is Cipherwill accessible to my beneficiaries without my consent?",
     description:
@@ -173,7 +190,7 @@ const questions = [
     ),
   },
   {
-    icon: <BiQuestionMark />,
+    icon: <FiEdit />,
     slug: "can-i-update-my-will-and-information-stored-on-cipherwill",
     title: "Can I update my will and information stored on Cipherwill?",
     description:
@@ -182,7 +199,7 @@ const questions = [
       "Yes, you can update your will and any stored information at any time to reflect changes in your assets, beneficiaries, or wishes.",
   },
   {
-    icon: <BiQuestionMark />,
+    icon: <FiPhoneCall />,
     slug: "what-happens-if-my-beneficiaries-cannot-access-my-data",
     title: "What happens if my beneficiaries cannot access my data?",
     description:
@@ -202,7 +219,7 @@ const questions = [
     ),
   },
   {
-    icon: <BiQuestionMark />,
+    icon: <FiHardDrive />,
     slug: "how-much-digital-storage-does-cipherwill-provide",
     title: "How much digital storage does Cipherwill provide?",
     description:
@@ -224,7 +241,7 @@ const questions = [
     ),
   },
   {
-    icon: <BiQuestionMark />,
+    icon: <FiUsers />,
     slug: "who-should-use-cipherwill",
     title: "Who should use Cipherwill?",
     description:
@@ -248,7 +265,7 @@ const questions = [
     ),
   },
   {
-    icon: <BiQuestionMark />,
+    icon: <FiPlay />,
     slug: "how-do-i-get-started-with-cipherwill",
     title: "How do I get started with Cipherwill?",
     description:

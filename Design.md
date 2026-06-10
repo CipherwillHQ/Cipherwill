@@ -3,6 +3,7 @@
 > The definitive source of truth for visual design, tokens, and frontend philosophy.
 > Do not edit without a design discussion. Covers public pages
 > Design for app dahboard and executor dashbaord is in app.design.md
+> Avoid full project builds for minor changes. Only run a full build when significant changes have been made and build verification is needed.
 
 ---
 
@@ -294,7 +295,7 @@ This is a design guideline — apply it on new public pages. Not a hard enforcem
 Minimalist 3-zone architecture:
 
 ```
-Logo | Utility Nav (Vault, Security, Pricing) | Single Primary CTA
+Logo | Utility Nav | Single Primary CTA
 ```
 
 Soft backdrop-filter: blur(12px) on scroll over content. Transparent base over canvas color.
