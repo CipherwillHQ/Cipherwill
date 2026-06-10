@@ -30,11 +30,7 @@ export default function HowItWorks() {
   return (
     <div className="w-full flex flex-col ">
       <SmoothPageScroll />
-      <Header
-        expandedClassOverride="bg-white"
-        nonExpandedClassOverride="text-white"
-        nonExpandedLogo="white"
-      />
+      <Header />
       <Hero />
       <Simple />
       <OpenSourceSection />
