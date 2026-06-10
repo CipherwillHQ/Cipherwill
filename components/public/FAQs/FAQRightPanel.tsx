@@ -54,7 +54,7 @@ export default function FAQRightPanel({
 
   if (!selectedQuestion && !isAskQuestion) {
     return (
-      <div className="flex flex-col items-center justify-center h-full min-h-[400px] text-center p-8 bg-neutral-50/50 rounded-2xl border border-dashed border-neutral-200">
+      <div className="flex flex-col items-center justify-center h-full min-h-100 text-center p-8 bg-neutral-50/50 rounded-2xl border border-dashed border-neutral-200">
         <p className="text-neutral-500 font-medium text-sm">
           Select a question from the list to view its answer.
         </p>
@@ -63,7 +63,7 @@ export default function FAQRightPanel({
   }
 
   return (
-    <div className="flex flex-col h-full min-h-[500px]">
+    <div className="flex flex-col h-full min-h-125">
       <AnimatePresence mode="wait">
         <motion.div
           key={selectedSlug}
@@ -142,7 +142,7 @@ export default function FAQRightPanel({
           {/* Persistent Fixed CTA Action Box */}
           {!isAskQuestion && (
             <div className="mt-auto pt-6 border-t border-neutral-100">
-              <div className="bg-[#F4F1EA] rounded-2xl p-6 border border-black/[0.03] flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+              <div className="bg-[#F4F1EA] rounded-2xl p-6 border border-black/3 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                 <div className="max-w-md">
                   <h3 className="font-playfair text-xl font-bold text-[#2A363B] mb-1.5">
                     Create Cipherwill today
