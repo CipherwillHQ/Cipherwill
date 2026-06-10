@@ -153,7 +153,7 @@ export default function PricingCards({ isPremiumRecommended }: PricingCardsProps
                 </span>
               </div>
               <span className="text-xs font-mono font-extrabold text-sage block mt-2 uppercase tracking-wide">
-                Saving 30% — Equivalent to just $3.33/Month
+                Saving 30% - Equivalent to just $3.33/Month
               </span>
               <span className="text-[11px] font-gilroy font-semibold text-forest/50 block mt-1">
                 Billed once annually at $40. Cancel or downgrade anytime.

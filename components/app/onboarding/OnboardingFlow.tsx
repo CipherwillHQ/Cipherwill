@@ -44,7 +44,7 @@ export default function OnboardingFlow() {
   const rawHeardFromOptions = normalizeOptionArray(onboarding?.heard_from_options_catalog);
   const rawExpectationOptions = normalizeOptionArray(onboarding?.expectation_options_catalog);
 
-  // Shuffled on each page refresh — runs when onboarding data first arrives
+  // Shuffled on each page refresh - runs when onboarding data first arrives
   const [heardFromOptions, setHeardFromOptions] = useState(rawHeardFromOptions);
   const [expectationOptions, setExpectationOptions] = useState(rawExpectationOptions);
 
@@ -150,17 +150,17 @@ export default function OnboardingFlow() {
 
   return (
     <div className="cw-vh-screen flex w-full bg-white">
-      {/* Left brand panel — desktop only */}
+      {/* Left brand panel - desktop only */}
       <OnboardingBrandPanel />
 
       {/* Content panel */}
       <div className="flex flex-1 flex-col overflow-y-auto customScrollbar bg-white lg:bg-gray-50/50">
-        {/* Mobile/tablet header bar — hidden on desktop */}
+        {/* Mobile/tablet header bar - hidden on desktop */}
         <div className="mb-4 flex shrink-0 items-center justify-center bg-linear-to-br from-primary-900 via-primary-800 to-primary-950 px-5 py-4 lg:hidden">
           <SymbolicLogo overrideTheme="dark" size={28} />
         </div>
 
-        {/* Main content — vertically centered via auto margins */}
+        {/* Main content - vertically centered via auto margins */}
         <div className="my-auto flex w-full max-w-lg flex-col self-center px-5 sm:px-8">
           {/* Compact progress indicator */}
           <div className="mb-4 flex items-center gap-1.5">
@@ -219,7 +219,7 @@ export default function OnboardingFlow() {
           />
         </div>
 
-        {/* Mobile footer — thin symmetric strip */}
+        {/* Mobile footer - thin symmetric strip */}
         <div className="mt-4 h-[15px] shrink-0 bg-linear-to-br from-primary-900 via-primary-800 to-primary-950 lg:hidden" />
       </div>
     </div>

@@ -13,7 +13,7 @@ import SimplePricing from "@/components/pricing/SimplePricing";
 import FAQs from "@/components/public/FAQs";
 import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
 
-const title = "Plans & Pricing — Cipherwill";
+const title = "Plans & Pricing - Cipherwill";
 const description =
   "Explore Cipherwill's flexible pricing options. Secure your digital estate for free or unlock the full Infinite Legacy plan to encrypt Web3 cold seeds, private files, and multi-channel triggers.";
 

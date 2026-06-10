@@ -28,7 +28,7 @@ export default function HeroSection() {
         <p className="mx-auto mt-6 max-w-2xl text-base sm:text-lg text-forest/70 font-medium leading-relaxed">
           At Cipherwill, your digital legacy is protected by client-side cryptography. 
           Your secrets are encrypted on your device before they ever touch the cloud. 
-          We are entirely blind to your data—by design.
+          We are entirely blind to your data-by design.
         </p>
 
         {/* Premium Conceptual Cryptographic Sharding & Cascade Core Illustration */}

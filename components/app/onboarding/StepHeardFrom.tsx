@@ -1,5 +1,5 @@
 /**
- * Step 1 panel for onboarding — "How did you hear about us?"
+ * Step 1 panel for onboarding - "How did you hear about us?"
  * Owns single-select option cards with animated radio indicators.
  * Does not own cross-step navigation, progress, or mutation submission.
  */
@@ -98,7 +98,7 @@ export default function StepHeardFrom({
             <textarea
               value={heardFromCustom}
               onChange={(event) => onCustomChange(event.target.value)}
-              placeholder="Tell us more — which platform, person, or search term brought you here?"
+              placeholder="Tell us more - which platform, person, or search term brought you here?"
               className="min-h-18 w-full resize-none rounded-xl border-2 border-primary-200 bg-primary-50/40 px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10"
             />
           </motion.div>

@@ -108,9 +108,9 @@ export default function AssetMatcher({ selectedAssets, onToggleAsset }: AssetMat
                 {selectedAssets.length === 0 ? (
                   "Select assets above to find your ideal plan."
                 ) : selectedPremium ? (
-                  "Premium Plan ($40/yr) — Recommended for secure files & Web3 encryption."
+                  "Premium Plan ($40/yr) - Recommended for secure files & Web3 encryption."
                 ) : (
-                  "Lifetime Free Plan ($0) — Perfect for your selected basic planning items."
+                  "Lifetime Free Plan ($0) - Perfect for your selected basic planning items."
                 )}
               </p>
             </div>

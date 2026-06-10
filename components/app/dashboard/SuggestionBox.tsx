@@ -26,7 +26,7 @@ export default function SuggestionBox({ triggerText = "Give us Feedback" }: { tr
     }
     try {
       await sendFeedback({ variables: { message } });
-      toast.success("Thanks — your suggestion was sent!");
+      toast.success("Thanks - your suggestion was sent!");
       setMessage("");
       close();
     } catch (err) {
@@ -80,7 +80,7 @@ export default function SuggestionBox({ triggerText = "Give us Feedback" }: { tr
 
             <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground text-neutral-600 dark:text-neutral-400">
               <span className="text-neutral-600 dark:text-neutral-300">{message.length}/{MAX_CHARS} characters</span>
-              <span className="hidden md:inline">We review every suggestion personally — thanks for helping!</span>
+              <span className="hidden md:inline">We review every suggestion personally - thanks for helping!</span>
             </div>
           </div>
 
