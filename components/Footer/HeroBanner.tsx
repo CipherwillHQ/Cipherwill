@@ -18,7 +18,7 @@ export default function HeroBanner() {
       />
       <div className="absolute inset-0 flex items-center justify-center px-6 sm:px-12 text-center">
         <h2 className="text-5xl sm:text-6xl md:text-7xl text-mahogany font-playfair font-bold italic leading-tight">
-          Protect your legacy.
+          Your estate. Your succession. Fully covered.
         </h2>
       </div>
     </div>

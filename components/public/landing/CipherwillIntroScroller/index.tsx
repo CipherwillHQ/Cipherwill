@@ -69,7 +69,7 @@ export default function StickyImageScroll() {
         {sections.map((section, index) => (
           <div
             key={index}
-            className="text-section flex flex-col md:h-screen max-h-[1000px] justify-start p-4"
+            className="text-section flex flex-col md:h-screen max-h-250 justify-start p-4"
           >
             <Image
               src={section.image}
@@ -95,7 +95,7 @@ export default function StickyImageScroll() {
           </div>
         ))}
       </div>
-      <div className="hidden md:block md:w-1/2 h-[80vh] max-h-[1000px] sticky top-20 p-8 -z-10">
+      <div className="hidden md:block md:w-1/2 h-[80vh] max-h-250 sticky top-20 p-8 -z-10">
         <div className="relative w-full h-full flex items-center justify-center">
           <AnimatePresence mode="wait">
             <motion.div

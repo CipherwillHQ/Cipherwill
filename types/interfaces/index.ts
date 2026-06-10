@@ -4,3 +4,4 @@ export * from './people';
 export * from './app';
 export * from './common';
 export * from './metamodel';
+export * from './faq';
