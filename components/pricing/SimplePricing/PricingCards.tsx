@@ -71,8 +71,23 @@ export default function PricingCards({ isPremiumRecommended }: PricingCardsProps
             </div>
 
             <div className="my-6">
-              <span className="font-gilroy text-5xl font-extrabold text-forest">$0</span>
-              <span className="text-sm font-semibold text-forest/50 ml-1">/ Lifetime</span>
+              <span className="inline-block bg-sage/10 text-sage px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider mb-2">
+                Lifetime Access (No Subscription)
+              </span>
+              <div className="flex items-baseline">
+                <span className="font-gilroy text-5xl font-extrabold text-forest">
+                  $0
+                </span>
+                <span className="text-xl font-bold text-sage ml-1.5">
+                  / Lifetime
+                </span>
+              </div>
+              <span className="text-xs font-mono font-extrabold text-sage block mt-2 uppercase tracking-wide">
+                100% Free Forever — No Credit Card
+              </span>
+              <span className="text-[11px] font-gilroy font-semibold text-forest/50 block mt-1">
+                Access your secure vault at any time. Completely risk-free.
+              </span>
             </div>
 
             <p className="text-sm font-gilroy font-medium text-forest/70 leading-relaxed mb-6">
@@ -161,7 +176,7 @@ export default function PricingCards({ isPremiumRecommended }: PricingCardsProps
             </div>
 
             <p className="text-sm font-gilroy font-medium text-forest/70 leading-relaxed mb-6">
-              Protect your comprehensive estate. From Web3 seed phrases and raw private keys to physical deeds, wills, and granular beneficiary triggers.
+              Create a digital estate plan. From seed phrases and raw private keys to physical deeds, wills, and granular beneficiary triggers.
             </p>
 
             <div className="border-t border-forest/10 pt-6">
@@ -185,7 +200,7 @@ export default function PricingCards({ isPremiumRecommended }: PricingCardsProps
                 whileTap={{ scale: 0.98 }}
                 className="w-full py-3 px-4 bg-linear-to-r from-primary-700 to-primary text-white text-sm font-gilroy font-semibold rounded-xl hover:from-primary-800 hover:to-primary-600 transition-all duration-200 flex items-center justify-center gap-1 shadow-level-1 cursor-pointer"
               >
-                Secure Yearly Legacy Now →
+                Get Premium →
               </motion.button>
             </Link>
           </div>
