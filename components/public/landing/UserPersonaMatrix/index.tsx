@@ -64,7 +64,7 @@ export default function UserPersonaMatrix() {
                   <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider ${
                     activeTab === p.id ? "bg-cream/10 text-cream" : "bg-forest/5 text-forest/50"
                   }`}>
-                    {p.id === "passwords" ? "Logins" : p.id === "finance" ? "Finance" : "Archives"}
+                    {p.badgeLabel}
                   </span>
                 </div>
               </button>

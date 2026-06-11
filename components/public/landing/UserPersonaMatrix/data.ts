@@ -11,6 +11,7 @@ export interface PersonaProfile {
   iconLabel: string;
   setupBrief: string;
   checklist: string[];
+  badgeLabel: string;
 }
 
 export const PERSONA_PROFILES: PersonaProfile[] = [
@@ -25,7 +26,8 @@ export const PERSONA_PROFILES: PersonaProfile[] = [
       "Set up automatic secondary account transition",
       "Nominated family administrator as executor",
       "Included critical recovery codes"
-    ]
+    ],
+    badgeLabel: "Logins"
   },
   {
     id: "finance",
@@ -38,7 +40,8 @@ export const PERSONA_PROFILES: PersonaProfile[] = [
       "Set up hardware ledger BIP-39 mnemonic backups",
       "Nominated direct beneficiary for specific crypto keys",
       "Configured automatic check-in reset reminders"
-    ]
+    ],
+    badgeLabel: "Finance"
   },
   {
     id: "memories",
@@ -51,6 +54,35 @@ export const PERSONA_PROFILES: PersonaProfile[] = [
       "Uploaded final letters and directives",
       "Nominated spouse and children as beneficiaries",
       "Set up 1 GB premium cloud document storage links"
-    ]
+    ],
+    badgeLabel: "Archives"
+  },
+  {
+    id: "business",
+    name: "Business Operations & Domains",
+    quote: "I run a business with critical cloud subscriptions, domain ownerships, hosting servers, and stripe merchant accounts. If I am suddenly incapacitated, our company operations will freeze, blocking employees and clients.",
+    iconLabel: "💼 Business Continuity",
+    setupBrief: "Provides a secure transition plan for critical server SSH keys, operational passwords, SaaS admin accounts, and registrar configurations to designated business partners.",
+    checklist: [
+      "Secured cloud platform admin credentials",
+      "Set up registrar & domain ownership delegation",
+      "Nominated business partner/co-founder as executor",
+      "Documented server SSH and API key recovery paths"
+    ],
+    badgeLabel: "Business"
+  },
+  {
+    id: "creators",
+    name: "Digital IP & Content Creators",
+    quote: "My livelihood and assets exist as YouTube channels, blogs, intellectual property, and monetized media accounts. If I don't set up a transition path, my channels and digital assets will become orphaned.",
+    iconLabel: "🎬 Digital IP",
+    setupBrief: "Enables smooth transition of media publishing platforms, brand contracts, content archives, and social media handles to next-of-kin or team members.",
+    checklist: [
+      "Secured primary publishing channel logins",
+      "Set up brand contract & partnership documentation",
+      "Nominated creative successor/manager as executor",
+      "Shared digital media master archives and access"
+    ],
+    badgeLabel: "Creators"
   }
 ];
