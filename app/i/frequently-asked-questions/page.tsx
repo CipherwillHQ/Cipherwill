@@ -5,6 +5,7 @@
  */
 
 import { FULL_HOSTNAME } from "@/common/constant";
+import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import CTA from "@/components/public/CTA";
@@ -29,6 +30,7 @@ export const metadata = {
 export default function FrequentlyAskedQuestions() {
   return (
     <div className="w-full min-h-screen bg-cream flex flex-col text-[#2A363B] antialiased">
+      <SmoothPageScroll />
       <Header />
 
       {/* Hero Section */}
