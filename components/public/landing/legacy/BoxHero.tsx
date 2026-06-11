@@ -1,5 +1,5 @@
 import { BiRightArrowAlt } from "react-icons/bi";
-import SimpleButton from "../common/SimpleButton";
+import SimpleButton from "@/components/common/SimpleButton";
 import Link from "next/link";
 
 export default function BoxHero() {

@@ -19,7 +19,6 @@ module.exports = {
     "/i/frequently-asked-questions/sitemap.xml",
     "/i/legacy",
     "/i/assets",
-    "/i/security",
     "/i/grief",
     "/i/legal",
     "/i/personas/sitemap.xml",
