@@ -14,7 +14,7 @@ export default function Hero() {
   const springTransition = { type: "spring" as const, stiffness: 400, damping: 15 };
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-cream px-4 sm:px-6 lg:px-8 py-24 md:py-32 overflow-hidden select-none">
+    <div className="relative w-full flex flex-col items-center justify-center bg-cream px-4 sm:px-6 lg:px-8 pt-32 pb-16 md:pt-44 md:pb-20 overflow-hidden select-none">
       
       {/* Main Content Area */}
       <div className="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center text-center space-y-10">
