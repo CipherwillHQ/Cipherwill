@@ -48,7 +48,7 @@ export default function ExecutorPanel() {
 
             return (
               <Link href={`/executor/${id}/${segment.slug}`} key={segment.slug}>
-                <button className="border border-default w-60 bg-white hover:bg-primary-50 dark:bg-dark dark:hover:bg-dark-900 transition-colors duration-300 p-2 rounded-md hover:cursor-pointer">
+                <button className="border border-default w-60 bg-white hover:bg-primary-50 dark:bg-darkCanvas dark:hover:bg-darkCard transition-colors duration-300 p-2 rounded-md hover:cursor-pointer">
                   {segment.title}
                 </button>
               </Link>

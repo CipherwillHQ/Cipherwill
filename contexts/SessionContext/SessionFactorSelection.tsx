@@ -27,7 +27,7 @@ export default function SessionFactorSelection({
   set_session_token: (value: SessionToken | null) => void;
 }) {
   return (
-    <div className="flex flex-col h-screen bg-dark-50 dark:bg-dark">
+    <div className="flex flex-col h-screen bg-cream dark:bg-darkCanvas">
       <div className="flex flex-col sm:flex-row items-center justify-between px-4 py-2 border-b sm:border-b-0">
         <Link href={"/"}>
           <Image

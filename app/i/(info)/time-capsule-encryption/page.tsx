@@ -1,13 +1,21 @@
+/*
+ * page.tsx
+ * What it does: Renders the public explainer page for Time Capsule Encryption.
+ * What it owns: Page layout, SEO metadata, editorial content blocks, and structural grids.
+ * What it does NOT do: It does not implement the TimeCapsuleVisual simulator widget.
+ */
+
 import { FULL_HOSTNAME } from "@/common/constant";
 import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import CTA from "@/components/public/CTA";
 import Link from "next/link";
+import TimeCapsuleVisual from "./TimeCapsuleVisual";
 
 const title = "Time Capsule Encryption - Cipherwill";
 const description =
-  "Discover how Cipherwill's Time Capsule Encryption keeps your digital stuff safe, making sure it’s securely passed on to your loved ones with top-notch security.";
+  "Discover how Cipherwill's Time Capsule Encryption keeps your digital stuff safe, making sure it's securely passed on to your loved ones with top-notch security.";
 
 export const metadata = {
   title,
@@ -23,193 +31,90 @@ export const metadata = {
 
 export default function TimeCapsuleEncryption() {
   return (
-    <div>
+    <div className="bg-cream min-h-screen text-forest font-sans">
       <SmoothPageScroll />
       <Header />
-      <div className="mt-20 mbs-6 px-4 pt-28 pb-12 flex flex-col gap-2 items-center justify-center text-center bg-linear-to-b from-sky-50 to-sky-100">
-        <div className="py-20">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">
-            Details of Time Capsule Encryption
-          </h1>
-          <p className="pt-8 max-w-md mx-auto font-medium">{description}</p>
-        </div>
-      </div>
-      <div className="flex flex-col gap-8 w-full max-w-3xl mx-auto p-4 font-medium">
-        <div>
-          Timed-release encryption (TRE) is a two-factor encryption method that
-          combines public key encryption with time-based controls. Decryption
-          requires a special "trapdoor" key, which remains confidential until a
-          specified time, managed by a secure time-server. At Cipherwill, we
-          refer to this system as <b>"Time Capsule Encryption."</b>
-        </div>
-        <div className="flex flex-col gap-2">
-          <h2 className="text-2xl font-bold">
-            What is Time Capsule Encryption?
-          </h2>
-          <p>
-            Time Capsule Encryption is an advanced security method that combines
-            time-based controls with traditional encryption to safeguard
-            sensitive data. It ensures that information remains encrypted and
-            inaccessible until a pre-determined time, offering an extra layer of
-            protection.
-            <br />
-            <br />
-            The idea behind Time Capsule Encryption is to create a
-            time-sensitive lock on the data. Even if someone has the necessary
-            decryption keys, they won't be able to access the information until
-            the appointed time, making it ideal for safeguarding valuable assets
-            or sensitive information for future release.
-            <br />
-            <br />
-            This encryption method is particularly useful for situations where
-            data needs to be securely stored and only accessed at a specific
-            moment. Whether for legal, personal, or business purposes, it
-            provides peace of mind by ensuring that information is protected
-            until the right time arrives.
-          </p>
-        </div>
 
-        <div className="flex flex-col gap-2">
-          <h2 className="text-2xl font-bold">
-            Why is it important for digital wills?
-          </h2>
-          <p>
-            Time Capsule Encryption is crucial for digital wills because it
-            ensures that sensitive information remains secure until it’s needed.
-            With digital assets often containing personal, financial, and legal
-            details, protecting this information from unauthorized access is
-            essential for maintaining privacy and security.
-            <br />
-            <br />
-            Moreover, this encryption method allows individuals to control when
-            their beneficiaries can access their digital legacy. By setting a
-            specific release time, users can ensure that their loved ones
-            receive the information at the right moment, preventing premature
-            access that could lead to complications.
-            <br />
-            <br />
-            In the event of unexpected circumstances, Time Capsule Encryption
-            guarantees that essential data is safeguarded until the appointed
-            time. This feature not only protects against unauthorized access but
-            also provides peace of mind, knowing that your digital will is
-            secure and accessible only when intended.
-          </p>
+      {/* Hero Section */}
+      <section className="pt-40 pb-16 px-4 text-center max-w-4xl mx-auto">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-forest/10 bg-parchment/50 text-xs font-semibold mb-6">
+          <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+          Timed-Release Cryptography
         </div>
-        <div className="text-xl font-bold">
-          How Time Capsule Encryption Works in Cipherwill's{" "}
-          <Link
-            href="/i/cascade-encryption"
-            className="text-blue-600 hover:text-blue-800 hover:underline"
-          >
-            Cascade Encryption
-          </Link>
-        </div>
-        <div className="flex flex-col gap-2">
-          <h2 className="text-xl font-bold">
-            How Cipherwill Determines the Duration of Encryption?
-          </h2>
-          <p>
-            At Cipherwill, we encrypt time capsule keys for defined periods,
-            typically 90 or 180 days. This initial duration ensures that your
-            sensitive information remains secure during that time. After the
-            period has elapsed, we automatically re-encrypt the keys for the
-            same duration, maintaining the time based encryption.
-            <br />
-            <br />
-            This process not only enhances security but also ensures that your
-            information remains accessible for decryption when the{" "}
-            <Link
-              href="/i/how-execution-timeline-works"
-              className="text-blue-600 hover:text-blue-800 hover:underline"
-            >
-              will execution process
-            </Link>{" "}
-            begins. By re-encrypting the keys, we strike a balance between
-            safeguarding your digital assets and ensuring they are available
-            when your beneficiaries need them most.
-          </p>
-        </div>
-        <div className="flex flex-col gap-2">
-          <h2 className="text-xl font-bold">
-            First Layer: Encryption with Time Capsule Key
-          </h2>
-          <p>
-            The first layer of security in Time Capsule Encryption involves
-            encrypting your data with a unique time capsule key. This key acts
-            as a protective barrier, ensuring that your sensitive information
-            remains secure and inaccessible to anyone without the proper
-            permissions.
-            <br />
-            <br />
-            When you create a digital will, Cipherwill generates a time capsule
-            key specifically for your data. This key encrypts the information,
-            locking it away until the designated time arrives. By using this
-            method, even if someone were to gain access to the encrypted data,
-            they would not be able to read it without the corresponding time
-            capsule key.
-            <br />
-            <br />
-            The time capsule key remains confidential and is managed by
-            Cipherwill's secure system, further enhancing the protection of your
-            digital assets. This layer of encryption is crucial for safeguarding
-            your information, providing you with peace of mind knowing that your
-            data is secure until the right moment for release.
-          </p>
-        </div>
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-playfair font-bold text-forest leading-tight">
+          Time Capsule Encryption
+        </h1>
+        <p className="mt-6 text-base sm:text-lg text-forest/70 max-w-xl mx-auto font-medium leading-relaxed">
+          {description}
+        </p>
+      </section>
 
-        <div className="flex flex-col gap-2">
-          <h2 className="text-xl font-bold">
-            Second Layer: Beneficiary's Public Key
-          </h2>
-          <p>
-            The second layer of encryption adds an essential level of security
-            by using the beneficiary's public key. Once your data is encrypted
-            with the time capsule key, it undergoes a second encryption process
-            where the beneficiary's unique public key is applied. This ensures
-            that only the designated recipient can ultimately access the
-            information.
-            <br /> <br />
-            By encrypting the data again with the beneficiary's public key, we
-            create a highly secure environment that protects your digital assets
-            from unauthorized access. Even if someone were to acquire the time
-            capsule key, they would still be unable to decrypt the data without
-            the beneficiary's private key, which is kept confidential.
-            <br /> <br />
-            This dual-layered approach not only enhances security but also
-            ensures that the rightful heirs can access the information at the
-            appropriate time. The combination of the time capsule key and the
-            beneficiary's public key creates a robust framework for safeguarding
-            your digital legacy, ensuring it remains secure until it's needed.
-          </p>
-          <div className="">
-            Read more about{" "}
-            <Link
-              href="/i/cascade-encryption"
-              className="text-blue-600 hover:text-blue-800 hover:underline"
-            >
-              Cascade encryption in Cipherwill
-            </Link>
+      {/* Simulator Interface Section */}
+      <section className="px-4 py-8 max-w-7xl mx-auto">
+        <TimeCapsuleVisual />
+      </section>
+
+      {/* Deep Technical Explanations Grid */}
+      <section className="px-4 py-12 max-w-5xl mx-auto font-medium text-forest">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Card 1 */}
+          <div className="bg-white border border-forest/10 rounded-2xl p-6 md:p-8 shadow-level-1">
+            <h2 className="font-playfair text-2xl font-bold mb-4">
+              What is Timed-Release Encryption?
+            </h2>
+            <p className="text-forest/70 text-sm sm:text-base leading-relaxed">
+              Timed-release encryption (TRE) combines traditional public-key cryptography with trustless, time-dependent controls. Decryption requires a unique "trapdoor" key that is mathematically generated and broadcast by an autonomous decentralized network of time beacons. No human action can reveal the key before the specified block time.
+            </p>
           </div>
-          {/* <div className="">
-            Read more about{" "}
-            <Link
-              target="_blank"
-              href="https://github.com/drand/tlock-js"
-              className="text-blue-600 hover:text-blue-800 hover:underline"
-            >
-              Time based encryption by drand
-            </Link>{" "}
-            &{" "}
-            <Link
-              target="_blank"
-              href="https://timevault.drand.love/"
-              className="text-blue-600 hover:text-blue-800 hover:underline"
-            >
-              Live Demo
-            </Link>
-          </div> */}
+
+          {/* Card 2 */}
+          <div className="bg-white border border-forest/10 rounded-2xl p-6 md:p-8 shadow-level-1">
+            <h2 className="font-playfair text-2xl font-bold mb-4">
+              Why it Matters for Digital Wills
+            </h2>
+            <p className="text-forest/70 text-sm sm:text-base leading-relaxed">
+              Digital assets contain sensitive property and emotional records. Premature exposure can lead to complications or invasion of privacy. Time Capsule Encryption guarantees that your secrets remain locked in a cryptographic vacuum until the designated handoff date. This creates a secure, tamper-proof bridge across time.
+            </p>
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* Double Guard Feature Section (Alternating Dark Block) */}
+      <section className="bg-forest text-cream py-20 px-4 mt-16 font-medium">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <h2 className="font-playfair text-3xl sm:text-4xl font-bold text-white leading-tight">
+              Our Dual-Layer Cryptographic Shield
+            </h2>
+            <p className="text-cream/80 text-sm sm:text-base leading-relaxed mt-4">
+              We never trust a single point of failure. Your Time Capsule works as part of a{" "}
+              <Link href="/i/cascade-encryption" className="text-white underline hover:text-cream/80 font-bold">
+                Cascade Encryption
+              </Link>{" "}
+              sequence.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-3xl mx-auto">
+            <div className="border border-cream/10 bg-cream/5 rounded-2xl p-6">
+              <span className="font-mono text-xs font-bold opacity-50 block mb-1">INNER LAYER</span>
+              <h3 className="text-xl font-bold text-white mb-3">Time Capsule Lock</h3>
+              <p className="text-sm text-cream/70 leading-relaxed">
+                Your data is first encrypted with a unique time capsule key. This is managed by an immutable, decentralized time-server beacon, keeping it closed until target check-in timelines elapse.
+              </p>
+            </div>
+
+            <div className="border border-cream/10 bg-cream/5 rounded-2xl p-6">
+              <span className="font-mono text-xs font-bold opacity-50 block mb-1">OUTER LAYER</span>
+              <h3 className="text-xl font-bold text-white mb-3">Beneficiary Key Lock</h3>
+              <p className="text-sm text-cream/70 leading-relaxed">
+                The capsule is immediately encrypted *again* with the beneficiary's public key. Even if the timelock beacon matures, the file remains fully locked and private until the authorized beneficiary signs in.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <CTA />
       <Footer />
     </div>

@@ -39,7 +39,7 @@ export default function App() {
             <DevOnly>
               <Link
                 href="/executor"
-                className="border border-accent-500 p-1 rounded-md"
+                className="border border-primary p-1 rounded-md"
               >
                 Executor Dashboard
               </Link>

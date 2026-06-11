@@ -1,8 +1,13 @@
+/**
+ * Main public Header component for Cipherwill.
+ * Owns the desktop navigation bar, scrolled/unscrolled header styling, and the hover dropdown container.
+ * Does NOT own the sidebar navigation for dashboard/executor layouts.
+ */
+
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
 import logoBlack from "../../assets/name-black.png";
 import logoWhite from "../../assets/name-white.png";
@@ -31,6 +36,42 @@ export default function Header({
   const pathname = usePathname();
   const [expanded, setExpanded] = useState(false);
   const [hoverMenu, setHoverMenu] = useState<any | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseEnterLink = (menuContent: any) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setHoverMenu(menuContent);
+  };
+
+  const handleMouseLeaveLink = () => {
+    timeoutRef.current = setTimeout(() => {
+      setHoverMenu(null);
+    }, 150);
+  };
+
+  const handleMouseEnterDropdown = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  };
+
+  const handleMouseLeaveDropdown = () => {
+    timeoutRef.current = setTimeout(() => {
+      setHoverMenu(null);
+    }, 150);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleScroll = () => {
     const position = window.scrollY;
@@ -52,23 +93,18 @@ export default function Header({
   return (
     <header
       className={twMerge(
-        `fixed z-50 mx-auto w-full left-0 right-0 top-0 text-black
+        `fixed z-50 mx-auto w-full left-0 right-0 top-0 text-forest
           ${
             expanded
               ? twMerge(
-                  `h-16 bg-white/75 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.1)]`,
+                  `h-16 bg-cream/80 backdrop-blur-md border-b border-default`,
                   expandedClassOverride
                 )
               : twMerge(`h-20`, nonExpandedClassOverride)
-          } transition-all ease-in-out duration-500`,
+          } transition-all ease-cw-ease duration-500`,
         classOverride
       )}
     >
-      {/* Important to switch theme in the middle of the page */}
-      {/* <span className="absolute top-0 opacity-0 h-0 w-0 overflow-hidden">
-          {final_state}
-        </span> */}
-
       <div className="w-full max-w-7xl mx-auto flex items-center justify-between h-full px-4">
         <LinkToTheTop href="/" className="flex items-center">
           <Image
@@ -96,19 +132,19 @@ export default function Header({
             return (
               <LinkToTheTop key={item.path} href={item.path}>
                 <div
-                  className={`mx-1 hover:text-neutral-500 p-1 font-medium
-                  ${pathname === item.path && "font-semibold"}
+                  className={`mx-1 text-forest/80 hover:text-primary p-1 font-medium transition-colors duration-200 cursor-pointer
+                  ${pathname === item.path ? "text-primary font-semibold" : ""}
                   content-center ${expanded ? "h-16" : "h-20"}
                   `}
                   onMouseEnter={() => {
                     if (item.desktop_hover) {
-                      setHoverMenu(item.desktop_hover);
+                      handleMouseEnterLink(item.desktop_hover);
+                    } else {
+                      handleMouseEnterLink(null);
                     }
                   }}
                   onMouseLeave={() => {
-                    if (item.desktop_hover) {
-                      setHoverMenu(null);
-                    }
+                    handleMouseLeaveLink();
                   }}
                 >
                   {item.title}
@@ -120,15 +156,9 @@ export default function Header({
         <div className="flex items-center">
           <LinkToTheTop href="/app">
             <div
-              className={`
-              ${
-                // final_state === "dark"
-                //   ? "bg-white text-black":
-                "bg-linear-to-r from-primary-700 to-primary text-white hover:shadow-md"
-              }
-              font-semibold transition-colors duration-300 px-4 py-2 rounded-full sm:text-xs m-2`}
+              className="bg-linear-to-r from-primary-700 to-primary text-white font-semibold shadow-sm hover:shadow-level-1 active:scale-[0.98] transition-all duration-200 ease-cw-ease px-5 py-2 rounded-xl text-sm m-2 cursor-pointer"
             >
-              <div className="mt-[1px] sm:mt-0 text-sm">
+              <div className="mt-[1px] sm:mt-0">
                 {user ? "Dashboard" : "Login/Signup"}
               </div>
             </div>
@@ -138,23 +168,24 @@ export default function Header({
       </div>
 
       <div
-        className={`w-fit max-w-7xl mx-auto overflow-hidden ${
-          hoverMenu !== null
-            ? "h-fit p-2 border rounded-md bg-white shadow-lg backdrop-blur-md"
-            : "h-0"
-        }`}
+        className={`absolute left-1/2 -translate-x-1/2 mt-2 w-fit max-w-7xl mx-auto overflow-hidden transition-all duration-300 ease-cw-ease border border-default rounded-2xl bg-white shadow-level-1
+          ${
+            hoverMenu !== null
+              ? "opacity-100 translate-y-0 scale-100 pointer-events-auto p-4 visible"
+              : "opacity-0 -translate-y-2 scale-95 pointer-events-none h-0 p-0 invisible"
+          }
+        `}
         onMouseEnter={() => {
-          setHoverMenu(hoverMenu);
+          handleMouseEnterDropdown();
         }}
         onMouseLeave={() => {
-          setHoverMenu(null);
+          handleMouseLeaveDropdown();
         }}
         onClick={() => {
           setHoverMenu(null);
         }}
       >
         {hoverMenu}
-        {/* <WorksMenuDesktop /> */}
       </div>
     </header>
   );

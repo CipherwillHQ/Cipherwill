@@ -41,10 +41,10 @@ export function ThemeSelector({ children }: { children: React.ReactNode }) {
     }
 
     if (current_theme === "dark") {
-      themeMetaTag.setAttribute("content", "#171717");
+      themeMetaTag.setAttribute("content", "#1f1f1e");
       localstorage_set("theme", "dark");
     } else {
-      themeMetaTag.setAttribute("content", "#ffffff");
+      themeMetaTag.setAttribute("content", "#f8f8f6");
       localstorage_set("theme", "light");
     }
   }, [current_theme]);

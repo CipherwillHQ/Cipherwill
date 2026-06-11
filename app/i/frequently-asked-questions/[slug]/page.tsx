@@ -1,25 +1,26 @@
+/**
+ * FrequentlyAskedQuestions slug page route (/i/frequently-asked-questions/[slug]).
+ * Owns the dynamic metadata generation and passes the selected slug
+ * to the FAQ interactive workspace.
+ * Does NOT own interactive states or raw question layouts.
+ */
+
 import { FULL_HOSTNAME } from "@/common/constant";
-import SimpleButton from "@/components/common/SimpleButton";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import CTA from "@/components/public/CTA";
-import FAQs from "@/components/public/FAQs";
-import QuestionFeedback from "@/components/public/FAQs/QuestionFeedback";
+import FAQInteractiveSection from "@/components/public/FAQs/FAQInteractiveSection";
 import questions from "@/components/public/FAQs/questions";
-import TopicsPanel from "@/components/public/FAQs/TopicsPanel";
 import { Metadata } from "next";
-import Link from "next/link";
 import { redirect } from "next/navigation";
-import toast from "react-hot-toast";
 
 export async function generateMetadata({
   params,
-  searchParams,
 }): Promise<Metadata> {
   const { slug } = await params;
   let faq;
   for (const key in questions) {
-    faq = questions[key].find((faq) => faq.slug === slug);
+    faq = questions[key].find((f) => f.slug === slug);
     if (faq) break;
   }
   if (!faq) return redirect("/i/frequently-asked-questions");
@@ -39,28 +40,40 @@ export async function generateMetadata({
   };
 }
 
-export default async function FAQPage({ params, searchParams }) {
-  const slug = (await params).slug;
+export default async function FAQPage({ params }) {
+  const { slug } = await params;
   let faq;
   for (const key in questions) {
-    faq = questions[key].find((faq) => faq.slug === slug);
+    faq = questions[key].find((f) => f.slug === slug);
     if (faq) break;
   }
   if (!faq) return redirect("/i/frequently-asked-questions");
 
   return (
-    <div className="w-full">
+    <div className="w-full min-h-screen bg-cream flex flex-col text-[#2A363B] antialiased">
       <Header />
-      <div className="flex items-center sm:flex-row flex-col p-4 gap-2 max-w-5xl mx-auto">
-        <div className="mt-40 mb-20 w-full flex flex-col gap-4 max-w-7xl mx-auto p-2 text-lg">
-          <h1 className="font-medium text-3xl pr-4">{faq.title}</h1>
-          {faq.content}
-          <QuestionFeedback question={faq.title} />
-        </div>
-        <TopicsPanel />
-      </div>
-      <CTA />
 
+      {/* Hero Section */}
+      <section className="pt-28 pb-16 sm:pt-32 sm:pb-24 md:pt-24 md:pb-24 px-4 border-b border-black/3">
+        <div className="max-w-7xl mx-auto flex flex-col items-center justify-center text-center">
+          <span className="font-mono text-[10px] sm:text-xs uppercase tracking-widest text-sage font-bold mb-4">
+            Security & Continuity Support
+          </span>
+          <p className="font-playfair text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tight text-[#2A363B] max-w-3xl mb-6">
+            Frequently Asked Questions
+          </p>
+          <p className="text-neutral-500 font-medium text-base sm:text-lg max-w-2xl leading-relaxed">
+            Everything you need to know about Cipherwill, digital inheritance, high-grade cryptography, and protecting your virtual legacy.
+          </p>
+        </div>
+      </section>
+
+      {/* Interactive FAQ Workspace prefilled with slug */}
+      <main className="grow w-full py-8">
+        <FAQInteractiveSection initialSlug={slug} />
+      </main>
+
+      <CTA />
       <Footer />
     </div>
   );

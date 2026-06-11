@@ -94,6 +94,7 @@ export const gilroy = localFont({
       style: "italic",
     },
   ],
+  variable: '--font-gilroy',
 });
 
 export const gilroyHeavy = localFont({

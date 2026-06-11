@@ -38,7 +38,7 @@ export default function VerifyEmail() {
 
   if (isLoading && !user) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-dark-50 dark:bg-black/95">
+      <main className="min-h-screen flex items-center justify-center bg-cream dark:bg-black/95">
         <div className="animate-pulse text-neutral-600 font-medium">
           Loading verification details...
         </div>
@@ -48,7 +48,7 @@ export default function VerifyEmail() {
   if (!isLoading && !user) return redirect("/auth", RedirectType.replace);
 
   return (
-    <main className="min-h-screen bg-dark-50 dark:bg-black/95 text-black dark:text-white">
+    <main className="min-h-screen bg-cream dark:bg-black/95 text-black dark:text-white">
       <div className="w-full max-w-2xl mx-auto px-3 sm:px-4 min-h-screen flex items-center">
         <section className="w-full rounded-2xl border border-default bg-secondary p-4 sm:p-6 md:p-7">
           <div className="space-y-6">
@@ -127,7 +127,7 @@ export default function VerifyEmail() {
 
                 <SimpleButton
                   variant="secondary"
-                  className="w-full sm:w-auto rounded-full px-5 py-2.5 bg-white dark:bg-black/30 text-neutral-900 dark:text-white border border-default hover:bg-dark-100 dark:hover:bg-black/50 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full sm:w-auto rounded-full px-5 py-2.5 bg-white dark:bg-black/30 text-neutral-900 dark:text-white border border-default hover:bg-neutral-100 dark:hover:bg-black/50 disabled:opacity-60 disabled:cursor-not-allowed"
                   disabled={validatingEmail}
                   onClick={async () => {
                     if (validatingEmail) return;

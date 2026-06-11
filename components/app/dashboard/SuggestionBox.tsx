@@ -26,7 +26,7 @@ export default function SuggestionBox({ triggerText = "Give us Feedback" }: { tr
     }
     try {
       await sendFeedback({ variables: { message } });
-      toast.success("Thanks — your suggestion was sent!");
+      toast.success("Thanks - your suggestion was sent!");
       setMessage("");
       close();
     } catch (err) {
@@ -48,7 +48,7 @@ export default function SuggestionBox({ triggerText = "Give us Feedback" }: { tr
     >
       {/* @ts-ignore */}
       {(close: () => void) => (
-  <div className="w-full max-w-xl mx-auto rounded-2xl bg-white dark:bg-secondary-950 border border-default p-6 md:p-8 shadow-xl">
+  <div className="w-full max-w-xl mx-auto rounded-2xl bg-white dark:bg-darkCard border border-default p-6 md:p-8 shadow-xl">
           <div className="flex items-start justify-between gap-4">
             <div>
               <h2 className="text-lg md:text-2xl font-semibold text-black dark:text-neutral-100">Tell us what we can do better</h2>
@@ -75,12 +75,12 @@ export default function SuggestionBox({ triggerText = "Give us Feedback" }: { tr
               onChange={(e) => setMessage(e.target.value.slice(0, MAX_CHARS))}
               rows={6}
               placeholder={`What would make Cipherwill better? (max ${MAX_CHARS} characters)`}
-              className="w-full rounded-lg border border-default bg-secondary p-3 text-sm placeholder:opacity-70 focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-secondary-900 dark:text-neutral-100 placeholder:text-neutral-500 dark:placeholder:text-neutral-500 resize-none"
+              className="w-full rounded-lg border border-default bg-secondary p-3 text-sm placeholder:opacity-70 focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-darkCard dark:text-neutral-100 placeholder:text-neutral-500 dark:placeholder:text-neutral-500 resize-none"
             />
 
             <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground text-neutral-600 dark:text-neutral-400">
               <span className="text-neutral-600 dark:text-neutral-300">{message.length}/{MAX_CHARS} characters</span>
-              <span className="hidden md:inline">We review every suggestion personally — thanks for helping!</span>
+              <span className="hidden md:inline">We review every suggestion personally - thanks for helping!</span>
             </div>
           </div>
 

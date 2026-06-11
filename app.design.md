@@ -1,35 +1,314 @@
-# App Dashboard Design
+# app.design.md - Dashboard Design
 
-Applies to: `/app` and `/executor` routes.
+> Applies to: `/app/*` and `/executor/*` routes only.
+> This file is a derivation of Design.md - it does not repeat global tokens, motion, typography families, spacing, or accessibility rules. Read Design.md first.
 
-## 🎨 Colors (Light / Dark)
-- **Sidebar bg**: White `#FFFFFF` / `#101113` (dark)  
-- **Content bg**: `#f4f5f7` (dark-50) / `rgba(0,0,0,0.95)` (black/95)  
-- **Text**: Black / White  
-- **Active selection**: `bg-slate-100 border-l-4 border-black` / `bg-slate-800 border-white`  
-- **Borders**: `border-default` (neutral-300 / neutral-800)  
-- **Hover**: `bg-neutral-100` / `bg-neutral-700`  
+---
 
-## ✍️ Fonts
-- **Body**: Gilroy (400–600)  
-- **Sidebar**: `text-sm font-medium`  
-- **Divider headers**: `text-sm font-semibold text-neutral-700 dark:text-neutral-300`  
+## 1. Philosophy
 
-## 🖼️ Layout
-- **Shell**: Sidebar (w-min sm:w-60) + content (flex-1, overflow-y-auto)  
-- **Viewport**: `w-screen cw-vh-screen cw-app-safe-area`  
-- **Executor sidebar**: Same pattern, `w-min sm:w-60`, donor name in header  
+The dashboard is where trust is earned or lost. Every interaction here involves real sensitive data - passwords, seed phrases, executors, beneficiaries. The design must reinforce two things simultaneously:
 
-## 🔘 Buttons (SimpleButton)
-- **Primary**: Blue gradient (`from-primary-700 to-primary`), `rounded-md`  
-- **Secondary**: Gray bg + border, `rounded-md`  
-- **Danger**: Red gradient, `rounded-md`  
+- **Security is visible** - the user should always feel their data is protected and under control.
+- **The task is manageable** - complexity is hidden behind calm, structured layouts that never overwhelm.
 
-## 🌗 Theme
-- `class` strategy on `#app-theme-layout`  
-- Persisted in `localStorage` key `"theme"`  
-- Switch via `SwitchThemeButton` (TbSun/TbMoon icons)  
+---
 
-## 🎯 Icons
-- **Library**: `react-icons` (tb, bi, fi, fa)  
-- **Size**: `text-xl` / `text-2xl` in sidebar  
+## 2. Theme & Color
+
+Dark mode is supported on these routes only. Public pages are light-only - see Design.md scope table.
+
+### Light Mode Surfaces
+
+```
+Content Canvas:         #f8f8f6  - Light Warm Cream. Cohesive with public canvas.
+Sidebar Background:     #ffffff  - Pure white. Slight lift against the cream content area.
+Card / Tile Surface:    #ffffff  - White cards on cream canvas creates clear hierarchy without shadow.
+```
+
+### Dark Mode Surfaces
+
+```
+Content Canvas:         #1f1f1e  - Dark Charcoal (Canvas).
+Sidebar Background:     #121212  - Very Dark Charcoal (Grounds/anchors the sidebar).
+Card / Tile Surface:    #2c2c2a  - Medium Charcoal (Cards and interactive sections).
+```
+
+### Active & Interactive States (Sidebar)
+
+```
+Active item light:      bg-primary-50 + border-l-4 border-primary (#003ecb)
+Active item dark:       bg-#2c2c2a + border-l-4 border-primary (#003ecb)
+Hover light:            bg-#eeedea
+Hover dark:             bg-neutral-800
+```
+
+The left blue border is the active signal. It is always `#003ecb` in both modes - the single consistent anchor that tells the user where they are.
+
+### Text (Dashboard-specific)
+
+```
+Page title:             font-semibold, Tailwind text-xl or text-2xl
+Section header:         font-semibold, text-base
+Sidebar item:           font-medium, text-sm
+Sidebar divider label:  font-semibold, text-xs, neutral-500 / neutral-400 dark
+Data label:             font-medium, text-sm, muted
+Data value:             font-semibold, text-sm or text-base
+Crypto / key values:    JetBrains Mono / Geist Mono - always monospace, no exceptions
+```
+
+### Complete Color Palette
+
+> Reference for all available Tailwind color tokens. Defined in `tailwind.config.js`.
+
+#### Primary (CTA Blue)
+
+```
+50:    #ecf7ff
+100:   #d4ecff
+200:   #b2dfff
+300:   #7dcdff
+400:   #40b0ff
+500:   #148aff
+600:   #0066ff
+700:   #004eff
+800:   #003ecb  (DEFAULT)
+900:   #083aa0
+950:   #0a2461
+```
+
+Usage: Primary buttons, CTA links, active sidebar indicator, focus rings, loading spinner, active tab underline.
+
+#### Surfaces - Light
+
+```
+cream:           #FBF9F1  - Public page canvas (light-only routes).
+dashboardCream:  #f8f8f6  - Dashboard content canvas (light mode).
+parchment:       #F4F1EA  - Card surface on public pages.
+white:           #ffffff  - Sidebar and card backgrounds (light mode).
+```
+
+#### Surfaces - Dark
+
+```
+darkCanvas:      #1f1f1e  - Content canvas dark (replaces old navy-950).
+darkCard:        #2c2c2a  - Card / tile surface dark (replaces old navy-900).
+darkAccent:      #333330  - Subtle elevation above darkCard (icon backgrounds, hover states).
+```
+
+#### Text
+
+```
+forest:   #2A363B  - Primary text on light surfaces.
+cream:    #FBF9F1  - Primary text on dark surfaces (reuse surface token).
+mahogany: #2C1A0E  - Footer / closing section background.
+```
+
+#### Supporting Accents
+
+```
+sage:     #7AA089  - Success states, "secured" badges, encrypted confirmations.
+clay:     #D4A390  - Empathy moments: guide panels, executor flows, onboarding callouts.
+```
+
+#### Feedback
+
+```
+success:  #7AA089  - Sage (reuse).
+error:    #C0392B  - Form errors, destructive actions.
+warning:  #C87941  - Warm amber. Non-critical alerts.
+info:     #003ecb  - Primary blue (reuse).
+```
+
+#### Component Classes
+
+These are Tailwind component abstractions defined in the config plugin layer. Use them for consistent surface layering.
+
+```
+.bg-primary    →  bg-dashboardCream dark:bg-darkCanvas     (content canvas)
+.bg-secondary  →  bg-white dark:bg-darkCard                (cards, panels, inputs)
+.bg-accent     →  bg-clay                                   (empathy / guide surfaces)
+.border-default → border-forest/10 dark:border-cream/10    (borders)
+```
+
+---
+
+## 3. Layout Shell
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Sidebar                  │  Content Area               │
+│  w-min (mobile)           │  flex-1                     │
+│  sm:w-60 (desktop)        │  overflow-y-auto            │
+│                           │  p-4 sm:p-6                 │
+│  bg-white / #121212       │  bg-#f8f8f6 / #1f1f1e       │
+│  border-r border-default  │                             │
+└─────────────────────────────────────────────────────────┘
+```
+
+- Viewport: `w-screen cw-vh-screen cw-app-safe-area` - handles 100dvh and iOS safe areas.
+- Sidebar is always visible on desktop, collapsed to icon-only on mobile.
+- Content area is the only scrollable region. Sidebar never scrolls independently unless nav items overflow.
+
+---
+
+## 4. Sidebar Anatomy
+
+Top to bottom:
+
+```
+1. Logo                  - SidebarLogo component, links to /app
+2. Nav Items             - grouped by section dividers
+3. Section Dividers      - thin border-default line + optional label
+4. Theme Toggle          - pinned to bottom, SwitchThemeButton (sun/moon)
+```
+
+### Nav Item Structure
+
+```
+[Icon 20px]  [Label text-sm font-medium]  [Optional trailing badge]
+```
+
+- Icon: Tabler (tb) set, 20px, 1.5px stroke.
+- On mobile: icon only, no label, centered.
+- On desktop: icon + label, left-aligned.
+- Active: left blue border + subtle fill (see Section 2).
+- Hover: `bg-neutral-100` / `bg-neutral-800`.
+- No nested sub-navigation. Flat nav only.
+
+---
+
+## 5. Page Header (Per-Page)
+
+Each page inside `/app` has its own fixed header at the top of the content area.
+
+```
+┌──────────────────────────────────────────────────────┐
+│  [Page Title - font-semibold text-2xl]   [Action CTA]│
+│  [Optional subtitle - text-sm muted]                 │
+└──────────────────────────────────────────────────────┘
+```
+
+- Title: plain Gilroy, `font-semibold`, `text-xl` or `text-2xl`. Never Playfair Display - that is public pages only.
+- Action CTA: primary `SimpleButton` aligned right. One action maximum. E.g. "Add Password", "Add Beneficiary".
+- Subtitle: optional, one line, muted, `text-sm`. Used for context - e.g. "Encrypted and secured for your beneficiaries."
+- No breadcrumbs. The sidebar already shows location. Breadcrumbs add noise.
+
+---
+
+## 6. Topbar
+
+Appears above content area on all dashboard pages.
+
+```
+[Mobile menu trigger]   [Page section name]   [Profile popup]
+```
+
+- Profile popup: avatar button → dropdown with Profile, Home, Logout.
+- Dropdown: `rounded-xl`, `border-default`, white / dark-800 bg, `text-sm font-medium` items.
+- No global search in topbar for now. (Cmd+K is aspirational - see Design.md.)
+
+---
+
+## 7. Data Tiles - Card Grid
+
+All data types (passwords, notes, seed phrases, bank accounts, payment cards, etc.) render as **cards in a grid**.
+
+```
+Grid:           grid-cols-1 sm:grid-cols-2 lg:grid-cols-3, gap-4
+Card:           bg-white dark:bg-#2c2c2a
+                border border-default
+                rounded-2xl (16px)
+                p-4
+                flat - no shadow (Level 0 elevation)
+```
+
+### Card Anatomy
+
+```
+┌─────────────────────────────────┐
+│  [Icon 20px]  [Type label]      │
+│                                 │
+│  [Primary value - font-semibold]│
+│  [Secondary detail - muted sm]  │
+│                                 │
+│  [Action row - icon buttons]    │
+└─────────────────────────────────┘
+```
+
+- Sensitive values (passwords, keys, seed phrases) are masked by default. Reveal on explicit user action only.
+- Masked value renders in monospace: `••••••••••••` - JetBrains Mono.
+- Revealed value renders in monospace: actual value - JetBrains Mono.
+- Action row: icon-only buttons (copy, edit, delete) at card bottom. Always visible, never hidden in a dropdown for primary actions.
+- Cards do not animate on hover beyond a subtle `border-color` lift to `border-primary` (#003ecb at 30% opacity).
+
+---
+
+## 8. Empty States
+
+Shown when a data section has no items yet. This is an empathy moment, not an error.
+
+```
+┌─────────────────────────────────────┐
+│                                     │
+│       [Minimal illustration]        │
+│                                     │
+│   [Plain-language heading]          │
+│   [One sentence of context]         │
+│                                     │
+│       [Primary CTA Button]          │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+- Illustration: simple, warm, minimal. Clay `#D4A390` as the accent tone.
+- Heading: `font-semibold text-lg`, Forest Slate / Warm Cream.
+- Context: one sentence max. Plain language. E.g. "Add your passwords so your beneficiaries can access them when needed." Never technical.
+- CTA: single primary blue button. One action only.
+- No bullet lists. No multiple options. One decision per empty state - consistent with Progressive Isolation principle from Design.md.
+
+---
+
+## 9. Executor Dashboard
+
+`/executor/[id]/*` - Same shell as `/app`. Key differences:
+
+```
+Sidebar header:   Shows donor's name prominently below the logo.
+                  "Data of [Donor Name]" - text-sm, centered, muted.
+
+Data views:       Read-only. No add/edit/delete actions.
+                  Action row on cards is hidden or shows copy-only.
+
+Visual signal:    A persistent read-only badge or banner at the top of content area.
+                  Subtle, not alarming - executor has legitimate access.
+                  Use Sage #7AA089 as the "access granted" color signal.
+
+Return link:      Pinned above theme toggle in sidebar.
+                  "Go to Cipherwill App" - links back to /app.
+```
+
+The executor dashboard must feel calm and clear. The executor is often in a difficult life moment. Every view should feel like a trusted handoff, not a system intrusion.
+
+---
+
+## 10. Onboarding Checklist
+
+Shown on the dashboard home for new users until all steps are complete.
+
+- Container: card style (white / `#2c2c2a`, `rounded-2xl`, `border-default`, `p-4`).
+- Each step: checkbox-style row with completion state.
+- Completed step: Sage `#7AA089` checkmark + muted text.
+- Pending step: blue circle indicator + active text.
+- Dismiss: auto-hides when all steps complete. No manual dismiss.
+- This is a Guide Panel in spirit - each step explains *why* it matters, not just *what* to do.
+
+---
+
+## 11. Theme Toggle
+
+- Component: `SwitchThemeButton` - sun (light) / moon (dark) icon.
+- Persisted in `localStorage["theme"]`.
+- Applied via `class` strategy on `#app-theme-layout`.
+- Pinned to bottom of sidebar on all dashboard routes.
+- Not shown anywhere on public pages.

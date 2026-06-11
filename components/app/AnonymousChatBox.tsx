@@ -4,19 +4,24 @@ import { Crisp } from "crisp-sdk-web";
 import { useEffect } from "react";
 import { IoChatbubblesOutline } from "react-icons/io5";
 
+import { twMerge } from "tailwind-merge";
+
 Crisp.configure(CRISP_TOKEN ?? "", {
   lockFullview: true,
   autoload: false,
   sessionMerge: true,
 });
 
-export default function AnonymousChatBox() {
+export default function AnonymousChatBox({ className }: { className?: string }) {
   useEffect(() => {
     Crisp.load();
   }, []);
   return (
     <div
-      className="flex items-center py-2 px-6 cursor-pointer border rounded-md bg-black text-white max-w-fit"
+      className={twMerge(
+        "flex items-center py-2 px-6 cursor-pointer border rounded-md bg-black text-white max-w-fit",
+        className
+      )}
       onClick={() => {
         if (Crisp.chat.isVisible()) {
           Crisp.chat.show();

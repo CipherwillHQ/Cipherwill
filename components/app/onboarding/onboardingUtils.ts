@@ -58,7 +58,7 @@ export const isStepTwoComplete = (
   return expectationsCustom.trim().length > 0;
 };
 
-/** Fisher-Yates shuffle — returns a new array, does not mutate the input. */
+/** Fisher-Yates shuffle - returns a new array, does not mutate the input. */
 export const shuffle = <T>(arr: T[]): T[] => {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));

@@ -1,5 +1,5 @@
 /**
- * Brand panel for onboarding — logo, value props.
+ * Brand panel for onboarding - logo, value props.
  * Renders on the left side of the split onboarding layout (desktop).
  * Does not own any interactive logic, just static brand presence.
  */

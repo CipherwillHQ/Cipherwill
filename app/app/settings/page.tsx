@@ -58,7 +58,7 @@ export default function Settings() {
         <div className="flex items-center p-2">
           <button
             className={`mx-2 hover:cursor-pointer
-          ${tab === "DEFAULT" && "border-b-2 border-accent-500"}
+          ${tab === "DEFAULT" && "border-b-2 border-primary"}
           `}
             onClick={() => changeTab("DEFAULT")}
           >
@@ -66,7 +66,7 @@ export default function Settings() {
           </button>
           <button
             className={`mx-2 hover:cursor-pointer
-          ${tab === "PROFILE" && "border-b-2 border-accent-500"}
+          ${tab === "PROFILE" && "border-b-2 border-primary"}
           `}
             onClick={() => changeTab("PROFILE")}
           >
@@ -74,7 +74,7 @@ export default function Settings() {
           </button>
           <button
             className={`mx-2 hover:cursor-pointer
-          ${tab === "BACKUP" && "border-b-2 border-accent-500"}
+          ${tab === "BACKUP" && "border-b-2 border-primary"}
           `}
             onClick={() => changeTab("BACKUP")}
           >
@@ -82,7 +82,7 @@ export default function Settings() {
           </button>
           <button
             className={`mx-2 hover:cursor-pointer
-          ${tab === "USAGE" && "border-b-2 border-accent-500"}
+          ${tab === "USAGE" && "border-b-2 border-primary"}
           `}
             onClick={() => changeTab("USAGE")}
           >
@@ -92,7 +92,7 @@ export default function Settings() {
             <button
               data-cy="settings-application-tab"
               className={`mx-2 hover:cursor-pointer ${
-                tab === "APPLICATION" && "border-b-2 border-accent-500"
+                tab === "APPLICATION" && "border-b-2 border-primary"
               }`}
               onClick={() => changeTab("APPLICATION")}
             >
@@ -103,7 +103,7 @@ export default function Settings() {
             <button
               data-cy="will-events-tab"
               className={`mx-2 hover:cursor-pointer ${
-                tab === "WILL_EVENTS" && "border-b-2 border-accent-500"
+                tab === "WILL_EVENTS" && "border-b-2 border-primary"
               }`}
               onClick={() => changeTab("WILL_EVENTS")}
             >

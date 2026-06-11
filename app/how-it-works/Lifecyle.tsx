@@ -336,9 +336,9 @@ export default function Lifecycle() {
               </li>
 
               <li>
-                With TCE, your data gets two layers of protection—first,
+                With TCE, your data gets two layers of protection-first,
                 it&apos;s locked with a time capsule key, then with the
-                beneficiary&apos;s public key—making sure only the right person
+                beneficiary&apos;s public key-making sure only the right person
                 can unlock it at the right time.
               </li>
             </ul>

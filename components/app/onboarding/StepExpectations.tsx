@@ -1,5 +1,5 @@
 /**
- * Step 2 panel for onboarding — "What are you expecting from Cipherwill?"
+ * Step 2 panel for onboarding - "What are you expecting from Cipherwill?"
  * Owns multi-select option cards with animated checkbox indicators.
  * Does not own submission side effects or step transition orchestration.
  */
@@ -39,7 +39,7 @@ export default function StepExpectations({
           What are you hoping to get from Cipherwill?
         </h2>
         <p className="text-sm text-gray-500">
-          Select all that apply — this helps us prioritize what matters most.
+          Select all that apply - this helps us prioritize what matters most.
         </p>
       </div>
 

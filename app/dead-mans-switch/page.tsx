@@ -1,13 +1,21 @@
+/*
+ * page.tsx
+ * What it does: Renders the public explainer page for Dead Man's Switch.
+ * What it owns: Page layout, SEO metadata, high-level educational sections, and CTAs.
+ * What it does NOT do: It does not implement the flow diagram subcomponent.
+ */
+
 import { FULL_HOSTNAME } from "@/common/constant";
 import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import CTA from "@/components/public/CTA";
 import Link from "next/link";
+import DeadMansSwitchFlow from "./DeadMansSwitchFlow";
 
-const title = "Dead Man's Switch - Cipherwill";
+const title = "End-to-End Encrypted Dead Man's Switch - Cipherwill";
 const description =
-  "Cipherwill is End-to-End Encrypted Dead Man's Switch, securely automating asset transfers to loved ones when you're gone, with advanced encryption and ease.";
+  "Cipherwill is an End-to-End Encrypted Dead Man's Switch, securely automating asset transfers to loved ones when you're gone, with advanced encryption and ease.";
 
 export const metadata = {
   title,
@@ -23,136 +31,112 @@ export const metadata = {
 
 export default function DeadMansSwitch() {
   return (
-    <div>
+    <div className="bg-cream min-h-screen text-forest font-sans">
       <SmoothPageScroll />
       <Header />
-      <div className="mt-20 mbs-6 px-4 pt-28 pb-12 flex flex-col gap-2 items-center justify-center text-center bg-linear-to-b from-sky-50 to-sky-100">
-        <div className="py-20">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">
-            Dead Man's Switch
-          </h1>
-          <p className="pt-8 max-w-md mx-auto font-medium">{description}</p>
-        </div>
-      </div>
-      <div className="flex flex-col gap-2 w-full max-w-3xl mx-auto p-4 font-medium">
-        <div className="flex flex-col gap-3">
-          <h2 className="font-bold text-2xl">What is a Dead Man's Switch?</h2>
-          <p className="text-justify">
-            A dead man's switch is basically a backup plan for when you're not
-            around anymore. It makes sure that your important stuff, like bank
-            accounts, passwords, or even digital assets, gets passed on to the
-            right people automatically. In today's world, so much of our life is
-            online, and without a way to share that info when you're gone, your
-            loved ones could be left struggling. A dead man's switch like
-            Cipherwill steps in when you can't, so your important things are
-            taken care of and your family doesn't have to stress about it.
-          </p>
-        </div>
-        <div className="flex flex-col gap-3">
-          <h2 className="font-bold text-2xl">How a Dead Man's Switch works?</h2>
-          <p className="text-justify">
-            A Dead Man's Switch is like your safety net for when you're no
-            longer around. When you set up your Cipherwill account, you add all
-            your important info, including your assets and wishes, just like
-            filling out a form for your future. You then follow your{" "}
-            <Link
-              href="/i/how-execution-timeline-works"
-              className="text-blue-700 hover:text-blue-900 underline"
-            >
-              Cipherwill execution schedule
-            </Link>
-            , You can set reminders to help you remember.
-            <br />
-            <br />
-            If you forget to check in by the time you're supposed to, the Dead
-            Man's Switch kicks in. This means that if something happens to you
-            and you can't check in, the system knows to take action. Once
-            activated, your loved ones automatically receive access to your
-            important information and assets. It's like passing the baton to
-            someone you trust.
-            <br />
-            <br />
-            With this setup, you can enjoy peace of mind knowing that your
-            wishes will be fulfilled even when you can't voice them yourself!
-          </p>
-        </div>
-        <div className="flex flex-col gap-3">
-          <h2 className="font-bold text-2xl">
-            Importance of End-to-End Encryption
-          </h2>
-          <p className="text-justify">
-            End-to-end encryption is the superhero of digital security, and it
-            plays a crucial role in keeping your sensitive information safe.
-            When you use Cipherwill, your data is encrypted from the moment you
-            enter it until it's securely delivered to your chosen beneficiaries.
-            This means that only you and the people you trust can access your
-            information.
-            <br />
-            <br />
-            Think of it this way: when you send a message, end-to-end encryption
-            locks it in a secure vault that only the intended recipient can
-            open. Even if someone intercepts the message along the way, they
-            won't be able to read it without the special key. This keeps your
-            assets, passwords, and personal wishes safe from prying eyes.
-            <br />
-            <br />
-            In a world where data breaches and hacks are all too common,
-            end-to-end encryption ensures that your information remains private
-            and protected. It gives you peace of mind, knowing that your digital
-            legacy is secure and that your loved ones will only access what you
-            want them to see when the time comes. With Cipherwill, you can trust
-            that your important data is guarded every step of the way!
-            <br />
-            <br />
-            Check{" "}
-            <Link
-              className="text-blue-700 hover:text-blue-900 underline"
-              href="/how-factors-work"
-            >
-              Encrytion Metrix
-            </Link>{" "}
-            to see how end-to-end encryption secures your data.
-          </p>
-        </div>
-        <div className="flex flex-col gap-3">
-          <h2 className="font-bold text-2xl">How to use?</h2>
-          <p className="text-justify">
-            To store your data in Cipherwill and keep it updated each year,
-            follow these steps: <br />
-            <b>1. Sign up:</b> Create your account on Cipherwill and log in to
-            access your dashboard. <br />
-            <b>2. Add data:</b> Input key details like bank info, passwords,
-            investments, digital assets, and any other data you want secured.{" "}
-            <br />
-            <b>3. Add beneficiaries:</b> Select who should receive the data when
-            you're no longer around. <br />
-            <b>4. Set preferences:</b> Cipherwill will remind you to log in and
-            update your data at least once a year to ensure everything stays
-            current and secure. <br />
-            <b>5. Update regularly:</b> Every couple of months (according to
-            your{" "}
-            <Link
-              href={"/i/how-execution-timeline-works"}
-              className="text-blue-700 hover:text-blue-900 underline"
-            >
-              Check In Interval
-            </Link>
-            ), review and update any changes to your information (like new
-            accounts, assets or passwords). <br />
-            <br />
-            This keeps your data active and ensures nothing gets lost. By
-            updating yearly, you keep your data safe and ready to be passed on
-            when needed.
-          </p>
 
-          <Link
-            href={"/how-it-works"}
-            className="text-blue-700 hover:text-blue-900 underline"
-          >
-            Read more about How Cipherwill works
-          </Link>
+      {/* Hero Section */}
+      <section className="pt-40 pb-16 px-4 text-center max-w-4xl mx-auto">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-forest/10 bg-parchment/50 text-xs font-semibold mb-6">
+          <span className="w-1.5 h-1.5 rounded-full bg-clay" />
+          Autonomous Protection
         </div>
-      </div>
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-playfair font-bold text-forest leading-tight">
+          Dead Man's Switch
+        </h1>
+        <p className="mt-6 text-base sm:text-lg text-forest/70 max-w-xl mx-auto font-medium leading-relaxed">
+          {description}
+        </p>
+      </section>
+
+      {/* Interactive Blueprint Flowchart Section */}
+      <section className="px-4 py-8 max-w-7xl mx-auto">
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <h2 className="font-playfair font-bold text-3xl text-forest">
+            How the Switch Works
+          </h2>
+          <p className="text-forest/60 text-sm mt-2 font-medium">
+            Click on each phase to visualize how Cipherwill securely loops your data from browser to backup.
+          </p>
+        </div>
+        <DeadMansSwitchFlow />
+      </section>
+
+      {/* Security Context Grid */}
+      <section className="px-4 py-12 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-medium">
+          {/* Box 1 */}
+          <div className="bg-white border border-forest/10 rounded-2xl p-6 md:p-8 shadow-level-1">
+            <h2 className="font-playfair text-2xl font-bold text-forest mb-4">
+              What is a Dead Man's Switch?
+            </h2>
+            <p className="text-forest/70 text-sm sm:text-base leading-relaxed">
+              A dead man's switch is an automated security system that activates if the operator becomes inactive or incapacitated. In the digital age, your assets (passwords, bank files, wallets, keys) risk becoming trapped in digital vaults forever. Cipherwill steps in autonomously, bypassing legal or technical roadblocks to pass on keys to those you care about.
+            </p>
+          </div>
+
+          {/* Box 2 */}
+          <div className="bg-white border border-forest/10 rounded-2xl p-6 md:p-8 shadow-level-1">
+            <h2 className="font-playfair text-2xl font-bold text-forest mb-4">
+              The Power of Local Encryption
+            </h2>
+            <p className="text-forest/70 text-sm sm:text-base leading-relaxed">
+              When storing digital secrets, encryption is your shield. Cipherwill locks your data directly on your phone or computer. The payload is sealed with a dual-key system so that even if intercepted, it remains completely unreadable to our servers or unauthorized actors. Only when your switch triggers does your beneficiary receive the proper keys to open it.
+            </p>
+            <Link
+              href="/how-factors-work"
+              className="inline-block mt-4 text-xs font-mono font-bold uppercase tracking-wider text-primary hover:text-primary-700 underline"
+            >
+              Verify Encryption Matrix →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Onboarding Guide Block (Alternating Theme) */}
+      <section className="bg-forest text-cream py-20 px-4 mt-16 rounded-t-3xl font-medium">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-playfair text-3xl sm:text-4xl font-bold text-center mb-12">
+            Five Simple Steps to Total Security
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-5 gap-6 max-w-4xl mx-auto">
+            <div className="border border-cream/10 bg-cream/5 rounded-xl p-5">
+              <span className="font-mono text-xs opacity-50 font-bold">STEP 01</span>
+              <h3 className="font-semibold text-white mt-1 mb-2">Sign Up</h3>
+              <p className="text-xs text-cream/70 leading-relaxed">Create a safe profile and unlock your secure dashboard workspace.</p>
+            </div>
+            <div className="border border-cream/10 bg-cream/5 rounded-xl p-5">
+              <span className="font-mono text-xs opacity-50 font-bold">STEP 02</span>
+              <h3 className="font-semibold text-white mt-1 mb-2">Add Data</h3>
+              <p className="text-xs text-cream/70 leading-relaxed">Vault your secrets: passwords, wallets, seed phrases, notes.</p>
+            </div>
+            <div className="border border-cream/10 bg-cream/5 rounded-xl p-5">
+              <span className="font-mono text-xs opacity-50 font-bold">STEP 03</span>
+              <h3 className="font-semibold text-white mt-1 mb-2">Assign</h3>
+              <p className="text-xs text-cream/70 leading-relaxed">Select who should receive which secure asset packages when inactive.</p>
+            </div>
+            <div className="border border-cream/10 bg-cream/5 rounded-xl p-5">
+              <span className="font-mono text-xs opacity-50 font-bold">STEP 04</span>
+              <h3 className="font-semibold text-white mt-1 mb-2">Interval</h3>
+              <p className="text-xs text-cream/70 leading-relaxed">Establish your standard check-in timeline (e.g. 3, 6 or 12 months).</p>
+            </div>
+            <div className="border border-cream/10 bg-cream/5 rounded-xl p-5">
+              <span className="font-mono text-xs opacity-50 font-bold">STEP 05</span>
+              <h3 className="font-semibold text-white mt-1 mb-2">Check In</h3>
+              <p className="text-xs text-cream/70 leading-relaxed">Simply login once a cycle. We reset the silent countdown loop automatically.</p>
+            </div>
+          </div>
+          <div className="text-center mt-12">
+            <Link
+              href="/how-it-works"
+              className="inline-block text-sm font-semibold hover:underline text-cream border border-cream/20 rounded-full px-6 py-2 bg-cream/5 hover:bg-cream/10"
+            >
+              Read full user flow guide
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <CTA />
       <Footer />
     </div>

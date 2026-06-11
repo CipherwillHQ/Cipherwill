@@ -18,7 +18,7 @@ export default function MobileMenu({ home = false }: { home?: boolean }) {
       <div className="flex items-center justify-between px-4">
         {pathname === "/app" ? (
           <button
-            className={`flex flex-col items-center justify-center text-accent-500 px-2`}
+            className={`flex flex-col items-center justify-center text-primary px-2`}
             onClick={() => {
               // mobile-menu-btn
               document.getElementById("mobile-menu-btn")?.click();
@@ -38,7 +38,7 @@ export default function MobileMenu({ home = false }: { home?: boolean }) {
         <Link href="/app/data" className="px-2">
           <button
             className={`flex flex-col items-center justify-center ${
-              pathname === "/app/data" ? "text-accent-500" : ""
+              pathname === "/app/data" ? "text-primary" : ""
             }`}
           >
             <GrResources size={23} />
@@ -48,7 +48,7 @@ export default function MobileMenu({ home = false }: { home?: boolean }) {
         <Link href="/app/network" className="px-2">
           <button
             className={`flex flex-col items-center justify-center ${
-              pathname === "/app/network" ? "text-accent-500" : ""
+              pathname === "/app/network" ? "text-primary" : ""
             }`}
           >
             <GrGroup size={23} />
@@ -58,7 +58,7 @@ export default function MobileMenu({ home = false }: { home?: boolean }) {
         <Link href="/app/platform" className="px-2">
           <button
             className={`flex flex-col items-center justify-center ${
-              pathname === "/app/platform" ? "text-accent-500" : ""
+              pathname === "/app/platform" ? "text-primary" : ""
             }`}
           >
             <TbColorSwatch size={23} />

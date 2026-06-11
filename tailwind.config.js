@@ -13,11 +13,30 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        playfair: ["var(--font-playfair-display)", "serif"],
+        gilroy: ["var(--font-gilroy)", "sans-serif"],
+        mono: ["JetBrains Mono", "Geist Mono", "monospace"],
+      },
       height: {
         screen: [
           "100vh", // fallback for IR and Opera
           "100dvh", // supported dynamic height
         ],
+      },
+      boxShadow: {
+        "level-1": "0 2px 8px rgba(0,0,0,0.08)",
+        "level-2": "0 8px 24px rgba(0,0,0,0.12)",
+        "level-3": "0 16px 48px rgba(0,0,0,0.16)",
+      },
+      zIndex: {
+        sticky: "100",
+        dropdown: "200",
+        modal: "300",
+        toast: "400",
+      },
+      transitionTimingFunction: {
+        "cw-ease": "cubic-bezier(0.25, 1, 0.5, 1)",
       },
       colors: {
         primary: {
@@ -34,46 +53,20 @@ module.exports = {
           900: "#083aa0",
           950: "#0a2461",
         },
-        dark: {
-          DEFAULT: "#101113",
-          50: "#f4f5f7",
-          100: "#e4e7e9",
-          200: "#ccd1d5",
-          300: "#a8b0b8",
-          400: "#7d8893",
-          500: "#626d78",
-          600: "#545c66",
-          700: "#484e56",
-          800: "#40444a",
-          900: "#383b41",
-          950: "#101113",
-        },
-        secondary: {
-          50: "#f4f5f7",
-          100: "#e4e7e9",
-          200: "#ccd1d5",
-          300: "#a8b0b8",
-          400: "#7d8893",
-          500: "#626d78",
-          600: "#545c66",
-          700: "#484e56",
-          800: "#40444a",
-          900: "#383b41",
-          950: "#101113",
-        },
-        accent: {
-          50: "#fff4ed",
-          100: "#ffe6d5",
-          200: "#feccaa",
-          300: "#fdac74",
-          400: "#fb8a3c",
-          500: "#f97316",
-          600: "#ea670c",
-          700: "#c2570c",
-          800: "#9a4a12",
-          900: "#7c3d12",
-          950: "#432007",
-        },
+        cream: "#FBF9F1",
+        dashboardCream: "#f8f8f6",
+        parchment: "#F4F1EA",
+        forest: "#2A363B",
+        mahogany: "#2C1A0E",
+        sage: "#7AA089",
+        clay: "#D4A390",
+        error: "#C0392B",
+        warning: "#C87941",
+        success: "#7AA089",
+        info: "#003ecb",
+        darkCanvas: "#1f1f1e",
+        darkCard: "#2c2c2a",
+        darkAccent: "#333330",
       },
     },
   },
@@ -82,16 +75,16 @@ module.exports = {
       addComponents([
         {
           ".border-default": {
-            "@apply border-neutral-300 dark:border-neutral-800": {},
+            "@apply border-forest/10 dark:border-cream/10": {},
           },
           ".bg-primary": {
-            "@apply bg-primary-50 dark:bg-primary-950": {},
+            "@apply bg-dashboardCream dark:bg-darkCanvas": {},
           },
           ".bg-secondary": {
-            "@apply bg-white dark:bg-secondary-950": {},
+            "@apply bg-white dark:bg-darkCard": {},
           },
           ".bg-accent": {
-            "@apply bg-accent-500": {},
+            "@apply bg-clay": {},
           },
           ".font-playfair": {
             "font-family": "var(--font-playfair-display)",

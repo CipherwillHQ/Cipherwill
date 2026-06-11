@@ -1,221 +1,174 @@
-import { BiCheck, BiCross, BiX } from "react-icons/bi";
+/**
+ * CompareTable.tsx
+ * What it does: Renders a detailed, interactive feature comparison table.
+ * What it owns: Feature items mapping, collapsible sections, desktop hover highlights, and modal explanation popovers.
+ * What it does NOT do: Handle payment checkouts or primary card layout rendering.
+ */
 
-const compareTable = [
-  {
-    section: "General",
-  },
-  {
-    name: "Data (All Segments)",
-    free: "Unlimited",
-    premium: "Unlimited",
-  },
-  {
-    name: "Beneficiaries",
-    free: 5,
-    premium: "Unlimited",
-  },
-  // {
-  //   name: "General Wishes",
-  //   free: "Basic",
-  //   premium: "Advance",
-  // },
-  // {
-  //   name: "Health Wishes",
-  //   free: <BiX size={25} className="text-red-500" />,
-  //   premium: <BiCheck size={25} className="text-green-700" />,
-  // },
-  // {
-  //   name: "End of Life Plans",
-  //   free: <BiX size={25} className="text-red-500" />,
-  //   premium: <BiCheck size={25} className="text-green-700" />,
-  // },
-  // {
-  //   name: "Will schedule",
-  //   free: "Annual",
-  //   premium: "Custom",
-  // },
-  {
-    name: "File Storage",
-    free: <BiX size={25} className="text-red-500" />,
-    premium: "1 GB",
-  },
-  {
-    name: "Data backup",
-    free: <BiX size={25} className="text-red-500" />,
-    premium: <BiCheck size={25} className="text-green-700" />,
-  },
-  {
-    name: "Per-Item Beneficiary Selection",
-    free: <BiX size={25} className="text-red-500" />,
-    premium: <BiCheck size={25} className="text-green-700" />,
-  },
-  {
-    section: "Segments",
-  },
-  {
-    name: "Notes",
-    free: <BiCheck size={25} className="text-green-700" />,
-    premium: <BiCheck size={25} className="text-green-700" />,
-  },
-  {
-    name: "Passwords",
-    free: <BiCheck size={25} className="text-green-700" />,
-    premium: <BiCheck size={25} className="text-green-700" />,
-  },
-  {
-    name: "Email Accounts",
-    free: <BiCheck size={25} className="text-green-700" />,
-    premium: <BiCheck size={25} className="text-green-700" />,
-  },
-  {
-    name: "Device Locks",
-    free: <BiCheck size={25} className="text-green-700" />,
-    premium: <BiCheck size={25} className="text-green-700" />,
-  },
-  {
-    name: "Web3 Finance",
-    free: <BiX size={25} className="text-red-500" />,
-    premium: <BiCheck size={25} className="text-green-700" />,
-  },
-  {
-    name: "Finance",
-    free: <BiCheck size={25} className="text-green-700" />,
-    premium: <BiCheck size={25} className="text-green-700" />,
-  },
-  {
-    name: "File Storage",
-    free: <BiX size={25} className="text-red-500" />,
-    premium: <BiCheck size={25} className="text-green-700" />,
-  },
-  {
-    section: "Platform",
-  },
+"use client";
 
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { TbCheck, TbX, TbInfoCircle, TbChevronDown, TbChevronUp } from "react-icons/tb";
+
+interface RowItem {
+  name: string;
+  free: string | boolean;
+  premium: string | boolean;
+  desc?: string;
+}
+
+interface TableSection {
+  title: string;
+  rows: RowItem[];
+}
+
+const compareData: TableSection[] = [
   {
-    name: "Communications",
-    free: "Email only",
-    premium: "Email & Phone (Calls, SMS, WhatsApp)",
+    title: "General & Storage",
+    rows: [
+      { name: "Beneficiaries", free: "Up to 5", premium: "Unlimited", desc: "How many people can receive pieces of your secure legacy data." },
+      { name: "File Storage & Deeds", free: false, premium: "1 GB Space", desc: "Upload land titles, scanned wills, family documents, or safe legacy PDFs." },
+      { name: "Data Backup Protection", free: false, premium: true, desc: "Shattered, encrypted backup shards spread across decentralized networks." },
+      { name: "Per-Item Allocation", free: false, premium: true, desc: "Assign specific assets to specific executors rather than sharing everything." },
+    ],
   },
   {
-    name: "For",
-    free: "Basic digital inheritance planning",
-    premium: "Protect all digital assets and full platform access",
+    title: "Asset Vault Support",
+    rows: [
+      { name: "Secure Notes & Wishes", free: true, premium: true, desc: "Plaintext wills, guidance letters, wishes, or legacy coordinates." },
+      { name: "Passwords & Passcodes", free: true, premium: true, desc: "Logins to lockboxes, software, profiles, and key domains." },
+      { name: "Traditional Finance Logs", free: true, premium: true, desc: "Details on banks, checking accounts, stock plans, and insurance." },
+      { name: "Web3 Crypto & Seeds", free: false, premium: true, desc: "Encrypted offline cold storage for ledger phrases, wallet keys, and DeFi stakes." },
+    ],
   },
   {
-    name: "Support",
-    free: "Email support",
-    premium: "Live chat support",
-  },
-  {
-    name: "Early access to new features",
-    free: <BiX size={25} className="text-red-500" />,
-    premium: <BiCheck size={25} className="text-green-700" />,
+    title: "Communications & Alerts",
+    rows: [
+      { name: "Failsafe Communications", free: "Email Only", premium: "Multi-Channel", desc: "Account checkins and dead man pings via Email, Call, SMS, or WhatsApp." },
+      { name: "Support Tier", free: "Standard Support", premium: "Priority Live Chat", desc: "Response speeds and channel access when resolving setup or handoffs." },
+      { name: "Beta Feature Access", free: false, premium: true, desc: "Early access to upcoming legacy templates, integrations, and apps." },
+    ],
   },
 ];
 
 export default function CompareTable() {
-  return (
-    <div className="my-20">
-      {/* Mobile & Tablet Layout */}
-      <div className="block md:hidden">
-        {/* Mobile Header */}
-        <div className="flex justify-center gap-3 mb-6 px-4">
-          <div className="text-center px-4 py-3 bg-gray-50 rounded-lg flex-1 border border-gray-200">
-            <h3 className="text-base font-semibold text-gray-800">Free</h3>
-          </div>
-          <div className="text-center px-4 py-3 bg-blue-50 rounded-lg flex-1 border border-blue-200">
-            <h3 className="text-base font-semibold text-blue-800">Premium</h3>
-          </div>
-        </div>
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  const [activeExplain, setActiveExplain] = useState<RowItem | null>(null);
 
-        {/* Mobile Cards */}
-        <div className="space-y-3 px-4">
-          {compareTable.map((item, index) => {
-            if (item.section) {
-              return (
-                <div key={index} className="mt-6 mb-3">
-                  <h4 className="text-lg font-bold text-gray-800 border-b-2 border-blue-200 pb-2">
-                    {item.section}
-                  </h4>
-                </div>
-              );
-            }
-            return (
-              <div
-                key={index}
-                className="bg-white border border-gray-200 rounded-lg p-4"
-              >
-                <h5 className="font-semibold text-gray-800 mb-3 text-sm leading-relaxed">
-                  {item.name}
-                </h5>
-                <div className="flex gap-2">
-                  <div className="flex-1 p-3 bg-gray-50 rounded-lg text-center border border-gray-100">
-                    <div className="text-xs text-gray-500 mb-1 font-medium uppercase tracking-wide">
-                      Free
-                    </div>
-                    <div className="font-medium text-gray-800 flex justify-center items-center min-h-[28px] text-sm">
-                      {item.free}
-                    </div>
-                  </div>
-                  <div className="flex-1 p-3 bg-blue-50 rounded-lg text-center border border-blue-100">
-                    <div className="text-xs text-blue-500 mb-1 font-medium uppercase tracking-wide">
-                      Premium
-                    </div>
-                    <div className="font-medium text-blue-800 flex justify-center items-center min-h-[28px] text-sm">
-                      {item.premium}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+  const toggleSection = (title: string) => {
+    setCollapsed(prev => ({ ...prev, [title]: !prev[title] }));
+  };
+
+  const renderValue = (val: string | boolean) => {
+    if (typeof val === "boolean") {
+      return val 
+        ? <TbCheck size={20} className="text-sage mx-auto" /> 
+        : <TbX size={18} className="text-error mx-auto" />;
+    }
+    return <span className="font-semibold text-xs sm:text-sm text-forest/85">{val}</span>;
+  };
+
+  return (
+    <div id="compare-table" className="mx-auto max-w-5xl px-4 py-12 select-none">
+      <div className="text-center mb-8">
+        <h3 className="font-playfair text-xl sm:text-2xl font-bold text-forest mb-2">
+          Compare Features In Detail
+        </h3>
+        <p className="text-xs sm:text-sm font-gilroy font-semibold text-forest/50">
+          Hover rows or click info icons to see feature explanations.
+        </p>
       </div>
 
-      {/* Desktop Layout */}
-      <div className="hidden md:block overflow-auto md:overflow-visible customScrollbar">
-        <div className="flex items-center sticky top-[63px]">
-          <div className="flex flex-1 p-3 min-w-60">
-            <span className="opacity-0">Feature</span>
-          </div>
-          <div className="flex flex-1 justify-center min-w-60 border-neutral-300 border-dashed border-x px-3 py-8 text-xl font-semibold bg-white">
-            Free
-          </div>
-          <div className="flex flex-1 justify-center min-w-60 rounded-tr-lg px-3 py-8 text-xl font-semibold bg-white">
-            Premium
-          </div>
+      <div className="bg-white border border-forest/10 rounded-2xl overflow-hidden">
+        {/* Table Header Row */}
+        <div className="flex items-center bg-[#F4F1EA] p-4 font-gilroy font-bold text-forest border-b border-forest/10 text-xs sm:text-sm">
+          <div className="flex-[2] text-left">Feature Details</div>
+          <div className="flex-1 text-center">Lifetime Free</div>
+          <div className="flex-1 text-center text-[#003ecb]">Premium</div>
         </div>
 
-        {compareTable.map((item, index) => {
-          if (item.section) {
-            return (
-              <div key={index} className="flex items-end sticky top-[63px]">
-                <div className="flex flex-1 items-end min-w-60 pt-8 mr-2 min-h-24 font-bold bg-white">
-                  <span className="pl-2 pb-4">{item.section}</span>
-                </div>
-                <div className="flex flex-1 opacity-0">{item.section}</div>
-                <div className="flex flex-1 opacity-0">{item.section}</div>
-              </div>
-            );
-          }
+        {compareData.map((sect) => {
+          const isCollapsed = collapsed[sect.title];
           return (
-            <div
-              key={index}
-              className="flex w-min sm:w-full border-gray-300 border-b py-1 hover:bg-gray-50 transition-colors"
-            >
-              <div className="flex flex-1 min-w-60 border-neutral-200 font-semibold border-dashed border-r p-2">
-                {item.name}
-              </div>
-              <div className="flex flex-1 justify-center min-w-60 text-gray-700 font-medium border-neutral-200 border-dashed border-r p-2 text-center">
-                {item.free}
-              </div>
-              <div className="flex flex-1 justify-center min-w-60 text-gray-700 font-medium p-2 text-center">
-                {item.premium}
-              </div>
+            <div key={sect.title} className="border-b border-forest/10 last:border-0">
+              {/* Accordion Group Header */}
+              <button
+                onClick={() => toggleSection(sect.title)}
+                className="w-full flex items-center justify-between p-4 bg-gray-50/70 hover:bg-gray-100/50 transition-colors text-left border-b border-forest/5 cursor-pointer outline-none"
+              >
+                <span className="font-gilroy font-extrabold text-xs sm:text-sm text-forest/80 uppercase tracking-wider">
+                  {sect.title}
+                </span>
+                {isCollapsed ? <TbChevronDown size={18} className="text-forest/60" /> : <TbChevronUp size={18} className="text-forest/60" />}
+              </button>
+
+              <AnimatePresence initial={false}>
+                {!isCollapsed && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    {sect.rows.map((row, rIdx) => (
+                      <div
+                        key={rIdx}
+                        className="flex items-center p-4 border-b border-forest/5 last:border-0 hover:bg-forest/5 transition-colors text-xs sm:text-sm group"
+                      >
+                        <div className="flex-[2] flex items-center gap-1.5 text-left font-gilroy font-medium text-forest/90">
+                          <span>{row.name}</span>
+                          {row.desc && (
+                            <button
+                              onClick={() => setActiveExplain(row)}
+                              className="text-forest/30 hover:text-[#003ecb] transition-colors cursor-pointer outline-none focus:ring-1 focus:ring-offset-1 focus:ring-[#003ecb] rounded-full"
+                              title="Click for details"
+                            >
+                              <TbInfoCircle size={16} />
+                            </button>
+                          )}
+                        </div>
+                        <div className="flex-1 text-center">{renderValue(row.free)}</div>
+                        <div className="flex-1 text-center font-semibold text-[#003ecb]">{renderValue(row.premium)}</div>
+                      </div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           );
         })}
       </div>
+
+      {/* Interactive Detail Explainer Modal */}
+      <AnimatePresence>
+        {activeExplain && (
+          <div className="fixed inset-0 z-[350] flex items-center justify-center p-4 bg-forest/40 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              className="bg-white border border-forest/10 p-6 rounded-2xl max-w-sm w-full shadow-level-3 relative"
+            >
+              <h4 className="font-playfair text-lg font-bold text-forest mb-2">
+                {activeExplain.name}
+              </h4>
+              <p className="text-sm font-gilroy font-medium text-forest/70 leading-relaxed mb-4">
+                {activeExplain.desc}
+              </p>
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setActiveExplain(null)}
+                  className="px-4 py-1.5 bg-[#003ecb] text-white font-gilroy font-semibold rounded-xl text-xs hover:bg-[#004eff] cursor-pointer outline-none"
+                >
+                  Got It
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

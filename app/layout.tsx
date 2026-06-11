@@ -42,7 +42,7 @@ export const viewport: Viewport = {
   minimumScale: 1,
   maximumScale: 5,
   userScalable: true,
-  themeColor: "#FFFFFF",
+  themeColor: "#FBF9F1",
 };
 
 export default function RootLayout({ children }) {
@@ -118,7 +118,7 @@ export default function RootLayout({ children }) {
         </>
       )}
       <body
-        className={`${gilroy.className} ${PlayfairDisplay.variable} bg-white text-black customScrollbar`}
+        className={`${gilroy.className} ${gilroy.variable} ${PlayfairDisplay.variable} bg-cream text-forest customScrollbar`}
       >
         {process.env.NEXT_PUBLIC_BUILD_ENV !== "production" &&
           process.env.NEXT_PUBLIC_BUILD_ENV !== "development" && (

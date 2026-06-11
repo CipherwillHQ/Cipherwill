@@ -1,10 +1,28 @@
+/**
+ * Important FAQ questions for the public-facing FAQ sections.
+ * Owns the content, titles, custom icons, and slugs for the high-priority questions.
+ * Does NOT own the display layouts or FAQ page structure.
+ */
+
 import Link from "next/link";
-import { BiQuestionMark } from "react-icons/bi";
+import { 
+  FiClock, 
+  FiUsers, 
+  FiShield, 
+  FiLock, 
+  FiKey, 
+  FiTerminal, 
+  FiBriefcase, 
+  FiUserX, 
+  FiCloudOff, 
+  FiCpu, 
+  FiGlobe 
+} from "react-icons/fi";
 
 const name = "Important";
 const questions = [
   {
-    icon: <BiQuestionMark />,
+    icon: <FiClock />,
     title:
       "How does Cipherwill verify my death before providing data to beneficiaries?",
     slug: "how-does-cipherwill-verify-my-death-before-providing-data-to-beneficiaries",
@@ -37,7 +55,7 @@ const questions = [
     ),
   },
   {
-    icon: <BiQuestionMark />,
+    icon: <FiUsers />,
     title:
       "What happens if my beneficiaries aren't tech-savvy? Is there support for them to access the data?",
     slug: "what-happens-if-my-beneficiaries-arent-tech-savvy-is-there-support-for-them-to-access-the-data",
@@ -65,7 +83,7 @@ const questions = [
     ),
   },
   {
-    icon: <BiQuestionMark />,
+    icon: <FiShield />,
     title:
       "Can my data be accessed or subpoenaed by governments or law enforcement agencies?",
     slug: "can-my-data-be-accessed-or-subpoenaed-by-governments-or-law-enforcement-agencies",
@@ -88,9 +106,8 @@ const questions = [
       </div>
     ),
   },
-
   {
-    icon: <BiQuestionMark />,
+    icon: <FiLock />,
     title: "If Cipherwill gets hacked, can a hacker steal my data?",
     slug: "if-cipherwill-gets-hacked-can-a-hacker-steal-my-data",
     description:
@@ -103,33 +120,19 @@ const questions = [
         doesn't mean they can see your data.
         <br />
         <br />
-        Now, let's say a hacker somehow breaks into the storage or database.
-        Even then, they can't read your data because it's encrypted. Your
-        encryption is locked down with your own{" "}
-        <Link
-          href={"/how-factors-work"}
-          className="text-blue-600 hover:underline font-medium"
-        >
-          security factors
-        </Link>
-        , making it unreadable without them.
+        To get to your data, a hacker would need access to our storage provider,
+        which is heavily protected. Even if they managed that, all they would
+        find are encrypted files.
         <br />
         <br />
-        The only risk comes if you haven't enabled your security factors. If a
-        hacker gets in and also manages to access the time capsule keys, your
-        data could be at risk. But with security factors on, you're in the
-        clear.
-        <br />
-        <br />
-        So, the key takeaway? Always enable your security features. It's like
-        adding an extra lock to keep hackers out. 💪🔐
-        <br />
-        <br />
+        Without your personal keys or security factors, those files are
+        unreadable. They would just be looking at random scrambled text, making
+        it impossible to access your private information.
       </div>
     ),
   },
   {
-    icon: <BiQuestionMark />,
+    icon: <FiKey />,
     title:
       "What happens if I forget my account credentials or lose access to my email?",
     slug: "what-happens-if-i-forget-my-account-credentials-or-lose-access-to-my-email",
@@ -166,9 +169,8 @@ const questions = [
       </div>
     ),
   },
-
   {
-    icon: <BiQuestionMark />,
+    icon: <FiTerminal />,
     title:
       "What if the person I added as a beneficiary hacks Cipherwill's servers?",
     slug: "what-if-the-person-i-added-as-a-beneficiary-hacks-cipherwill-servers",
@@ -195,7 +197,7 @@ const questions = [
     ),
   },
   {
-    icon: <BiQuestionMark />,
+    icon: <FiBriefcase />,
     title:
       "What happens if a big company buys Cipherwill or there’s a merger or acquisition?",
     slug: "what-happens-if-a-big-company-buys-cipherwill-or-theres-a-merger-or-acquisition",
@@ -219,7 +221,7 @@ const questions = [
     ),
   },
   {
-    icon: <BiQuestionMark />,
+    icon: <FiUserX />,
     title: "What if the team working on Cipherwill suddenly disappears?",
     slug: "what-if-the-team-working-on-cipherwill-suddenly-disappears",
     description:
@@ -246,7 +248,7 @@ const questions = [
     ),
   },
   {
-    icon: <BiQuestionMark />,
+    icon: <FiCloudOff />,
     title:
       "How does Cipherwill ensure that beneficiaries can access the data even if the platform shuts down?",
     slug: "how-does-cipherwill-ensure-that-beneficiaries-can-access-the-data-even-if-the-platform-shuts-down",
@@ -280,9 +282,8 @@ const questions = [
       </div>
     ),
   },
-
   {
-    icon: <BiQuestionMark />,
+    icon: <FiCpu />,
     title: "What is the Shard Switch?",
     slug: "what-is-the-shard-switch",
     description:
@@ -317,7 +318,7 @@ const questions = [
     ),
   },
   {
-    icon: <BiQuestionMark />,
+    icon: <FiGlobe />,
     title:
       "Does Cipherwill comply with country-specific laws for digital asset inheritance?",
     slug: "does-cipherwill-comply-with-country-specific-laws-for-digital-asset-inheritance",

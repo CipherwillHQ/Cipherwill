@@ -70,7 +70,7 @@ export default function CreateNote() {
               }}
             />
             <button
-              className="w-full bg-accent-500 text-white p-2 rounded-sm"
+              className="w-full bg-primary text-white p-2 rounded-sm"
               onClick={() => addNote(close)}
             >
               Create
