@@ -11,10 +11,10 @@ export default function ExecutorLayout({ children }) {
           <AuthRedirectProvider>
             <SessionProvider>
               <div className="flex items-center overflow-hidden w-screen cw-vh-screen cw-app-safe-area">
-                <div className="flex h-full bg-white dark:bg-dark">
+                <div className="flex h-full bg-white dark:bg-darkCanvas">
                   <ExecutorSidebar />
                 </div>
-                <div className="flex flex-1 h-full overflow-y-auto bg-cream dark:bg-navy p-4">
+                <div className="flex flex-1 h-full overflow-y-auto bg-dashboardCream dark:bg-darkCanvas p-4">
                   {children}
                 </div>
               </div>

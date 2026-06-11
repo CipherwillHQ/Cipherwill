@@ -84,7 +84,7 @@ export default function AssetMatcher({ selectedAssets, onToggleAsset }: AssetMat
                 </div>
                 <span className="text-xs sm:text-sm font-gilroy">{asset.label}</span>
                 {asset.isPremium && (
-                  <span className="absolute top-1.5 right-1.5 text-[9px] uppercase tracking-wide bg-clay/20 text-accent-800 px-1.5 py-0.5 rounded-full font-bold">
+                  <span className="absolute top-1.5 right-1.5 text-[9px] uppercase tracking-wide bg-clay/20 text-forest px-1.5 py-0.5 rounded-full font-bold">
                     Pro
                   </span>
                 )}

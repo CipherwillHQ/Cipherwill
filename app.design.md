@@ -21,25 +21,25 @@ Dark mode is supported on these routes only. Public pages are light-only - see D
 ### Light Mode Surfaces
 
 ```
-Content Canvas:         #FBF9F1  - Warm Cream. Same as public canvas. Unified product feel.
-Sidebar Background:     #FFFFFF  - Pure white. Slight lift against the cream content area.
-Card / Tile Surface:    #FFFFFF  - White cards on cream canvas creates clear hierarchy without shadow.
+Content Canvas:         #f8f8f6  - Light Warm Cream. Cohesive with public canvas.
+Sidebar Background:     #ffffff  - Pure white. Slight lift against the cream content area.
+Card / Tile Surface:    #ffffff  - White cards on cream canvas creates clear hierarchy without shadow.
 ```
 
 ### Dark Mode Surfaces
 
 ```
-Content Canvas:         #0B1B2B  - Deep Navy.
-Sidebar Background:     #101113  - One step darker than canvas. Grounds the sidebar.
-Card / Tile Surface:    #112236  - Navy lifted. Cards sit above the canvas.
+Content Canvas:         #1f1f1e  - Dark Charcoal (Canvas).
+Sidebar Background:     #121212  - Very Dark Charcoal (Grounds/anchors the sidebar).
+Card / Tile Surface:    #2c2c2a  - Medium Charcoal (Cards and interactive sections).
 ```
 
 ### Active & Interactive States (Sidebar)
 
 ```
 Active item light:      bg-primary-50 + border-l-4 border-primary (#003ecb)
-Active item dark:       bg-#112236 + border-l-4 border-primary (#003ecb)
-Hover light:            bg-neutral-100
+Active item dark:       bg-#2c2c2a + border-l-4 border-primary (#003ecb)
+Hover light:            bg-#eeedea
 Hover dark:             bg-neutral-800
 ```
 
@@ -57,6 +57,80 @@ Data value:             font-semibold, text-sm or text-base
 Crypto / key values:    JetBrains Mono / Geist Mono - always monospace, no exceptions
 ```
 
+### Complete Color Palette
+
+> Reference for all available Tailwind color tokens. Defined in `tailwind.config.js`.
+
+#### Primary (CTA Blue)
+
+```
+50:    #ecf7ff
+100:   #d4ecff
+200:   #b2dfff
+300:   #7dcdff
+400:   #40b0ff
+500:   #148aff
+600:   #0066ff
+700:   #004eff
+800:   #003ecb  (DEFAULT)
+900:   #083aa0
+950:   #0a2461
+```
+
+Usage: Primary buttons, CTA links, active sidebar indicator, focus rings, loading spinner, active tab underline.
+
+#### Surfaces - Light
+
+```
+cream:           #FBF9F1  - Public page canvas (light-only routes).
+dashboardCream:  #f8f8f6  - Dashboard content canvas (light mode).
+parchment:       #F4F1EA  - Card surface on public pages.
+white:           #ffffff  - Sidebar and card backgrounds (light mode).
+```
+
+#### Surfaces - Dark
+
+```
+darkCanvas:      #1f1f1e  - Content canvas dark (replaces old navy-950).
+darkCard:        #2c2c2a  - Card / tile surface dark (replaces old navy-900).
+darkAccent:      #333330  - Subtle elevation above darkCard (icon backgrounds, hover states).
+```
+
+#### Text
+
+```
+forest:   #2A363B  - Primary text on light surfaces.
+cream:    #FBF9F1  - Primary text on dark surfaces (reuse surface token).
+mahogany: #2C1A0E  - Footer / closing section background.
+```
+
+#### Supporting Accents
+
+```
+sage:     #7AA089  - Success states, "secured" badges, encrypted confirmations.
+clay:     #D4A390  - Empathy moments: guide panels, executor flows, onboarding callouts.
+```
+
+#### Feedback
+
+```
+success:  #7AA089  - Sage (reuse).
+error:    #C0392B  - Form errors, destructive actions.
+warning:  #C87941  - Warm amber. Non-critical alerts.
+info:     #003ecb  - Primary blue (reuse).
+```
+
+#### Component Classes
+
+These are Tailwind component abstractions defined in the config plugin layer. Use them for consistent surface layering.
+
+```
+.bg-primary    →  bg-dashboardCream dark:bg-darkCanvas     (content canvas)
+.bg-secondary  →  bg-white dark:bg-darkCard                (cards, panels, inputs)
+.bg-accent     →  bg-clay                                   (empathy / guide surfaces)
+.border-default → border-forest/10 dark:border-cream/10    (borders)
+```
+
 ---
 
 ## 3. Layout Shell
@@ -67,7 +141,7 @@ Crypto / key values:    JetBrains Mono / Geist Mono - always monospace, no excep
 │  w-min (mobile)           │  flex-1                     │
 │  sm:w-60 (desktop)        │  overflow-y-auto            │
 │                           │  p-4 sm:p-6                 │
-│  bg-white / #101113       │  bg-#FBF9F1 / #0B1B2B       │
+│  bg-white / #121212       │  bg-#f8f8f6 / #1f1f1e       │
 │  border-r border-default  │                             │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -142,7 +216,7 @@ All data types (passwords, notes, seed phrases, bank accounts, payment cards, et
 
 ```
 Grid:           grid-cols-1 sm:grid-cols-2 lg:grid-cols-3, gap-4
-Card:           bg-white dark:bg-#112236
+Card:           bg-white dark:bg-#2c2c2a
                 border border-default
                 rounded-2xl (16px)
                 p-4
@@ -222,7 +296,7 @@ The executor dashboard must feel calm and clear. The executor is often in a diff
 
 Shown on the dashboard home for new users until all steps are complete.
 
-- Container: card style (white / `#112236`, `rounded-2xl`, `border-default`, `p-4`).
+- Container: card style (white / `#2c2c2a`, `rounded-2xl`, `border-default`, `p-4`).
 - Each step: checkbox-style row with completion state.
 - Completed step: Sage `#7AA089` checkmark + muted text.
 - Pending step: blue circle indicator + active text.

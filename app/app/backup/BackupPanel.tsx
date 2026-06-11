@@ -17,7 +17,7 @@ export default function BackupPanel() {
         <div className="flex py-2 gap-3">
           <button
             className={`cursor-pointer py-1 ${
-              mode === "BACKUP" ? "border-b-2 border-accent-500 font-semibold" : ""
+              mode === "BACKUP" ? "border-b-2 border-primary font-semibold" : ""
             }`}
             onClick={() => {
               setMode("BACKUP");
@@ -27,7 +27,7 @@ export default function BackupPanel() {
           </button>
           <button
             className={`cursor-pointer py-1 ${
-              mode === "RESTOE" ? "border-b-2 border-accent-500 font-semibold" : ""
+              mode === "RESTOE" ? "border-b-2 border-primary font-semibold" : ""
             }`}
             onClick={() => {
               setMode("RESTOE");

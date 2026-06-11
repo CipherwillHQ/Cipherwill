@@ -34,7 +34,7 @@ export default function MobileHeader() {
         <TfiMenu size={25} />
       </div>
       <div
-        className={`absolute top-0 left-0 w-full bg-cream dark:bg-[#101113] text-forest dark:text-cream flex flex-col justify-between
+        className={`absolute top-0 left-0 w-full bg-cream dark:bg-[#121212] text-forest dark:text-cream flex flex-col justify-between
           transition-all duration-300 overflow-hidden z-50
         ${isOpen ? "h-screen py-3" : "h-0"}
         `}

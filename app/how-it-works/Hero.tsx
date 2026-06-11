@@ -62,7 +62,7 @@ export default function Hero() {
   const isAnyCardHovered = hoveredCardId !== null;
 
   return (
-    <section className="relative w-full bg-cream dark:bg-navy text-forest dark:text-cream overflow-hidden">
+    <section className="relative w-full bg-cream dark:bg-darkCanvas text-forest dark:text-cream overflow-hidden">
       {/* Radial Layout Constellation Container */}
       <div className="relative w-full h-[620px] md:h-[950px] lg:h-[1100px] overflow-hidden">
         

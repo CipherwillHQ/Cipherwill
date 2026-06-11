@@ -67,7 +67,7 @@ export default function Simple() {
   };
 
   return (
-    <section className="relative w-full bg-cream dark:bg-navy py-24 sm:py-32 px-6 overflow-hidden border-t border-forest/5 dark:border-cream/5">
+    <section className="relative w-full bg-cream dark:bg-darkCanvas py-24 sm:py-32 px-6 overflow-hidden border-t border-forest/5 dark:border-cream/5">
       {/* Background Subtle Gradient Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 w-96 h-96 bg-sage/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -101,7 +101,7 @@ export default function Simple() {
                   variants={cardVariants}
                   whileHover={{ y: -8, transition: { duration: 0.2, ease: "easeOut" } }}
                   whileTap={{ scale: 0.98 }}
-                  className="relative group bg-parchment dark:bg-navy-900 border border-forest/10 dark:border-cream/10 rounded-2xl p-6 lg:p-8 flex flex-col justify-between shadow-[0_4px_24px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_36px_rgba(0,0,0,0.06)] transition-all duration-300 overflow-hidden w-full h-full"
+                  className="relative group bg-parchment dark:bg-darkCard border border-forest/10 dark:border-cream/10 rounded-2xl p-6 lg:p-8 flex flex-col justify-between shadow-[0_4px_24px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_36px_rgba(0,0,0,0.06)] transition-all duration-300 overflow-hidden w-full h-full"
                 >
                   <div>
                     {/* Phase Tag & Accent Icon */}
@@ -109,7 +109,7 @@ export default function Simple() {
                       <span className={`text-[10px] font-bold font-mono tracking-widest uppercase border px-3 py-1.5 rounded-full ${step.accentColor}`}>
                         {step.phase}
                       </span>
-                      <div className="p-3 rounded-xl bg-white dark:bg-navy-800 text-forest dark:text-cream border border-forest/5 dark:border-cream/5 shadow-sm group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300">
+                      <div className="p-3 rounded-xl bg-white dark:bg-darkAccent text-forest dark:text-cream border border-forest/5 dark:border-cream/5 shadow-sm group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300">
                         <StepIcon className="w-5 h-5" />
                       </div>
                     </div>

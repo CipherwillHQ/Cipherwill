@@ -41,7 +41,7 @@ export default function UserFlag() {
           <div className="font-semibold opacity-75">Signed in as</div>
           <Link href={`/app/settings?tab=profile`}>
             <div className="flex items-start gap-2 max-w-64">
-              <div className="bg-accent-500 mt-1 h-8 w-8 min-h-8 min-w-8 rounded-full flex items-center justify-center">
+              <div className="bg-clay mt-1 h-8 w-8 min-h-8 min-w-8 rounded-full flex items-center justify-center">
                 {(user.first_name
                   ? user.first_name.substring(0, 1)
                   : user.email.substring(0, 1)

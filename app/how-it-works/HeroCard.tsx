@@ -105,14 +105,14 @@ export default function HeroCard({
           duration: card.ring === "inner" ? 5 : 7,
           ease: "easeInOut",
         }}
-        className="w-full h-full bg-white/60 dark:bg-navy-900/60 backdrop-blur-xs border border-forest/5 dark:border-cream/5 rounded-2xl p-4 flex flex-col justify-between shadow-[0_4px_20px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_32px_rgba(0,0,0,0.4)] transition-shadow duration-300"
+        className="w-full h-full bg-white/60 dark:bg-darkCard/60 backdrop-blur-xs border border-forest/5 dark:border-cream/5 rounded-2xl p-4 flex flex-col justify-between shadow-[0_4px_20px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_32px_rgba(0,0,0,0.4)] transition-shadow duration-300"
       >
         {/* Card Header */}
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-bold tracking-widest uppercase text-forest/40 dark:text-cream/40 font-gilroy">
             {card.category}
           </span>
-          <div className="p-1.5 rounded-lg bg-cream dark:bg-navy-800 text-primary-600 dark:text-primary-400">
+          <div className="p-1.5 rounded-lg bg-cream dark:bg-darkAccent text-primary-600 dark:text-primary-400">
             <Icon size={16} strokeWidth={1.8} />
           </div>
         </div>

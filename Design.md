@@ -58,8 +58,8 @@ Footer / Closing:       #2C1A0E  - Deep Mahogany. Warm, archival, final.
 ### Dashboard Dark Mode Surfaces
 
 ```
-App Canvas Dark:        #0B1B2B  - Deep Navy.
-App Card Dark:          #112236  - Navy lifted one step.
+App Canvas Dark:        #1f1f1e  - Dark Charcoal.
+App Card Dark:          #2c2c2a  - Charcoal lifted.
 ```
 
 ### Actions

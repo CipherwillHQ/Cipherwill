@@ -141,7 +141,7 @@ export default function FeedbackConfirmationButton({
                 {shuffledOptions.map((option, index) => (
                   <label
                     key={index}
-                    className="flex items-center gap-3 p-3 rounded-lg border border-default bg-white dark:bg-secondary-900 hover:bg-neutral-50 dark:hover:bg-secondary-800 cursor-pointer transition-colors"
+                    className="flex items-center gap-3 p-3 rounded-lg border border-default bg-white dark:bg-darkCard hover:bg-neutral-50 dark:hover:bg-darkAccent cursor-pointer transition-colors"
                   >
                     <input
                       type="radio"
@@ -159,7 +159,7 @@ export default function FeedbackConfirmationButton({
                     </span>
                   </label>
                 ))}
-                <label className="flex items-center gap-3 p-3 rounded-lg border border-default bg-white dark:bg-secondary-900 hover:bg-neutral-50 dark:hover:bg-secondary-800 cursor-pointer transition-colors">
+                <label className="flex items-center gap-3 p-3 rounded-lg border border-default bg-white dark:bg-darkCard hover:bg-neutral-50 dark:hover:bg-darkAccent cursor-pointer transition-colors">
                   <input
                     type="radio"
                     name="feedback-option"
@@ -179,7 +179,7 @@ export default function FeedbackConfirmationButton({
                     value={feedback}
                     onChange={(e) => setFeedback(e.target.value)}
                     placeholder="Please specify your feedback..."
-                    className="w-full rounded-lg border border-default bg-white dark:bg-secondary-900 p-3 text-sm placeholder:opacity-70 focus:outline-none focus:ring-2 focus:ring-primary/40 dark:text-neutral-100 placeholder:text-neutral-500 dark:placeholder:text-neutral-500 resize-none"
+                    className="w-full rounded-lg border border-default bg-white dark:bg-darkCard p-3 text-sm placeholder:opacity-70 focus:outline-none focus:ring-2 focus:ring-primary/40 dark:text-neutral-100 placeholder:text-neutral-500 dark:placeholder:text-neutral-500 resize-none"
                     rows={3}
                     autoFocus
                   />
@@ -190,7 +190,7 @@ export default function FeedbackConfirmationButton({
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
                 placeholder="Your feedback (optional)..."
-                className="w-full rounded-lg border border-default bg-white dark:bg-secondary-900 p-3 text-sm placeholder:opacity-70 focus:outline-none focus:ring-2 focus:ring-primary/40 dark:text-neutral-100 placeholder:text-neutral-500 dark:placeholder:text-neutral-500 resize-none"
+                className="w-full rounded-lg border border-default bg-white dark:bg-darkCard p-3 text-sm placeholder:opacity-70 focus:outline-none focus:ring-2 focus:ring-primary/40 dark:text-neutral-100 placeholder:text-neutral-500 dark:placeholder:text-neutral-500 resize-none"
                 rows={3}
                 autoFocus
               />
@@ -200,7 +200,7 @@ export default function FeedbackConfirmationButton({
           <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:gap-3 gap-2 p-6 pt-0 sticky bottom-0 bg-secondary">
             <button
               onClick={close}
-              className="hover:cursor-pointer w-full sm:w-auto px-4 py-2 text-sm border border-default rounded-lg hover:bg-neutral-50 dark:hover:bg-secondary-900 text-neutral-700 dark:text-neutral-300 transition-colors"
+              className="hover:cursor-pointer w-full sm:w-auto px-4 py-2 text-sm border border-default rounded-lg hover:bg-neutral-50 dark:hover:bg-darkCard text-neutral-700 dark:text-neutral-300 transition-colors"
             >
               Cancel
             </button>

@@ -18,7 +18,7 @@ export default function WhyYouNeedCipherwill() {
             to retrieve it after you're gone. Unless you've digital will.
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="w-full border-l-4 border-accent-300 pl-4">
+            <div className="w-full border-l-4 border-clay pl-4">
               <div>
                 <h3 className="text-4xl font-semibold pb-2">60%</h3>
                 <div className="font-medium text-xl">
@@ -33,7 +33,7 @@ export default function WhyYouNeedCipherwill() {
               </div>
             </div>
 
-            <div className="w-full border-l-4 border-accent-300 pl-4">
+            <div className="w-full border-l-4 border-clay pl-4">
               <div>
                 <h3 className="text-4xl font-semibold pb-2">90+</h3>
                 <div className="font-medium text-xl">
@@ -46,7 +46,7 @@ export default function WhyYouNeedCipherwill() {
                 or locked away forever.
               </div>
             </div>
-            <div className="w-full border-l-4 border-accent-300 pl-4">
+            <div className="w-full border-l-4 border-clay pl-4">
               <div>
                 <h3 className="text-4xl font-semibold pb-2">73%</h3>
                 <div className="font-medium text-xl">
@@ -60,7 +60,7 @@ export default function WhyYouNeedCipherwill() {
                 and important files will be handled after they're gone.
               </div>
             </div>
-            <div className="w-full border-l-4 border-accent-300 pl-4">
+            <div className="w-full border-l-4 border-clay pl-4">
               <div>
                 <h3 className="text-4xl font-semibold pb-2">$5 trillion</h3>
                 <div className="font-medium text-xl">

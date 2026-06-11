@@ -13,7 +13,7 @@ export default function Billing() {
           <button
             className={`cursor-pointer py-1 ${
               mode === "subscription"
-                ? "border-b-2 border-accent-500 font-semibold"
+                ? "border-b-2 border-primary font-semibold"
                 : ""
             }`}
             onClick={() => {
@@ -25,7 +25,7 @@ export default function Billing() {
           <div
             className={`cursor-pointer py-1 ${
               mode === "invoices"
-                ? "border-b-2 border-accent-500 font-semibold"
+                ? "border-b-2 border-primary font-semibold"
                 : ""
             }`}
             onClick={() => {

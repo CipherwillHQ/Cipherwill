@@ -38,10 +38,10 @@ export default function AppLayout({ children }) {
                   <PaymentGatewayProvider>
                     <OnboardingGuard>
                       <div className="flex flex-col sm:flex-row sm:items-center overflow-hidden w-screen cw-vh-screen cw-app-safe-area">
-                        <div className="flex sm:h-full bg-white dark:bg-dark">
+                        <div className="flex sm:h-full bg-white dark:bg-darkCanvas">
                           <Sidebar />
                         </div>
-                        <div className="flex flex-col h-full w-full bg-cream dark:bg-navy">
+                        <div className="flex flex-col h-full w-full bg-dashboardCream dark:bg-darkCanvas">
                           {/* <div className="bg-red-400 p-4">Top Bar</div> */}
                           <div className="flex flex-col pb-40 flex-1 h-full overflow-y-auto customScrollbar">
                             <div className="cw-content-width-wrapper w-full">

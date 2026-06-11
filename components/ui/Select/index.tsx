@@ -22,7 +22,7 @@ export default function Select({
       defaultValue={value ? undefined : defaultValue}
       value={value || undefined}
       className={`${twMerge(
-        "border text-black dark:text-white bg-white dark:bg-dark border-default p-2 rounded-md",
+        "border text-black dark:text-white bg-white dark:bg-darkCanvas border-default p-2 rounded-md",
         className
       )} minimal customScrollbar`}
       onChange={(e) => onChange(e.target.value)}
