@@ -329,7 +329,7 @@ The platform must come alive through media. Static text-only pages are not accep
 
 - Scroll-driven animations via GSAP for feature explainer sections.
 - Counter animations for stats (e.g. "10,000+ users", "256-bit encryption").
-- Lottie or CSS animations for illustrative moments (vault locking, key generation).
+- Lottie or CSS animations for illustrative moments.
 
 ### Interactive Sections
 

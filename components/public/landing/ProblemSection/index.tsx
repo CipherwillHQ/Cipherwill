@@ -62,7 +62,7 @@ export default function ProblemSection() {
             transition={{ delay: 0.1 }}
             className="font-playfair text-3xl sm:text-4xl md:text-5xl leading-tight font-black text-cream max-w-4xl"
           >
-            What actually happens to my digital life assets and memories if I pass away tomorrow?
+            What actually happens to my assets and memories if I pass away tomorrow?
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 10 }}

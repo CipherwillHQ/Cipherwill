@@ -114,7 +114,7 @@ export default async function PersonaPage({ params }: PersonaPageProps) {
             <div className="relative overflow-hidden rounded-2xl border border-forest/10 bg-cream shadow-xs mb-8">
               <Image
                 src="/og-img.png"
-                alt="Cipherwill Vault Preview"
+                alt="Cipherwill Preview"
                 width={1200}
                 height={630}
                 className="w-full h-auto object-cover"
