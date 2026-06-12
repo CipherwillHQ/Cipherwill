@@ -15,6 +15,7 @@ import { loadTawkScript } from "@/common/tawk";
 import SidebarItem from "./Sidebar/SidebarItem";
 import { twMerge } from "tailwind-merge";
 import { MeData } from "@/types/interfaces";
+import toast from "react-hot-toast";
 
 const ENABLED_IN_DEV = false; // Set to false to disable in development
 
@@ -22,20 +23,24 @@ function user_session_attach(data: MeData) {
   if (data?.me && typeof window !== "undefined") {
     const tawkApi = (window as any).Tawk_API;
     if (tawkApi && typeof tawkApi.setAttributes === "function") {
-      const name = [data.me.first_name, data.me.middle_name, data.me.last_name]
-        .filter(Boolean)
-        .join(" ") || data.me.email;
+      const name =
+        [data.me.first_name, data.me.middle_name, data.me.last_name]
+          .filter(Boolean)
+          .join(" ") || data.me.email;
 
-      tawkApi.setAttributes({
-        name,
-        email: data.me.email,
-        id: data.me.id,
-        plan: data.me.plan,
-      }, (error: any) => {
-        if (error) {
-          console.warn("Failed to set Tawk.to attributes:", error);
-        }
-      });
+      tawkApi.setAttributes(
+        {
+          name,
+          email: data.me.email,
+          id: data.me.id,
+          plan: data.me.plan,
+        },
+        (error: any) => {
+          if (error) {
+            console.warn("Failed to set Tawk.to attributes:", error);
+          }
+        },
+      );
     }
   }
 }
@@ -48,10 +53,11 @@ export default function LiveChatBox({ className }: { className?: string }) {
 
   // Load Tawk on mount
   useEffect(() => {
-    if(process.env.NODE_ENV === "development" && !ENABLED_IN_DEV) {
+    if (process.env.NODE_ENV === "development" && !ENABLED_IN_DEV) {
       return;
     }
-    if (typeof window === "undefined" || !TAWK_PROPERTY_ID || !TAWK_WIDGET_ID) return;
+    if (typeof window === "undefined" || !TAWK_PROPERTY_ID || !TAWK_WIDGET_ID)
+      return;
 
     const tawkApi = ((window as any).Tawk_API = (window as any).Tawk_API || {});
     (window as any).Tawk_LoadStart = new Date();
@@ -105,10 +111,14 @@ export default function LiveChatBox({ className }: { className?: string }) {
   }, [data, loading, error, isTawkLoaded]);
 
   const handleChatClick = () => {
+    if (process.env.NODE_ENV === "development" && !ENABLED_IN_DEV) {
+      toast.error("Live chat is disabled in development mode.");
+      return;
+    }
     if (typeof window === "undefined") return;
     const tawkApi = (window as any).Tawk_API;
     if (!tawkApi) return;
-    
+
     try {
       if (typeof tawkApi.showWidget === "function") {
         tawkApi.showWidget();
@@ -139,7 +149,9 @@ export default function LiveChatBox({ className }: { className?: string }) {
         <div className="flex items-center">
           <div className="relative bg-black dark:bg-white text-white dark:text-black mx-2 h-5 w-5 text-sm text-center rounded-full flex items-center justify-center">
             <div className="absolute -top-1 -right-1 bg-yellow-500 h-2 w-2 rounded-full animate-ping" />
-            <span className="text-xs font-bold">{unreadCount > 99 ? "99+" : unreadCount}</span>
+            <span className="text-xs font-bold">
+              {unreadCount > 99 ? "99+" : unreadCount}
+            </span>
           </div>
           <span className="text-lg sm:text-sm font-medium">
             Live Chat with Team
