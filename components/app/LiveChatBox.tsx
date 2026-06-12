@@ -16,6 +16,8 @@ import SidebarItem from "./Sidebar/SidebarItem";
 import { twMerge } from "tailwind-merge";
 import { MeData } from "@/types/interfaces";
 
+const ENABLED_IN_DEV = false; // Set to false to disable in development
+
 function user_session_attach(data: MeData) {
   if (data?.me && typeof window !== "undefined") {
     const tawkApi = (window as any).Tawk_API;
@@ -46,6 +48,9 @@ export default function LiveChatBox({ className }: { className?: string }) {
 
   // Load Tawk on mount
   useEffect(() => {
+    if(process.env.NODE_ENV === "development" && !ENABLED_IN_DEV) {
+      return;
+    }
     if (typeof window === "undefined" || !TAWK_PROPERTY_ID || !TAWK_WIDGET_ID) return;
 
     const tawkApi = ((window as any).Tawk_API = (window as any).Tawk_API || {});
