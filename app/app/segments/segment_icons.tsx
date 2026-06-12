@@ -1,12 +1,22 @@
+/**
+ * Segment Icons
+ * What it does: Defines and exports the default Tabler-based visual icons mapped to each segment slug.
+ * What it owns: Standardized react-icons JSX mappings for dashboard categories.
+ * What it does NOT do: Does not define custom elements, only wraps react-icons.
+ */
+
 import { JSX } from "react";
-import { BiFolder } from "react-icons/bi";
-import { GiMoneyStack } from "react-icons/gi";
-import { HiOutlineCreditCard } from "react-icons/hi2";
-import { MdAlternateEmail } from "react-icons/md";
-import { PiPassword } from "react-icons/pi";
-import { RiArchiveStackLine } from "react-icons/ri";
-import { TbDevices, TbNotes } from "react-icons/tb";
-import { VscWholeWord } from "react-icons/vsc";
+import {
+  TbNotes,
+  TbMail,
+  TbDevices,
+  TbKey,
+  TbShieldLock,
+  TbCoins,
+  TbBuildingBank,
+  TbCreditCard,
+  TbFolder,
+} from "react-icons/tb";
 
 const segment_icons: {
   slug: string;
@@ -17,42 +27,37 @@ const segment_icons: {
     slug: "notes",
   },
   {
-    icon: <MdAlternateEmail />,
+    icon: <TbMail />,
     slug: "email-accounts",
   },
   {
     icon: <TbDevices />,
     slug: "device-locks",
   },
-
   {
-    icon: <PiPassword />,
+    icon: <TbKey />,
     slug: "passwords",
   },
-
   {
-    icon: <VscWholeWord />,
+    icon: <TbShieldLock />,
     slug: "seed-phrases",
   },
-
   {
-    icon: <RiArchiveStackLine />,
+    icon: <TbCoins />,
     slug: "defi-staking",
   },
-
   {
-    icon: <GiMoneyStack />,
+    icon: <TbBuildingBank />,
     slug: "bank-accounts",
   },
-
   {
-    icon: <HiOutlineCreditCard />,
+    icon: <TbCreditCard />,
     slug: "payment-cards",
   },
-
   {
-    icon: <BiFolder />,
+    icon: <TbFolder />,
     slug: "storage",
   },
 ];
+
 export default segment_icons;
