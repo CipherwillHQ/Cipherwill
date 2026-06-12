@@ -45,7 +45,7 @@ const LAYERS: CascadeLayer[] = [
   {
     id: "timelock",
     num: "Layer 03",
-    name: "TLOCK Time-Release Gate",
+    name: "Time-Release Gate",
     spec: "Time-Release Beacon",
     description: "Time-release keys are cryptographically locked until the silent check-in countdown timer fully expires.",
     icon: TbKey,

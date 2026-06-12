@@ -110,7 +110,7 @@ export default function CascadeEncryptionDetails() {
               </p>
             </div>
             <div className="border border-cream/10 bg-cream/5 rounded-xl p-5">
-              <span className="font-mono text-xs opacity-50 font-bold block mb-1">TIMELOCK (TLOCK-JS)</span>
+              <span className="font-mono text-xs opacity-50 font-bold block mb-1">TIMELOCK</span>
               <h3 className="font-semibold text-white mb-2">Time-Release Gate</h3>
               <p className="text-xs text-cream/70">
                 Secured by decentralized public random beacons, keeping keys locked until target deadlines expire.
