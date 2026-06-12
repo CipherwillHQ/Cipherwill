@@ -1,114 +1,122 @@
+/**
+ * @file LiveChatBox.tsx
+ * @description A sidebar widget/button that integrates Tawk.to chat with user details and tracks unread message notifications.
+ * @owns Sidebar UI button, unread count badge, authenticated user attributes synchronization.
+ * @doesNotManage Core layout structure or routing.
+ */
+
 "use client";
-import { Crisp } from "crisp-sdk-web";
 import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client/react";
 import ME from "@/graphql/ops/auth/queries/ME";
 import { IoChatbubblesOutline } from "react-icons/io5";
-import { CRISP_TOKEN } from "@/common/constant";
+import { TAWK_PROPERTY_ID, TAWK_WIDGET_ID } from "@/common/constant";
+import { loadTawkScript } from "@/common/tawk";
 import SidebarItem from "./Sidebar/SidebarItem";
 import { twMerge } from "tailwind-merge";
 import { MeData } from "@/types/interfaces";
 
-// Only configure Crisp on client side
-if (typeof window !== "undefined" && CRISP_TOKEN) {
-  Crisp.configure(CRISP_TOKEN, {
-    lockFullview: true,
-    autoload: false,
-    sessionMerge: true,
-  });
-}
-
 function user_session_attach(data: MeData) {
   if (data?.me && typeof window !== "undefined") {
-    if (Crisp.isCrispInjected()) {
-      Crisp.setTokenId(data.me.id);
-      Crisp.user.setEmail(data.me.email);
+    const tawkApi = (window as any).Tawk_API;
+    if (tawkApi && typeof tawkApi.setAttributes === "function") {
+      const name = [data.me.first_name, data.me.middle_name, data.me.last_name]
+        .filter(Boolean)
+        .join(" ") || data.me.email;
+
+      tawkApi.setAttributes({
+        name,
+        email: data.me.email,
+        id: data.me.id,
+        plan: data.me.plan,
+      }, (error: any) => {
+        if (error) {
+          console.warn("Failed to set Tawk.to attributes:", error);
+        }
+      });
     }
   }
 }
 
 export default function LiveChatBox({ className }: { className?: string }) {
   const [unreadCount, setUnreadCount] = useState(0);
-  const [isCrispLoaded, setIsCrispLoaded] = useState(false);
+  const [isTawkLoaded, setIsTawkLoaded] = useState(false);
 
   const { data, loading, error } = useQuery<MeData>(ME);
 
-  // Load Crisp on mount
+  // Load Tawk on mount
   useEffect(() => {
-    if (typeof window === "undefined" || !CRISP_TOKEN) return;
+    if (typeof window === "undefined" || !TAWK_PROPERTY_ID || !TAWK_WIDGET_ID) return;
 
-    if (Crisp.isCrispInjected()) {
-      const loadTimer = window.setTimeout(() => {
-        setIsCrispLoaded(true);
+    const tawkApi = ((window as any).Tawk_API = (window as any).Tawk_API || {});
+    (window as any).Tawk_LoadStart = new Date();
+
+    // Check if Tawk.to is already loaded from a previous mount
+    if (typeof tawkApi.maximize === "function") {
+      setTimeout(() => {
+        setIsTawkLoaded(true);
       }, 0);
-      return () => {
-        window.clearTimeout(loadTimer);
-      };
-    } else {
-      Crisp.load();
-      Crisp.session.onLoaded(() => {
-        setIsCrispLoaded(true);
-        Crisp.chat.hide();
-        // get initial count after 2 seconds to ensure Crisp is fully loaded
-        setTimeout(() => {
-          try {
-            setUnreadCount(Crisp.chat.unreadCount() || 0);
-          } catch (error) {
-            console.warn("Failed to get unread count:", error);
-          }
-        }, 2000);
-      });
-      Crisp.chat.onChatOpened(() => {
-        setUnreadCount(0);
-      });
-      Crisp.message.onMessageReceived(() => {
-        try {
-          setUnreadCount(Crisp.chat.unreadCount() || 0);
-        } catch (error) {
-          console.warn("Failed to update unread count:", error);
+      try {
+        if (typeof tawkApi.hideWidget === "function") {
+          tawkApi.hideWidget();
         }
-      });
-      Crisp.chat.onChatClosed(() => {
-        Crisp.chat.hide();
-      });
+      } catch (e) {}
+    } else {
+      // Set onload callback
+      tawkApi.onLoad = () => {
+        setIsTawkLoaded(true);
+        try {
+          if (typeof tawkApi.hideWidget === "function") {
+            tawkApi.hideWidget();
+          }
+        } catch (e) {
+          console.warn("Failed to hide widget on load:", e);
+        }
+      };
     }
+
+    tawkApi.onUnreadCountChanged = (count: number) => {
+      setUnreadCount(count || 0);
+    };
+
+    tawkApi.onChatMinimized = () => {
+      try {
+        if (typeof tawkApi.hideWidget === "function") {
+          tawkApi.hideWidget();
+        }
+      } catch (e) {
+        console.warn("Failed to hide widget on minimize:", e);
+      }
+    };
+
+    loadTawkScript(TAWK_PROPERTY_ID, TAWK_WIDGET_ID);
   }, []);
 
   // Attach user when data is available
   useEffect(() => {
-    if (data && !loading && !error && isCrispLoaded) {
+    if (data && !loading && !error && isTawkLoaded) {
       user_session_attach(data);
     }
-  }, [data, loading, error, isCrispLoaded]);
-
-  useEffect(() => {
-    // Only run on client side and if Crisp is available
-    if (typeof window !== "undefined" && window.$crisp?.get && isCrispLoaded) {
-      try {
-        const initialCount = Crisp.chat.unreadCount() || 0;
-        const unreadTimer = window.setTimeout(() => {
-          setUnreadCount(initialCount);
-        }, 0);
-        return () => {
-          window.clearTimeout(unreadTimer);
-        };
-      } catch (error) {
-        console.warn("Failed to get initial unread count:", error);
-      }
-    }
-  }, [isCrispLoaded]);
+  }, [data, loading, error, isTawkLoaded]);
 
   const handleChatClick = () => {
-    if (typeof window === "undefined" || !isCrispLoaded) return;
+    if (typeof window === "undefined") return;
+    const tawkApi = (window as any).Tawk_API;
+    if (!tawkApi) return;
     
     try {
-      // If chat is hidden, show it first, then open
-      if (!Crisp.chat.isVisible()) {
-        Crisp.chat.show();
+      if (typeof tawkApi.showWidget === "function") {
+        tawkApi.showWidget();
       }
-      Crisp.chat.open();
-    } catch (error) {
-      console.warn("Failed to open chat:", error);
+      if (typeof tawkApi.maximize === "function") {
+        tawkApi.maximize();
+      } else if (typeof tawkApi.toggle === "function") {
+        tawkApi.toggle();
+      } else {
+        console.warn("Tawk.to API is not fully loaded yet.");
+      }
+    } catch (err) {
+      console.warn("Failed to open chat:", err);
     }
   };
 

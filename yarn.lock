@@ -3667,11 +3667,6 @@ crelt@^1.0.0:
   resolved "https://registry.yarnpkg.com/crelt/-/crelt-1.0.6.tgz#7cc898ea74e190fb6ef9dae57f8f81cf7302df72"
   integrity sha512-VQ2MBenTq1fWZUH9DJNGti7kKv6EeAuYr3cLwxUWhIu1baTaXh4Ib5W2CqHVqib4/MqbYGJqiL3Zb8GJZr3l4g==
 
-crisp-sdk-web@^1.0.27:
-  version "1.0.27"
-  resolved "https://registry.yarnpkg.com/crisp-sdk-web/-/crisp-sdk-web-1.0.27.tgz#c3509adcedc2d8436b0d2e52c518f51f7872ffed"
-  integrity sha512-aNWR3te65YiaVFu/iwdqOo3cyUBZHUheE4d6EtgQu/T18jh/9SpoYXjXF/OzUD3Cqy0pGryoqtuy5gxD8tqX9Q==
-
 cross-env@^10.1.0:
   version "10.1.0"
   resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-10.1.0.tgz#cfd2a6200df9ed75bfb9cb3d7ce609c13ea21783"
