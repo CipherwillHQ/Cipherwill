@@ -64,12 +64,6 @@ const processors = [
     privacyPolicy: "https://aiven.io/privacy",
   },
   {
-    name: "Mixpanel",
-    service: "Analytics",
-    location: "United States",
-    privacyPolicy: "https://mixpanel.com/legal/privacy-policy/",
-  },
-  {
     name: "Grphana Labs",
     service: "Monitoring",
     location: "United States",

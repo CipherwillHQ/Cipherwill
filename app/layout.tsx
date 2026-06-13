@@ -5,7 +5,6 @@ import Script from "next/script";
 import { UserSetupProvider } from "../contexts/UserSetupContext";
 import { gilroy, PlayfairDisplay } from "./font";
 import { FULL_HOSTNAME, IS_PRODUCTION } from "@/common/constant";
-import { MixpanelProvider } from "@/contexts/MixpanelContext";
 import dynamic from "next/dynamic";
 import DynamicToaster from "@/components/common/DynamicToaster";
 
@@ -127,17 +126,15 @@ export default function RootLayout({ children }) {
             </div>
           )}
         <DynamicToaster position="top-right" />
-        <MixpanelProvider>
-          <AuthProvider>
-            <ApolloContext>
-              <UserSetupProvider>
-                {/* <StripeContext> */}
-                {children}
-                {/* </StripeContext> */}
-              </UserSetupProvider>
-            </ApolloContext>
-          </AuthProvider>
-        </MixpanelProvider>
+        <AuthProvider>
+          <ApolloContext>
+            <UserSetupProvider>
+              {/* <StripeContext> */}
+              {children}
+              {/* </StripeContext> */}
+            </UserSetupProvider>
+          </ApolloContext>
+        </AuthProvider>
       </body>
     </html>
   );

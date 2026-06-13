@@ -11,7 +11,6 @@ import {
   getIdToken,
   sendPasswordResetEmail,
 } from "firebase/auth";
-import { useMixpanel } from "../MixpanelContext";
 import { usePostHog } from "posthog-js/react";
 import { authApp } from "./firebase";
 import { handle_firebase_error } from "./errors";
@@ -118,27 +117,20 @@ export function useAuthActions({
 }: {
   setIsGoogleLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const mixpanel = useMixpanel();
   const posthog = usePostHog();
 
   const loginConversion = useCallback(
     async (method: string) => {
-      if (mixpanel) {
-        mixpanel.track("login", {
-          method,
-        });
-      }
       posthog.capture("login", {
         method,
       });
     },
-    [mixpanel, posthog]
+    [posthog]
   );
 
   const onLogout = useCallback(() => {
-    mixpanel.reset();
     posthog.reset();
-  }, [mixpanel, posthog]);
+  }, [posthog]);
 
   return useMemo(
     () =>

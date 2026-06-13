@@ -14,7 +14,6 @@ import getLocalCountry from "../../common/country/getLocalCountry";
 import toast from "react-hot-toast";
 import getCountryNameByCode from "../../common/country/getCountryNameByCode";
 import UPDATE_USER from "../../graphql/ops/auth/mutations/UPDATE_USER";
-import { useMixpanel } from "../MixpanelContext";
 import { usePostHog } from "posthog-js/react";
 import GET_PREFERENCES from "@/graphql/ops/auth/queries/GET_PREFERENCES";
 import type { 
@@ -32,7 +31,6 @@ const UserSetupContext = createContext<any>({});
 
 export function UserSetupProvider({ children }: Props) {
   const { user } = useAuth();
-  const mixpanel = useMixpanel();
   const posthog = usePostHog();
   const signup_conversion = useCallback(async () => {
     if ((window as any).GoogleConverted) {
@@ -44,9 +42,8 @@ export function UserSetupProvider({ children }: Props) {
     //   (window as any).uetq = (window as any).uetq || [];
     //   (window as any).uetq.push("event", "login", {});
     // }
-    if (mixpanel) mixpanel.track("signup");
     posthog.capture("signup");
-  }, [mixpanel, posthog]);
+  }, [posthog]);
   const [
     setupPreferences,
     { data: preferences_data, loading: loading_preferences },
@@ -73,8 +70,6 @@ export function UserSetupProvider({ children }: Props) {
         plan: user_data_me.plan,
         country: user_data_me.country,
       };
-      mixpanel.identify(user_data_me.id);
-      mixpanel.people.set(user_analytics_data);
       posthog.identify(user_data_me.id, user_analytics_data);
       if (user_data_me.country === null) {
         // This is a new user, add their country
@@ -94,7 +89,7 @@ export function UserSetupProvider({ children }: Props) {
         // This is an existing user, logging in
       }
     }
-  }, [user_data, setupPreferences, mixpanel, posthog, signup_conversion, setupCountry]);
+  }, [user_data, setupPreferences, posthog, signup_conversion, setupCountry]);
 
   return (
     <UserSetupContext.Provider
