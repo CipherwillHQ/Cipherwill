@@ -10,11 +10,29 @@ import parse from "html-react-parser";
 import BlogAd from "./BlogAd";
 import getPost from "./getPost";
 import TableOfContents from "./TableOfContents";
+import { getSupabaseServerClient } from "@/common/supabase/server";
 
 const CoverImage = dynamic(() => import("./CoverImage"));
 
 // Page cache not working because of dynamic route
 // making function getPost memoizable and using fetchPostApi to cache data
+export const revalidate = 3600; // 1 hour
+
+export async function generateStaticParams() {
+  const { client: supabase, error } = getSupabaseServerClient();
+  if (error || !supabase) return [];
+
+  const { data: posts } = await supabase
+    .from("blogs")
+    .select("slug")
+    .eq("is_published", true);
+
+  if (!posts) return [];
+
+  return posts.map((post) => ({
+    slug: post.slug,
+  }));
+}
 
 export async function generateMetadata({
   params,
