@@ -13,7 +13,7 @@ import { useUserContext } from "@/contexts/UserSetupContext";
 import SEND_FEEDBACK from "@/graphql/ops/generic/mutations/SEND_FEEDBACK";
 import { useMutation } from "@apollo/client/react";
 import toast from "react-hot-toast";
-import { TbMail, TbClock, TbArrowRight, TbChevronDown } from "react-icons/tb";
+import { TbMail, TbClock, TbArrowRight, TbChevronDown, TbBrandTelegram } from "react-icons/tb";
 
 export default function ContactForm() {
   const [sendFeedback] = useMutation(SEND_FEEDBACK);
@@ -41,8 +41,8 @@ export default function ContactForm() {
               </p>
             </div>
 
-            {/* Direct Contact Side-by-Side Channels */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4 border-t border-forest/10">
+            {/* Direct Contact Channels */}
+            <div className="space-y-8 pt-6 border-t border-forest/10">
               {/* Direct Email Channel */}
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sage">
@@ -61,6 +61,38 @@ export default function ContactForm() {
                   <p className="mt-2 text-sm text-forest/60 font-medium leading-relaxed font-gilroy">
                     Our team monitors this secure inbox around the clock.
                   </p>
+                </div>
+              </div>
+
+              {/* Telegram Bot Channel */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-primary">
+                  <TbBrandTelegram className="w-5 h-5 stroke-[1.5]" />
+                  <span className="text-xs font-semibold uppercase tracking-wider font-gilroy">
+                    Telegram Bot
+                  </span>
+                </div>
+                <div>
+                  <a 
+                    href="https://t.me/CipherwillBot"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-base font-bold text-forest hover:text-primary transition-colors duration-200 font-gilroy"
+                  >
+                    @CipherwillBot
+                  </a>
+                  <p className="mt-2 text-sm text-forest/60 font-medium leading-relaxed font-gilroy">
+                    Get assistance from our team or create support tickets instantly.
+                  </p>
+                  <a
+                    href="https://t.me/CipherwillBot"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 mt-4 bg-transparent border border-forest/15 hover:border-primary hover:text-primary text-forest hover:bg-primary/5 font-semibold text-xs py-2.5 px-4 rounded-xl transition-all duration-200 font-gilroy"
+                  >
+                    <TbBrandTelegram className="w-4 h-4 stroke-[1.5]" />
+                    Open Telegram Bot
+                  </a>
                 </div>
               </div>
 
