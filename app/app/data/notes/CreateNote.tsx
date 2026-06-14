@@ -1,16 +1,21 @@
 "use client";
+/**
+ * app/app/data/notes/CreateNote.tsx
+ * Instantly creates a new note titled "New note" and navigates to it, skipping any popup modal.
+ */
 import { useMutation } from "@apollo/client/react";
 import CREATE_METAMODEL from "../../../../graphql/ops/app/metamodel/mutations/CREATE_METAMODEL";
 import GET_METAMODELS from "../../../../graphql/ops/app/metamodel/queries/GET_METAMODELS";
 import SimpleButton from "@/components/common/SimpleButton";
-import Popup from "reactjs-popup";
 import toast from "react-hot-toast";
 import { useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { CreateMetamodelMutation, CreateMetamodelVariables, GetMetamodelsVariables } from "../../../../types/interfaces";
 import { stringifyMetamodelMetadata } from "../../../../common/metamodel/utils";
 
 export default function CreateNote() {
-  const [createNote] = useMutation<CreateMetamodelMutation, CreateMetamodelVariables>(
+  const router = useRouter();
+  const [createNote, { loading }] = useMutation<CreateMetamodelMutation, CreateMetamodelVariables>(
     CREATE_METAMODEL,
     {
       refetchQueries: [
@@ -24,60 +29,30 @@ export default function CreateNote() {
     }
   );
 
-  const addNote = useCallback((close: () => void) => {
-    let title = (document.getElementById("note-title") as any).value;
-    title = title.trim();
-    if (title && title.length > 0) {
-      // create note
-      createNote({
+  const handleCreate = useCallback(async () => {
+    try {
+      const res = await createNote({
         variables: {
           type: "NOTE",
-          metadata: stringifyMetamodelMetadata({ title }),
+          metadata: stringifyMetamodelMetadata({ title: "New note" }),
         },
       });
-      close();
-    } else {
-      toast.error("Please enter a valid title");
-    }
-  }, [createNote]);
-  return (
-    <Popup
-      trigger={
-        <div>
-          <SimpleButton>Add Note</SimpleButton>
-        </div>
+      const newId = res?.data?.createMetamodel?.id;
+      if (newId) {
+        router.push(`/app/data/notes/${newId}`);
       }
-      modal
-    >
-      {/* @ts-ignore */}
-      {(close) => {
-        return (
-          <div className="bg-white dark:bg-neutral-700 p-4 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold text-black dark:text-white">
-              Create Note
-            </h2>
-            <input
-              id="note-title"
-              type="text"
-              placeholder="Title"
-              autoComplete="off"
-              className="w-full my-2 p-2 border border-default bg-secondary text-black dark:text-white"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  addNote(close);
-                }
-              }}
-            />
-            <button
-              className="w-full bg-primary text-white p-2 rounded-sm"
-              onClick={() => addNote(close)}
-            >
-              Create
-            </button>
-          </div>
-        );
-      }}
-    </Popup>
+    } catch (err) {
+      toast.error("Failed to create note");
+    }
+  }, [createNote, router]);
+
+  return (
+    <SimpleButton onClick={handleCreate} disabled={loading} className="shadow-xs min-w-[100px]">
+      {loading ? (
+        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+      ) : (
+        "Add Note"
+      )}
+    </SimpleButton>
   );
 }

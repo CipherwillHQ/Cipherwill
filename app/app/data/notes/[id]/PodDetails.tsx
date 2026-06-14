@@ -1,4 +1,9 @@
 "use client";
+/**
+ * app/app/data/notes/[id]/PodDetails.tsx
+ * Redesigned Note editor interface with auto-save and full-bleed layout.
+ * Removes all box styling, borders, and shadows to go full left-to-right and top-to-bottom.
+ */
 import logger from "@/common/debug/logger";
 import { NOTE_TYPE } from "../../../../../types/pods/NOTE";
 import { usePod } from "@/contexts/PodHelper";
@@ -25,6 +30,10 @@ export default function PodDetails({
   const isSavingRef = useRef(false);
   const pendingSaveRef = useRef<string | null>(null);
 
+  // Refs to guarantee immediate save on unmount with the latest values
+  const latestNewValueRef = useRef<string | null>(null);
+  const latestInitialValueRef = useRef<string | null>(null);
+
   const { loading, error, savePod, is_updating, loadPod } = usePod<NOTE_TYPE>(
     {
       TYPE: "note",
@@ -36,8 +45,9 @@ export default function PodDetails({
       lazy: true,
     }
   );
+
   const editor = useEditor({
-    immediatelyRender: false, // Prevent immediate rendering to avoid hydration mismatches
+    immediatelyRender: false,
     extensions: [
       StarterKit,
       Placeholder.configure({
@@ -103,22 +113,31 @@ export default function PodDetails({
     [id, savePod, setSaveStatus],
   );
 
+  // Sync refs with state values for the unmount hook
   useEffect(() => {
-    // debounce save
-    if (newValue !== initialValue) {
+    latestNewValueRef.current = newValue;
+    latestInitialValueRef.current = initialValue;
+  }, [newValue, initialValue]);
+
+  // Main debounced auto-save effect
+  useEffect(() => {
+    if (newValue !== initialValue && newValue !== null) {
       setSaveStatus("NOT_SAVED");
     } else {
       setSaveStatus("SAVED");
       return;
     }
+
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
     }
+
     debounceTimerRef.current = setTimeout(() => {
       if (!editor) return;
       const updateData = sanitizeHtml(editor.getHTML());
       void saveContent(updateData);
     }, 3000);
+
     return () => {
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
@@ -126,43 +145,131 @@ export default function PodDetails({
     };
   }, [newValue, initialValue, editor, saveContent, setSaveStatus]);
 
-  if (loading)
+  // Guaranteed save on component unmount or note ID change
+  useEffect(() => {
+    return () => {
+      if (
+        latestNewValueRef.current !== null &&
+        latestNewValueRef.current !== latestInitialValueRef.current
+      ) {
+        void saveContent(latestNewValueRef.current);
+      }
+    };
+  }, [saveContent]);
+
+  if (loading) {
     return (
-      <div className="bg-neutral-300 dark:bg-neutral-800 p-2 rounded-md my-2 h-screen animate-pulse" />
+      <div className="w-full h-full flex flex-col p-6 sm:p-8 animate-pulse space-y-6 bg-secondary">
+        {/* Skeletal Header */}
+        <div className="h-8 bg-neutral-200 dark:bg-neutral-800 rounded-md w-1/3" />
+        
+        {/* Skeletal Body Lines */}
+        <div className="space-y-3 pt-4">
+          <div className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded-md w-3/4" />
+          <div className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded-md w-5/6" />
+          <div className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded-md w-2/3" />
+          <div className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded-md w-1/2" />
+        </div>
+        
+        <div className="space-y-3 pt-6">
+          <div className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded-md w-5/6" />
+          <div className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded-md w-4/5" />
+          <div className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded-md w-3/4" />
+        </div>
+
+        {/* Center engaging indicator */}
+        <div className="flex-1 flex flex-col items-center justify-center pt-10">
+          <div className="w-10 h-10 border-2 border-primary-100 border-t-primary rounded-full animate-spin mb-3" />
+          <p className="text-xs text-neutral-400 font-semibold tracking-wide uppercase">loading note...</p>
+        </div>
+      </div>
     );
-  if (error) return <div>Error: {error}</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 text-error bg-error/10 rounded-md m-4">
+        Error: {error}
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col gap-2 px-4">
+    <div className="w-full h-full flex flex-col">
       <style>{`
         .ProseMirror:focus {
           outline: none;
         }
+        .ProseMirror {
+          min-height: calc(100vh - 160px);
+          font-family: var(--font-gilroy), sans-serif;
+          font-size: 1rem;
+        }
+        .ProseMirror p {
+          margin-bottom: 0.5rem;
+        }
+        .ProseMirror h1 {
+          font-size: 1.875rem;
+          font-weight: 700;
+          margin-top: 2rem;
+          margin-bottom: 0.75rem;
+        }
+        .ProseMirror h2 {
+          font-size: 1.5rem;
+          font-weight: 600;
+          margin-top: 1.75rem;
+          margin-bottom: 0.75rem;
+        }
+        .ProseMirror h3 {
+          font-size: 1.25rem;
+          font-weight: 600;
+          margin-top: 1.5rem;
+          margin-bottom: 0.5rem;
+        }
+        .ProseMirror ul {
+          list-style-type: disc;
+          padding-left: 1.5rem;
+          margin-bottom: 1rem;
+        }
+        .ProseMirror ol {
+          list-style-type: decimal;
+          padding-left: 1.5rem;
+          margin-bottom: 1rem;
+        }
+        .ProseMirror li {
+          margin-bottom: 0.25rem;
+        }
+        .ProseMirror strong {
+          font-weight: 700;
+        }
+        .ProseMirror em {
+          font-style: italic;
+        }
+        .ProseMirror blockquote {
+          border-left: 4px solid #003ecb;
+          padding-left: 1rem;
+          font-style: italic;
+          margin-bottom: 1rem;
+          color: #6b7280;
+        }
+        .ProseMirror pre {
+          background-color: #f3f4f6;
+          padding: 1rem;
+          border-radius: 0.375rem;
+          font-family: monospace;
+          margin-bottom: 1rem;
+          overflow-x: auto;
+        }
+        .dark .ProseMirror pre {
+          background-color: #111827;
+        }
       `}</style>
-      <EditorContent
-        editor={editor}
-        className="bg-slate-200 dark:bg-neutral-800 p-2 w-full min-h-screen"
-      />
-      {/* {initialValue !== newValue && (
-        <button
-          className="flex items-center justify-center bg-black text-white font-bold py-2 px-4 rounded-sm"
-          onClick={() => {
-            const updateData = editor.getHTML();
-            savePod({
-              content: updateData,
-            }).then((res) => {
-              toast.success("Saved");
-              setinitialValue(updateData);
-            });
-          }}
-        >
-          {is_updating && (
-            <div className="w-4 h-4 border-2 border-dashed rounded-full animate-spin border-white mr-2" />
-          )}
-          Save
-        </button>
-      )} */}
+      <div className="w-full flex-1 flex flex-col p-4 sm:p-6 md:p-8">
+        <EditorContent
+          editor={editor}
+          className="w-full text-forest dark:text-cream focus:outline-hidden flex-1"
+        />
+      </div>
     </div>
   );
 }
-
