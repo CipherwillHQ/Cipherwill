@@ -54,10 +54,9 @@ export default function ProfileSettingsTab() {
                 "I don't need this yet",
                 "Security concerns",
               ]}
-              onConfirm={() => {
-                deleteData().then(() => {
-                  logout();
-                });
+              onConfirm={async () => {
+                await deleteData();
+                logout();
               }}
               confirmText="Are you sure you want to reset your account?"
               feedbackPrompt="Help us improve! Please share why you're resetting your account:"
@@ -84,10 +83,9 @@ export default function ProfileSettingsTab() {
                 "I don't need this yet",
                 "Security concerns",
               ]}
-              onConfirm={() => {
-                deleteAccount().then(() => {
-                  logout();
-                });
+              onConfirm={async () => {
+                await deleteAccount();
+                logout();
               }}
               confirmText="Are you sure you want to delete your account?"
               feedbackPrompt="We're sorry to see you go. Please share why you're deleting your account:"

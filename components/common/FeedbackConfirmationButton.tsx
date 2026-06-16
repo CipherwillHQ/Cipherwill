@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { twMerge } from "tailwind-merge";
 import { useMutation } from "@apollo/client/react";
 import SEND_FEEDBACK from "@/graphql/ops/generic/mutations/SEND_FEEDBACK";
@@ -25,6 +25,7 @@ export default function FeedbackConfirmationButton({
   options?: string[];
 }) {
   const [isProcessing, setIsProcessing] = useState(false);
+  const isProcessingRef = useRef(false);
   const [feedback, setFeedback] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
@@ -43,7 +44,9 @@ export default function FeedbackConfirmationButton({
     return shuffled;
   }, [options]); // Only shuffle when options change
 
-  const handleSubmitFeedback = async () => {
+  const handleSubmitFeedback = async (closePopup: () => void) => {
+    if (isProcessingRef.current) return;
+    isProcessingRef.current = true;
     setIsProcessing(true);
     try {
       const feedbackMessage = options
@@ -61,11 +64,14 @@ export default function FeedbackConfirmationButton({
         });
       }
       await onConfirm();
+      closePopup();
     } catch (error) {
       console.error("Error submitting feedback:", error);
       // Still proceed with the action even if feedback fails
       await onConfirm();
+      closePopup();
     } finally {
+      isProcessingRef.current = false;
       setIsProcessing(false);
       setFeedback("");
       setSelectedOption("");
@@ -205,7 +211,7 @@ export default function FeedbackConfirmationButton({
               Cancel
             </button>
             <button
-              onClick={handleSubmitFeedback}
+              onClick={() => handleSubmitFeedback(close)}
               disabled={isProcessing}
               className="hover:cursor-pointer w-full sm:w-auto px-4 py-2 text-sm bg-primary text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 transition-colors"
             >
