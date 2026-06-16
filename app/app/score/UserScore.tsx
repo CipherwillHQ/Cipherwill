@@ -1,3 +1,10 @@
+/**
+ * app/app/score/UserScore.tsx
+ * What it does: Displays the user's setup and account completeness score.
+ * What it owns: Score calculation, visual representation via full ChartJS doughnut chart or compact pill layout.
+ * What it does NOT do: Does not manage score logic on the backend or specific score suggestions (delegated to ScoreExplainer).
+ */
+
 "use client";
 
 import { useQuery } from "@apollo/client/react";
@@ -29,6 +36,7 @@ interface UserScoreProps {
   description?: string;
   className?: string;
   improveScrollLink?: boolean;
+  variant?: "full" | "compact";
 }
 
 const SCORE_COLORS = [
@@ -52,6 +60,7 @@ export default function UserScore({
   description,
   className = "",
   improveScrollLink = false,
+  variant = "full",
 }: UserScoreProps) {
   const { data, loading, error } = useQuery<GetUserScoreData>(GET_USER_SCORE, {
     fetchPolicy: "cache-and-network",
@@ -76,6 +85,8 @@ export default function UserScore({
   const chartInstanceRef = useRef<ChartJS | null>(null);
 
   useEffect(() => {
+    if (variant === "compact") return;
+
     if (chartRef.current && !loading) {
       if (chartInstanceRef.current) {
         chartInstanceRef.current.destroy();
@@ -154,8 +165,68 @@ export default function UserScore({
         chartInstanceRef.current = null;
       }
     };
-  }, [loading, current_theme, percentage]);
+  }, [loading, current_theme, percentage, variant]);
 
+  // Loading and Error handling for Compact (Topbar) Variant
+  if (variant === "compact") {
+    if (loading) {
+      return (
+        <div className="h-9 w-28 animate-pulse rounded-full bg-gray-200 dark:bg-neutral-800" />
+      );
+    }
+    if (error) {
+      return null; // Silently hide or show nothing in the topbar
+    }
+
+    return (
+      <Link
+        href="/app/score"
+        className={twMerge(
+          "flex items-center gap-2 px-3 py-1.5 rounded-full border border-default bg-secondary hover:bg-gray-100/50 dark:hover:bg-neutral-800/50 transition-all duration-200 cursor-pointer",
+          className
+        )}
+      >
+        <div className="relative w-5 h-5 flex items-center justify-center">
+          <svg className="w-5 h-5 transform -rotate-90">
+            <circle
+              cx="10"
+              cy="10"
+              r="8"
+              stroke="currentColor"
+              className="text-gray-100 dark:text-neutral-800"
+              strokeWidth="2"
+              fill="none"
+            />
+            <circle
+              cx="10"
+              cy="10"
+              r="8"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeDasharray="50.26"
+              strokeDashoffset={50.26 - (50.26 * percentage) / 100}
+              strokeLinecap="round"
+              fill="none"
+              style={{ color: SCORE_COLORS[getColorIndex(percentage)] }}
+            />
+          </svg>
+        </div>
+        <div className="flex flex-col text-left">
+          <span className="text-[11px] font-bold text-gray-800 dark:text-gray-200 leading-none">
+            Score: {score}
+          </span>
+          <span
+            className="text-[9px] font-medium leading-none mt-0.5"
+            style={{ color: SCORE_COLORS[getColorIndex(percentage)] }}
+          >
+            {getScoreLabel(percentage)}
+          </span>
+        </div>
+      </Link>
+    );
+  }
+
+  // Full Variant Render
   if (loading) {
     return (
       <div

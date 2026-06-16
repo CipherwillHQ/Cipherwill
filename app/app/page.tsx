@@ -1,3 +1,10 @@
+/**
+ * app/app/page.tsx
+ * What it does: Renders the primary user dashboard home layout.
+ * What it owns: Dashboard grid, widgets integration (greetings, onboarding checklist, actions counter, factors sync status, permission controls).
+ * What it does NOT do: Does not render the top navigation bar or sidebar menus directly (delegated to Topbar and Sidebar).
+ */
+
 import MobileMenu from "@/components/app/Sidebar/MobileMenu";
 import FactorsSyncStatus from "../../components/app/FactorsSyncStatus";
 import Greetings from "../../components/app/Greetings";
@@ -11,7 +18,6 @@ import Link from "next/link";
 import SegmentsIntroduction from "@/components/app/dashboard/SegmentsIntroduction";
 import SecuredCounter from "@/components/app/dashboard/SecuredCounter";
 import GuidedActions from "@/components/app/GuidedActions";
-import UserScore from "./score/UserScore";
 
 export default function App() {
   return (
@@ -26,12 +32,9 @@ export default function App() {
           <EmailVerificationCheck />
           <GuidedActions />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            <UserScore
-              improveScrollLink
-            />
+            <OnboardingChecklist />
             {/* <PendingActionsBox /> */}
             <SecuredCounter />
-            {/* <OnboardingChecklist /> */}
             <FactorsSyncStatus />
             <SegmentsIntroduction />
             <ExecutorPermissions />
