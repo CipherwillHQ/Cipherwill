@@ -30,6 +30,7 @@ export default function Options({
     DeleteMetamodelMutation,
     DeleteMetamodelVariables
   >(DELETE_METAMODEL, {
+    awaitRefetchQueries: true,
     refetchQueries: [
       {
         query: GET_METAMODELS,
