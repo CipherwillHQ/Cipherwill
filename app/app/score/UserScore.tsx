@@ -65,7 +65,7 @@ export default function UserScore({
   const { data, loading, error } = useQuery<GetUserScoreData>(GET_USER_SCORE, {
     fetchPolicy: "cache-and-network",
   });
-  const { current_theme } = useTheme();
+  const { resolved_theme } = useTheme();
 
   const score: number =
     data && data.getUserScore
@@ -100,7 +100,7 @@ export default function UserScore({
             {
               data: [percentage, 100 - percentage],
               backgroundColor(bgCtx: any) {
-                const isDark = current_theme === "dark";
+                const isDark = resolved_theme === "dark";
                 if (bgCtx.type !== "data") {
                   return;
                 }
@@ -165,7 +165,7 @@ export default function UserScore({
         chartInstanceRef.current = null;
       }
     };
-  }, [loading, current_theme, percentage, variant]);
+  }, [loading, resolved_theme, percentage, variant]);
 
   // Loading and Error handling for Compact (Topbar) Variant
   if (variant === "compact") {

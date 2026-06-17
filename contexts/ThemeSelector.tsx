@@ -9,6 +9,7 @@ import { localstorage_get, localstorage_set } from "@/common/localstorage";
 
 const ThemeContext = createContext({
   current_theme: DEFAULT_THEME,
+  resolved_theme: "dark",
   setCurrentTheme: (_theme: string) => {},
 });
 
@@ -16,39 +17,66 @@ export function ThemeSelector({ children }: { children: React.ReactNode }) {
   const [current_theme, setCurrentTheme] = useState(
     localstorage_get("theme") || DEFAULT_THEME
   );
+  const [resolved_theme, setResolvedTheme] = useState("dark");
 
   useEffect(() => {
-    const selector = "#app-theme-layout";
-    document.querySelector(selector)?.classList.remove("dark", "light");
-    document.querySelector(selector)?.classList.add(current_theme);
+    const applyTheme = (theme: string) => {
+      setResolvedTheme(theme);
 
-    const popup_selector = "#popup-root";
-    let popup_root = document.querySelector(popup_selector);
-    if (!popup_root) {
-      popup_root = document.createElement("div");
-      popup_root.setAttribute("id", "popup-root");
-      document.body.appendChild(popup_root);
-    }
-    popup_root.classList.remove("dark", "light");
-    popup_root.classList.add(current_theme);
+      const selector = "#app-theme-layout";
+      const layout = document.querySelector(selector);
+      if (layout) {
+        layout.classList.remove("dark", "light");
+        layout.classList.add(theme);
+      }
 
-    let themeMetaTag = document.querySelector('meta[name="theme-color"]');
+      const popup_selector = "#popup-root";
+      let popup_root = document.querySelector(popup_selector);
+      if (!popup_root) {
+        popup_root = document.createElement("div");
+        popup_root.setAttribute("id", "popup-root");
+        document.body.appendChild(popup_root);
+      }
+      popup_root.classList.remove("dark", "light");
+      popup_root.classList.add(theme);
 
-    if (themeMetaTag === null) {
-      themeMetaTag = document.createElement("meta");
-      themeMetaTag.setAttribute("name", "theme-color");
-      document.head.appendChild(themeMetaTag);
-    }
+      let themeMetaTag = document.querySelector('meta[name="theme-color"]');
 
-    if (current_theme === "dark") {
-      themeMetaTag.setAttribute("content", "#1f1f1e");
-      localstorage_set("theme", "dark");
+      if (themeMetaTag === null) {
+        themeMetaTag = document.createElement("meta");
+        themeMetaTag.setAttribute("name", "theme-color");
+        document.head.appendChild(themeMetaTag);
+      }
+
+      if (theme === "dark") {
+        themeMetaTag.setAttribute("content", "#1f1f1e");
+      } else {
+        themeMetaTag.setAttribute("content", "#f8f8f6");
+      }
+    };
+
+    localstorage_set("theme", current_theme);
+
+    if (current_theme === "system") {
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      const handleSystemThemeChange = (e: MediaQueryListEvent | MediaQueryList) => {
+        applyTheme(e.matches ? "dark" : "light");
+      };
+
+      // Call once initially
+      handleSystemThemeChange(mediaQuery);
+
+      // Listen for system theme changes
+      mediaQuery.addEventListener("change", handleSystemThemeChange);
+
+      return () => {
+        mediaQuery.removeEventListener("change", handleSystemThemeChange);
+      };
     } else {
-      themeMetaTag.setAttribute("content", "#f8f8f6");
-      localstorage_set("theme", "light");
+      applyTheme(current_theme);
     }
   }, [current_theme]);
-  const value = { current_theme, setCurrentTheme };
+  const value = { current_theme, resolved_theme, setCurrentTheme };
 
   return (
     <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
@@ -60,16 +88,24 @@ export function useTheme() {
 }
 
 export function SwitchThemeIcon({ size = 20 }: { size?: number }) {
-  const { current_theme, setCurrentTheme } = useTheme();
+  const { current_theme, resolved_theme, setCurrentTheme } = useTheme();
+
+  const handleToggle = () => {
+    if (current_theme === "system") {
+      setCurrentTheme("light");
+    } else if (current_theme === "light") {
+      setCurrentTheme("dark");
+    } else {
+      setCurrentTheme("system");
+    }
+  };
 
   return (
     <div
       className="cursor-pointer mx-2"
-      onClick={() =>
-        setCurrentTheme(current_theme === "dark" ? "light" : "dark")
-      }
+      onClick={handleToggle}
     >
-      {current_theme === "dark" ? (
+      {resolved_theme === "dark" ? (
         <IoMdSunny size={size} />
       ) : (
         <IoMoon size={size} />

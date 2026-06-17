@@ -4,6 +4,7 @@ import { useTheme } from "@/contexts/ThemeSelector";
 import { BsCircle, BsCircleFill } from "react-icons/bs";
 import dark from "./dark.svg";
 import light from "./light.svg";
+import systemImg from "./system.svg";
 import Image from "next/image";
 
 export default function Appearance() {
@@ -34,7 +35,7 @@ export default function Appearance() {
           </button>
           <button
             className={`p-2 border border-default rounded-md
-            ${current_theme === "light" && "font-semibold border-black"}
+            ${current_theme === "light" ? "font-semibold border-black" : "border-default"}
             `}
             onClick={() => setCurrentTheme("light")}
           >
@@ -42,6 +43,22 @@ export default function Appearance() {
             <div className="flex items-center gap-1 pt-2 text-sm">
               {current_theme === "light" ? <BsCircleFill /> : <BsCircle />}
               <span>Light</span>
+            </div>
+          </button>
+          <button
+            className={`p-2 border rounded-md
+            ${
+              current_theme === "system"
+                ? "font-semibold border-black dark:border-white"
+                : "border-default"
+            }
+            `}
+            onClick={() => setCurrentTheme("system")}
+          >
+            <Image src={systemImg} alt="System Theme" />
+            <div className="flex items-center gap-1 pt-2 text-sm">
+              {current_theme === "system" ? <BsCircleFill /> : <BsCircle />}
+              <span>System</span>
             </div>
           </button>
         </div>
