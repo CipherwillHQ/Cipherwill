@@ -19,8 +19,10 @@ import UserScore from "@/app/app/score/UserScore";
 export default function Topbar() {
   return (
     <div className="flex items-center justify-between p-4">
-      <MobileFloatingMenu />
-      <h1 className="text-2xl font-semibold">Dashboard</h1>
+      <div className="flex items-center gap-3">
+        <MobileFloatingMenu />
+        <h1 className="text-2xl font-semibold">Dashboard</h1>
+      </div>
       <div className="flex items-center gap-3">
         <UserScore variant="compact" />
         <ProfilePopup />
