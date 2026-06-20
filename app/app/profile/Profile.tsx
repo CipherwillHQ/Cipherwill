@@ -10,6 +10,7 @@ import Country from "./Country";
 import Gender from "./Gender";
 import DateOfBirth from "./DateOfBirth";
 import Name from "./Name";
+import Address from "./Address";
 import {
   MeQuery,
   UpdateUserMutation,
@@ -23,6 +24,11 @@ type ProfileFormState = {
   gender: string;
   country: string;
   birth_date: string | null;
+  address_line1: string;
+  address_line2: string;
+  city: string;
+  state: string;
+  postal_code: string;
 };
 
 const AUTOSAVE_DELAY_MS = 700;
@@ -33,6 +39,11 @@ const PROFILE_FORM_FIELDS: Array<keyof ProfileFormState> = [
   "gender",
   "country",
   "birth_date",
+  "address_line1",
+  "address_line2",
+  "city",
+  "state",
+  "postal_code",
 ];
 
 export default function Profile() {
@@ -44,6 +55,11 @@ export default function Profile() {
     gender: "",
     country: "",
     birth_date: null,
+    address_line1: "",
+    address_line2: "",
+    city: "",
+    state: "",
+    postal_code: "",
   });
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
@@ -75,6 +91,11 @@ export default function Profile() {
       gender: data.gender || "",
       country: data.country || "",
       birth_date: data.birth_date ?? null,
+      address_line1: data.address_line1 || "",
+      address_line2: data.address_line2 || "",
+      city: data.city || "",
+      state: data.state || "",
+      postal_code: data.postal_code || "",
     }),
     []
   );
@@ -266,6 +287,28 @@ export default function Profile() {
         country={form.country}
         setCountry={(value: string) =>
           setForm((prev) => ({ ...prev, country: value }))
+        }
+      />
+      <Address
+        addressLine1={form.address_line1}
+        setAddressLine1={(value: string) =>
+          setForm((prev) => ({ ...prev, address_line1: value }))
+        }
+        addressLine2={form.address_line2}
+        setAddressLine2={(value: string) =>
+          setForm((prev) => ({ ...prev, address_line2: value }))
+        }
+        city={form.city}
+        setCity={(value: string) =>
+          setForm((prev) => ({ ...prev, city: value }))
+        }
+        state={form.state}
+        setState={(value: string) =>
+          setForm((prev) => ({ ...prev, state: value }))
+        }
+        postalCode={form.postal_code}
+        setPostalCode={(value: string) =>
+          setForm((prev) => ({ ...prev, postal_code: value }))
         }
       />
       <div className="pt-4 text-right text-xs opacity-70">

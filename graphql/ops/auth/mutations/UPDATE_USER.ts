@@ -11,6 +11,11 @@ const UPDATE_USER = gql`
       birth_date
       gender
       country
+      address_line1
+      address_line2
+      city
+      state
+      postal_code
       created_at
       updated_at
     }

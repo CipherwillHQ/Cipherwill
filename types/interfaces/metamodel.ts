@@ -205,6 +205,11 @@ export interface User {
   last_name?: string;
   gender?: string;
   country?: string;
+  address_line1?: string;
+  address_line2?: string;
+  city?: string;
+  state?: string;
+  postal_code?: string;
   birth_date?: string;
   plan?: string;
   email_verified?: boolean;
@@ -224,6 +229,11 @@ export interface UpdateUserVariables {
     last_name?: string;
     gender?: string;
     country?: string;
+    address_line1?: string;
+    address_line2?: string;
+    city?: string;
+    state?: string;
+    postal_code?: string;
     birth_date?: string;
   };
 }

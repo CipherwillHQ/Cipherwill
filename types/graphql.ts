@@ -11,6 +11,11 @@ export interface MeData {
     birth_date: string;
     gender: string;
     country: string;
+    address_line1?: string;
+    address_line2?: string;
+    city?: string;
+    state?: string;
+    postal_code?: string;
     plan: string;
     last_accessed: string;
     created_at: string;
