@@ -116,6 +116,12 @@ export default function RootLayout({ children }) {
           </Script> */}
         </>
       )}
+      <link
+        rel="alternate"
+        type="application/rss+xml"
+        title="Cipherwill Blog"
+        href={`${FULL_HOSTNAME}/feed.xml`}
+      />
       <body
         className={`${gilroy.className} ${gilroy.variable} ${PlayfairDisplay.variable} bg-cream text-forest customScrollbar`}
       >

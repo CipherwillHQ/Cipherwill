@@ -10,6 +10,7 @@ module.exports = {
     "/i",
     "/auth/*",
     "/executor",
+    "/feed.xml",
     "/blogs-sitemap.xml",
     "/executor/*",
     "/app",
