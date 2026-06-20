@@ -4,8 +4,6 @@
  * Does NOT own data saving or country selection.
  */
 
-import { BiErrorCircle } from "react-icons/bi";
-
 interface AddressProps {
   addressLine1: string;
   setAddressLine1: (value: string) => void;
@@ -37,12 +35,11 @@ export default function Address({
       <div className="flex justify-between items-center">
         <input
           type="text"
-          placeholder="Street address, P.O. box, company name"
+          placeholder="Street address, P.O. box, company name (optional)"
           className="flex flex-1 p-2 bg-neutral-100 dark:bg-neutral-800 rounded-md"
           value={addressLine1}
           onChange={(e) => setAddressLine1(e.target.value)}
         />
-        {addressLine1 === "" && <BiErrorCircle className="text-red-500 m-1" />}
       </div>
 
       <label className="mt-2 py-3 px-1 font-semibold text-sm">
@@ -64,12 +61,11 @@ export default function Address({
           <div className="flex justify-between items-center">
             <input
               type="text"
-              placeholder="City"
+              placeholder="City (optional)"
               className="flex flex-1 p-2 bg-neutral-100 dark:bg-neutral-800 rounded-md"
               value={city}
               onChange={(e) => setCity(e.target.value)}
             />
-            {city === "" && <BiErrorCircle className="text-red-500 m-1" />}
           </div>
         </div>
 
@@ -78,12 +74,11 @@ export default function Address({
           <div className="flex justify-between items-center">
             <input
               type="text"
-              placeholder="State / Province / Region"
+              placeholder="State / Province / Region (optional)"
               className="flex flex-1 p-2 bg-neutral-100 dark:bg-neutral-800 rounded-md"
               value={state}
               onChange={(e) => setState(e.target.value)}
             />
-            {state === "" && <BiErrorCircle className="text-red-500 m-1" />}
           </div>
         </div>
 
@@ -92,12 +87,11 @@ export default function Address({
           <div className="flex justify-between items-center">
             <input
               type="text"
-              placeholder="ZIP / Postal Code"
+              placeholder="ZIP / Postal Code (optional)"
               className="flex flex-1 p-2 bg-neutral-100 dark:bg-neutral-800 rounded-md"
               value={postalCode}
               onChange={(e) => setPostalCode(e.target.value)}
             />
-            {postalCode === "" && <BiErrorCircle className="text-red-500 m-1" />}
           </div>
         </div>
       </div>

@@ -62,8 +62,6 @@ export default function Profile() {
     postal_code: "",
   });
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
-  const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
-  const [saveTick, setSaveTick] = useState(0);
 
   const [countryRestrictionMessage, setCountryRestrictionMessage] =
     useState(false);
@@ -162,8 +160,6 @@ export default function Profile() {
 
           if (saveId === saveSequenceRef.current) {
             setSaveStatus("saved");
-            setLastSavedAt(Date.now());
-            setSaveTick(0);
           }
         } catch (err: any) {
           const code = err?.graphQLErrors?.[0]?.extensions?.code;
@@ -193,14 +189,6 @@ export default function Profile() {
   }, []);
 
   useEffect(() => {
-    if (!lastSavedAt) return;
-    const interval = setInterval(() => {
-      setSaveTick((x) => x + 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [lastSavedAt]);
-
-  useEffect(() => {
     PROFILE_FORM_FIELDS.forEach((field) => {
       scheduleSaveForField(field, form[field]);
     });
@@ -218,20 +206,10 @@ export default function Profile() {
 
   const saveStatusText = useMemo(() => {
     if (saveStatus === "saving") return "Saving changes...";
-    if (saveStatus === "saved") return "All changes saved";
+    if (saveStatus === "saved") return "Saved";
     if (saveStatus === "error") return "Some changes failed to save";
     return "Changes save automatically";
   }, [saveStatus]);
-
-  const savedAgoText = (() => {
-    if (!lastSavedAt || saveStatus === "saving") return "";
-    const elapsedMs = saveTick * 1000;
-    const seconds = Math.max(0, Math.floor(elapsedMs / 1000));
-    if (seconds < 5) return "Saved just now";
-    if (seconds < 60) return `Saved ${seconds}s ago`;
-    const minutes = Math.floor(seconds / 60);
-    return `Saved ${minutes}m ago`;
-  })();
 
   if (profileLoading && !profileData?.me) {
     return null;
@@ -283,12 +261,6 @@ export default function Profile() {
           setForm((prev) => ({ ...prev, gender: value }))
         }
       />
-      <Country
-        country={form.country}
-        setCountry={(value: string) =>
-          setForm((prev) => ({ ...prev, country: value }))
-        }
-      />
       <Address
         addressLine1={form.address_line1}
         setAddressLine1={(value: string) =>
@@ -311,9 +283,14 @@ export default function Profile() {
           setForm((prev) => ({ ...prev, postal_code: value }))
         }
       />
+      <Country
+        country={form.country}
+        setCountry={(value: string) =>
+          setForm((prev) => ({ ...prev, country: value }))
+        }
+      />
       <div className="pt-4 text-right text-xs opacity-70">
         {saveStatusText}
-        {savedAgoText ? ` • ${savedAgoText}` : ""}
       </div>
     </div>
   );
