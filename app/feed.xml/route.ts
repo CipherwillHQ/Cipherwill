@@ -36,7 +36,7 @@ export async function GET() {
       <guid isPermaLink="true">${escapeXml(postUrl)}</guid>
       <description>${escapeXml(description)}</description>
       <pubDate>${pubDate}</pubDate>
-      <enclosure url="${escapeXml(imageUrl)}" type="image/png" />
+      <enclosure url="${escapeXml(imageUrl)}" length="0" type="image/png" />
     </item>`;
   }).join("\n");
 
