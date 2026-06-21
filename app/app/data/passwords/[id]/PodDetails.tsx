@@ -7,7 +7,7 @@ import {
   PASSWORD_OPTIONAL,
 } from "@/types/pods/PASSWORD";
 import { usePod } from "@/contexts/PodHelper";
-import LoadingIndicator from "@/components/common/LoadingIndicator";
+import SaveButton from "@/components/app/data/SaveButton";
 import FormField from "@/components/app/data/FormField";
 import ListField from "@/components/app/data/ListField";
 import AddOptionalField from "@/components/app/data/AddOptionalField";
@@ -26,6 +26,7 @@ const OPTIONAL = PASSWORD_OPTIONAL;
 
 export default function PodDetails({ id }) {
   const [data, setData] = useState<PASSWORD>({});
+  const [initialData, setInitialData] = useState<PASSWORD | null>(null);
   const { addField, removeField, visible, remaining } = useOptionalFields(
     OPTIONAL,
     data,
@@ -40,7 +41,10 @@ export default function PodDetails({ id }) {
     },
     {
       onComplete: (d: null | PASSWORD) => {
-        if (d) setData(d);
+        if (d) {
+          setData(d);
+          setInitialData(JSON.parse(JSON.stringify(d)));
+        }
       },
     }
   );
@@ -92,26 +96,24 @@ export default function PodDetails({ id }) {
 
       <AddOptionalField fields={remaining} onAdd={addField} />
 
-      <div className="flex flex-col sm:flex-row items-center gap-2">
-        <button
-          className="flex items-center justify-center gap-2 bg-black text-white font-bold py-2 px-4 rounded-sm w-full"
-          onClick={() => {
-            savePod(
-              {
-                username: data.username,
-                password: data.password,
-                totp_secret: data.totp_secret,
-                uri: data.uri,
-                note: data.note,
-              },
-              { metamodel_id: id }
-            );
-          }}
-        >
-          {is_updating && <LoadingIndicator />}
-          Save
-        </button>
-      </div>
+      <SaveButton
+        data={data}
+        initialData={initialData}
+        isSaving={is_updating}
+        onClick={async () => {
+          await savePod(
+            {
+              username: data.username,
+              password: data.password,
+              totp_secret: data.totp_secret,
+              uri: data.uri,
+              note: data.note,
+            },
+            { metamodel_id: id }
+          );
+          setInitialData(JSON.parse(JSON.stringify(data)));
+        }}
+      />
     </div>
   );
 }

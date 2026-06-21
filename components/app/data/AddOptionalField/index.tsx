@@ -41,7 +41,7 @@ export default function AddOptionalField({
     <div ref={ref} className="relative">
       <button
         type="button"
-        className="flex items-center gap-1 text-sm text-neutral-500 hover:text-neutral-700 border border-dashed border-default rounded-md p-2 w-full justify-center"
+        className="flex items-center gap-1 text-sm text-neutral-500 hover:text-neutral-700 border border-dashed border-default rounded-md p-2 w-full justify-center hover:cursor-pointer"
         onClick={() => setOpen(!open)}
       >
         <TbPlus size={16} />

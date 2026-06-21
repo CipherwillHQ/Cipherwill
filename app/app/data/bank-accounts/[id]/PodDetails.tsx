@@ -6,7 +6,7 @@ import {
   BANK_ACCOUNT_MANDATORY,
 } from "@/types/pods/BANK_ACCOUNT";
 import { usePod } from "@/contexts/PodHelper";
-import LoadingIndicator from "@/components/common/LoadingIndicator";
+import SaveButton from "@/components/app/data/SaveButton";
 import FormField from "@/components/app/data/FormField";
 
 const SAMPLE: BANK_ACCOUNT_TYPE = {
@@ -18,6 +18,7 @@ const MANDATORY = BANK_ACCOUNT_MANDATORY;
 
 export default function PodDetails({ id }) {
   const [data, setData] = useState<BANK_ACCOUNT_TYPE>({});
+  const [initialData, setInitialData] = useState<BANK_ACCOUNT_TYPE | null>(null);
   const { loading, error, savePod, is_updating } = usePod<BANK_ACCOUNT_TYPE>(
     {
       TYPE: "bank_account",
@@ -27,7 +28,10 @@ export default function PodDetails({ id }) {
     },
     {
       onComplete: (d: null | BANK_ACCOUNT_TYPE) => {
-        if (d) setData(d);
+        if (d) {
+          setData(d);
+          setInitialData(JSON.parse(JSON.stringify(d)));
+        }
       },
     }
   );
@@ -48,20 +52,18 @@ export default function PodDetails({ id }) {
           onChange={(v) => setData({ ...data, [f.key]: v })}
         />
       ))}
-      <div className="flex flex-col sm:flex-row items-center gap-2">
-        <button
-          className="flex items-center justify-center gap-2 bg-black text-white font-bold py-2 px-4 rounded-sm w-full"
-          onClick={() => {
-            savePod(
-              { bank_name: data.bank_name, account_number: data.account_number },
-              { metamodel_id: id }
-            );
-          }}
-        >
-          {is_updating && <LoadingIndicator />}
-          Save
-        </button>
-      </div>
+      <SaveButton
+        data={data}
+        initialData={initialData}
+        isSaving={is_updating}
+        onClick={async () => {
+          await savePod(
+            { bank_name: data.bank_name, account_number: data.account_number },
+            { metamodel_id: id }
+          );
+          setInitialData(JSON.parse(JSON.stringify(data)));
+        }}
+      />
     </div>
   );
 }

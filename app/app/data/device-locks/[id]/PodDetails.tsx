@@ -7,7 +7,7 @@ import {
   DEVICE_LOCK_OPTIONAL,
 } from "@/types/pods/DEVICE_LOCK";
 import { usePod } from "@/contexts/PodHelper";
-import LoadingIndicator from "@/components/common/LoadingIndicator";
+import SaveButton from "@/components/app/data/SaveButton";
 import FormField from "@/components/app/data/FormField";
 import AddOptionalField from "@/components/app/data/AddOptionalField";
 import { useOptionalFields } from "@/components/app/data/useOptionalFields";
@@ -23,6 +23,7 @@ const OPTIONAL = DEVICE_LOCK_OPTIONAL;
 
 export default function PodDetails({ id }) {
   const [data, setData] = useState<DEVICE_LOCK>({});
+  const [initialData, setInitialData] = useState<DEVICE_LOCK | null>(null);
   const { addField, removeField, visible, remaining } = useOptionalFields(
     OPTIONAL,
     data,
@@ -37,7 +38,10 @@ export default function PodDetails({ id }) {
     },
     {
       onComplete: (d: null | DEVICE_LOCK) => {
-        if (d) setData(d);
+        if (d) {
+          setData(d);
+          setInitialData(JSON.parse(JSON.stringify(d)));
+        }
       },
     }
   );
@@ -74,20 +78,18 @@ export default function PodDetails({ id }) {
 
       <AddOptionalField fields={remaining} onAdd={addField} />
 
-      <div className="flex flex-col sm:flex-row items-center gap-2">
-        <button
-          className="flex items-center justify-center gap-2 bg-black text-white font-bold py-2 px-4 rounded-sm w-full"
-          onClick={() => {
-            savePod(
-              { password: data.password, pin: data.pin, note: data.note },
-              { metamodel_id: id }
-            );
-          }}
-        >
-          {is_updating && <LoadingIndicator />}
-          Save
-        </button>
-      </div>
+      <SaveButton
+        data={data}
+        initialData={initialData}
+        isSaving={is_updating}
+        onClick={async () => {
+          await savePod(
+            { password: data.password, pin: data.pin, note: data.note },
+            { metamodel_id: id }
+          );
+          setInitialData(JSON.parse(JSON.stringify(data)));
+        }}
+      />
     </div>
   );
 }

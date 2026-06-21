@@ -7,7 +7,7 @@ import {
   DEFI_STAKING_OPTIONAL,
 } from "@/types/pods/DEFI_STAKING";
 import { usePod } from "@/contexts/PodHelper";
-import LoadingIndicator from "@/components/common/LoadingIndicator";
+import SaveButton from "@/components/app/data/SaveButton";
 import FormField from "@/components/app/data/FormField";
 import AddOptionalField from "@/components/app/data/AddOptionalField";
 import { useOptionalFields } from "@/components/app/data/useOptionalFields";
@@ -28,6 +28,7 @@ const OPTIONAL = DEFI_STAKING_OPTIONAL;
 
 export default function PodDetails({ id }) {
   const [data, setData] = useState<DEFI_STACKING>({});
+  const [initialData, setInitialData] = useState<DEFI_STACKING | null>(null);
   const { addField, removeField, visible, remaining } = useOptionalFields(
     OPTIONAL,
     data,
@@ -42,7 +43,10 @@ export default function PodDetails({ id }) {
     },
     {
       onComplete: (d: null | DEFI_STACKING) => {
-        if (d) setData(d);
+        if (d) {
+          setData(d);
+          setInitialData(JSON.parse(JSON.stringify(d)));
+        }
       },
     }
   );
@@ -79,29 +83,27 @@ export default function PodDetails({ id }) {
 
       <AddOptionalField fields={remaining} onAdd={addField} />
 
-      <div className="flex flex-col sm:flex-row items-center gap-2">
-        <button
-          className="flex items-center justify-center gap-2 bg-black text-white font-bold py-2 px-4 rounded-sm w-full"
-          onClick={() => {
-            savePod(
-              {
-                platform: data.platform,
-                asset_amount: data.asset_amount,
-                asset_name: data.asset_name,
-                lock_period: data.lock_period,
-                wallet_address: data.wallet_address,
-                username: data.username,
-                password: data.password,
-                note: data.note,
-              },
-              { metamodel_id: id }
-            );
-          }}
-        >
-          {is_updating && <LoadingIndicator />}
-          Save
-        </button>
-      </div>
+      <SaveButton
+        data={data}
+        initialData={initialData}
+        isSaving={is_updating}
+        onClick={async () => {
+          await savePod(
+            {
+              platform: data.platform,
+              asset_amount: data.asset_amount,
+              asset_name: data.asset_name,
+              lock_period: data.lock_period,
+              wallet_address: data.wallet_address,
+              username: data.username,
+              password: data.password,
+              note: data.note,
+            },
+            { metamodel_id: id }
+          );
+          setInitialData(JSON.parse(JSON.stringify(data)));
+        }}
+      />
     </div>
   );
 }
