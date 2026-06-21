@@ -1,12 +1,19 @@
+// Passwords PodDetails: form fields for stored passwords.
 "use client";
 import { useState } from "react";
+import {
+  PASSWORD,
+  PASSWORD_MANDATORY,
+  PASSWORD_OPTIONAL,
+} from "@/types/pods/PASSWORD";
 import { usePod } from "@/contexts/PodHelper";
-import { BsEye, BsEyeSlash } from "react-icons/bs";
-import { TbTrash } from "react-icons/tb";
-import LoadingIndicator from "@/components/common/LoadingIndicator";
-import { PASSWORD } from "@/types/pods/PASSWORD";
+import SaveButton from "@/components/app/data/SaveButton";
+import FormField from "@/components/app/data/FormField";
+import ListField from "@/components/app/data/ListField";
+import AddOptionalField from "@/components/app/data/AddOptionalField";
+import { useOptionalFields } from "@/components/app/data/useOptionalFields";
 
-const PASSWORD_SAMPLE: PASSWORD = {
+const SAMPLE: PASSWORD = {
   username: "john@example.com",
   password: "password",
   totp_secret: "123456",
@@ -14,163 +21,97 @@ const PASSWORD_SAMPLE: PASSWORD = {
   note: "Sample Note",
 };
 
+const MANDATORY = PASSWORD_MANDATORY;
+const OPTIONAL = PASSWORD_OPTIONAL;
+
 export default function PodDetails({ id }) {
   const [data, setData] = useState<PASSWORD>({});
+  const [initialData, setInitialData] = useState<PASSWORD | null>(null);
+  const { addField, removeField, visible, remaining } = useOptionalFields(
+    OPTIONAL,
+    data,
+    setData
+  );
   const { loading, error, savePod, is_updating } = usePod<PASSWORD>(
     {
       TYPE: "password",
       VERSION: "0.0.1",
       REF_ID: id,
-      DATA_SAMPLE: PASSWORD_SAMPLE,
+      DATA_SAMPLE: SAMPLE,
     },
     {
-      onComplete: (data: null | PASSWORD) => {
-        if (data) setData(data);
+      onComplete: (d: null | PASSWORD) => {
+        if (d) setData(d);
+        setInitialData(JSON.parse(JSON.stringify(d || {})));
       },
     }
   );
-
-  const [showPassword, setShowPassword] = useState(false);
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="flex flex-col gap-4 px-4 w-full max-w-md">
-      {/* <pre>{JSON.stringify(data, null, 2)}</pre>
-      <hr /> */}
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Username"
-        value={data.username || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            username: e.target.value,
-          });
-        }}
-      />{" "}
-      <div className="flex items-center gap-2">
-        <input
-          className="bg-secondary border border-default rounded-md p-2 w-full"
-          type={showPassword ? "text" : "password"}
-          placeholder="Password"
-          value={data.password || ""}
-          onChange={(e) => {
-            setData({
-              ...data,
-              password: e.target.value,
-            });
-          }}
+    <div className="flex flex-col gap-4 px-4 w-full max-w-xl">
+      {MANDATORY.map((f) => (
+        <FormField
+          key={f.key}
+          label={f.label}
+          type={f.type}
+          sensitive={f.sensitive}
+          placeholder={f.placeholder}
+          required
+          value={data[f.key]}
+          onChange={(v) => setData({ ...data, [f.key]: v })}
         />
-        <div
-          onClick={() => {
-            setShowPassword((e) => !e);
-          }}
-        >
-          {showPassword ? <BsEyeSlash size={20} /> : <BsEye size={20} />}
-        </div>
-      </div>
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="2FA Secret"
-        value={data.totp_secret || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            totp_secret: e.target.value,
-          });
-        }}
-      />{" "}
-      <div className="font-semibold">Websites</div>
-      <div className="flex items-center gap-2">
-        <input
-          id="password-uri"
-          className="bg-secondary border border-default rounded-md p-2 w-full"
-          type="text"
-          placeholder="Website (e.g., https://example.com)"
-        />
-        <button
-          className="bg-secondary border border-default rounded-md p-2"
-          onClick={() => {
-            let new_uri = (
-              document.getElementById("password-uri") as HTMLInputElement
-            )?.value;
-            // remove spaces
-            new_uri = new_uri.trim();
-            if (new_uri.length <= 0) {
-              return;
-            }
+      ))}
 
-            setData({
-              ...data,
-              uri: Array.from(new Set([...(data.uri || []), new_uri])),
-            });
-            // clear the input
-            (
-              document.getElementById("password-uri") as HTMLInputElement
-            ).value = "";
-          }}
-        >
-          Add
-        </button>
-      </div>{" "}
-      <div className="flex gap-2 flex-wrap">
-        {(data.uri === undefined || data.uri?.length === 0) && (
-          <div className="text-sm font-semibold text-neutral-500">No Websites</div>
-        )}
-        {data.uri?.map((uri, index) => (
-          <div
-            key={index}
-            className="flex items-center gap-2 border border-default rounded-md p-2 "
-          >
-            <div>{uri}</div>
-            <button
-              onClick={() => {
-                setData({
-                  ...data,
-                  uri: (data.uri || []).filter((code) => code !== uri),
-                });
-              }}
-            >
-              <TbTrash />
-            </button>
-          </div>
-        ))}
-      </div>
-      <textarea
-        className="bg-secondary border border-default rounded-md p-2"
-        placeholder="Note"
-        value={data.note || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            note: e.target.value,
-          });
-        }}
-      />{" "}
-      <div className="flex flex-col sm:flex-row items-center gap-2">
-        <button
-          className="flex items-center justify-center gap-2 bg-black text-white font-bold py-2 px-4 rounded-sm w-full"
-          onClick={() => {
-            savePod({
+      {visible.map((f) => {
+        if (f.key === "uri") {
+          return (
+            <ListField
+              key="uri"
+              label={f.label}
+              items={data.uri || []}
+              onChange={(items) => setData({ ...data, uri: items })}
+              onRemove={() => removeField("uri")}
+              placeholder="Website (e.g., https://example.com)"
+              emptyMessage="No Websites"
+            />
+          );
+        }
+        return (
+          <FormField
+            key={f.key}
+            label={f.label}
+            type={f.type}
+            sensitive={f.sensitive}
+            placeholder={f.placeholder}
+            value={data[f.key]}
+            onChange={(v) => setData({ ...data, [f.key]: v })}
+            onRemove={() => removeField(f.key)}
+          />
+        );
+      })}
+
+      <AddOptionalField fields={remaining} onAdd={addField} />
+
+      <SaveButton
+        data={data}
+        initialData={initialData}
+        isSaving={is_updating}
+        onClick={async () => {
+          await savePod(
+            {
               username: data.username,
               password: data.password,
               totp_secret: data.totp_secret,
               uri: data.uri,
               note: data.note,
-            },{
-              metamodel_id: id,
-            });
-          }}
-        >
-          {is_updating && <LoadingIndicator />}
-          Save
-        </button>
-      </div>
+            },
+            { metamodel_id: id }
+          );
+          setInitialData(JSON.parse(JSON.stringify(data)));
+        }}
+      />
     </div>
   );
 }
-
