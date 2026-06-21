@@ -23,19 +23,19 @@ const EMAIL_ACCOUNT_SAMPLE: EMAIL_ACCOUNT_TYPE = {
 };
 
 const EMAIL_ACCOUNT_FIELDS: PodFieldConfig[] = [
-  { key: "email", label: "Email", placeholder: "e.g. john@example.com", mandatory: true },
-  { key: "password", label: "Password", type: "password", placeholder: "e.g. your password", mandatory: true },
-  { key: "provider", label: "Provider", placeholder: "e.g. Gmail", mandatory: false },
-  { key: "recoveryEmail", label: "Recovery Email", placeholder: "e.g. john@example.com", mandatory: false, group: { id: "recovery", label: "Recovery Info" } },
-  { key: "recoveryPhone", label: "Recovery Phone", placeholder: "e.g. 1234567890", mandatory: false, group: { id: "recovery", label: "Recovery Info" } },
-  { key: "securityQuestion", label: "Security Question", placeholder: "e.g. Your favorite color?", mandatory: false, group: { id: "security", label: "Security Info" } },
-  { key: "securityAnswer", label: "Security Answer", placeholder: "e.g. Blue", mandatory: false, group: { id: "security", label: "Security Info" } },
-  { key: "note", label: "Note", type: "textarea", placeholder: "e.g. Sample Note", mandatory: false },
+  { key: "email", label: "Email", placeholder: "e.g. john@example.com", visibility: "mandatory" },
+  { key: "password", label: "Password", type: "password", placeholder: "e.g. your password", visibility: "mandatory" },
+  { key: "provider", label: "Provider", placeholder: "e.g. Gmail", visibility: "optional" },
+  { key: "recoveryEmail", label: "Recovery Email", placeholder: "e.g. john@example.com", visibility: "skippable", group: { id: "recovery", label: "Recovery Info" } },
+  { key: "recoveryPhone", label: "Recovery Phone", placeholder: "e.g. 1234567890", visibility: "skippable", group: { id: "recovery", label: "Recovery Info" } },
+  { key: "securityQuestion", label: "Security Question", placeholder: "e.g. Your favorite color?", visibility: "skippable", group: { id: "security", label: "Security Info" } },
+  { key: "securityAnswer", label: "Security Answer", placeholder: "e.g. Blue", visibility: "skippable", group: { id: "security", label: "Security Info" } },
+  { key: "note", label: "Note", type: "textarea", placeholder: "e.g. Sample Note", visibility: "skippable" },
 ];
 
 const EMAIL_ACCOUNT_CUSTOM_SECTIONS: PodCustomSectionDef[] = [
-  { key: "backupCodes", label: "Backup Codes", dataKey: "backupCodes", mandatory: false },
-  { key: "aliasEmails", label: "Email Aliases", dataKey: "aliasEmails", mandatory: false },
+  { key: "backupCodes", label: "Backup Codes", dataKey: "backupCodes", visibility: "skippable" },
+  { key: "aliasEmails", label: "Email Aliases", dataKey: "aliasEmails", visibility: "skippable" },
 ];
 
 export default function PodDetails({ id }) {
@@ -243,23 +243,39 @@ export default function PodDetails({ id }) {
     setPreviewOpen(false);
   };
 
+  const isSkippable = (key: string) =>
+    EMAIL_ACCOUNT_FIELDS.find((f) => f.key === key)?.visibility === "skippable";
+
+  const isGroupSkippable = (groupId: string) =>
+    EMAIL_ACCOUNT_FIELDS
+      .filter((f) => f.group?.id === groupId)
+      .every((f) => f.visibility === "skippable");
+
   function renderPreview(d: EMAIL_ACCOUNT_TYPE) {
-    const hasRecovery = d.recoveryEmail || d.recoveryPhone;
-    const hasSecurity = d.securityQuestion;
+    const canAdd = (key: string) => !isSkippable(key);
+    const recoverySkippable = isGroupSkippable("recovery");
+    const securitySkippable = isGroupSkippable("security");
+    const hasRecovery = !!(d.recoveryEmail || d.recoveryPhone);
+    const hasSecurity = !!d.securityQuestion;
     return (
       <PodPreviewSection>
         <p>
-          I have an email account {metamodel?.name || d.email || "..."}, with the provider{" "}
-          <PreviewValue value={d.provider} fallback="a provider" addLabel="Provider" onAdd={() => addAndClose("provider")} />,
+          {isSkippable("email") && !d.email ? (
+            <>I have an email account {metamodel?.name || "..."}</>
+          ) : (
+            <>I have an email account{" "}
+            <PreviewValue value={d.email} addLabel={canAdd("email") ? "Email" : undefined} onAdd={canAdd("email") ? () => addAndClose("email") : undefined} /></>
+          )}, with the provider{" "}
+          <PreviewValue value={d.provider} fallback="a provider" addLabel={canAdd("provider") ? "Provider" : undefined} onAdd={canAdd("provider") ? () => addAndClose("provider") : undefined} />,
           and the password is{" "}
           <PreviewValue value={d.password} sensitive />.
         </p>
-        {!d.recoveryEmail && !d.recoveryPhone ? (
+        {!hasRecovery && !recoverySkippable ? (
           <p>
             I have recovery details set up{" "}
             <PreviewValue value="" addLabel="Recovery Info" onAdd={() => { podFormRef.current?.addGroup("recovery"); setPreviewOpen(false); }} />.
           </p>
-        ) : (
+        ) : hasRecovery ? (
           <>
             {d.recoveryEmail && (
               <p>
@@ -274,20 +290,20 @@ export default function PodDetails({ id }) {
               </p>
             )}
           </>
-        )}
-        {!d.securityQuestion ? (
+        ) : null}
+        {!hasSecurity && !securitySkippable ? (
           <p>
             I have security questions set up{" "}
             <PreviewValue value="" addLabel="Security Info" onAdd={() => { podFormRef.current?.addGroup("security"); setPreviewOpen(false); }} />.
           </p>
-        ) : (
+        ) : hasSecurity ? (
           <p>
             For security, my question is{" "}
             &ldquo;<PreviewValue value={d.securityQuestion} />&rdquo;{" "}
             and the answer is{" "}
             <PreviewValue value={d.securityAnswer} sensitive />.
           </p>
-        )}
+        ) : null}
         {d.backupCodes && d.backupCodes.length > 0 && (
           <p>
             I have these backup codes saved:{" "}
@@ -309,9 +325,11 @@ export default function PodDetails({ id }) {
             </ul>
           </>
         )}
-        <p>
-          For context, <PreviewValue value={d.note} addLabel="Note" onAdd={() => addAndClose("note")} />.
-        </p>
+        {(d.note || !isSkippable("note")) && (
+          <p>
+            For context, <PreviewValue value={d.note} addLabel={canAdd("note") ? "Note" : undefined} onAdd={canAdd("note") ? () => addAndClose("note") : undefined} />.
+          </p>
+        )}
       </PodPreviewSection>
     );
   }

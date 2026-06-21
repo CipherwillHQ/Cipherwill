@@ -20,14 +20,14 @@ const DEFI_STACKING_SAMPLE: DEFI_STACKING = {
 };
 
 const DEFI_STACKING_FIELDS: PodFieldConfig[] = [
-  { key: "platform", label: "Platform (AAVE, COMPOUND, etc.)", placeholder: "e.g. AAVE", mandatory: true },
-  { key: "asset_amount", label: "Amount", placeholder: "e.g. 100", mandatory: true },
-  { key: "asset_name", label: "Asset name (e.g. USDC)", placeholder: "e.g. USDC", mandatory: true },
-  { key: "lock_period", label: "Lock period (e.g. 1 month)", placeholder: "e.g. 1 month", mandatory: false },
-  { key: "wallet_address", label: "Wallet address", placeholder: "e.g. 0x1234567890", mandatory: false },
-  { key: "username", label: "Username (if required)", placeholder: "e.g. johndoe", mandatory: false },
-  { key: "password", label: "Password", type: "password", placeholder: "e.g. your password", mandatory: false },
-  { key: "note", label: "Note", type: "textarea", placeholder: "e.g. This is a sample note", mandatory: false },
+  { key: "platform", label: "Platform (AAVE, COMPOUND, etc.)", placeholder: "e.g. AAVE", visibility: "mandatory" },
+  { key: "asset_amount", label: "Amount", placeholder: "e.g. 100", visibility: "mandatory" },
+  { key: "asset_name", label: "Asset name (e.g. USDC)", placeholder: "e.g. USDC", visibility: "mandatory" },
+  { key: "lock_period", label: "Lock period (e.g. 1 month)", placeholder: "e.g. 1 month", visibility: "optional" },
+  { key: "wallet_address", label: "Wallet address", placeholder: "e.g. 0x1234567890", visibility: "optional" },
+  { key: "username", label: "Username (if required)", placeholder: "e.g. johndoe", visibility: "skippable" },
+  { key: "password", label: "Password", type: "password", placeholder: "e.g. your password", visibility: "skippable" },
+  { key: "note", label: "Note", type: "textarea", placeholder: "e.g. This is a sample note", visibility: "skippable" },
 ];
 
 export default function PodDetails({ id }) {
@@ -79,7 +79,11 @@ export default function PodDetails({ id }) {
     setPreviewOpen(false);
   };
 
+  const isSkippable = (key: string) =>
+    DEFI_STACKING_FIELDS.find((f) => f.key === key)?.visibility === "skippable";
+
   function renderPreview(d: DEFI_STACKING) {
+    const canAdd = (key: string) => !isSkippable(key);
     return (
       <PodPreviewSection>
         <p>
@@ -88,19 +92,25 @@ export default function PodDetails({ id }) {
           <PreviewValue value={d.asset_name} addLabel="Asset name" onAdd={() => addAndClose("asset_name")} /> on{" "}
           <PreviewValue value={d.platform} addLabel="Platform" onAdd={() => addAndClose("platform")} />,
           locked for{" "}
-          <PreviewValue value={d.lock_period} addLabel="Lock period" onAdd={() => addAndClose("lock_period")} />,
+          <PreviewValue value={d.lock_period} addLabel={canAdd("lock_period") ? "Lock period" : undefined} onAdd={canAdd("lock_period") ? () => addAndClose("lock_period") : undefined} />,
           in wallet{" "}
           <PreviewValue value={d.wallet_address} addLabel="Wallet address" onAdd={() => addAndClose("wallet_address")} />.
         </p>
-        <p>
-          My username is{" "}
-          <PreviewValue value={d.username} addLabel="Username" onAdd={() => addAndClose("username")} />,
-          and the password is{" "}
-          <PreviewValue value={d.password} sensitive addLabel="Password" onAdd={() => addAndClose("password")} />.
-        </p>
-        <p>
-          For context, <PreviewValue value={d.note} addLabel="Note" onAdd={() => addAndClose("note")} />.
-        </p>
+        {d.username && (
+          <p>
+            My username is <PreviewValue value={d.username} />.
+          </p>
+        )}
+        {d.password && (
+          <p>
+            The password is <PreviewValue value={d.password} sensitive />.
+          </p>
+        )}
+        {(d.note || !isSkippable("note")) && (
+          <p>
+            For context, <PreviewValue value={d.note} addLabel={canAdd("note") ? "Note" : undefined} onAdd={canAdd("note") ? () => addAndClose("note") : undefined} />.
+          </p>
+        )}
       </PodPreviewSection>
     );
   }

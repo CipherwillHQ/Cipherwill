@@ -14,8 +14,8 @@ const BANK_ACCOUNT_SAMPLE: BANK_ACCOUNT_TYPE = {
 };
 
 const BANK_ACCOUNT_FIELDS: PodFieldConfig[] = [
-  { key: "account_number", label: "Account number", placeholder: "e.g. 6546489", mandatory: true },
-  { key: "bank_name", label: "Bank name", placeholder: "e.g. Sample Bank", mandatory: true },
+  { key: "account_number", label: "Account number", placeholder: "e.g. 6546489", visibility: "mandatory" },
+  { key: "bank_name", label: "Bank name", placeholder: "e.g. Sample Bank", visibility: "mandatory" },
 ];
 
 export default function PodDetails({ id }) {

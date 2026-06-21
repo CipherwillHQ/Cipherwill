@@ -18,14 +18,14 @@ const PASSWORD_SAMPLE: PASSWORD = {
 };
 
 const PASSWORD_FIELDS: PodFieldConfig[] = [
-  { key: "username", label: "Username", placeholder: "e.g. john@example.com", mandatory: true },
-  { key: "password", label: "Password", type: "password", placeholder: "e.g. your password", mandatory: true },
-  { key: "totp_secret", label: "2FA Secret", placeholder: "e.g. 123456", mandatory: false },
-  { key: "note", label: "Note", type: "textarea", placeholder: "e.g. Sample Note", mandatory: false },
+  { key: "username", label: "Username", placeholder: "e.g. john@example.com", visibility: "mandatory" },
+  { key: "password", label: "Password", type: "password", placeholder: "e.g. your password", visibility: "mandatory" },
+  { key: "totp_secret", label: "2FA Secret", placeholder: "e.g. 123456", visibility: "skippable" },
+  { key: "note", label: "Note", type: "textarea", placeholder: "e.g. Sample Note", visibility: "skippable" },
 ];
 
 const PASSWORD_CUSTOM_SECTIONS: PodCustomSectionDef[] = [
-  { key: "uri", label: "Websites", dataKey: "uri", mandatory: true },
+  { key: "uri", label: "Websites", dataKey: "uri", visibility: "optional" },
 ];
 
 export default function PodDetails({ id }) {
@@ -147,7 +147,11 @@ export default function PodDetails({ id }) {
     setPreviewOpen(false);
   };
 
+  const isSkippable = (key: string) =>
+    PASSWORD_FIELDS.find((f) => f.key === key)?.visibility === "skippable";
+
   function renderPreview(d: PASSWORD) {
+    const canAdd = (key: string) => !isSkippable(key);
     return (
       <PodPreviewSection>
         <p>
@@ -156,11 +160,12 @@ export default function PodDetails({ id }) {
           and the password is{" "}
           <PreviewValue value={d.password} sensitive addLabel="Password" onAdd={() => addAndClose("password")} />.
         </p>
-        <p>
-          I use 2FA with the secret{" "}
-          <PreviewValue value={d.totp_secret} sensitive addLabel="2FA Secret" onAdd={() => addAndClose("totp_secret")} />.
-        </p>
-        {d.uri && d.uri.length > 0 && (
+        {d.totp_secret && (
+          <p>
+            I use 2FA with the secret <PreviewValue value={d.totp_secret} sensitive />.
+          </p>
+        )}
+        {d.uri && d.uri.length > 0 ? (
           <>
             <p>This login is used on these websites:</p>
             <ul className="list-disc list-inside pl-2 space-y-0.5">
@@ -171,10 +176,17 @@ export default function PodDetails({ id }) {
               ))}
             </ul>
           </>
+        ) : (
+          <p>
+            This login is used on{" "}
+            <PreviewValue value="" addLabel="Websites" onAdd={() => { podFormRef.current?.addSection("uri"); setPreviewOpen(false); }} />.
+          </p>
         )}
-        <p>
-          For context, <PreviewValue value={d.note} addLabel="Note" onAdd={() => addAndClose("note")} />.
-        </p>
+        {(d.note || !isSkippable("note")) && (
+          <p>
+            For context, <PreviewValue value={d.note} addLabel={canAdd("note") ? "Note" : undefined} onAdd={canAdd("note") ? () => addAndClose("note") : undefined} />.
+          </p>
+        )}
       </PodPreviewSection>
     );
   }

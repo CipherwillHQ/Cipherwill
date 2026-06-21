@@ -18,5 +18,19 @@ export function buildGroupMap(
       map.set(f.group.id, existing);
     }
   });
+
+  for (const [groupId, groupFields] of map) {
+    if (groupFields.length < 2) continue;
+    const vis = groupFields[0]!.visibility;
+    for (const f of groupFields) {
+      if (f.visibility !== vis) {
+        const fieldNames = groupFields.map((g) => `"${g.key}" (${g.visibility})`).join(", ");
+        throw new Error(
+          `Group "${groupId}" has mixed visibility: [${fieldNames}]. All fields in a group must have the same visibility value.`
+        );
+      }
+    }
+  }
+
   return map;
 }

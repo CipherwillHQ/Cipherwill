@@ -18,12 +18,12 @@ const SEED_PHRASE_SAMPLE: SEED_PHRASE_TYPE = {
 };
 
 const SEED_PHRASE_FIELDS: PodFieldConfig[] = [
-  { key: "public_key", label: "Public Key", placeholder: "e.g. 0x1234...", mandatory: true },
-  { key: "note", label: "Note", type: "textarea", placeholder: "e.g. Sample Note", mandatory: false },
+  { key: "public_key", label: "Public Key", placeholder: "e.g. 0x1234...", visibility: "optional" },
+  { key: "note", label: "Note", type: "textarea", placeholder: "e.g. Sample Note", visibility: "skippable" },
 ];
 
 const SEED_PHRASE_CUSTOM_SECTIONS: PodCustomSectionDef[] = [
-  { key: "phrase", label: "Seed Phrase", dataKey: "phrase", mandatory: true },
+  { key: "phrase", label: "Seed Phrase", dataKey: "phrase", visibility: "mandatory" },
 ];
 
 export default function PodDetails({ id }) {
@@ -166,7 +166,11 @@ export default function PodDetails({ id }) {
     setPreviewOpen(false);
   };
 
+  const isSkippable = (key: string) =>
+    SEED_PHRASE_FIELDS.find((f) => f.key === key)?.visibility === "skippable";
+
   function renderPreview(d: SEED_PHRASE_TYPE) {
+    const canAdd = (key: string) => !isSkippable(key);
     return (
       <PodPreviewSection>
         <p>
@@ -177,13 +181,17 @@ export default function PodDetails({ id }) {
           />
           .
         </p>
-        <p>
-          My public key is{" "}
-          <PreviewValue value={d.public_key} addLabel="Public Key" onAdd={() => addAndClose("public_key")} />.
-        </p>
-        <p>
-          For context, <PreviewValue value={d.note} addLabel="Note" onAdd={() => addAndClose("note")} />.
-        </p>
+        {(d.public_key || !isSkippable("public_key")) && (
+          <p>
+            My public key is{" "}
+            <PreviewValue value={d.public_key} addLabel={canAdd("public_key") ? "Public Key" : undefined} onAdd={canAdd("public_key") ? () => addAndClose("public_key") : undefined} />.
+          </p>
+        )}
+        {(d.note || !isSkippable("note")) && (
+          <p>
+            For context, <PreviewValue value={d.note} addLabel={canAdd("note") ? "Note" : undefined} onAdd={canAdd("note") ? () => addAndClose("note") : undefined} />.
+          </p>
+        )}
       </PodPreviewSection>
     );
   }

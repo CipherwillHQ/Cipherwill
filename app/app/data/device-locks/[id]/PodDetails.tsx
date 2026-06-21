@@ -15,9 +15,9 @@ const DEVICE_LOCK_SAMPLE: DEVICE_LOCK = {
 };
 
 const DEVICE_LOCK_FIELDS: PodFieldConfig[] = [
-  { key: "password", label: "Password", placeholder: "e.g. 123456", mandatory: true },
-  { key: "pin", label: "Pin", placeholder: "e.g. 123456", mandatory: false },
-  { key: "note", label: "Note", type: "textarea", placeholder: "e.g. Sample Note", mandatory: false },
+  { key: "password", label: "Password", placeholder: "e.g. 123456", visibility: "mandatory" },
+  { key: "pin", label: "Pin", placeholder: "e.g. 123456", visibility: "skippable" },
+  { key: "note", label: "Note", type: "textarea", placeholder: "e.g. Sample Note", visibility: "skippable" },
 ];
 
 export default function PodDetails({ id }) {
@@ -64,18 +64,25 @@ export default function PodDetails({ id }) {
     setPreviewOpen(false);
   };
 
+  const isSkippable = (key: string) =>
+    DEVICE_LOCK_FIELDS.find((f) => f.key === key)?.visibility === "skippable";
+
   function renderPreview(d: DEVICE_LOCK) {
+    const canAdd = (key: string) => !isSkippable(key);
     return (
       <PodPreviewSection>
         <p>
           I have a {metamodel?.name || "device"} with password{" "}
-          <PreviewValue value={d.password} sensitive addLabel="Password" onAdd={() => addAndClose("password")} />{" "}
-          and pin{" "}
-          <PreviewValue value={d.pin} sensitive addLabel="Pin" onAdd={() => addAndClose("pin")} />.
+          <PreviewValue value={d.password} sensitive addLabel="Password" onAdd={() => addAndClose("password")} />{d.pin ? "," : "."}
+          {d.pin && (
+            <> and pin <PreviewValue value={d.pin} sensitive />.</>
+          )}
         </p>
-        <p>
-          For context, <PreviewValue value={d.note} addLabel="Note" onAdd={() => addAndClose("note")} />.
-        </p>
+        {(d.note || !isSkippable("note")) && (
+          <p>
+            For context, <PreviewValue value={d.note} addLabel={canAdd("note") ? "Note" : undefined} onAdd={canAdd("note") ? () => addAndClose("note") : undefined} />.
+          </p>
+        )}
       </PodPreviewSection>
     );
   }

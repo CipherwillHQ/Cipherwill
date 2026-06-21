@@ -3,12 +3,14 @@ import { useState, useMemo, useCallback, forwardRef, useImperativeHandle } from 
 import PodFormRenderer from "./PodFormRenderer";
 import { fieldHasValue, buildGroupMap } from "./podFormUtils";
 
+export type PodFieldVisibility = "mandatory" | "optional" | "skippable";
+
 export interface PodFieldConfig {
   key: string;
   label: string;
   placeholder?: string;
   type?: "text" | "password" | "textarea";
-  mandatory: boolean;
+  visibility: PodFieldVisibility;
   group?: { id: string; label: string };
 }
 
@@ -16,7 +18,7 @@ export interface PodCustomSectionDef {
   key: string;
   label: string;
   dataKey: string;
-  mandatory: boolean;
+  visibility: PodFieldVisibility;
 }
 
 export interface PodFormHandle {
@@ -42,27 +44,27 @@ const PodForm = forwardRef<PodFormHandle, PodFormProps>(function PodForm({
   renderCustomSection,
   onRemoveCustomSection,
 }, ref) {
-  const mandatoryFields = useMemo(() => fields.filter((f) => f.mandatory), [fields]);
-  const optionalFields = useMemo(() => fields.filter((f) => !f.mandatory), [fields]);
+  const mandatoryFields = useMemo(() => fields.filter((f) => f.visibility === "mandatory"), [fields]);
+  const toggleableFields = useMemo(() => fields.filter((f) => f.visibility !== "mandatory"), [fields]);
 
   const mandatoryGroupsMap = useMemo(() => buildGroupMap(mandatoryFields), [mandatoryFields]);
-  const optionalGroupsMap = useMemo(() => buildGroupMap(optionalFields), [optionalFields]);
+  const toggleableGroupsMap = useMemo(() => buildGroupMap(toggleableFields), [toggleableFields]);
 
   const standaloneMandatory = useMemo(
     () => mandatoryFields.filter((f) => !f.group),
     [mandatoryFields]
   );
-  const standaloneOptional = useMemo(
-    () => optionalFields.filter((f) => !f.group),
-    [optionalFields]
+  const standaloneToggleable = useMemo(
+    () => toggleableFields.filter((f) => !f.group),
+    [toggleableFields]
   );
 
   const mandatorySections = useMemo(
-    () => customSections.filter((s) => s.mandatory),
+    () => customSections.filter((s) => s.visibility === "mandatory"),
     [customSections]
   );
-  const optionalSections = useMemo(
-    () => customSections.filter((s) => !s.mandatory),
+  const toggleableSections = useMemo(
+    () => customSections.filter((s) => s.visibility !== "mandatory"),
     [customSections]
   );
 
@@ -72,69 +74,69 @@ const PodForm = forwardRef<PodFormHandle, PodFormProps>(function PodForm({
 
   const visibleFieldKeys = useMemo(() => {
     const keys = new Set<string>();
-    optionalFields.forEach((f) => {
+    toggleableFields.forEach((f) => {
       if (fieldHasValue(data[f.key])) keys.add(f.key);
       if (manuallyAdded.has(f.key)) keys.add(f.key);
       if (manuallyRemoved.has(f.key)) keys.delete(f.key);
     });
     return keys;
-  }, [optionalFields, data, manuallyAdded, manuallyRemoved]);
+  }, [toggleableFields, data, manuallyAdded, manuallyRemoved]);
 
   const visibleGroupIds = useMemo(() => {
     const ids = new Set<string>();
-    optionalGroupsMap.forEach((groupFields, groupId) => {
+    toggleableGroupsMap.forEach((groupFields, groupId) => {
       if (groupFields.some((f) => visibleFieldKeys.has(f.key))) ids.add(groupId);
     });
     return ids;
-  }, [optionalGroupsMap, visibleFieldKeys]);
+  }, [toggleableGroupsMap, visibleFieldKeys]);
 
   const visibleStandalone = useMemo(
-    () => standaloneOptional.filter((f) => visibleFieldKeys.has(f.key)),
-    [standaloneOptional, visibleFieldKeys]
+    () => standaloneToggleable.filter((f) => visibleFieldKeys.has(f.key)),
+    [standaloneToggleable, visibleFieldKeys]
   );
 
   const visibleGroups = useMemo(
     () =>
-      Array.from(optionalGroupsMap.entries()).filter(([groupId]) =>
+      Array.from(toggleableGroupsMap.entries()).filter(([groupId]) =>
         visibleGroupIds.has(groupId)
       ),
-    [optionalGroupsMap, visibleGroupIds]
+    [toggleableGroupsMap, visibleGroupIds]
   );
 
   const visibleSections = useMemo(() => {
-    return optionalSections.filter((s) => {
+    return toggleableSections.filter((s) => {
       if (fieldHasValue(data[s.dataKey])) return true;
       if (manuallyAdded.has(s.key)) return true;
       if (manuallyRemoved.has(s.key)) return false;
       return false;
     });
-  }, [optionalSections, data, manuallyAdded, manuallyRemoved]);
+  }, [toggleableSections, data, manuallyAdded, manuallyRemoved]);
 
   const dropdownFields = useMemo(
     () =>
-      standaloneOptional
+      standaloneToggleable
         .filter((f) => !visibleFieldKeys.has(f.key))
         .map((f) => ({ key: f.key, label: f.label })),
-    [standaloneOptional, visibleFieldKeys]
+    [standaloneToggleable, visibleFieldKeys]
   );
 
   const dropdownGroups = useMemo(
     () =>
-      Array.from(optionalGroupsMap.entries())
+      Array.from(toggleableGroupsMap.entries())
         .filter(([groupId]) => !visibleGroupIds.has(groupId))
         .map(([groupId, groupFields]) => ({
           key: groupId,
           label: groupFields[0]!.group!.label,
         })),
-    [optionalGroupsMap, visibleGroupIds]
+    [toggleableGroupsMap, visibleGroupIds]
   );
 
   const dropdownSections = useMemo(
     () =>
-      optionalSections
+      toggleableSections
         .filter((s) => !visibleSections.find((vs) => vs.key === s.key))
         .map((s) => ({ key: s.key, label: s.label })),
-    [optionalSections, visibleSections]
+    [toggleableSections, visibleSections]
   );
 
   const hasAvailableItems =
@@ -165,7 +167,7 @@ const PodForm = forwardRef<PodFormHandle, PodFormProps>(function PodForm({
 
   const addGroup = useCallback(
     (groupId: string) => {
-      const groupFields = optionalGroupsMap.get(groupId) || [];
+      const groupFields = toggleableGroupsMap.get(groupId) || [];
       setManuallyAdded((prev) => {
         const next = new Set(prev);
         groupFields.forEach((f) => next.add(f.key));
@@ -178,12 +180,12 @@ const PodForm = forwardRef<PodFormHandle, PodFormProps>(function PodForm({
       });
       setMenuOpen(false);
     },
-    [optionalGroupsMap]
+    [toggleableGroupsMap]
   );
 
   const removeGroup = useCallback(
     (groupId: string) => {
-      const groupFields = optionalGroupsMap.get(groupId) || [];
+      const groupFields = toggleableGroupsMap.get(groupId) || [];
       setManuallyAdded((prev) => {
         const next = new Set(prev);
         groupFields.forEach((f) => next.delete(f.key));
@@ -196,7 +198,7 @@ const PodForm = forwardRef<PodFormHandle, PodFormProps>(function PodForm({
       });
       groupFields.forEach((f) => onChange(f.key, ""));
     },
-    [optionalGroupsMap, onChange]
+    [toggleableGroupsMap, onChange]
   );
 
   const removeSection = useCallback(

@@ -20,14 +20,14 @@ const PAYMENT_CARD_SAMPLE: PAYMENT_CARD_TYPE = {
 };
 
 const PAYMENT_CARD_FIELDS: PodFieldConfig[] = [
-  { key: "type", label: "Type (e.g. Credit, Debit)", placeholder: "e.g. Credit", mandatory: true },
-  { key: "card_holder_name", label: "Card Holder Name", placeholder: "e.g. John Doe", mandatory: false },
-  { key: "card_number", label: "Card Number", placeholder: "e.g. 1234 5678 9012 3456", mandatory: true },
-  { key: "expiry_date", label: "Expiry Date (e.g. 12/2025)", placeholder: "e.g. 12/2025", mandatory: true },
-  { key: "cvv", label: "CVV (e.g. 123)", placeholder: "e.g. 123", mandatory: true },
-  { key: "issuer", label: "Issuer (e.g. AB Bank)", placeholder: "e.g. AB Bank", mandatory: false },
-  { key: "network", label: "Network (e.g. Visa, Mastercard)", placeholder: "e.g. Mastercard", mandatory: false },
-  { key: "note", label: "Note", type: "textarea", placeholder: "e.g. This is a note", mandatory: false },
+  { key: "type", label: "Type (e.g. Credit, Debit)", placeholder: "e.g. Credit", visibility: "mandatory" },
+  { key: "card_holder_name", label: "Card Holder Name", placeholder: "e.g. John Doe", visibility: "mandatory" },
+  { key: "card_number", label: "Card Number", placeholder: "e.g. 1234 5678 9012 3456", visibility: "mandatory" },
+  { key: "expiry_date", label: "Expiry Date (e.g. 12/2025)", placeholder: "e.g. 12/2025", visibility: "mandatory" },
+  { key: "cvv", label: "CVV (e.g. 123)", placeholder: "e.g. 123", visibility: "optional" },
+  { key: "issuer", label: "Issuer (e.g. AB Bank)", placeholder: "e.g. AB Bank", visibility: "skippable" },
+  { key: "network", label: "Network (e.g. Visa, Mastercard)", placeholder: "e.g. Mastercard", visibility: "skippable" },
+  { key: "note", label: "Note", type: "textarea", placeholder: "e.g. This is a note", visibility: "skippable" },
 ];
 
 export default function PodDetails({ id }) {
@@ -79,7 +79,11 @@ export default function PodDetails({ id }) {
     setPreviewOpen(false);
   };
 
+  const isSkippable = (key: string) =>
+    PAYMENT_CARD_FIELDS.find((f) => f.key === key)?.visibility === "skippable";
+
   function renderPreview(d: PAYMENT_CARD_TYPE) {
+    const canAdd = (key: string) => !isSkippable(key);
     return (
       <PodPreviewSection>
         <p>
@@ -88,16 +92,23 @@ export default function PodDetails({ id }) {
         </p>
         <p>
           It is a{" "}
-          <PreviewValue value={d.type} fallback="card" addLabel="Type" onAdd={() => addAndClose("type")} /> card,
+          <PreviewValue value={d.type} fallback="card" addLabel={canAdd("type") ? "Type" : undefined} onAdd={canAdd("type") ? () => addAndClose("type") : undefined} /> card,
           issued by{" "}
-          <PreviewValue value={d.issuer} addLabel="Issuer" onAdd={() => addAndClose("issuer")} /> on
-          the <PreviewValue value={d.network} addLabel="Network" onAdd={() => addAndClose("network")} /> network.
+          <PreviewValue value={d.issuer} addLabel={canAdd("issuer") ? "Issuer" : undefined} onAdd={canAdd("issuer") ? () => addAndClose("issuer") : undefined} /> on
+          the <PreviewValue value={d.network} addLabel={canAdd("network") ? "Network" : undefined} onAdd={canAdd("network") ? () => addAndClose("network") : undefined} /> network.
           It expires on{" "}
           <PreviewValue value={d.expiry_date} addLabel="Expiry Date" onAdd={() => addAndClose("expiry_date")} />.
         </p>
-        <p>
-          For context, <PreviewValue value={d.note} addLabel="Note" onAdd={() => addAndClose("note")} />.
-        </p>
+        {d.cvv && (
+          <p>
+            The CVV is <PreviewValue value={d.cvv} sensitive />.
+          </p>
+        )}
+        {(d.note || !isSkippable("note")) && (
+          <p>
+            For context, <PreviewValue value={d.note} addLabel={canAdd("note") ? "Note" : undefined} onAdd={canAdd("note") ? () => addAndClose("note") : undefined} />.
+          </p>
+        )}
       </PodPreviewSection>
     );
   }
