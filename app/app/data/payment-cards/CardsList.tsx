@@ -30,6 +30,7 @@ export default function CardsList() {
             type="PAYMENT_CARD"
             defaultName="Untitled card"
             label="Add your first payment card"
+            basePath="/app/data/payment-cards"
             variant="empty"
           />
         </DataGridEmpty>
@@ -50,6 +51,7 @@ export default function CardsList() {
               type="PAYMENT_CARD"
               defaultName="Untitled card"
               label="Add another payment card"
+              basePath="/app/data/payment-cards"
             />
           </div>
           {data.getMetamodels.has_more && (

@@ -38,6 +38,7 @@ export default function BankAccountsList() {
             type="BANK_ACCOUNT"
             defaultName="Untitled bank account"
             label="Add your first bank account"
+            basePath="/app/data/bank-accounts"
             variant="empty"
           />
         </DataGridEmpty>
@@ -58,6 +59,7 @@ export default function BankAccountsList() {
               type="BANK_ACCOUNT"
               defaultName="Untitled bank account"
               label="Add another bank account"
+              basePath="/app/data/bank-accounts"
             />
           </div>
           {has_more && (

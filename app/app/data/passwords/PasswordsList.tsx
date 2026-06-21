@@ -39,6 +39,7 @@ export default function PasswordsList() {
             type="PASSWORD"
             defaultName="Untitled password"
             label="Add your first password"
+            basePath="/app/data/passwords"
             variant="empty"
           />
         </DataGridEmpty>
@@ -59,6 +60,7 @@ export default function PasswordsList() {
               type="PASSWORD"
               defaultName="Untitled password"
               label="Add another password"
+              basePath="/app/data/passwords"
             />
           </div>
           {has_more && (

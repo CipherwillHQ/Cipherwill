@@ -30,6 +30,7 @@ export default function SeedPhrasesList() {
             type="SEED_PHRASE"
             defaultName="Untitled seed phrase"
             label="Add your first seed phrase"
+            basePath="/app/data/seed-phrases"
             variant="empty"
           />
         </DataGridEmpty>
@@ -50,6 +51,7 @@ export default function SeedPhrasesList() {
               type="SEED_PHRASE"
               defaultName="Untitled seed phrase"
               label="Add another seed phrase"
+              basePath="/app/data/seed-phrases"
             />
           </div>
           {data.getMetamodels.has_more && (

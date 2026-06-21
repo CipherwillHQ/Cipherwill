@@ -39,6 +39,7 @@ export default function DeviceLocksList() {
             type="DEVICE_LOCK"
             defaultName="Untitled device"
             label="Add your first device lock"
+            basePath="/app/data/device-locks"
             variant="empty"
           />
         </DataGridEmpty>
@@ -59,6 +60,7 @@ export default function DeviceLocksList() {
               type="DEVICE_LOCK"
               defaultName="Untitled device"
               label="Add another device lock"
+              basePath="/app/data/device-locks"
             />
           </div>
           {has_more && (

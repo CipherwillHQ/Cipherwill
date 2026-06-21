@@ -39,6 +39,7 @@ export default function EmailAccountsList() {
             type="EMAIL_ACCOUNT"
             defaultName="Untitled email account"
             label="Add your first email account"
+            basePath="/app/data/email-accounts"
             variant="empty"
           />
         </DataGridEmpty>
@@ -59,6 +60,7 @@ export default function EmailAccountsList() {
               type="EMAIL_ACCOUNT"
               defaultName="Untitled email account"
               label="Add another email account"
+              basePath="/app/data/email-accounts"
             />
           </div>
           {has_more && (

@@ -39,6 +39,7 @@ export default function StackingList() {
             type="DEFI_STAKING"
             defaultName="Untitled Staking"
             label="Add your first staking account"
+            basePath="/app/data/defi-staking"
             variant="empty"
           />
         </DataGridEmpty>
@@ -59,6 +60,7 @@ export default function StackingList() {
               type="DEFI_STAKING"
               defaultName="Untitled Staking"
               label="Add another staking account"
+              basePath="/app/data/defi-staking"
             />
           </div>
           {has_more && (
