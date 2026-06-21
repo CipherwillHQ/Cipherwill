@@ -1,27 +1,43 @@
+// Device Locks PodDetails: form fields for device lock/pin data.
 "use client";
 import { useState } from "react";
+import {
+  DEVICE_LOCK,
+  DEVICE_LOCK_MANDATORY,
+  DEVICE_LOCK_OPTIONAL,
+} from "@/types/pods/DEVICE_LOCK";
 import { usePod } from "@/contexts/PodHelper";
 import LoadingIndicator from "@/components/common/LoadingIndicator";
-import { DEVICE_LOCK } from "@/types/pods/DEVICE_LOCK";
+import FormField from "@/components/app/data/FormField";
+import AddOptionalField from "@/components/app/data/AddOptionalField";
+import { useOptionalFields } from "@/components/app/data/useOptionalFields";
 
-const DEVICE_LOCK_SAMPLE: DEVICE_LOCK = {
+const SAMPLE: DEVICE_LOCK = {
   password: "123456",
   pin: "123456",
   note: "Sample Note",
 };
 
+const MANDATORY = DEVICE_LOCK_MANDATORY;
+const OPTIONAL = DEVICE_LOCK_OPTIONAL;
+
 export default function PodDetails({ id }) {
   const [data, setData] = useState<DEVICE_LOCK>({});
+  const { addField, removeField, visible, remaining } = useOptionalFields(
+    OPTIONAL,
+    data,
+    setData
+  );
   const { loading, error, savePod, is_updating } = usePod<DEVICE_LOCK>(
     {
       TYPE: "device_lock",
       VERSION: "0.0.1",
       REF_ID: id,
-      DATA_SAMPLE: DEVICE_LOCK_SAMPLE,
+      DATA_SAMPLE: SAMPLE,
     },
     {
-      onComplete: (data: null | DEVICE_LOCK) => {
-        if (data) setData(data);
+      onComplete: (d: null | DEVICE_LOCK) => {
+        if (d) setData(d);
       },
     }
   );
@@ -29,59 +45,45 @@ export default function PodDetails({ id }) {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="flex flex-col gap-4 px-4 w-full max-w-md">
-      {/* <pre>{JSON.stringify(data, null, 2)}</pre>
-      <hr /> */}
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Password"
-        value={data.password || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            password: e.target.value,
-          });
-        }}
-      />{" "}
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Pin"
-        value={data.pin || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            pin: e.target.value,
-          });
-        }}
-      />
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Note"
-        value={data.note || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            note: e.target.value,
-          });
-        }}
-      />
+    <div className="flex flex-col gap-4 px-4 w-full max-w-xl">
+      {MANDATORY.map((f) => (
+        <FormField
+          key={f.key}
+          label={f.label}
+          type={f.type as "text" | "email" | "textarea" | undefined}
+          sensitive={f.sensitive}
+          placeholder={f.placeholder}
+          required
+          value={String(data[f.key] || "")}
+          onChange={(v) => setData({ ...data, [f.key]: v })}
+        />
+      ))}
+
+      {visible.map((f) => (
+        <FormField
+          key={f.key}
+          label={f.label}
+          type={f.type as "text" | "email" | "textarea" | undefined}
+          sensitive={f.sensitive}
+          placeholder={f.placeholder}
+          value={String(data[f.key] || "")}
+          onChange={(v) => setData({ ...data, [f.key]: v })}
+          onRemove={() => removeField(f.key)}
+        />
+      ))}
+
+      <AddOptionalField fields={remaining} onAdd={addField} />
+
       <div className="flex flex-col sm:flex-row items-center gap-2">
         <button
           className="flex items-center justify-center gap-2 bg-black text-white font-bold py-2 px-4 rounded-sm w-full"
           onClick={() => {
-            savePod({
-              password: data.password,
-              pin: data.pin,
-              note: data.note,
-            },{
-              metamodel_id: id,
-            });
+            savePod(
+              { password: data.password, pin: data.pin, note: data.note },
+              { metamodel_id: id }
+            );
           }}
         >
-          {" "}
           {is_updating && <LoadingIndicator />}
           Save
         </button>
@@ -89,4 +91,3 @@ export default function PodDetails({ id }) {
     </div>
   );
 }
-

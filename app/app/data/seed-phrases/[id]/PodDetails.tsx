@@ -1,30 +1,44 @@
+// Seed Phrases PodDetails: form fields for seed phrase / recovery phrase data.
 "use client";
 import { useState } from "react";
+import {
+  SEED_PHRASE_TYPE,
+  SEED_PHRASE_OPTIONAL,
+} from "@/types/pods/SEED_PHRASE";
 import { usePod } from "@/contexts/PodHelper";
 import LoadingIndicator from "@/components/common/LoadingIndicator";
-import { SEED_PHRASE_TYPE } from "@/types/pods/SEED_PHRASE";
-import { TbTrash } from "react-icons/tb";
 import SimpleButton from "@/components/common/SimpleButton";
 import toast from "react-hot-toast";
+import FormField from "@/components/app/data/FormField";
+import ListField from "@/components/app/data/ListField";
+import AddOptionalField from "@/components/app/data/AddOptionalField";
+import { useOptionalFields } from "@/components/app/data/useOptionalFields";
 
-const SEED_PHRASE_SAMPLE: SEED_PHRASE_TYPE = {
+const SAMPLE: SEED_PHRASE_TYPE = {
   phrase: ["phrase1", "phrase2", "phrase3"],
   public_key: "public_key",
   note: "Sample Note",
 };
 
+const OPTIONAL = SEED_PHRASE_OPTIONAL;
+
 export default function PodDetails({ id }) {
   const [data, setData] = useState<SEED_PHRASE_TYPE>({});
+  const { addField, removeField, visible, remaining } = useOptionalFields(
+    OPTIONAL,
+    data,
+    setData
+  );
   const { loading, error, savePod, is_updating } = usePod<SEED_PHRASE_TYPE>(
     {
       TYPE: "seed_phrase",
       VERSION: "0.0.1",
       REF_ID: id,
-      DATA_SAMPLE: SEED_PHRASE_SAMPLE,
+      DATA_SAMPLE: SAMPLE,
     },
     {
-      onComplete: (data: null | SEED_PHRASE_TYPE) => {
-        if (data) setData(data);
+      onComplete: (d: null | SEED_PHRASE_TYPE) => {
+        if (d) setData(d);
       },
     }
   );
@@ -32,129 +46,63 @@ export default function PodDetails({ id }) {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="flex flex-col gap-4 px-4 w-full max-w-md">
-      {/* <pre>{JSON.stringify(data, null, 2)}</pre>
-      <hr /> */}
-      <div className="font-semibold">Seed Phrase</div>
-      <div className="flex items-center gap-2">
-        <input
-          id="seed-phrase-input"
-          className="bg-secondary border border-default rounded-md p-2 w-full"
-          type="text"
-          placeholder="Enter seed phrase (space separated)"
-        />
-        <button
-          className="bg-secondary border border-default rounded-md p-2"
-          onClick={() => {
-            let newCodes = (
-              document.getElementById("seed-phrase-input") as HTMLInputElement
-            )?.value.split(" ");
-            // remove spaces
-            newCodes = newCodes.map((code) => code.trim());
-            // remove empty strings
-            newCodes = newCodes.filter((code) => code !== "");
-
-            setData({
-              ...data,
-              phrase: [...(data.phrase || []), ...newCodes],
-            });
-            // clear the input
-            (
-              document.getElementById("seed-phrase-input") as HTMLInputElement
-            ).value = "";
-          }}
-        >
-          Add
-        </button>
-      </div>{" "}
-      <div className="flex gap-2 flex-wrap">
-        {(data.phrase === undefined || data.phrase?.length === 0) && (
-          <div className="text-sm font-semibold text-neutral-500">
-            No phrases
-          </div>
-        )}
-        {data.phrase?.map((phrase_word, index) => (
-          <div
-            key={index}
-            className="flex items-center gap-2 border border-default rounded-md p-2 "
-          >
-            <div>
-              {index + 1}:{" "}{phrase_word}
-            </div>
-            <button
+    <div className="flex flex-col gap-4 px-4 w-full max-w-xl">
+      <ListField
+        label="Seed Phrase"
+        items={data.phrase || []}
+        onChange={(items) => setData({ ...data, phrase: items })}
+        placeholder="Enter seed phrase (space separated)"
+        emptyMessage="No phrases"
+        separator=" "
+        required
+        formatItem={(item, index) => `${index + 1}: ${item}`}
+      >
+        {data.phrase && data.phrase.length > 0 && (
+          <div className="flex gap-2 mt-1">
+            <SimpleButton onClick={() => setData({ ...data, phrase: [] })}>
+              Remove all words
+            </SimpleButton>
+            <SimpleButton
               onClick={() => {
-                setData({
-                  ...data,
-                  phrase: (data.phrase || []).filter(
-                    (_, i) => i !== index
-                  ),
-                });
+                navigator.clipboard.writeText((data.phrase ?? []).join(" "));
+                toast.success("Seed phrase copied to clipboard");
               }}
             >
-              <TbTrash />
-            </button>
+              Copy Seed Phrase
+            </SimpleButton>
           </div>
-        ))}
-      </div>
-      {data && data.phrase && data.phrase.length > 0 && (
-        <div className="flex gap-2">
-          <SimpleButton
-            onClick={() => {
-              setData({
-                ...data,
-                phrase: [],
-              });
-            }}
-          >
-            Remove all words
-          </SimpleButton>
-          <SimpleButton
-            onClick={() => {
-              navigator.clipboard.writeText((data.phrase ?? []).join(" "));
-              toast.success("Seed phrase copied to clipboard");
-            }}
-          >
-            Copy Seed Phrase
-          </SimpleButton>
-        </div>
-      )}
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Public Key"
-        value={data.public_key || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            public_key: e.target.value,
-          });
-        }}
-      />
-      <textarea
-        className="bg-secondary border border-default rounded-md p-2"
-        placeholder="Note"
-        value={data.note || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            note: e.target.value,
-          });
-        }}
-      />
+        )}
+      </ListField>
+
+      {visible.map((f) => (
+        <FormField
+          key={f.key}
+          label={f.label}
+          type={f.type as "text" | "email" | "textarea" | undefined}
+          sensitive={f.sensitive}
+          placeholder={f.placeholder}
+          value={String(data[f.key] || "")}
+          onChange={(v) => setData({ ...data, [f.key]: v })}
+          onRemove={() => removeField(f.key)}
+        />
+      ))}
+
+      <AddOptionalField fields={remaining} onAdd={addField} />
+
       <div className="flex flex-col sm:flex-row items-center gap-2">
         <button
           className="flex items-center justify-center gap-2 bg-black text-white font-bold py-2 px-4 rounded-sm w-full"
           onClick={() => {
-            savePod({
-              phrase: data.phrase,
-              public_key: data.public_key,
-              note: data.note,
-            },{
-              metamodel_id: id,
-            });
+            savePod(
+              {
+                phrase: data.phrase,
+                public_key: data.public_key,
+                note: data.note,
+              },
+              { metamodel_id: id }
+            );
           }}
         >
-          {" "}
           {is_updating && <LoadingIndicator />}
           Save
         </button>
@@ -162,4 +110,3 @@ export default function PodDetails({ id }) {
     </div>
   );
 }
-
