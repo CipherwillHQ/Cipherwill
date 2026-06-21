@@ -2,11 +2,11 @@
 // Owns: field config, custom section (websites), save logic, orchestration. Does NOT own preview rendering.
 "use client";
 import { PASSWORD } from "@/types/pods/PASSWORD";
-import { usePodForm } from "@/components/common/usePodForm";
+import { usePodForm } from "@/components/common/pod-form/usePodForm";
 import type { PodFieldConfig, PodCustomSectionDef } from "@/types/interfaces";
-import PodForm from "@/components/common/PodForm";
-import SaveButton from "@/components/common/SaveButton";
-import TagListField from "@/components/common/TagListField";
+import PodForm from "@/components/common/pod-form/PodForm";
+import SaveButton from "@/components/common/pod-form/SaveButton";
+import TagListField from "@/components/common/pod-form/TagListField";
 import PodFormLayout from "@/components/pods/PodFormLayout";
 import PodFormSkeleton from "@/components/pods/PodFormSkeleton";
 import PasswordPreview from "./PasswordPreview";
@@ -32,7 +32,7 @@ const PASSWORD_CUSTOM_SECTIONS: PodCustomSectionDef[] = [
 
 export default function PodDetails({ id }: { id: string }) {
   const {
-    data, setData, loading, error, isUpdating, handleSave,
+    data, updateField, loading, error, isUpdating, handleSave,
     previewOpen, setPreviewOpen, isDirty,
     metamodel, vis, onChange, markAdded, markRemoved, addGroup, removeGroup,
     isSkippable, isAddable,
@@ -43,7 +43,7 @@ export default function PodDetails({ id }: { id: string }) {
   });
 
   function handleRemoveCustomSection(key: string) {
-    if (key === "uri") setData((prev) => ({ ...prev, uri: undefined }));
+    if (key === "uri") updateField("uri", undefined);
   }
 
   function renderCustomSection(key: string) {
@@ -56,7 +56,7 @@ export default function PodDetails({ id }: { id: string }) {
           values={data.uri || []}
           splitBy=","
           emptyMessage="No Websites"
-          onChange={(uri) => setData((prev) => ({ ...prev, uri }))}
+          onChange={(uri) => updateField("uri", uri)}
         />
       );
     }

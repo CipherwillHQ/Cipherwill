@@ -3,7 +3,7 @@
 "use client";
 import { DEFI_STACKING } from "@/types/pods/DEFI_STAKING";
 import type { PreviewProps } from "@/types/interfaces";
-import PodPreviewSection, { PreviewValue, MetamodelName } from "@/components/pods/PodPreview";
+import PodPreviewSection, { PreviewValue, MetamodelName, NotePreview, buildAddButtonProps } from "@/components/pods/PodPreview";
 
 interface Props extends PreviewProps {
   d: DEFI_STACKING;
@@ -14,13 +14,13 @@ export default function DefiStakingPreview({ d, metamodel, addAndClose, isSkippa
     <PodPreviewSection>
       <p>
         I have a <MetamodelName name={metamodel?.name} fallback="DeFi stake" /> of{" "}
-        <PreviewValue value={d.asset_amount} addLabel={isAddable("asset_amount") ? "Amount" : undefined} onAdd={isAddable("asset_amount") ? () => addAndClose("asset_amount") : undefined} />{" "}
-        <PreviewValue value={d.asset_name} addLabel={isAddable("asset_name") ? "Asset name" : undefined} onAdd={isAddable("asset_name") ? () => addAndClose("asset_name") : undefined} /> on{" "}
-        <PreviewValue value={d.platform} addLabel={isAddable("platform") ? "Platform" : undefined} onAdd={isAddable("platform") ? () => addAndClose("platform") : undefined} />,
+        <PreviewValue value={d.asset_amount} {...buildAddButtonProps("asset_amount", "Amount", isAddable, addAndClose)} />{" "}
+        <PreviewValue value={d.asset_name} {...buildAddButtonProps("asset_name", "Asset name", isAddable, addAndClose)} /> on{" "}
+        <PreviewValue value={d.platform} {...buildAddButtonProps("platform", "Platform", isAddable, addAndClose)} />,
         locked for{" "}
-        <PreviewValue value={d.lock_period} addLabel={isAddable("lock_period") ? "Lock period" : undefined} onAdd={isAddable("lock_period") ? () => addAndClose("lock_period") : undefined} />,
+        <PreviewValue value={d.lock_period} {...buildAddButtonProps("lock_period", "Lock period", isAddable, addAndClose)} />,
         in wallet{" "}
-        <PreviewValue value={d.wallet_address} addLabel={isAddable("wallet_address") ? "Wallet address" : undefined} onAdd={isAddable("wallet_address") ? () => addAndClose("wallet_address") : undefined} />.
+        <PreviewValue value={d.wallet_address} {...buildAddButtonProps("wallet_address", "Wallet address", isAddable, addAndClose)} />.
       </p>
       {d.username && (
         <p>
@@ -32,11 +32,7 @@ export default function DefiStakingPreview({ d, metamodel, addAndClose, isSkippa
           The password is <PreviewValue value={d.password} sensitive />.
         </p>
       )}
-      {(d.note || !isSkippable("note")) && (
-        <p>
-          For context, <PreviewValue value={d.note} addLabel={isAddable("note") ? "Note" : undefined} onAdd={isAddable("note") ? () => addAndClose("note") : undefined} />.
-        </p>
-      )}
+      <NotePreview value={d.note} skippable={isSkippable("note")} addable={isAddable("note")} addAndClose={addAndClose} />
     </PodPreviewSection>
   );
 }

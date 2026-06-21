@@ -19,7 +19,6 @@ interface UsePodFormConfig {
 
 export interface UsePodFormReturn<T> {
   data: T;
-  setData: React.Dispatch<React.SetStateAction<T>>;
   loading: boolean;
   error: string | null;
   isUpdating: boolean;
@@ -30,13 +29,13 @@ export interface UsePodFormReturn<T> {
   metamodel: ReturnType<typeof useMetamodelData>;
   vis: VisibilityState;
   onChange: (key: string, value: string) => void;
+  updateField: (key: string, value: unknown) => void;
   markAdded: (key: string) => void;
   markRemoved: (key: string) => void;
   addGroup: (groupId: string) => void;
   removeGroup: (groupId: string) => void;
   isSkippable: (key: string) => boolean;
   isAddable: (key: string) => boolean;
-  isGroupSkippable: (groupId: string) => boolean;
   addAndClose: (key: string) => void;
 }
 
@@ -75,7 +74,6 @@ export function usePodForm<T extends Record<string, any>>(
 
   return {
     data: formData.data,
-    setData: formData.setData,
     loading: formData.loading,
     error: formData.error,
     isUpdating: formData.isUpdating,
@@ -86,13 +84,13 @@ export function usePodForm<T extends Record<string, any>>(
     metamodel,
     vis,
     onChange: formData.onChange,
+    updateField: formData.updateField,
     markAdded,
     markRemoved: actions.markRemoved,
     addGroup: actions.addGroup,
     removeGroup: actions.removeGroup,
     isSkippable: actions.isSkippable,
     isAddable: actions.isAddable,
-    isGroupSkippable: actions.isGroupSkippable,
     addAndClose,
   };
 }

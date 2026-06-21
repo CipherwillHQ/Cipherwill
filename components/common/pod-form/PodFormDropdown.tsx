@@ -49,6 +49,8 @@ export default function PodFormDropdown({
   const showGroupSection = groups.length > 0;
   const showSectionSection = sections.length > 0;
 
+  const itemClass = "w-full text-left px-3 py-2 text-sm text-forest dark:text-cream hover:bg-neutral-100 dark:hover:bg-neutral-800";
+
   return (
     <div className="relative">
       <button
@@ -69,7 +71,7 @@ export default function PodFormDropdown({
             <button
               key={f.key}
               type="button"
-              className="w-full text-left px-3 py-2 text-sm text-forest dark:text-cream hover:bg-neutral-100 dark:hover:bg-neutral-800"
+              className={itemClass}
               onClick={() => onAddField(f.key)}
             >
               {f.label}
@@ -85,7 +87,7 @@ export default function PodFormDropdown({
             <button
               key={g.key}
               type="button"
-              className="w-full text-left px-3 py-2 text-sm text-forest dark:text-cream hover:bg-neutral-100 dark:hover:bg-neutral-800"
+              className={itemClass}
               onClick={() => onAddGroup(g.key)}
             >
               {g.label}
@@ -101,7 +103,7 @@ export default function PodFormDropdown({
             <button
               key={s.key}
               type="button"
-              className="w-full text-left px-3 py-2 text-sm text-forest dark:text-cream hover:bg-neutral-100 dark:hover:bg-neutral-800"
+              className={itemClass}
               onClick={() => onAddSection(s.key)}
             >
               {s.label}

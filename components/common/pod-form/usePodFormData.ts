@@ -23,6 +23,7 @@ export interface UsePodFormDataReturn<T> {
   setIsDirty: React.Dispatch<React.SetStateAction<boolean>>;
   handleSave: () => Promise<void>;
   onChange: (key: string, value: string) => void;
+  updateField: (key: string, value: unknown) => void;
 }
 
 export function usePodFormData<T extends Record<string, any>>(
@@ -42,18 +43,24 @@ export function usePodFormData<T extends Record<string, any>>(
   );
 
   const handleSave = useCallback(async () => {
+    if (isUpdating) return;
     try {
       await savePod(data, { metamodel_id: refId });
       setIsDirty(false);
     } catch {
       toast.error("Failed to save changes. Please try again.");
     }
-  }, [savePod, data, refId]);
+  }, [savePod, data, refId, isUpdating]);
 
   const onChange = useCallback((key: string, value: string) => {
     setData((prev) => ({ ...prev, [key]: value }));
     setIsDirty(true);
   }, []);
 
-  return { data, setData, loading, error, isUpdating, isDirty, setIsDirty, handleSave, onChange };
+  const updateField = useCallback((key: string, value: unknown) => {
+    setData((prev) => ({ ...prev, [key]: value }));
+    setIsDirty(true);
+  }, []);
+
+  return { data, setData, loading, error, isUpdating, isDirty, setIsDirty, handleSave, onChange, updateField };
 }

@@ -1,7 +1,7 @@
 // Config-driven pod form view: renders mandatory/optional/skippable fields and add/remove controls.
 // Owns: dropdown menu toggle, field rendering, remove buttons. Does NOT own visibility state or add/remove logic.
 "use client";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { TbTrash } from "react-icons/tb";
 import type { PodFieldConfig, VisibilityState } from "@/types/interfaces";
@@ -39,6 +39,7 @@ export default function PodForm({
   onRemoveCustomSection,
 }: PodFormProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   function removeSection(key: string) {
     markRemoved(key);
@@ -112,7 +113,7 @@ export default function PodForm({
       {vis.hasAvailableItems &&
         (menuOpen ? (
           <PodFormDropdown
-            onClose={() => setMenuOpen(false)}
+            onClose={closeMenu}
             fields={vis.dropdownFields}
             groups={vis.dropdownGroups}
             sections={vis.dropdownSections}

@@ -3,7 +3,7 @@
 "use client";
 import { PASSWORD } from "@/types/pods/PASSWORD";
 import type { PreviewProps } from "@/types/interfaces";
-import PodPreviewSection, { PreviewValue, MetamodelName } from "@/components/pods/PodPreview";
+import PodPreviewSection, { PreviewValue, MetamodelName, NotePreview, buildAddButtonProps } from "@/components/pods/PodPreview";
 
 interface Props extends PreviewProps {
   d: PASSWORD;
@@ -16,9 +16,9 @@ export default function PasswordPreview({
     <PodPreviewSection>
       <p>
         I have a login for <MetamodelName name={metamodel?.name} fallback="this account" />, with the username{" "}
-        <PreviewValue value={d.username} addLabel={isAddable("username") ? "Username" : undefined} onAdd={isAddable("username") ? () => addAndClose("username") : undefined} />,
+        <PreviewValue value={d.username} {...buildAddButtonProps("username", "Username", isAddable, addAndClose)} />,
         and the password is{" "}
-        <PreviewValue value={d.password} sensitive addLabel={isAddable("password") ? "Password" : undefined} onAdd={isAddable("password") ? () => addAndClose("password") : undefined} />.
+        <PreviewValue value={d.password} sensitive {...buildAddButtonProps("password", "Password", isAddable, addAndClose)} />.
       </p>
       {d.totp_secret && (
         <p>
@@ -39,14 +39,10 @@ export default function PasswordPreview({
       ) : (
         <p>
           This login is used on{" "}
-          <PreviewValue value="" addLabel="Websites" onAdd={() => addAndClose("uri")} />.
+          <PreviewValue value="" {...buildAddButtonProps("uri", "Websites", isAddable, addAndClose)} />.
         </p>
       )}
-      {(d.note || !isSkippable("note")) && (
-        <p>
-          For context, <PreviewValue value={d.note} addLabel={isAddable("note") ? "Note" : undefined} onAdd={isAddable("note") ? () => addAndClose("note") : undefined} />.
-        </p>
-      )}
+      <NotePreview value={d.note} skippable={isSkippable("note")} addable={isAddable("note")} addAndClose={addAndClose} />
     </PodPreviewSection>
   );
 }

@@ -1,5 +1,5 @@
 // Live preview of pod data in natural-language format with sensitive value masking.
-// Owns: PreviewValue (masked/plain/add-button states), PodPreviewSection (layout wrapper), MetamodelName.
+// Owns: PreviewValue (masked/plain/add-button states), NotePreview, buildAddButtonProps helper, PodPreviewSection, MetamodelName.
 "use client";
 import { useState } from "react";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
@@ -7,29 +7,14 @@ import { BsEye, BsEyeSlash } from "react-icons/bs";
 export function MetamodelName({
   name,
   fallback,
-  onRename,
 }: {
   name?: string | null;
   fallback: string;
-  onRename?: () => void;
 }) {
-  const interactive = !!onRename;
-  const className = "font-semibold text-forest dark:text-cream" +
-    (interactive
-      ? " hover:text-primary dark:hover:text-primary transition-colors cursor-pointer underline decoration-dotted underline-offset-2"
-      : "");
-  if (!interactive) {
-    return <span className={className}>{name || fallback}</span>;
-  }
   return (
-    <button
-      type="button"
-      className={className}
-      onClick={onRename}
-      title="Click to rename"
-    >
+    <span className="font-semibold text-forest dark:text-cream">
       {name || fallback}
-    </button>
+    </span>
   );
 }
 
@@ -95,6 +80,46 @@ export function PreviewValue({
   }
 
   return <span className="text-neutral-400 italic">{fallback}</span>;
+}
+
+interface AddButtonProps {
+  addLabel?: string;
+  onAdd?: () => void;
+}
+
+// Builds props for a PreviewValue's "+ Add <label>" button. Returns empty object when
+// the field is not addable (mandatory), so spread is a no-op. Caller wires the result
+// straight onto <PreviewValue ...{...buildAddButtonProps(...)} />.
+export function buildAddButtonProps(
+  fieldKey: string,
+  fieldLabel: string,
+  isAddable: (key: string) => boolean,
+  addAndClose: (key: string) => void,
+): AddButtonProps {
+  if (!isAddable(fieldKey)) return {};
+  return { addLabel: fieldLabel, onAdd: () => addAndClose(fieldKey) };
+}
+
+interface NotePreviewProps {
+  value?: string;
+  skippable: boolean;
+  addable: boolean;
+  addAndClose: (key: string) => void;
+}
+
+export function NotePreview({ value, skippable, addable, addAndClose }: NotePreviewProps) {
+  if (!value && skippable) return null;
+  return (
+    <p>
+      For context,{" "}
+      <PreviewValue
+        value={value}
+        addLabel={addable ? "Note" : undefined}
+        onAdd={addable ? () => addAndClose("note") : undefined}
+      />
+      .
+    </p>
+  );
 }
 
 interface PodPreviewSectionProps {

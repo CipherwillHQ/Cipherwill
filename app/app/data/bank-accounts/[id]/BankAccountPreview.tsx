@@ -3,7 +3,7 @@
 "use client";
 import { BANK_ACCOUNT_TYPE } from "@/types/pods/BANK_ACCOUNT";
 import type { PreviewProps } from "@/types/interfaces";
-import PodPreviewSection, { PreviewValue, MetamodelName } from "@/components/pods/PodPreview";
+import PodPreviewSection, { PreviewValue, MetamodelName, buildAddButtonProps } from "@/components/pods/PodPreview";
 
 interface Props extends PreviewProps {
   d: BANK_ACCOUNT_TYPE;
@@ -14,9 +14,9 @@ export default function BankAccountPreview({ d, metamodel, addAndClose, isAddabl
     <PodPreviewSection>
       <p>
         I have a <MetamodelName name={metamodel?.name} fallback="bank account" /> with{" "}
-        <PreviewValue value={d.bank_name} addLabel={isAddable("bank_name") ? "Bank name" : undefined} onAdd={isAddable("bank_name") ? () => addAndClose("bank_name") : undefined} />,
+        <PreviewValue value={d.bank_name} {...buildAddButtonProps("bank_name", "Bank name", isAddable, addAndClose)} />,
         account number{" "}
-        <PreviewValue value={d.account_number} addLabel={isAddable("account_number") ? "Account number" : undefined} onAdd={isAddable("account_number") ? () => addAndClose("account_number") : undefined} />.
+        <PreviewValue value={d.account_number} {...buildAddButtonProps("account_number", "Account number", isAddable, addAndClose)} />.
       </p>
     </PodPreviewSection>
   );

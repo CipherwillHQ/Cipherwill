@@ -1,5 +1,5 @@
 // Manages pod form add/remove field and group actions, plus field visibility helpers.
-// Owns: markAdded, markRemoved, addGroup, removeGroup, isSkippable, isAddable, isGroupSkippable. Does NOT own data or save logic.
+// Owns: markAdded, markRemoved, addGroup, removeGroup, isSkippable, isAddable. Does NOT own data or save logic.
 "use client";
 import { useCallback, useMemo } from "react";
 import type { PodFieldConfig } from "@/types/interfaces";
@@ -23,7 +23,6 @@ export interface UsePodFormActionsReturn {
   removeGroup: (groupId: string) => void;
   isSkippable: (key: string) => boolean;
   isAddable: (key: string) => boolean;
-  isGroupSkippable: (groupId: string) => boolean;
 }
 
 export function usePodFormActions<T extends Record<string, any>>(
@@ -89,11 +88,5 @@ export function usePodFormActions<T extends Record<string, any>>(
     [fieldIndex],
   );
 
-  const isGroupSkippable = useCallback(
-    (groupId: string) =>
-      fields.filter((f) => f.group?.id === groupId).every((f) => f.visibility === "skippable"),
-    [fields],
-  );
-
-  return { markAdded, markRemoved, addGroup, removeGroup, isSkippable, isAddable, isGroupSkippable };
+  return { markAdded, markRemoved, addGroup, removeGroup, isSkippable, isAddable };
 }

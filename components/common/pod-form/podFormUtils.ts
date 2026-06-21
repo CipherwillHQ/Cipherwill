@@ -1,13 +1,14 @@
 // PodForm utilities: value checking and group map construction.
 // Owns: fieldHasValue, buildGroupMap. Does NOT own rendering or state.
 import type { PodFieldConfig } from "@/types/interfaces";
+import logger from "@/common/debug/logger";
 
 export function fieldHasValue(value: unknown): boolean {
   if (value === undefined || value === null) return false;
   if (Array.isArray(value)) return value.length > 0;
   if (typeof value === "string") return value.trim().length > 0;
   if (typeof value === "number") return !isNaN(value);
-  return typeof value === "object" && Object.keys(value as object).length > 0;
+  return false;
 }
 
 export function buildGroupMap(
@@ -28,13 +29,13 @@ export function buildGroupMap(
       continue;
     }
     const vis = groupFields[0]!.visibility;
-    for (const f of groupFields) {
-      if (f.visibility !== vis) {
-        const fieldNames = groupFields.map((g) => `"${g.key}" (${g.visibility})`).join(", ");
-        throw new Error(
-          `Group "${groupId}" has mixed visibility: [${fieldNames}]. All fields in a group must have the same visibility value.`
-        );
-      }
+    const hasMixed = groupFields.some((f) => f.visibility !== vis);
+    if (hasMixed) {
+      const fieldNames = groupFields.map((g) => `"${g.key}" (${g.visibility})`).join(", ");
+      logger.error(
+        `Group "${groupId}" has mixed visibility: [${fieldNames}]. All fields in a group must share visibility. Dropping group.`
+      );
+      map.delete(groupId);
     }
   }
 

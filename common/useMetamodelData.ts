@@ -4,18 +4,14 @@
 import { useQuery } from "@apollo/client/react";
 import { useMemo } from "react";
 import GET_METAMODEL from "@/graphql/ops/app/metamodel/queries/GET_METAMODEL";
-import { GetMetamodelQuery, GetMetamodelVariables } from "@/types";
+import { GetMetamodelQuery, GetMetamodelVariables, MetamodelData } from "@/types";
 
-export interface MetamodelData {
-  id: string;
-  type: string;
-  name: string | null;
-  title: string | null;
-  folder_id?: string;
-  ignored_beneficiaries?: string[];
-  created_at: string;
-  updated_at: string;
+interface MetamodelMetadata {
+  name?: string;
+  title?: string;
 }
+
+export type { MetamodelData };
 
 export function useMetamodelData(id: string): MetamodelData | null {
   const { data } = useQuery<GetMetamodelQuery, GetMetamodelVariables>(
@@ -25,9 +21,9 @@ export function useMetamodelData(id: string): MetamodelData | null {
   return useMemo(() => {
     const metamodel = data?.getMetamodel;
     if (!metamodel?.metadata) return null;
-    let parsed: Record<string, any> | null = null;
+    let parsed: MetamodelMetadata | null = null;
     try {
-      parsed = JSON.parse(metamodel.metadata);
+      parsed = JSON.parse(metamodel.metadata) as MetamodelMetadata;
     } catch {
       return null;
     }

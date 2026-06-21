@@ -2,11 +2,11 @@
 // Owns: field config, custom section rendering, save logic, orchestration. Does NOT own preview layout.
 "use client";
 import { EMAIL_ACCOUNT_TYPE } from "@/types/pods/EMAIL_ACCOUNT";
-import { usePodForm } from "@/components/common/usePodForm";
+import { usePodForm } from "@/components/common/pod-form/usePodForm";
 import type { PodFieldConfig, PodCustomSectionDef } from "@/types/interfaces";
-import PodForm from "@/components/common/PodForm";
-import SaveButton from "@/components/common/SaveButton";
-import TagListField from "@/components/common/TagListField";
+import PodForm from "@/components/common/pod-form/PodForm";
+import SaveButton from "@/components/common/pod-form/SaveButton";
+import TagListField from "@/components/common/pod-form/TagListField";
 import PodFormLayout from "@/components/pods/PodFormLayout";
 import PodFormSkeleton from "@/components/pods/PodFormSkeleton";
 import EmailPreview from "./EmailPreview";
@@ -42,7 +42,7 @@ const EMAIL_ACCOUNT_CUSTOM_SECTIONS: PodCustomSectionDef[] = [
 
 export default function PodDetails({ id }: { id: string }) {
   const {
-    data, setData, loading, error, isUpdating, handleSave,
+    data, updateField, loading, error, isUpdating, handleSave,
     previewOpen, setPreviewOpen, isDirty,
     metamodel, vis, onChange, markAdded, markRemoved, addGroup, removeGroup,
     isSkippable, isAddable,
@@ -53,8 +53,8 @@ export default function PodDetails({ id }: { id: string }) {
   });
 
   function handleRemoveCustomSection(key: string) {
-    if (key === "backupCodes") setData((prev) => ({ ...prev, backupCodes: undefined }));
-    if (key === "aliasEmails") setData((prev) => ({ ...prev, aliasEmails: undefined }));
+    if (key === "backupCodes") updateField("backupCodes", undefined);
+    if (key === "aliasEmails") updateField("aliasEmails", undefined);
   }
 
   function renderCustomSection(key: string) {
@@ -67,7 +67,7 @@ export default function PodDetails({ id }: { id: string }) {
           values={data.backupCodes || []}
           splitBy=","
           emptyMessage="No backup codes"
-          onChange={(backupCodes) => setData((prev) => ({ ...prev, backupCodes }))}
+          onChange={(backupCodes) => updateField("backupCodes", backupCodes)}
         />
       );
     }
@@ -80,7 +80,7 @@ export default function PodDetails({ id }: { id: string }) {
           values={data.aliasEmails || []}
           splitBy=","
           emptyMessage="No alias emails"
-          onChange={(aliasEmails) => setData((prev) => ({ ...prev, aliasEmails }))}
+          onChange={(aliasEmails) => updateField("aliasEmails", aliasEmails)}
         />
       );
     }

@@ -3,7 +3,7 @@
 "use client";
 import { EMAIL_ACCOUNT_TYPE } from "@/types/pods/EMAIL_ACCOUNT";
 import type { PreviewProps } from "@/types/interfaces";
-import PodPreviewSection, { PreviewValue, MetamodelName } from "@/components/pods/PodPreview";
+import PodPreviewSection, { PreviewValue, MetamodelName, NotePreview, buildAddButtonProps } from "@/components/pods/PodPreview";
 
 interface Props extends PreviewProps {
   d: EMAIL_ACCOUNT_TYPE;
@@ -20,7 +20,7 @@ export default function EmailPreview({
       <p>
         I have an email account <MetamodelName name={metamodel?.name} fallback="this account" />, with the email{" "}
         <PreviewValue value={d.email} />, from{" "}
-        <PreviewValue value={d.provider} fallback="a provider" addLabel={isAddable("provider") ? "Provider" : undefined} onAdd={isAddable("provider") ? () => addAndClose("provider") : undefined} />,
+        <PreviewValue value={d.provider} fallback="a provider" {...buildAddButtonProps("provider", "Provider", isAddable, addAndClose)} />,
         and the password is{" "}
         <PreviewValue value={d.password} sensitive />.
       </p>
@@ -69,11 +69,7 @@ export default function EmailPreview({
           </ul>
         </>
       )}
-      {(d.note || !isSkippable("note")) && (
-        <p>
-          For context, <PreviewValue value={d.note} addLabel={isAddable("note") ? "Note" : undefined} onAdd={isAddable("note") ? () => addAndClose("note") : undefined} />.
-        </p>
-      )}
+      <NotePreview value={d.note} skippable={isSkippable("note")} addable={isAddable("note")} addAndClose={addAndClose} />
     </PodPreviewSection>
   );
 }

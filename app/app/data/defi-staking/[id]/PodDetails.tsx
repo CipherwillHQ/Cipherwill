@@ -2,10 +2,10 @@
 // Owns: field config, save logic, orchestration. Does NOT own form chrome or preview rendering.
 "use client";
 import { DEFI_STACKING } from "@/types/pods/DEFI_STAKING";
-import { usePodForm } from "@/components/common/usePodForm";
+import { usePodForm } from "@/components/common/pod-form/usePodForm";
 import type { PodFieldConfig } from "@/types/interfaces";
-import PodForm from "@/components/common/PodForm";
-import SaveButton from "@/components/common/SaveButton";
+import PodForm from "@/components/common/pod-form/PodForm";
+import SaveButton from "@/components/common/pod-form/SaveButton";
 import PodFormLayout from "@/components/pods/PodFormLayout";
 import PodFormSkeleton from "@/components/pods/PodFormSkeleton";
 import DefiStakingPreview from "./DefiStakingPreview";

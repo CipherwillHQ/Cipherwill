@@ -12,6 +12,7 @@ interface TagListFieldProps {
   splitBy: string;
   onChange: (values: string[]) => void;
   emptyMessage?: string;
+  indexedList?: boolean;
 }
 
 export default function TagListField({
@@ -22,6 +23,7 @@ export default function TagListField({
   splitBy,
   onChange,
   emptyMessage = "None",
+  indexedList = false,
 }: TagListFieldProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -63,12 +65,12 @@ export default function TagListField({
         {(!values || values.length === 0) && (
           <div className="text-sm font-semibold text-neutral-500">{emptyMessage}</div>
         )}
-        {values?.map((value) => (
+        {values?.map((value, index) => (
           <div
-            key={value}
+            key={indexedList ? index : value}
             className="flex items-center gap-2 border border-default rounded-xl p-2"
           >
-            <div>{value}</div>
+            <div>{indexedList ? `${index + 1}: ${value}` : value}</div>
             <button type="button" onClick={() => remove(value)}>
               <TbTrash />
             </button>

@@ -1,6 +1,15 @@
-// PodForm shared types: field configs, section defs, form handle, preview props.
-// Owns: type definitions consumed by PodForm, usePodForm, and preview components.
-import type { MetamodelData } from "@/common/useMetamodelData";
+// PodForm shared types: field configs, section defs, form handle, preview props, metamodel data.
+// Owns: type definitions consumed by PodForm, usePodForm, useMetamodelData, and preview components.
+export interface MetamodelData {
+  id: string;
+  type: string;
+  name: string | null;
+  title: string | null;
+  folder_id?: string;
+  ignored_beneficiaries?: string[];
+  created_at: string;
+  updated_at: string;
+}
 
 export type PodFieldVisibility = "mandatory" | "optional" | "skippable";
 
@@ -38,6 +47,5 @@ export interface PreviewProps {
   metamodel: MetamodelData | null;
   isSkippable: (key: string) => boolean;
   isAddable: (key: string) => boolean;
-  isGroupSkippable?: (groupId: string) => boolean;
   addAndClose: (key: string) => void;
 }

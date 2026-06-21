@@ -3,11 +3,11 @@
 "use client";
 import toast from "react-hot-toast";
 import { SEED_PHRASE_TYPE } from "@/types/pods/SEED_PHRASE";
-import { usePodForm } from "@/components/common/usePodForm";
+import { usePodForm } from "@/components/common/pod-form/usePodForm";
 import type { PodFieldConfig, PodCustomSectionDef } from "@/types/interfaces";
-import PodForm from "@/components/common/PodForm";
-import SaveButton from "@/components/common/SaveButton";
-import TagListField from "@/components/common/TagListField";
+import PodForm from "@/components/common/pod-form/PodForm";
+import SaveButton from "@/components/common/pod-form/SaveButton";
+import TagListField from "@/components/common/pod-form/TagListField";
 import PodFormLayout from "@/components/pods/PodFormLayout";
 import PodFormSkeleton from "@/components/pods/PodFormSkeleton";
 import SeedPhrasePreview from "./SeedPhrasePreview";
@@ -29,7 +29,7 @@ const SEED_PHRASE_CUSTOM_SECTIONS: PodCustomSectionDef[] = [
 
 export default function PodDetails({ id }: { id: string }) {
   const {
-    data, setData, loading, error, isUpdating, handleSave,
+    data, updateField, loading, error, isUpdating, handleSave,
     previewOpen, setPreviewOpen, isDirty,
     metamodel, vis, onChange, markAdded, markRemoved, addGroup, removeGroup,
     isSkippable, isAddable,
@@ -40,7 +40,7 @@ export default function PodDetails({ id }: { id: string }) {
   });
 
   function handleRemoveCustomSection(key: string) {
-    if (key === "phrase") setData((prev) => ({ ...prev, phrase: undefined }));
+    if (key === "phrase") updateField("phrase", undefined);
   }
 
   function renderCustomSection(key: string) {
@@ -54,14 +54,15 @@ export default function PodDetails({ id }: { id: string }) {
             values={data.phrase || []}
             splitBy=" "
             emptyMessage="No phrases"
-            onChange={(phrase) => setData((prev) => ({ ...prev, phrase }))}
+            indexedList
+            onChange={(phrase) => updateField("phrase", phrase)}
           />
           {data.phrase && data.phrase.length > 0 && (
             <div className="flex gap-2 mt-2">
               <button
                 type="button"
                 className="text-sm text-neutral-500 hover:text-error"
-                onClick={() => setData((prev) => ({ ...prev, phrase: [] }))}
+                onClick={() => updateField("phrase", [])}
               >
                 Remove all words
               </button>
