@@ -1,9 +1,12 @@
 "use client";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { usePod } from "@/contexts/PodHelper";
 import { DEFI_STACKING } from "@/types/pods/DEFI_STAKING";
-import PodForm, { PodFieldConfig } from "@/components/common/PodForm";
+import PodForm, { PodFieldConfig, PodFormHandle } from "@/components/common/PodForm";
 import SaveButton from "@/components/common/SaveButton";
+import PodFormLayout from "@/components/pods/PodFormLayout";
+import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
+import { useMetamodelData } from "@/common/useMetamodelData";
 
 const DEFI_STACKING_SAMPLE: DEFI_STACKING = {
   platform: "AAVE",
@@ -17,9 +20,9 @@ const DEFI_STACKING_SAMPLE: DEFI_STACKING = {
 };
 
 const DEFI_STACKING_FIELDS: PodFieldConfig[] = [
-  { key: "platform", label: "Platform (AAVE, COMPOUND, etc.)", placeholder: "e.g. AAVE", mandatory: false },
-  { key: "asset_amount", label: "Amount", placeholder: "e.g. 100", mandatory: false },
-  { key: "asset_name", label: "Asset name (e.g. USDC)", placeholder: "e.g. USDC", mandatory: false },
+  { key: "platform", label: "Platform (AAVE, COMPOUND, etc.)", placeholder: "e.g. AAVE", mandatory: true },
+  { key: "asset_amount", label: "Amount", placeholder: "e.g. 100", mandatory: true },
+  { key: "asset_name", label: "Asset name (e.g. USDC)", placeholder: "e.g. USDC", mandatory: true },
   { key: "lock_period", label: "Lock period (e.g. 1 month)", placeholder: "e.g. 1 month", mandatory: false },
   { key: "wallet_address", label: "Wallet address", placeholder: "e.g. 0x1234567890", mandatory: false },
   { key: "username", label: "Username (if required)", placeholder: "e.g. johndoe", mandatory: false },
@@ -29,7 +32,10 @@ const DEFI_STACKING_FIELDS: PodFieldConfig[] = [
 
 export default function PodDetails({ id }) {
   const [data, setData] = useState<DEFI_STACKING>({});
-  const [initialData, setInitialData] = useState<DEFI_STACKING | null>(null);
+  const [initialData, setInitialData] = useState<DEFI_STACKING>({} as DEFI_STACKING);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const podFormRef = useRef<PodFormHandle>(null);
+  const metamodel = useMetamodelData(id);
   const { loading, error, savePod, is_updating } = usePod<DEFI_STACKING>(
     {
       TYPE: "defi_staking",
@@ -68,25 +74,56 @@ export default function PodDetails({ id }) {
     }
   }, [data, savePod, id]);
 
+  const addAndClose = (key: string) => {
+    podFormRef.current?.addField(key);
+    setPreviewOpen(false);
+  };
+
+  function renderPreview(d: DEFI_STACKING) {
+    return (
+      <PodPreviewSection>
+        <p>
+          I have a {metamodel?.name || "DeFi stake"} of{" "}
+          <PreviewValue value={d.asset_amount} addLabel="Amount" onAdd={() => addAndClose("asset_amount")} />{" "}
+          <PreviewValue value={d.asset_name} addLabel="Asset name" onAdd={() => addAndClose("asset_name")} /> on{" "}
+          <PreviewValue value={d.platform} addLabel="Platform" onAdd={() => addAndClose("platform")} />,
+          locked for{" "}
+          <PreviewValue value={d.lock_period} addLabel="Lock period" onAdd={() => addAndClose("lock_period")} />,
+          in wallet{" "}
+          <PreviewValue value={d.wallet_address} addLabel="Wallet address" onAdd={() => addAndClose("wallet_address")} />.
+        </p>
+        <p>
+          My username is{" "}
+          <PreviewValue value={d.username} addLabel="Username" onAdd={() => addAndClose("username")} />,
+          and the password is{" "}
+          <PreviewValue value={d.password} sensitive addLabel="Password" onAdd={() => addAndClose("password")} />.
+        </p>
+        <p>
+          For context, <PreviewValue value={d.note} addLabel="Note" onAdd={() => addAndClose("note")} />.
+        </p>
+      </PodPreviewSection>
+    );
+  }
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="flex flex-col gap-4 px-4 w-full max-w-lg mx-auto">
+    <PodFormLayout
+      preview={renderPreview(data)}
+      previewOpen={previewOpen}
+      onTogglePreview={() => setPreviewOpen(!previewOpen)}
+      isDirty={isDirty}
+      saveButton={<SaveButton isDirty={isDirty} isUpdating={is_updating} onClick={handleSave} />}
+    >
       <PodForm
+        ref={podFormRef}
         fields={DEFI_STACKING_FIELDS}
         data={data}
         onChange={(key, value) => {
           setData((prev) => ({ ...prev, [key]: value }));
         }}
       />
-      <div className="flex flex-col sm:flex-row items-center gap-2">
-        <SaveButton
-          isDirty={isDirty}
-          isUpdating={is_updating}
-          onClick={handleSave}
-        />
-      </div>
-    </div>
+    </PodFormLayout>
   );
 }

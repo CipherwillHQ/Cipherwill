@@ -1,10 +1,13 @@
 "use client";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { usePod } from "@/contexts/PodHelper";
 import { EMAIL_ACCOUNT_TYPE } from "@/types/pods/EMAIL_ACCOUNT";
 import { TbTrash } from "react-icons/tb";
-import PodForm, { PodFieldConfig, PodCustomSectionDef } from "@/components/common/PodForm";
+import PodForm, { PodFieldConfig, PodCustomSectionDef, PodFormHandle } from "@/components/common/PodForm";
 import SaveButton from "@/components/common/SaveButton";
+import PodFormLayout from "@/components/pods/PodFormLayout";
+import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
+import { useMetamodelData } from "@/common/useMetamodelData";
 
 const EMAIL_ACCOUNT_SAMPLE: EMAIL_ACCOUNT_TYPE = {
   email: "john@example.com",
@@ -37,7 +40,10 @@ const EMAIL_ACCOUNT_CUSTOM_SECTIONS: PodCustomSectionDef[] = [
 
 export default function PodDetails({ id }) {
   const [data, setData] = useState<EMAIL_ACCOUNT_TYPE>({});
-  const [initialData, setInitialData] = useState<EMAIL_ACCOUNT_TYPE | null>(null);
+  const [initialData, setInitialData] = useState<EMAIL_ACCOUNT_TYPE>({} as EMAIL_ACCOUNT_TYPE);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const podFormRef = useRef<PodFormHandle>(null);
+  const metamodel = useMetamodelData(id);
   const { loading, error, savePod, is_updating } = usePod<EMAIL_ACCOUNT_TYPE>(
     {
       TYPE: "email_account",
@@ -73,12 +79,12 @@ export default function PodDetails({ id }) {
             <div className="flex items-center gap-2">
               <input
                 id="email-account-backup-codes"
-                className="bg-secondary border border-default rounded-md p-2 w-full"
+                className="bg-secondary border border-default rounded-xl p-2 w-full"
                 type="text"
                 placeholder="Backup Codes (comma separated)"
               />
               <button
-                className="bg-secondary border border-default rounded-md p-2"
+                className="bg-secondary border border-default rounded-xl p-2"
                 onClick={() => {
                   let newCodes = (
                     document.getElementById(
@@ -113,7 +119,7 @@ export default function PodDetails({ id }) {
               {data.backupCodes?.map((backupCode, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-2 border border-default rounded-md p-2 "
+                  className="flex items-center gap-2 border border-default rounded-xl p-2 "
                 >
                   <div>{backupCode}</div>
                   <button
@@ -142,12 +148,12 @@ export default function PodDetails({ id }) {
             <div className="flex items-center gap-2">
               <input
                 id="email-account-alias-emails"
-                className="bg-secondary border border-default rounded-md p-2 w-full"
+                className="bg-secondary border border-default rounded-xl p-2 w-full"
                 type="text"
                 placeholder="Alias Emails (comma separated)"
               />
               <button
-                className="bg-secondary border border-default rounded-md p-2"
+                className="bg-secondary border border-default rounded-xl p-2"
                 onClick={() => {
                   let newAliases = (
                     document.getElementById(
@@ -182,7 +188,7 @@ export default function PodDetails({ id }) {
               {data.aliasEmails?.map((aliasEmail, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-2 border border-default rounded-md p-2 "
+                  className="flex items-center gap-2 border border-default rounded-xl p-2 "
                 >
                   <div>{aliasEmail}</div>
                   <button
@@ -232,12 +238,97 @@ export default function PodDetails({ id }) {
     }
   }, [data, savePod, id]);
 
+  const addAndClose = (key: string) => {
+    podFormRef.current?.addField(key);
+    setPreviewOpen(false);
+  };
+
+  function renderPreview(d: EMAIL_ACCOUNT_TYPE) {
+    const hasRecovery = d.recoveryEmail || d.recoveryPhone;
+    const hasSecurity = d.securityQuestion;
+    return (
+      <PodPreviewSection>
+        <p>
+          I have an email account {metamodel?.name || d.email || "..."}, with the provider{" "}
+          <PreviewValue value={d.provider} fallback="a provider" addLabel="Provider" onAdd={() => addAndClose("provider")} />,
+          and the password is{" "}
+          <PreviewValue value={d.password} sensitive />.
+        </p>
+        {!d.recoveryEmail && !d.recoveryPhone ? (
+          <p>
+            I have recovery details set up{" "}
+            <PreviewValue value="" addLabel="Recovery Info" onAdd={() => { podFormRef.current?.addGroup("recovery"); setPreviewOpen(false); }} />.
+          </p>
+        ) : (
+          <>
+            {d.recoveryEmail && (
+              <p>
+                I have a recovery email set up at{" "}
+                <PreviewValue value={d.recoveryEmail} />.
+              </p>
+            )}
+            {d.recoveryPhone && (
+              <p>
+                My recovery phone number is{" "}
+                <PreviewValue value={d.recoveryPhone} />.
+              </p>
+            )}
+          </>
+        )}
+        {!d.securityQuestion ? (
+          <p>
+            I have security questions set up{" "}
+            <PreviewValue value="" addLabel="Security Info" onAdd={() => { podFormRef.current?.addGroup("security"); setPreviewOpen(false); }} />.
+          </p>
+        ) : (
+          <p>
+            For security, my question is{" "}
+            &ldquo;<PreviewValue value={d.securityQuestion} />&rdquo;{" "}
+            and the answer is{" "}
+            <PreviewValue value={d.securityAnswer} sensitive />.
+          </p>
+        )}
+        {d.backupCodes && d.backupCodes.length > 0 && (
+          <p>
+            I have these backup codes saved:{" "}
+            <span className="font-semibold text-forest dark:text-cream">
+              {d.backupCodes.join(", ")}
+            </span>
+            .
+          </p>
+        )}
+        {d.aliasEmails && d.aliasEmails.length > 0 && (
+          <>
+            <p>This account also has these email aliases:</p>
+            <ul className="list-disc list-inside pl-2 space-y-0.5">
+              {d.aliasEmails.map((email, i) => (
+                <li key={i} className="font-semibold text-forest dark:text-cream">
+                  {email}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+        <p>
+          For context, <PreviewValue value={d.note} addLabel="Note" onAdd={() => addAndClose("note")} />.
+        </p>
+      </PodPreviewSection>
+    );
+  }
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="flex flex-col gap-4 px-4 w-full max-w-lg mx-auto">
+    <PodFormLayout
+      preview={renderPreview(data)}
+      previewOpen={previewOpen}
+      onTogglePreview={() => setPreviewOpen(!previewOpen)}
+      isDirty={isDirty}
+      saveButton={<SaveButton isDirty={isDirty} isUpdating={is_updating} onClick={handleSave} />}
+    >
       <PodForm
+        ref={podFormRef}
         fields={EMAIL_ACCOUNT_FIELDS}
         data={data}
         onChange={(key, value) => {
@@ -247,13 +338,6 @@ export default function PodDetails({ id }) {
         renderCustomSection={renderCustomSection}
         onRemoveCustomSection={handleRemoveCustomSection}
       />
-      <div className="flex flex-col sm:flex-row items-center gap-2">
-        <SaveButton
-          isDirty={isDirty}
-          isUpdating={is_updating}
-          onClick={handleSave}
-        />
-      </div>
-    </div>
+    </PodFormLayout>
   );
 }

@@ -25,7 +25,7 @@ export default function SaveButton({
       onClick={onClick}
     >
       {isUpdating && <LoadingIndicator />}
-      Save
+      {disabled && !isUpdating ? "Saved" : "Save changes"}
     </button>
   );
 }

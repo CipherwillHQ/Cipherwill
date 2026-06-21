@@ -1,10 +1,13 @@
 "use client";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { usePod } from "@/contexts/PodHelper";
 import { TbTrash } from "react-icons/tb";
 import { PASSWORD } from "@/types/pods/PASSWORD";
-import PodForm, { PodFieldConfig, PodCustomSectionDef } from "@/components/common/PodForm";
+import PodForm, { PodFieldConfig, PodCustomSectionDef, PodFormHandle } from "@/components/common/PodForm";
 import SaveButton from "@/components/common/SaveButton";
+import PodFormLayout from "@/components/pods/PodFormLayout";
+import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
+import { useMetamodelData } from "@/common/useMetamodelData";
 
 const PASSWORD_SAMPLE: PASSWORD = {
   username: "john@example.com",
@@ -15,19 +18,22 @@ const PASSWORD_SAMPLE: PASSWORD = {
 };
 
 const PASSWORD_FIELDS: PodFieldConfig[] = [
-  { key: "username", label: "Username", placeholder: "e.g. john@example.com", mandatory: false },
-  { key: "password", label: "Password", type: "password", placeholder: "e.g. your password", mandatory: false },
+  { key: "username", label: "Username", placeholder: "e.g. john@example.com", mandatory: true },
+  { key: "password", label: "Password", type: "password", placeholder: "e.g. your password", mandatory: true },
   { key: "totp_secret", label: "2FA Secret", placeholder: "e.g. 123456", mandatory: false },
   { key: "note", label: "Note", type: "textarea", placeholder: "e.g. Sample Note", mandatory: false },
 ];
 
 const PASSWORD_CUSTOM_SECTIONS: PodCustomSectionDef[] = [
-  { key: "uri", label: "Websites", dataKey: "uri", mandatory: false },
+  { key: "uri", label: "Websites", dataKey: "uri", mandatory: true },
 ];
 
 export default function PodDetails({ id }) {
   const [data, setData] = useState<PASSWORD>({});
-  const [initialData, setInitialData] = useState<PASSWORD | null>(null);
+  const [initialData, setInitialData] = useState<PASSWORD>({} as PASSWORD);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const podFormRef = useRef<PodFormHandle>(null);
+  const metamodel = useMetamodelData(id);
   const { loading, error, savePod, is_updating } = usePod<PASSWORD>(
     {
       TYPE: "password",
@@ -136,12 +142,56 @@ export default function PodDetails({ id }) {
     }
   }, [data, savePod, id]);
 
+  const addAndClose = (key: string) => {
+    podFormRef.current?.addField(key);
+    setPreviewOpen(false);
+  };
+
+  function renderPreview(d: PASSWORD) {
+    return (
+      <PodPreviewSection>
+        <p>
+          I have a login for {metamodel?.name || "this account"}, with the username{" "}
+          <PreviewValue value={d.username} addLabel="Username" onAdd={() => addAndClose("username")} />,
+          and the password is{" "}
+          <PreviewValue value={d.password} sensitive addLabel="Password" onAdd={() => addAndClose("password")} />.
+        </p>
+        <p>
+          I use 2FA with the secret{" "}
+          <PreviewValue value={d.totp_secret} sensitive addLabel="2FA Secret" onAdd={() => addAndClose("totp_secret")} />.
+        </p>
+        {d.uri && d.uri.length > 0 && (
+          <>
+            <p>This login is used on these websites:</p>
+            <ul className="list-disc list-inside pl-2 space-y-0.5">
+              {d.uri.map((url, i) => (
+                <li key={i} className="font-semibold text-forest dark:text-cream">
+                  {url}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+        <p>
+          For context, <PreviewValue value={d.note} addLabel="Note" onAdd={() => addAndClose("note")} />.
+        </p>
+      </PodPreviewSection>
+    );
+  }
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="flex flex-col gap-4 px-4 w-full max-w-lg mx-auto">
+    <PodFormLayout
+      preview={renderPreview(data)}
+      previewOpen={previewOpen}
+      onTogglePreview={() => setPreviewOpen(!previewOpen)}
+      isDirty={isDirty}
+      saveButton={<SaveButton isDirty={isDirty} isUpdating={is_updating} onClick={handleSave} />}
+    >
       <PodForm
+        ref={podFormRef}
         fields={PASSWORD_FIELDS}
         data={data}
         onChange={(key, value) => {
@@ -151,13 +201,6 @@ export default function PodDetails({ id }) {
         renderCustomSection={renderCustomSection}
         onRemoveCustomSection={handleRemoveCustomSection}
       />
-      <div className="flex flex-col sm:flex-row items-center gap-2">
-        <SaveButton
-          isDirty={isDirty}
-          isUpdating={is_updating}
-          onClick={handleSave}
-        />
-      </div>
-    </div>
+    </PodFormLayout>
   );
 }

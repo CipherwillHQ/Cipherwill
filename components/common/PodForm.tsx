@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, forwardRef, useImperativeHandle } from "react";
 import PodFormRenderer from "./PodFormRenderer";
 import { fieldHasValue, buildGroupMap } from "./podFormUtils";
 
@@ -19,6 +19,12 @@ export interface PodCustomSectionDef {
   mandatory: boolean;
 }
 
+export interface PodFormHandle {
+  addField: (key: string) => void;
+  addGroup: (groupId: string) => void;
+  addSection: (key: string) => void;
+}
+
 interface PodFormProps {
   fields: PodFieldConfig[];
   data: Record<string, any>;
@@ -28,14 +34,14 @@ interface PodFormProps {
   onRemoveCustomSection?: (key: string) => void;
 }
 
-export default function PodForm({
+const PodForm = forwardRef<PodFormHandle, PodFormProps>(function PodForm({
   fields,
   data,
   onChange,
   customSections = [],
   renderCustomSection,
   onRemoveCustomSection,
-}: PodFormProps) {
+}, ref) {
   const mandatoryFields = useMemo(() => fields.filter((f) => f.mandatory), [fields]);
   const optionalFields = useMemo(() => fields.filter((f) => !f.mandatory), [fields]);
 
@@ -201,6 +207,12 @@ export default function PodForm({
     [markRemoved, onRemoveCustomSection]
   );
 
+  useImperativeHandle(ref, () => ({
+    addField: markAdded,
+    addGroup,
+    addSection: markAdded,
+  }), [markAdded, addGroup]);
+
   if (fields.length === 0 && customSections.length === 0) return null;
 
   return (
@@ -229,4 +241,6 @@ export default function PodForm({
       onCloseMenu={() => setMenuOpen(false)}
     />
   );
-}
+});
+
+export default PodForm;

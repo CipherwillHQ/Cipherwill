@@ -1,9 +1,12 @@
 "use client";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { BANK_ACCOUNT_TYPE } from "../../../../../types/pods/BANK_ACCOUNT";
 import { usePod } from "@/contexts/PodHelper";
-import PodForm, { PodFieldConfig } from "@/components/common/PodForm";
+import PodForm, { PodFieldConfig, PodFormHandle } from "@/components/common/PodForm";
 import SaveButton from "@/components/common/SaveButton";
+import PodFormLayout from "@/components/pods/PodFormLayout";
+import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
+import { useMetamodelData } from "@/common/useMetamodelData";
 
 const BANK_ACCOUNT_SAMPLE: BANK_ACCOUNT_TYPE = {
   account_number: "6546489-SAMPLE",
@@ -11,13 +14,16 @@ const BANK_ACCOUNT_SAMPLE: BANK_ACCOUNT_TYPE = {
 };
 
 const BANK_ACCOUNT_FIELDS: PodFieldConfig[] = [
-  { key: "account_number", label: "Account number", placeholder: "e.g. 6546489", mandatory: false },
-  { key: "bank_name", label: "Bank name", placeholder: "e.g. Sample Bank", mandatory: false },
+  { key: "account_number", label: "Account number", placeholder: "e.g. 6546489", mandatory: true },
+  { key: "bank_name", label: "Bank name", placeholder: "e.g. Sample Bank", mandatory: true },
 ];
 
 export default function PodDetails({ id }) {
   const [data, setData] = useState<BANK_ACCOUNT_TYPE>({});
-  const [initialData, setInitialData] = useState<BANK_ACCOUNT_TYPE | null>(null);
+  const [initialData, setInitialData] = useState<BANK_ACCOUNT_TYPE>({} as BANK_ACCOUNT_TYPE);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const podFormRef = useRef<PodFormHandle>(null);
+  const metamodel = useMetamodelData(id);
   const { loading, error, savePod, is_updating } = usePod<BANK_ACCOUNT_TYPE>(
     {
       TYPE: "bank_account",
@@ -50,25 +56,43 @@ export default function PodDetails({ id }) {
     }
   }, [data, savePod, id]);
 
+  const addAndClose = (key: string) => {
+    podFormRef.current?.addField(key);
+    setPreviewOpen(false);
+  };
+
+  function renderPreview(d: BANK_ACCOUNT_TYPE) {
+    return (
+      <PodPreviewSection>
+        <p>
+          I have a {metamodel?.name || "bank account"} with{" "}
+          <PreviewValue value={d.bank_name} addLabel="Bank name" onAdd={() => addAndClose("bank_name")} />,
+          account number{" "}
+          <PreviewValue value={d.account_number} addLabel="Account number" onAdd={() => addAndClose("account_number")} />.
+        </p>
+      </PodPreviewSection>
+    );
+  }
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="flex flex-col gap-4 px-4 w-full max-w-lg mx-auto">
+    <PodFormLayout
+      preview={renderPreview(data)}
+      previewOpen={previewOpen}
+      onTogglePreview={() => setPreviewOpen(!previewOpen)}
+      isDirty={isDirty}
+      saveButton={<SaveButton isDirty={isDirty} isUpdating={is_updating} onClick={handleSave} />}
+    >
       <PodForm
+        ref={podFormRef}
         fields={BANK_ACCOUNT_FIELDS}
         data={data}
         onChange={(key, value) => {
           setData((prev) => ({ ...prev, [key]: value }));
         }}
       />
-      <div className="flex flex-col sm:flex-row items-center gap-2">
-        <SaveButton
-          isDirty={isDirty}
-          isUpdating={is_updating}
-          onClick={handleSave}
-        />
-      </div>
-    </div>
+    </PodFormLayout>
   );
 }
