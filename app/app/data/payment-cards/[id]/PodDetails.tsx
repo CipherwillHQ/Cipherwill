@@ -1,8 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { usePod } from "@/contexts/PodHelper";
-import LoadingIndicator from "@/components/common/LoadingIndicator";
 import { PAYMENT_CARD_TYPE } from "@/types/pods/PAYMENT_CARD";
+import PodForm, { PodFieldConfig } from "@/components/common/PodForm";
+import SaveButton from "@/components/common/SaveButton";
 
 const PAYMENT_CARD_SAMPLE: PAYMENT_CARD_TYPE = {
   type: "Credit",
@@ -15,8 +16,20 @@ const PAYMENT_CARD_SAMPLE: PAYMENT_CARD_TYPE = {
   note: "This is a note",
 };
 
+const PAYMENT_CARD_FIELDS: PodFieldConfig[] = [
+  { key: "type", label: "Type (e.g. Credit, Debit)", placeholder: "e.g. Credit", mandatory: false },
+  { key: "card_holder_name", label: "Card Holder Name", placeholder: "e.g. John Doe", mandatory: false },
+  { key: "card_number", label: "Card Number", placeholder: "e.g. 1234 5678 9012 3456", mandatory: false },
+  { key: "expiry_date", label: "Expiry Date (e.g. 12/2025)", placeholder: "e.g. 12/2025", mandatory: false },
+  { key: "cvv", label: "CVV (e.g. 123)", placeholder: "e.g. 123", mandatory: false },
+  { key: "issuer", label: "Issuer (e.g. AB Bank)", placeholder: "e.g. AB Bank", mandatory: false },
+  { key: "network", label: "Network (e.g. Visa, Mastercard)", placeholder: "e.g. Mastercard", mandatory: false },
+  { key: "note", label: "Note", type: "textarea", placeholder: "e.g. This is a note", mandatory: false },
+];
+
 export default function PodDetails({ id }) {
   const [data, setData] = useState<PAYMENT_CARD_TYPE>({});
+  const [initialData, setInitialData] = useState<PAYMENT_CARD_TYPE | null>(null);
   const { loading, error, savePod, is_updating } = usePod<PAYMENT_CARD_TYPE>(
     {
       TYPE: "payment_card",
@@ -26,136 +39,55 @@ export default function PodDetails({ id }) {
     },
     {
       onComplete: (data: null | PAYMENT_CARD_TYPE) => {
-        if (data) setData(data);
+        if (data) {
+          setData(data);
+          setInitialData(data);
+        }
       },
     }
   );
+
+  const isDirty = JSON.stringify(initialData) !== JSON.stringify(data);
+
+  const handleSave = useCallback(async () => {
+    try {
+      await savePod({
+        type: data.type,
+        card_holder_name: data.card_holder_name,
+        card_number: data.card_number,
+        expiry_date: data.expiry_date,
+        cvv: data.cvv,
+        issuer: data.issuer,
+        network: data.network,
+        note: data.note,
+      },{
+        metamodel_id: id,
+      });
+      setInitialData(JSON.parse(JSON.stringify(data)));
+    } catch (_) {
+      // save failed, button stays active
+    }
+  }, [data, savePod, id]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="flex flex-col gap-4 px-4 w-full max-w-md">
-      {/* <pre>{JSON.stringify(data, null, 2)}</pre>
-      <hr /> */}
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Type (e.g. Credit, Debit)"
-        value={data.type || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            type: e.target.value,
-          });
+    <div className="flex flex-col gap-4 px-4 w-full max-w-lg mx-auto">
+      <PodForm
+        fields={PAYMENT_CARD_FIELDS}
+        data={data}
+        onChange={(key, value) => {
+          setData((prev) => ({ ...prev, [key]: value }));
         }}
       />
-       <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Card Holder Name"
-        value={data.card_holder_name || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            card_holder_name: e.target.value,
-          });
-        }}
-      />
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Card Number"
-        value={data.card_number || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            card_number: e.target.value,
-          });
-        }}
-      />
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Expiry Date (e.g. 12/2025)"
-        value={data.expiry_date || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            expiry_date: e.target.value,
-          });
-        }}
-      />
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="CVV (e.g. 123)"
-        value={data.cvv|| ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            cvv: e.target.value,
-          });
-        }}
-      />
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Issuer (e.g. AB Bank)"
-        value={data.issuer|| ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            issuer: e.target.value,
-          });
-        }}
-      />
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Network (e.g. Visa, Mastercard)"
-        value={data.network|| ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            network: e.target.value,
-          });
-        }}
-      />
-      <textarea
-        className="bg-secondary border border-default rounded-md p-2"
-        placeholder="Note"
-        value={data.note || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            note: e.target.value,
-          });
-        }}
-      />{" "}
       <div className="flex flex-col sm:flex-row items-center gap-2">
-        <button
-          className="flex items-center justify-center gap-2 bg-black text-white font-bold py-2 px-4 rounded-sm w-full"
-          onClick={() => {
-            savePod({
-              type: data.type,
-              card_holder_name: data.card_holder_name,
-              card_number: data.card_number,
-              expiry_date: data.expiry_date,
-              cvv: data.cvv,
-              issuer: data.issuer,
-              network: data.network,
-              note: data.note,
-            },{
-              metamodel_id: id,
-            });
-          }}
-        >
-          {is_updating && <LoadingIndicator />}
-          Save
-        </button>
+        <SaveButton
+          isDirty={isDirty}
+          isUpdating={is_updating}
+          onClick={handleSave}
+        />
       </div>
     </div>
   );
 }
-

@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { usePod } from "@/contexts/PodHelper";
 import { EMAIL_ACCOUNT_TYPE } from "@/types/pods/EMAIL_ACCOUNT";
-import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { TbTrash } from "react-icons/tb";
-import LoadingIndicator from "@/components/common/LoadingIndicator";
+import PodForm, { PodFieldConfig, PodCustomSectionDef } from "@/components/common/PodForm";
+import SaveButton from "@/components/common/SaveButton";
 
 const EMAIL_ACCOUNT_SAMPLE: EMAIL_ACCOUNT_TYPE = {
   email: "john@example.com",
@@ -19,8 +19,25 @@ const EMAIL_ACCOUNT_SAMPLE: EMAIL_ACCOUNT_TYPE = {
   note: "Sample Note",
 };
 
+const EMAIL_ACCOUNT_FIELDS: PodFieldConfig[] = [
+  { key: "email", label: "Email", placeholder: "e.g. john@example.com", mandatory: true },
+  { key: "password", label: "Password", type: "password", placeholder: "e.g. your password", mandatory: true },
+  { key: "provider", label: "Provider", placeholder: "e.g. Gmail", mandatory: false },
+  { key: "recoveryEmail", label: "Recovery Email", placeholder: "e.g. john@example.com", mandatory: false, group: { id: "recovery", label: "Recovery Info" } },
+  { key: "recoveryPhone", label: "Recovery Phone", placeholder: "e.g. 1234567890", mandatory: false, group: { id: "recovery", label: "Recovery Info" } },
+  { key: "securityQuestion", label: "Security Question", placeholder: "e.g. Your favorite color?", mandatory: false, group: { id: "security", label: "Security Info" } },
+  { key: "securityAnswer", label: "Security Answer", placeholder: "e.g. Blue", mandatory: false, group: { id: "security", label: "Security Info" } },
+  { key: "note", label: "Note", type: "textarea", placeholder: "e.g. Sample Note", mandatory: false },
+];
+
+const EMAIL_ACCOUNT_CUSTOM_SECTIONS: PodCustomSectionDef[] = [
+  { key: "backupCodes", label: "Backup Codes", dataKey: "backupCodes", mandatory: false },
+  { key: "aliasEmails", label: "Email Aliases", dataKey: "aliasEmails", mandatory: false },
+];
+
 export default function PodDetails({ id }) {
   const [data, setData] = useState<EMAIL_ACCOUNT_TYPE>({});
+  const [initialData, setInitialData] = useState<EMAIL_ACCOUNT_TYPE | null>(null);
   const { loading, error, savePod, is_updating } = usePod<EMAIL_ACCOUNT_TYPE>(
     {
       TYPE: "email_account",
@@ -30,282 +47,213 @@ export default function PodDetails({ id }) {
     },
     {
       onComplete: (data: null | EMAIL_ACCOUNT_TYPE) => {
-        if (data) setData(data);
+        if (data) {
+          setData(data);
+          setInitialData(data);
+        }
       },
     }
   );
 
-  const [showPassword, setShowPassword] = useState(false);
+  const handleRemoveCustomSection = useCallback((key: string) => {
+    if (key === "backupCodes") {
+      setData((prev) => ({ ...prev, backupCodes: undefined }));
+    }
+    if (key === "aliasEmails") {
+      setData((prev) => ({ ...prev, aliasEmails: undefined }));
+    }
+  }, []);
+
+  const renderCustomSection = useCallback(
+    (key: string) => {
+      if (key === "backupCodes") {
+        return (
+          <>
+            <div className="font-semibold">Backup codes</div>
+            <div className="flex items-center gap-2">
+              <input
+                id="email-account-backup-codes"
+                className="bg-secondary border border-default rounded-md p-2 w-full"
+                type="text"
+                placeholder="Backup Codes (comma separated)"
+              />
+              <button
+                className="bg-secondary border border-default rounded-md p-2"
+                onClick={() => {
+                  let newCodes = (
+                    document.getElementById(
+                      "email-account-backup-codes"
+                    ) as HTMLInputElement
+                  )?.value.split(",");
+                  newCodes = newCodes.map((code) => code.trim());
+                  newCodes = newCodes.filter((code) => code !== "");
+
+                  setData((prev) => ({
+                    ...prev,
+                    backupCodes: Array.from(
+                      new Set([...(prev.backupCodes || []), ...newCodes])
+                    ),
+                  }));
+                  (
+                    document.getElementById(
+                      "email-account-backup-codes"
+                    ) as HTMLInputElement
+                  ).value = "";
+                }}
+              >
+                Add
+              </button>
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              {(data.backupCodes === undefined || data.backupCodes?.length === 0) && (
+                <div className="text-sm font-semibold text-neutral-500">
+                  No backup codes
+                </div>
+              )}
+              {data.backupCodes?.map((backupCode, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-2 border border-default rounded-md p-2 "
+                >
+                  <div>{backupCode}</div>
+                  <button
+                    onClick={() => {
+                      setData((prev) => ({
+                        ...prev,
+                        backupCodes: (prev.backupCodes || []).filter(
+                          (code) => code !== backupCode
+                        ),
+                      }));
+                    }}
+                  >
+                    <TbTrash />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </>
+        );
+      }
+
+      if (key === "aliasEmails") {
+        return (
+          <>
+            <div className="font-semibold">Email alias</div>
+            <div className="flex items-center gap-2">
+              <input
+                id="email-account-alias-emails"
+                className="bg-secondary border border-default rounded-md p-2 w-full"
+                type="text"
+                placeholder="Alias Emails (comma separated)"
+              />
+              <button
+                className="bg-secondary border border-default rounded-md p-2"
+                onClick={() => {
+                  let newAliases = (
+                    document.getElementById(
+                      "email-account-alias-emails"
+                    ) as HTMLInputElement
+                  )?.value.split(",");
+                  newAliases = newAliases.map((code) => code.trim());
+                  newAliases = newAliases.filter((code) => code !== "");
+
+                  setData((prev) => ({
+                    ...prev,
+                    aliasEmails: Array.from(
+                      new Set([...(prev.aliasEmails || []), ...newAliases])
+                    ),
+                  }));
+                  (
+                    document.getElementById(
+                      "email-account-alias-emails"
+                    ) as HTMLInputElement
+                  ).value = "";
+                }}
+              >
+                Add
+              </button>
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              {(data.aliasEmails === undefined || data.aliasEmails?.length === 0) && (
+                <div className="text-sm font-semibold text-neutral-500">
+                  No alias emails
+                </div>
+              )}
+              {data.aliasEmails?.map((aliasEmail, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-2 border border-default rounded-md p-2 "
+                >
+                  <div>{aliasEmail}</div>
+                  <button
+                    onClick={() => {
+                      setData((prev) => ({
+                        ...prev,
+                        aliasEmails: (prev.aliasEmails || []).filter(
+                          (code) => code !== aliasEmail
+                        ),
+                      }));
+                    }}
+                  >
+                    <TbTrash />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </>
+        );
+      }
+
+      return null;
+    },
+    [data]
+  );
+
+  const isDirty = JSON.stringify(initialData) !== JSON.stringify(data);
+
+  const handleSave = useCallback(async () => {
+    try {
+      await savePod({
+        email: data.email,
+        password: data.password,
+        provider: data.provider,
+        recoveryEmail: data.recoveryEmail,
+        recoveryPhone: data.recoveryPhone,
+        securityQuestion: data.securityQuestion,
+        securityAnswer: data.securityAnswer,
+        backupCodes: data.backupCodes,
+        aliasEmails: data.aliasEmails,
+        note: data.note,
+      },{
+        metamodel_id: id,
+      });
+      setInitialData(JSON.parse(JSON.stringify(data)));
+    } catch (_) {
+    }
+  }, [data, savePod, id]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="flex flex-col gap-4 px-4 w-full max-w-md">
-      {/* <pre>{JSON.stringify(data, null, 2)}</pre>
-      <hr /> */}
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="email"
-        placeholder="Email"
-        value={data.email || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            email: e.target.value,
-          });
+    <div className="flex flex-col gap-4 px-4 w-full max-w-lg mx-auto">
+      <PodForm
+        fields={EMAIL_ACCOUNT_FIELDS}
+        data={data}
+        onChange={(key, value) => {
+          setData((prev) => ({ ...prev, [key]: value }));
         }}
-      />{" "}
-      <div className="flex items-center gap-2">
-        <input
-          className="bg-secondary border border-default rounded-md p-2 w-full"
-          type={showPassword ? "text" : "password"}
-          placeholder="Password"
-          value={data.password || ""}
-          onChange={(e) => {
-            setData({
-              ...data,
-              password: e.target.value,
-            });
-          }}
-        />
-        <div
-          onClick={() => {
-            setShowPassword((e) => !e);
-          }}
-        >
-          {showPassword ? <BsEyeSlash size={20} /> : <BsEye size={20} />}
-        </div>
-      </div>
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Provider"
-        value={data.provider || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            provider: e.target.value,
-          });
-        }}
-      />{" "}
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Recovery Email"
-        value={data.recoveryEmail || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            recoveryEmail: e.target.value,
-          });
-        }}
-      />{" "}
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Recovery Phone"
-        value={data.recoveryPhone || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            recoveryPhone: e.target.value,
-          });
-        }}
-      />{" "}
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Security Question"
-        value={data.securityQuestion || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            securityQuestion: e.target.value,
-          });
-        }}
-      />{" "}
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Security Answer"
-        value={data.securityAnswer || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            securityAnswer: e.target.value,
-          });
-        }}
-      />{" "}
-      <div className="font-semibold">Backup codes</div>
-      <div className="flex items-center gap-2">
-        <input
-          id="email-account-backup-codes"
-          className="bg-secondary border border-default rounded-md p-2 w-full"
-          type="text"
-          placeholder="Backup Codes (comma separated)"
-        />
-        <button
-          className="bg-secondary border border-default rounded-md p-2"
-          onClick={() => {
-            let newCodes = (
-              document.getElementById(
-                "email-account-backup-codes"
-              ) as HTMLInputElement
-            )?.value.split(",");
-            // remove spaces
-            newCodes = newCodes.map((code) => code.trim());
-            // remove empty strings
-            newCodes = newCodes.filter((code) => code !== "");
-
-            setData({
-              ...data,
-              backupCodes: Array.from(
-                new Set([...(data.backupCodes || []), ...newCodes])
-              ),
-            });
-            // clear the input
-            (
-              document.getElementById(
-                "email-account-backup-codes"
-              ) as HTMLInputElement
-            ).value = "";
-          }}
-        >
-          Add
-        </button>
-      </div>{" "}
-      <div className="flex gap-2 flex-wrap">
-        {(data.backupCodes === undefined || data.backupCodes?.length === 0) && (
-          <div className="text-sm font-semibold text-neutral-500">
-            No backup codes
-          </div>
-        )}
-        {data.backupCodes?.map((backupCode, index) => (
-          <div
-            key={index}
-            className="flex items-center gap-2 border border-default rounded-md p-2 "
-          >
-            <div>{backupCode}</div>
-            <button
-              onClick={() => {
-                setData({
-                  ...data,
-                  backupCodes: (data.backupCodes || []).filter(
-                    (code) => code !== backupCode
-                  ),
-                });
-              }}
-            >
-              <TbTrash />
-            </button>
-          </div>
-        ))}
-      </div>
-      <div className="font-semibold">Email alias</div>
-      <div className="flex items-center gap-2">
-        <input
-          id="email-account-alias-emails"
-          className="bg-secondary border border-default rounded-md p-2 w-full"
-          type="text"
-          placeholder="Alias Emails (comma separated)"
-        />
-        <button
-          className="bg-secondary border border-default rounded-md p-2"
-          onClick={() => {
-            let newAliases = (
-              document.getElementById(
-                "email-account-alias-emails"
-              ) as HTMLInputElement
-            )?.value.split(",");
-            // remove spaces
-            newAliases = newAliases.map((code) => code.trim());
-            // remove empty strings
-            newAliases = newAliases.filter((code) => code !== "");
-
-            setData({
-              ...data,
-              aliasEmails: Array.from(
-                new Set([...(data.aliasEmails || []), ...newAliases])
-              ),
-            });
-            // clear the input
-            (
-              document.getElementById(
-                "email-account-alias-emails"
-              ) as HTMLInputElement
-            ).value = "";
-          }}
-        >
-          Add
-        </button>
-      </div>
-      <div className="flex gap-2 flex-wrap">
-        {(data.aliasEmails === undefined || data.aliasEmails?.length === 0) && (
-          <div className="text-sm font-semibold text-neutral-500">
-            No alias emails
-          </div>
-        )}
-        {data.aliasEmails?.map((aliasEmail, index) => (
-          <div
-            key={index}
-            className="flex items-center gap-2 border border-default rounded-md p-2 "
-          >
-            <div>{aliasEmail}</div>
-            <button
-              onClick={() => {
-                setData({
-                  ...data,
-                  aliasEmails: (data.aliasEmails || []).filter(
-                    (code) => code !== aliasEmail
-                  ),
-                });
-              }}
-            >
-              <TbTrash />
-            </button>
-          </div>
-        ))}
-      </div>
-      <textarea
-        className="bg-secondary border border-default rounded-md p-2"
-        placeholder="Note"
-        value={data.note || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            note: e.target.value,
-          });
-        }}
-      />{" "}
+        customSections={EMAIL_ACCOUNT_CUSTOM_SECTIONS}
+        renderCustomSection={renderCustomSection}
+        onRemoveCustomSection={handleRemoveCustomSection}
+      />
       <div className="flex flex-col sm:flex-row items-center gap-2">
-        <button
-          className="flex items-center justify-center gap-2 bg-black text-white font-bold py-2 px-4 rounded-sm w-full"
-          onClick={() => {
-            savePod({
-              email: data.email,
-              password: data.password,
-              provider: data.provider,
-              recoveryEmail: data.recoveryEmail,
-              recoveryPhone: data.recoveryPhone,
-              securityQuestion: data.securityQuestion,
-              securityAnswer: data.securityAnswer,
-              backupCodes: data.backupCodes,
-              aliasEmails: data.aliasEmails,
-              note: data.note,
-            },{
-              metamodel_id: id,
-            });
-          }}
-        >
-          {
-            is_updating && 
-            <LoadingIndicator/>
-          }
-          Save
-        </button>
+        <SaveButton
+          isDirty={isDirty}
+          isUpdating={is_updating}
+          onClick={handleSave}
+        />
       </div>
     </div>
   );
 }
-

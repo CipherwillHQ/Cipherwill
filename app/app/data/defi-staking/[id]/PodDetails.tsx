@@ -1,9 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { usePod } from "@/contexts/PodHelper";
-import LoadingIndicator from "@/components/common/LoadingIndicator";
-import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { DEFI_STACKING } from "@/types/pods/DEFI_STAKING";
+import PodForm, { PodFieldConfig } from "@/components/common/PodForm";
+import SaveButton from "@/components/common/SaveButton";
 
 const DEFI_STACKING_SAMPLE: DEFI_STACKING = {
   platform: "AAVE",
@@ -16,10 +16,20 @@ const DEFI_STACKING_SAMPLE: DEFI_STACKING = {
   note: "This is a sample note",
 };
 
+const DEFI_STACKING_FIELDS: PodFieldConfig[] = [
+  { key: "platform", label: "Platform (AAVE, COMPOUND, etc.)", placeholder: "e.g. AAVE", mandatory: false },
+  { key: "asset_amount", label: "Amount", placeholder: "e.g. 100", mandatory: false },
+  { key: "asset_name", label: "Asset name (e.g. USDC)", placeholder: "e.g. USDC", mandatory: false },
+  { key: "lock_period", label: "Lock period (e.g. 1 month)", placeholder: "e.g. 1 month", mandatory: false },
+  { key: "wallet_address", label: "Wallet address", placeholder: "e.g. 0x1234567890", mandatory: false },
+  { key: "username", label: "Username (if required)", placeholder: "e.g. johndoe", mandatory: false },
+  { key: "password", label: "Password", type: "password", placeholder: "e.g. your password", mandatory: false },
+  { key: "note", label: "Note", type: "textarea", placeholder: "e.g. This is a sample note", mandatory: false },
+];
+
 export default function PodDetails({ id }) {
   const [data, setData] = useState<DEFI_STACKING>({});
-  const [showPassword, setShowPassword] = useState(false);
-
+  const [initialData, setInitialData] = useState<DEFI_STACKING | null>(null);
   const { loading, error, savePod, is_updating } = usePod<DEFI_STACKING>(
     {
       TYPE: "defi_staking",
@@ -29,145 +39,54 @@ export default function PodDetails({ id }) {
     },
     {
       onComplete: (data: null | DEFI_STACKING) => {
-        if (data) setData(data);
+        if (data) {
+          setData(data);
+          setInitialData(data);
+        }
       },
     }
   );
+
+  const isDirty = JSON.stringify(initialData) !== JSON.stringify(data);
+
+  const handleSave = useCallback(async () => {
+    try {
+      await savePod({
+        platform: data.platform,
+        asset_amount: data.asset_amount,
+        asset_name: data.asset_name,
+        lock_period: data.lock_period,
+        wallet_address: data.wallet_address,
+        username: data.username,
+        password: data.password,
+        note: data.note,
+      },{
+        metamodel_id: id,
+      });
+      setInitialData(JSON.parse(JSON.stringify(data)));
+    } catch (_) {
+    }
+  }, [data, savePod, id]);
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="flex flex-col gap-4 px-4 w-full max-w-md">
-      {/* <pre>{JSON.stringify(data, null, 2)}</pre>
-      <hr /> */}
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Platform (AAVE, COMPOUND, etc.)"
-        value={data.platform || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            platform: e.target.value,
-          });
-        }}
-      />{" "}
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Amount"
-        value={data.asset_amount || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            asset_amount: e.target.value,
-          });
+    <div className="flex flex-col gap-4 px-4 w-full max-w-lg mx-auto">
+      <PodForm
+        fields={DEFI_STACKING_FIELDS}
+        data={data}
+        onChange={(key, value) => {
+          setData((prev) => ({ ...prev, [key]: value }));
         }}
       />
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Asset name (e.g. USDC)"
-        value={data.asset_name || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            asset_name: e.target.value,
-          });
-        }}
-      />
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Lock period (e.g. 1 month)"
-        value={data.lock_period || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            lock_period: e.target.value,
-          });
-        }}
-      />
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Wallet address"
-        value={data.wallet_address || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            wallet_address: e.target.value,
-          });
-        }}
-      />
-      <input
-        className="bg-secondary border border-default rounded-md p-2"
-        type="text"
-        placeholder="Username (if required)"
-        value={data.username || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            username: e.target.value,
-          });
-        }}
-      />
-      <div className="flex items-center gap-2">
-        <input
-          className="bg-secondary border border-default rounded-md p-2 w-full"
-          type={showPassword ? "text" : "password"}
-          placeholder="Password"
-          value={data.password || ""}
-          onChange={(e) => {
-            setData({
-              ...data,
-              password: e.target.value,
-            });
-          }}
-        />
-        <div
-          onClick={() => {
-            setShowPassword((e) => !e);
-          }}
-        >
-          {showPassword ? <BsEyeSlash size={20} /> : <BsEye size={20} />}
-        </div>
-      </div>
-      <textarea
-        className="bg-secondary border border-default rounded-md p-2"
-        placeholder="Note"
-        value={data.note || ""}
-        onChange={(e) => {
-          setData({
-            ...data,
-            note: e.target.value,
-          });
-        }}
-      />{" "}
       <div className="flex flex-col sm:flex-row items-center gap-2">
-        <button
-          className="flex items-center justify-center gap-2 bg-black text-white font-bold py-2 px-4 rounded-sm w-full"
-          onClick={() => {
-            savePod({
-              platform: data.platform,
-              asset_amount: data.asset_amount,
-              asset_name: data.asset_name,
-              lock_period: data.lock_period,
-              wallet_address: data.wallet_address,
-              username: data.username,
-              password: data.password,
-              note: data.note,
-            },{
-              metamodel_id: id,
-            });
-          }}
-        >
-          {" "}
-          {is_updating && <LoadingIndicator />}
-          Save
-        </button>
+        <SaveButton
+          isDirty={isDirty}
+          isUpdating={is_updating}
+          onClick={handleSave}
+        />
       </div>
     </div>
   );
 }
-
