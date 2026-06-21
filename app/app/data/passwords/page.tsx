@@ -7,7 +7,7 @@ export default function Passwords() {
   return (
     <div className="w-full">
       <DesktopAndMobilePageHeader title="Passwords" />
-      <div className="px-2 sm:px-4">
+      <div className="px-4">
         <PasswordsList />
       </div>
     </div>

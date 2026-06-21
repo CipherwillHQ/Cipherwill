@@ -10,7 +10,7 @@ export default function SeedPhrases() {
     >
       <div className="w-full">
         <DesktopAndMobilePageHeader title="Seed Phrases" />
-        <div className="px-2 sm:px-4">
+        <div className="px-4">
           <SeedPhrasesList />
         </div>
       </div>

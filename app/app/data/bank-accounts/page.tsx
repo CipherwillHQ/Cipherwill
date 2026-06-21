@@ -5,7 +5,7 @@ export default function BankAccounts() {
   return (
     <div className="w-full">
       <DesktopAndMobilePageHeader title="Bank Accounts" />
-      <div className="px-2 sm:px-4">
+      <div className="px-4">
         <BankAccountsList />
       </div>
     </div>

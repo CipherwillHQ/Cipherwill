@@ -5,7 +5,7 @@ export default function DeviceLocks() {
   return (
     <div className="w-full">
       <DesktopAndMobilePageHeader title="Device Locks" />
-      <div className="px-2 sm:px-4">
+      <div className="px-4">
         <DeviceLocksList />
       </div>
     </div>

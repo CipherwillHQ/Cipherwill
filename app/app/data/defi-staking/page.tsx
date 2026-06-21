@@ -10,7 +10,7 @@ export default function DeFiStacking() {
     >
       <div className="w-full">
         <DesktopAndMobilePageHeader title="DeFi Staking" />
-        <div className="px-2 sm:px-4">
+        <div className="px-4">
           <StackingList />
         </div>
       </div>

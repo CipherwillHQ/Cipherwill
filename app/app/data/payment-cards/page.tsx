@@ -7,7 +7,7 @@ export default function PaymentCards() {
   return (
     <div className="w-full">
       <DesktopAndMobilePageHeader title="Payment Cards" />
-      <div className="px-2 sm:px-4">
+      <div className="px-4">
         <CardsList />
       </div>
     </div>
