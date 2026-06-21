@@ -14,6 +14,7 @@ import Popup from "reactjs-popup";
 import { useMutation, useQuery } from "@apollo/client/react";
 import GET_PREFERENCES from "@/graphql/ops/auth/queries/GET_PREFERENCES";
 import UPDATE_PREFERENCES from "@/graphql/ops/auth/mutations/UPDATE_PREFERENCES";
+import GET_METAMODEL_TYPE_COUNTS from "@/graphql/ops/app/metamodel/queries/GET_METAMODEL_TYPE_COUNTS";
 import Link from "next/link";
 import PremiumPopup from "./PremiumPopup";
 import { Divider, Segment } from "@/types/Segments";
@@ -21,6 +22,7 @@ import type {
   GetPreferencesQuery,
   UpdatePreferencesMutation,
   UpdatePreferencesVariables,
+  GetMetamodelTypeCountsQuery,
 } from "@/types/interfaces/metamodel";
 import SuggestionBox from "@/components/app/dashboard/SuggestionBox";
 import { TbAdjustments } from "react-icons/tb";
@@ -52,6 +54,13 @@ export default function Segments() {
     UpdatePreferencesMutation,
     UpdatePreferencesVariables
   >(UPDATE_PREFERENCES);
+
+  const { data: countsData } =
+    useQuery<GetMetamodelTypeCountsQuery>(GET_METAMODEL_TYPE_COUNTS);
+  const countMap: Record<string, number> = {};
+  countsData?.getMetamodelTypeCounts?.forEach((item) => {
+    countMap[item.type] = item.count;
+  });
 
   if (loading)
     return (
@@ -147,6 +156,8 @@ export default function Segments() {
 
                 const is_active = is_available_to_user && is_enabled;
 
+                const itemCount = countMap[seg.metamodel_type] || 0;
+
                 return (
                   <div
                     key={seg.title}
@@ -229,18 +240,27 @@ export default function Segments() {
                       {seg.description}
                     </p>
 
-                    {/* Next line: Create Text Link with Arrow if active, minimal text links with arrow, no button */}
-                    {is_active && (
-                      <div className="pt-2">
-                        <Link
-                          href={seg.path}
-                          className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-500 hover:underline transition-colors"
-                        >
-                          {createTextMap[seg.slug] || `Create ${seg.title}`}{" "}
-                          <span className="transition-transform duration-200 group-hover:translate-x-0.5">
-                            →
+                    {/* Bottom row: Create Link and/or item count */}
+                    {(is_active || itemCount > 0) && (
+                      <div className="pt-2 flex items-center justify-between">
+                        {is_active ? (
+                          <Link
+                            href={seg.path}
+                            className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-500 hover:underline transition-colors"
+                          >
+                            {createTextMap[seg.slug] || `Create ${seg.title}`}{" "}
+                            <span className="transition-transform duration-200 group-hover:translate-x-0.5">
+                              →
+                            </span>
+                          </Link>
+                        ) : (
+                          <span />
+                        )}
+                        {itemCount > 0 && (
+                          <span className="text-xs font-medium text-neutral-400 dark:text-neutral-500">
+                            {itemCount} {itemCount === 1 ? "item" : "items"}
                           </span>
-                        </Link>
+                        )}
                       </div>
                     )}
                   </div>
