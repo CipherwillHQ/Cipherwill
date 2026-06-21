@@ -1,3 +1,5 @@
+// Responsive two-column layout: form (left) + live preview (right on desktop, slide-in on mobile).
+// Owns: preview toggle, unsaved-changes indicator, save button placement. Does NOT own form fields or data.
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
 import { ReactNode } from "react";
@@ -48,14 +50,14 @@ export default function PodFormLayout({
         {previewOpen && (
           <>
             <motion.div
-              className="sm:hidden fixed inset-0 bg-black/40 z-40"
+              className="sm:hidden fixed inset-0 bg-black/40 z-30"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={onTogglePreview}
             />
             <motion.div
-              className="sm:hidden fixed top-0 right-0 bottom-0 w-full max-w-sm z-50 bg-secondary shadow-xl flex flex-col"
+              className="sm:hidden fixed top-0 right-0 bottom-0 w-full max-w-sm z-40 bg-secondary shadow-xl flex flex-col"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}

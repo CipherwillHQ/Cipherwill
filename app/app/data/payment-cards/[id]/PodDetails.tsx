@@ -1,5 +1,7 @@
+// Payment card pod form: card type, number, expiry, CVV, issuer with live preview.
+// Owns: field config, save logic, preview rendering. Does NOT own form chrome or field rendering.
 "use client";
-import { useState, useCallback, useRef } from "react";
+import { useState, useRef } from "react";
 import { usePod } from "@/contexts/PodHelper";
 import { PAYMENT_CARD_TYPE } from "@/types/pods/PAYMENT_CARD";
 import PodForm, { PodFieldConfig, PodFormHandle } from "@/components/common/PodForm";
@@ -7,6 +9,7 @@ import SaveButton from "@/components/common/SaveButton";
 import PodFormLayout from "@/components/pods/PodFormLayout";
 import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
 import { useMetamodelData } from "@/common/useMetamodelData";
+import toast from "react-hot-toast";
 
 const PAYMENT_CARD_SAMPLE: PAYMENT_CARD_TYPE = {
   type: "Credit",
@@ -32,7 +35,7 @@ const PAYMENT_CARD_FIELDS: PodFieldConfig[] = [
 
 export default function PodDetails({ id }) {
   const [data, setData] = useState<PAYMENT_CARD_TYPE>({});
-  const [initialData, setInitialData] = useState<PAYMENT_CARD_TYPE>({} as PAYMENT_CARD_TYPE);
+  const [initialData, setInitialData] = useState<PAYMENT_CARD_TYPE | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const podFormRef = useRef<PodFormHandle>(null);
   const metamodel = useMetamodelData(id);
@@ -53,31 +56,21 @@ export default function PodDetails({ id }) {
     }
   );
 
-  const isDirty = JSON.stringify(initialData) !== JSON.stringify(data);
+  const isDirty = initialData !== null && JSON.stringify(initialData) !== JSON.stringify(data);
 
-  const handleSave = useCallback(async () => {
+  async function handleSave() {
     try {
-      await savePod({
-        type: data.type,
-        card_holder_name: data.card_holder_name,
-        card_number: data.card_number,
-        expiry_date: data.expiry_date,
-        cvv: data.cvv,
-        issuer: data.issuer,
-        network: data.network,
-        note: data.note,
-      },{
-        metamodel_id: id,
-      });
+      await savePod(data, { metamodel_id: id });
       setInitialData(JSON.parse(JSON.stringify(data)));
-    } catch (_) {
+    } catch {
+      toast.error("Failed to save changes. Please try again.");
     }
-  }, [data, savePod, id]);
+  }
 
-  const addAndClose = (key: string) => {
+  function addAndClose(key: string) {
     podFormRef.current?.addField(key);
     setPreviewOpen(false);
-  };
+  }
 
   const isSkippable = (key: string) =>
     PAYMENT_CARD_FIELDS.find((f) => f.key === key)?.visibility === "skippable";

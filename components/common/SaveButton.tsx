@@ -1,3 +1,5 @@
+// Save button with dirty/loading state. Shows "Saved" when clean, "Save changes" + spinner when saving.
+// Owns: disabled state logic and visual states. Does NOT own save logic or data comparison.
 "use client";
 import LoadingIndicator from "./LoadingIndicator";
 

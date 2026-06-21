@@ -1,3 +1,5 @@
+// Fetches and parses metamodel metadata (name, type, folder, beneficiaries) from GraphQL.
+// Owns: Apollo query + JSON parse. Does NOT own pod-specific data or save logic.
 "use client";
 import { useQuery } from "@apollo/client/react";
 import { useMemo } from "react";

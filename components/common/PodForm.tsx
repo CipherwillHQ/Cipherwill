@@ -1,3 +1,5 @@
+// Config-driven pod form with mandatory/optional/skippable field visibility.
+// Owns: field visibility logic, add/remove toggles for optional items. Does NOT own rendering or data fetching.
 "use client";
 import { useState, useMemo, useCallback, forwardRef, useImperativeHandle } from "react";
 import PodFormRenderer from "./PodFormRenderer";

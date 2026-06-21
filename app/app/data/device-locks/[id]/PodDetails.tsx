@@ -1,5 +1,7 @@
+// Device lock pod form: password + optional pin and note with live preview.
+// Owns: field config, save logic, preview rendering. Does NOT own form chrome or field rendering.
 "use client";
-import { useState, useCallback, useRef } from "react";
+import { useState, useRef } from "react";
 import { usePod } from "@/contexts/PodHelper";
 import { DEVICE_LOCK } from "@/types/pods/DEVICE_LOCK";
 import PodForm, { PodFieldConfig, PodFormHandle } from "@/components/common/PodForm";
@@ -7,6 +9,7 @@ import SaveButton from "@/components/common/SaveButton";
 import PodFormLayout from "@/components/pods/PodFormLayout";
 import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
 import { useMetamodelData } from "@/common/useMetamodelData";
+import toast from "react-hot-toast";
 
 const DEVICE_LOCK_SAMPLE: DEVICE_LOCK = {
   password: "123456",
@@ -22,7 +25,7 @@ const DEVICE_LOCK_FIELDS: PodFieldConfig[] = [
 
 export default function PodDetails({ id }) {
   const [data, setData] = useState<DEVICE_LOCK>({});
-  const [initialData, setInitialData] = useState<DEVICE_LOCK>({} as DEVICE_LOCK);
+  const [initialData, setInitialData] = useState<DEVICE_LOCK | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const podFormRef = useRef<PodFormHandle>(null);
   const metamodel = useMetamodelData(id);
@@ -43,26 +46,21 @@ export default function PodDetails({ id }) {
     }
   );
 
-  const isDirty = JSON.stringify(initialData) !== JSON.stringify(data);
+  const isDirty = initialData !== null && JSON.stringify(initialData) !== JSON.stringify(data);
 
-  const handleSave = useCallback(async () => {
+  async function handleSave() {
     try {
-      await savePod({
-        password: data.password,
-        pin: data.pin,
-        note: data.note,
-      },{
-        metamodel_id: id,
-      });
+      await savePod(data, { metamodel_id: id });
       setInitialData(JSON.parse(JSON.stringify(data)));
-    } catch (_) {
+    } catch {
+      toast.error("Failed to save changes. Please try again.");
     }
-  }, [data, savePod, id]);
+  }
 
-  const addAndClose = (key: string) => {
+  function addAndClose(key: string) {
     podFormRef.current?.addField(key);
     setPreviewOpen(false);
-  };
+  }
 
   const isSkippable = (key: string) =>
     DEVICE_LOCK_FIELDS.find((f) => f.key === key)?.visibility === "skippable";

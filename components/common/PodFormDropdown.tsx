@@ -1,3 +1,5 @@
+// Dropdown menu for adding optional fields, groups, and sections to a pod form.
+// Owns: outside-click detection and item rendering. Does NOT own form state or visibility logic.
 "use client";
 import { useRef, useEffect } from "react";
 
@@ -63,7 +65,7 @@ export default function PodFormDropdown({
 
       <div
         ref={menuRef}
-        className="absolute left-0 top-full mt-1 z-10 bg-secondary border border-default rounded-xl shadow-lg py-1 w-full"
+        className="absolute left-0 top-full mt-1 z-[200] bg-secondary border border-default rounded-xl shadow-lg py-1 w-full"
       >
         {showFieldSection &&
           fields.map((f) => (

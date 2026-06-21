@@ -1,3 +1,5 @@
+// Live preview of pod data in natural-language format with sensitive value masking.
+// Owns: PreviewValue (masked/plain/add-button states) and PodPreviewSection (layout wrapper).
 "use client";
 import { useState } from "react";
 import { BsEye, BsEyeSlash } from "react-icons/bs";

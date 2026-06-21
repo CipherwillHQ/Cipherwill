@@ -1,5 +1,7 @@
+// Seed phrase pod form: phrase words (custom section), public key, note with live preview.
+// Owns: field config, custom section (phrase), save logic, preview. Does NOT own form chrome.
 "use client";
-import { useState, useCallback, useRef } from "react";
+import { useState, useRef } from "react";
 import { usePod } from "@/contexts/PodHelper";
 import { SEED_PHRASE_TYPE } from "@/types/pods/SEED_PHRASE";
 import { TbTrash } from "react-icons/tb";
@@ -28,7 +30,7 @@ const SEED_PHRASE_CUSTOM_SECTIONS: PodCustomSectionDef[] = [
 
 export default function PodDetails({ id }) {
   const [data, setData] = useState<SEED_PHRASE_TYPE>({});
-  const [initialData, setInitialData] = useState<SEED_PHRASE_TYPE>({} as SEED_PHRASE_TYPE);
+  const [initialData, setInitialData] = useState<SEED_PHRASE_TYPE | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const podFormRef = useRef<PodFormHandle>(null);
   const metamodel = useMetamodelData(id);
@@ -49,122 +51,112 @@ export default function PodDetails({ id }) {
     }
   );
 
-  const handleRemoveCustomSection = useCallback((key: string) => {
+  function handleRemoveCustomSection(key: string) {
     if (key === "phrase") {
       setData((prev) => ({ ...prev, phrase: undefined }));
     }
-  }, []);
+  }
 
-  const renderCustomSection = useCallback(
-    (key: string) => {
-      if (key === "phrase") {
-        return (
-          <>
-            <div className="font-semibold">Seed Phrase</div>
-            <div className="flex items-center gap-2">
-              <input
-                id="seed-phrase-input"
-                className="bg-secondary border border-default rounded-md p-2 w-full"
-                type="text"
-                placeholder="Enter seed phrase (space separated)"
-              />
-              <button
-                className="bg-secondary border border-default rounded-md p-2"
-                onClick={() => {
-                  let newCodes = (
-                    document.getElementById("seed-phrase-input") as HTMLInputElement
-                  )?.value.split(" ");
-                  newCodes = newCodes.map((code) => code.trim());
-                  newCodes = newCodes.filter((code) => code !== "");
+  function renderCustomSection(key: string) {
+    if (key === "phrase") {
+      return (
+        <>
+          <div className="font-semibold">Seed Phrase</div>
+          <div className="flex items-center gap-2">
+            <input
+              id="seed-phrase-input"
+              className="bg-secondary border border-default rounded-xl p-2 w-full"
+              type="text"
+              placeholder="Enter seed phrase (space separated)"
+            />
+            <button
+              className="bg-secondary border border-default rounded-xl p-2"
+              onClick={() => {
+                let newCodes = (
+                  document.getElementById("seed-phrase-input") as HTMLInputElement
+                )?.value.split(" ");
+                newCodes = newCodes.map((code) => code.trim());
+                newCodes = newCodes.filter((code) => code !== "");
 
-                  setData((prev) => ({
-                    ...prev,
-                    phrase: [...(prev.phrase || []), ...newCodes],
-                  }));
-                  (
-                    document.getElementById("seed-phrase-input") as HTMLInputElement
-                  ).value = "";
-                }}
-              >
-                Add
-              </button>
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              {(data.phrase === undefined || data.phrase?.length === 0) && (
-                <div className="text-sm font-semibold text-neutral-500">
-                  No phrases
-                </div>
-              )}
-              {data.phrase?.map((phrase_word, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-2 border border-default rounded-md p-2 "
-                >
-                  <div>
-                    {index + 1}:{" "}{phrase_word}
-                  </div>
-                  <button
-                    onClick={() => {
-                      setData((prev) => ({
-                        ...prev,
-                        phrase: (prev.phrase || []).filter(
-                          (_, i) => i !== index
-                        ),
-                      }));
-                    }}
-                  >
-                    <TbTrash />
-                  </button>
-                </div>
-              ))}
-            </div>
-            {data && data.phrase && data.phrase.length > 0 && (
-              <div className="flex gap-2">
-                <SimpleButton
-                  onClick={() => {
-                    setData((prev) => ({ ...prev, phrase: [] }));
-                  }}
-                >
-                  Remove all words
-                </SimpleButton>
-                <SimpleButton
-                  onClick={() => {
-                    navigator.clipboard.writeText((data.phrase ?? []).join(" "));
-                    toast.success("Seed phrase copied to clipboard");
-                  }}
-                >
-                  Copy Seed Phrase
-                </SimpleButton>
+                setData((prev) => ({
+                  ...prev,
+                  phrase: [...(prev.phrase || []), ...newCodes],
+                }));
+                (document.getElementById("seed-phrase-input") as HTMLInputElement).value = "";
+              }}
+            >
+              Add
+            </button>
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            {(data.phrase === undefined || data.phrase?.length === 0) && (
+              <div className="text-sm font-semibold text-neutral-500">
+                No phrases
               </div>
             )}
-          </>
-        );
-      }
-      return null;
-    },
-    [data]
-  );
-
-  const isDirty = JSON.stringify(initialData) !== JSON.stringify(data);
-
-  const handleSave = useCallback(async () => {
-    try {
-      await savePod({
-        phrase: data.phrase,
-        public_key: data.public_key,
-        note: data.note,
-      },{
-        metamodel_id: id,
-      });
-      setInitialData(JSON.parse(JSON.stringify(data)));
-    } catch (_) {
+            {data.phrase?.map((phrase_word, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-2 border border-default rounded-xl p-2"
+              >
+                <div>
+                  {index + 1}:{" "}{phrase_word}
+                </div>
+                <button
+                  onClick={() => {
+                    setData((prev) => ({
+                      ...prev,
+                      phrase: (prev.phrase || []).filter(
+                        (_, i) => i !== index
+                      ),
+                    }));
+                  }}
+                >
+                  <TbTrash />
+                </button>
+              </div>
+            ))}
+          </div>
+          {data.phrase && data.phrase.length > 0 && (
+            <div className="flex gap-2">
+              <SimpleButton
+                onClick={() => {
+                  setData((prev) => ({ ...prev, phrase: [] }));
+                }}
+              >
+                Remove all words
+              </SimpleButton>
+              <SimpleButton
+                onClick={() => {
+                  navigator.clipboard.writeText((data.phrase ?? []).join(" "));
+                  toast.success("Seed phrase copied to clipboard");
+                }}
+              >
+                Copy Seed Phrase
+              </SimpleButton>
+            </div>
+          )}
+        </>
+      );
     }
-  }, [data, savePod, id]);
+    return null;
+  }
 
-  const addAndClose = (key: string) => {
+  const isDirty = initialData !== null && JSON.stringify(initialData) !== JSON.stringify(data);
+
+  async function handleSave() {
+    try {
+      await savePod(data, { metamodel_id: id });
+      setInitialData(JSON.parse(JSON.stringify(data)));
+    } catch {
+      toast.error("Failed to save changes. Please try again.");
+    }
+  }
+
+  function addAndClose(key: string) {
     podFormRef.current?.addField(key);
     setPreviewOpen(false);
-  };
+  }
 
   const isSkippable = (key: string) =>
     SEED_PHRASE_FIELDS.find((f) => f.key === key)?.visibility === "skippable";

@@ -1,5 +1,7 @@
+// Password pod form: username, password, 2FA, websites, note with live preview.
+// Owns: field config, custom section (websites), save logic, preview. Does NOT own form chrome.
 "use client";
-import { useState, useCallback, useRef } from "react";
+import { useState, useRef } from "react";
 import { usePod } from "@/contexts/PodHelper";
 import { TbTrash } from "react-icons/tb";
 import { PASSWORD } from "@/types/pods/PASSWORD";
@@ -8,6 +10,7 @@ import SaveButton from "@/components/common/SaveButton";
 import PodFormLayout from "@/components/pods/PodFormLayout";
 import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
 import { useMetamodelData } from "@/common/useMetamodelData";
+import toast from "react-hot-toast";
 
 const PASSWORD_SAMPLE: PASSWORD = {
   username: "john@example.com",
@@ -30,7 +33,7 @@ const PASSWORD_CUSTOM_SECTIONS: PodCustomSectionDef[] = [
 
 export default function PodDetails({ id }) {
   const [data, setData] = useState<PASSWORD>({});
-  const [initialData, setInitialData] = useState<PASSWORD>({} as PASSWORD);
+  const [initialData, setInitialData] = useState<PASSWORD | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const podFormRef = useRef<PodFormHandle>(null);
   const metamodel = useMetamodelData(id);
@@ -51,101 +54,87 @@ export default function PodDetails({ id }) {
     }
   );
 
-  const handleRemoveCustomSection = useCallback((key: string) => {
+  function handleRemoveCustomSection(key: string) {
     if (key === "uri") {
       setData((prev) => ({ ...prev, uri: undefined }));
     }
-  }, []);
+  }
 
-  const renderCustomSection = useCallback(
-    (key: string) => {
-      if (key === "uri") {
-        return (
-          <>
-            <div className="font-semibold">Websites</div>
-            <div className="flex items-center gap-2">
-              <input
-                id="password-uri"
-                className="bg-secondary border border-default rounded-md p-2 w-full"
-                type="text"
-                placeholder="Website (e.g., https://example.com)"
-              />
-              <button
-                className="bg-secondary border border-default rounded-md p-2"
-                onClick={() => {
-                  let new_uri = (
-                    document.getElementById("password-uri") as HTMLInputElement
-                  )?.value;
-                  new_uri = new_uri.trim();
-                  if (new_uri.length <= 0) {
-                    return;
-                  }
+  function renderCustomSection(key: string) {
+    if (key === "uri") {
+      return (
+        <>
+          <div className="font-semibold">Websites</div>
+          <div className="flex items-center gap-2">
+            <input
+              id="password-uri"
+              className="bg-secondary border border-default rounded-xl p-2 w-full"
+              type="text"
+              placeholder="Website (e.g., https://example.com)"
+            />
+            <button
+              className="bg-secondary border border-default rounded-xl p-2"
+              onClick={() => {
+                let newUri = (
+                  document.getElementById("password-uri") as HTMLInputElement
+                )?.value;
+                newUri = newUri.trim();
+                if (newUri.length <= 0) return;
 
-                  setData((prev) => ({
-                    ...prev,
-                    uri: Array.from(new Set([...(prev.uri || []), new_uri])),
-                  }));
-                  (
-                    document.getElementById("password-uri") as HTMLInputElement
-                  ).value = "";
-                }}
+                setData((prev) => ({
+                  ...prev,
+                  uri: Array.from(new Set([...(prev.uri || []), newUri])),
+                }));
+                (document.getElementById("password-uri") as HTMLInputElement).value = "";
+              }}
+            >
+              Add
+            </button>
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            {(data.uri === undefined || data.uri?.length === 0) && (
+              <div className="text-sm font-semibold text-neutral-500">No Websites</div>
+            )}
+            {data.uri?.map((uri, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-2 border border-default rounded-xl p-2"
               >
-                Add
-              </button>
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              {(data.uri === undefined || data.uri?.length === 0) && (
-                <div className="text-sm font-semibold text-neutral-500">No Websites</div>
-              )}
-              {data.uri?.map((uri, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-2 border border-default rounded-md p-2 "
+                <div>{uri}</div>
+                <button
+                  onClick={() => {
+                    setData((prev) => ({
+                      ...prev,
+                      uri: (prev.uri || []).filter((code) => code !== uri),
+                    }));
+                  }}
                 >
-                  <div>{uri}</div>
-                  <button
-                    onClick={() => {
-                      setData((prev) => ({
-                        ...prev,
-                        uri: (prev.uri || []).filter((code) => code !== uri),
-                      }));
-                    }}
-                  >
-                    <TbTrash />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </>
-        );
-      }
-      return null;
-    },
-    [data]
-  );
-
-  const isDirty = JSON.stringify(initialData) !== JSON.stringify(data);
-
-  const handleSave = useCallback(async () => {
-    try {
-      await savePod({
-        username: data.username,
-        password: data.password,
-        totp_secret: data.totp_secret,
-        uri: data.uri,
-        note: data.note,
-      },{
-        metamodel_id: id,
-      });
-      setInitialData(JSON.parse(JSON.stringify(data)));
-    } catch (_) {
+                  <TbTrash />
+                </button>
+              </div>
+            ))}
+          </div>
+        </>
+      );
     }
-  }, [data, savePod, id]);
+    return null;
+  }
 
-  const addAndClose = (key: string) => {
+  const isDirty = initialData !== null && JSON.stringify(initialData) !== JSON.stringify(data);
+
+  async function handleSave() {
+    try {
+      await savePod(data, { metamodel_id: id });
+      setInitialData(JSON.parse(JSON.stringify(data)));
+    } catch {
+      toast.error("Failed to save changes. Please try again.");
+    }
+  }
+
+  function addAndClose(key: string) {
     podFormRef.current?.addField(key);
     setPreviewOpen(false);
-  };
+  }
 
   const isSkippable = (key: string) =>
     PASSWORD_FIELDS.find((f) => f.key === key)?.visibility === "skippable";

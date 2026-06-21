@@ -1,5 +1,7 @@
+// Bank account pod form: account number + bank name with live preview.
+// Owns: field config, save logic, preview rendering. Does NOT own form chrome or field rendering.
 "use client";
-import { useState, useCallback, useRef } from "react";
+import { useState, useRef } from "react";
 import { BANK_ACCOUNT_TYPE } from "../../../../../types/pods/BANK_ACCOUNT";
 import { usePod } from "@/contexts/PodHelper";
 import PodForm, { PodFieldConfig, PodFormHandle } from "@/components/common/PodForm";
@@ -7,6 +9,7 @@ import SaveButton from "@/components/common/SaveButton";
 import PodFormLayout from "@/components/pods/PodFormLayout";
 import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
 import { useMetamodelData } from "@/common/useMetamodelData";
+import toast from "react-hot-toast";
 
 const BANK_ACCOUNT_SAMPLE: BANK_ACCOUNT_TYPE = {
   account_number: "6546489-SAMPLE",
@@ -20,7 +23,7 @@ const BANK_ACCOUNT_FIELDS: PodFieldConfig[] = [
 
 export default function PodDetails({ id }) {
   const [data, setData] = useState<BANK_ACCOUNT_TYPE>({});
-  const [initialData, setInitialData] = useState<BANK_ACCOUNT_TYPE>({} as BANK_ACCOUNT_TYPE);
+  const [initialData, setInitialData] = useState<BANK_ACCOUNT_TYPE | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const podFormRef = useRef<PodFormHandle>(null);
   const metamodel = useMetamodelData(id);
@@ -41,25 +44,21 @@ export default function PodDetails({ id }) {
     }
   );
 
-  const isDirty = JSON.stringify(initialData) !== JSON.stringify(data);
+  const isDirty = initialData !== null && JSON.stringify(initialData) !== JSON.stringify(data);
 
-  const handleSave = useCallback(async () => {
+  async function handleSave() {
     try {
-      await savePod({
-        bank_name: data.bank_name,
-        account_number: data.account_number,
-      },{
-        metamodel_id: id,
-      });
+      await savePod(data, { metamodel_id: id });
       setInitialData(JSON.parse(JSON.stringify(data)));
-    } catch (_) {
+    } catch {
+      toast.error("Failed to save changes. Please try again.");
     }
-  }, [data, savePod, id]);
+  }
 
-  const addAndClose = (key: string) => {
+  function addAndClose(key: string) {
     podFormRef.current?.addField(key);
     setPreviewOpen(false);
-  };
+  }
 
   function renderPreview(d: BANK_ACCOUNT_TYPE) {
     return (

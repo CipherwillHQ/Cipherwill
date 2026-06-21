@@ -1,3 +1,5 @@
+// Renders a single form field (text, password with toggle, or textarea) with label above.
+// Owns: password show/hide toggle. Does NOT own form state, validation, or dirty tracking.
 "use client";
 import { useState } from "react";
 import { BsEye, BsEyeSlash } from "react-icons/bs";

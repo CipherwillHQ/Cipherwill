@@ -1,5 +1,7 @@
+// DeFi staking pod form: platform, asset details, wallet info with live preview.
+// Owns: field config, save logic, preview rendering. Does NOT own form chrome or field rendering.
 "use client";
-import { useState, useCallback, useRef } from "react";
+import { useState, useRef } from "react";
 import { usePod } from "@/contexts/PodHelper";
 import { DEFI_STACKING } from "@/types/pods/DEFI_STAKING";
 import PodForm, { PodFieldConfig, PodFormHandle } from "@/components/common/PodForm";
@@ -7,6 +9,7 @@ import SaveButton from "@/components/common/SaveButton";
 import PodFormLayout from "@/components/pods/PodFormLayout";
 import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
 import { useMetamodelData } from "@/common/useMetamodelData";
+import toast from "react-hot-toast";
 
 const DEFI_STACKING_SAMPLE: DEFI_STACKING = {
   platform: "AAVE",
@@ -32,7 +35,7 @@ const DEFI_STACKING_FIELDS: PodFieldConfig[] = [
 
 export default function PodDetails({ id }) {
   const [data, setData] = useState<DEFI_STACKING>({});
-  const [initialData, setInitialData] = useState<DEFI_STACKING>({} as DEFI_STACKING);
+  const [initialData, setInitialData] = useState<DEFI_STACKING | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const podFormRef = useRef<PodFormHandle>(null);
   const metamodel = useMetamodelData(id);
@@ -53,31 +56,21 @@ export default function PodDetails({ id }) {
     }
   );
 
-  const isDirty = JSON.stringify(initialData) !== JSON.stringify(data);
+  const isDirty = initialData !== null && JSON.stringify(initialData) !== JSON.stringify(data);
 
-  const handleSave = useCallback(async () => {
+  async function handleSave() {
     try {
-      await savePod({
-        platform: data.platform,
-        asset_amount: data.asset_amount,
-        asset_name: data.asset_name,
-        lock_period: data.lock_period,
-        wallet_address: data.wallet_address,
-        username: data.username,
-        password: data.password,
-        note: data.note,
-      },{
-        metamodel_id: id,
-      });
+      await savePod(data, { metamodel_id: id });
       setInitialData(JSON.parse(JSON.stringify(data)));
-    } catch (_) {
+    } catch {
+      toast.error("Failed to save changes. Please try again.");
     }
-  }, [data, savePod, id]);
+  }
 
-  const addAndClose = (key: string) => {
+  function addAndClose(key: string) {
     podFormRef.current?.addField(key);
     setPreviewOpen(false);
-  };
+  }
 
   const isSkippable = (key: string) =>
     DEFI_STACKING_FIELDS.find((f) => f.key === key)?.visibility === "skippable";

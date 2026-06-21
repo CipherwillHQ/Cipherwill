@@ -1,3 +1,5 @@
+// Renders pod form sections: mandatory fields, toggleable fields, groups, custom sections, and add-dropdown.
+// Owns: layout and animation of form sections. Does NOT own visibility logic — receives it as props.
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
 import { TbTrash } from "react-icons/tb";
