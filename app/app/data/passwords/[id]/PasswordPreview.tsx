@@ -10,7 +10,7 @@ interface Props extends PreviewProps {
 }
 
 export default function PasswordPreview({
-  d, metamodel, addAndClose, addSectionAndClose, isSkippable, isAddable,
+  d, metamodel, addAndClose, isSkippable, isAddable,
 }: Props) {
   return (
     <PodPreviewSection>
@@ -29,8 +29,8 @@ export default function PasswordPreview({
         <>
           <p>This login is used on these websites:</p>
           <ul className="list-disc list-inside pl-2 space-y-0.5">
-            {d.uri.map((url: string, i: number) => (
-              <li key={i} className="font-semibold text-forest dark:text-cream">
+            {d.uri.map((url: string) => (
+              <li key={url} className="font-semibold text-forest dark:text-cream">
                 {url}
               </li>
             ))}
@@ -39,7 +39,7 @@ export default function PasswordPreview({
       ) : (
         <p>
           This login is used on{" "}
-          <PreviewValue value="" addLabel="Websites" onAdd={addSectionAndClose ? () => addSectionAndClose("uri") : undefined} />.
+          <PreviewValue value="" addLabel="Websites" onAdd={() => addAndClose("uri")} />.
         </p>
       )}
       {(d.note || !isSkippable("note")) && (

@@ -42,5 +42,4 @@ export interface PreviewProps {
   isAddable: (key: string) => boolean;
   isGroupSkippable?: (groupId: string) => boolean;
   addAndClose: (key: string) => void;
-  addSectionAndClose?: (key: string) => void;
 }

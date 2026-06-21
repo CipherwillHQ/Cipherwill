@@ -7,7 +7,6 @@ export function fieldHasValue(value: unknown): boolean {
   if (Array.isArray(value)) return value.length > 0;
   if (typeof value === "string") return value.trim().length > 0;
   if (typeof value === "number") return !isNaN(value);
-  if (typeof value === "boolean") return value === true;
   return typeof value === "object" && Object.keys(value as object).length > 0;
 }
 

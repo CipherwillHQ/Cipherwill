@@ -18,12 +18,8 @@ export default function EmailPreview({
   return (
     <PodPreviewSection>
       <p>
-        {isSkippable("email") && !d.email ? (
-          <>I have an email account <MetamodelName name={metamodel?.name} fallback="..." /></>
-        ) : (
-          <>I have an email account{" "}
-          <PreviewValue value={d.email} addLabel={isAddable("email") ? "Email" : undefined} onAdd={isAddable("email") ? () => addAndClose("email") : undefined} /></>
-        )}, with the provider{" "}
+        I have an email account <MetamodelName name={metamodel?.name} fallback="this account" />, with the email{" "}
+        <PreviewValue value={d.email} />, from{" "}
         <PreviewValue value={d.provider} fallback="a provider" addLabel={isAddable("provider") ? "Provider" : undefined} onAdd={isAddable("provider") ? () => addAndClose("provider") : undefined} />,
         and the password is{" "}
         <PreviewValue value={d.password} sensitive />.
@@ -65,8 +61,8 @@ export default function EmailPreview({
         <>
           <p>This account also has these email aliases:</p>
           <ul className="list-disc list-inside pl-2 space-y-0.5">
-            {d.aliasEmails.map((email: string, i: number) => (
-              <li key={i} className="font-semibold text-forest dark:text-cream">
+            {d.aliasEmails.map((email: string) => (
+              <li key={email} className="font-semibold text-forest dark:text-cream">
                 {email}
               </li>
             ))}

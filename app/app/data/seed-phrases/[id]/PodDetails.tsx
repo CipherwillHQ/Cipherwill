@@ -57,11 +57,13 @@ export default function PodDetails({ id }: { id: string }) {
               placeholder="Enter seed phrase (space separated)"
             />
             <button
+              type="button"
               className="bg-secondary border border-default rounded-xl p-2"
               onClick={() => {
                 const input = document.getElementById("seed-phrase-input") as HTMLInputElement;
-                const newCodes = input?.value.split(" ").map((c) => c.trim()).filter((c) => c !== "") || [];
-                setData((prev) => ({ ...prev, phrase: [...(prev.phrase || []), ...newCodes] }));
+                const newWords = input?.value.split(" ").map((c) => c.trim()).filter((c) => c !== "") || [];
+                if (newWords.length === 0) return;
+                setData((prev) => ({ ...prev, phrase: [...(prev.phrase || []), ...newWords] }));
                 input.value = "";
               }}
             >
@@ -72,10 +74,10 @@ export default function PodDetails({ id }: { id: string }) {
             {(!data.phrase || data.phrase.length === 0) && (
               <div className="text-sm font-semibold text-neutral-500">No phrases</div>
             )}
-            {data.phrase?.map((phrase_word, index) => (
-              <div key={index} className="flex items-center gap-2 border border-default rounded-xl p-2">
-                <div>{index + 1}: {phrase_word}</div>
-                <button onClick={() => setData((prev) => ({ ...prev, phrase: (prev.phrase || []).filter((_, i) => i !== index) }))}>
+            {data.phrase?.map((word, index) => (
+              <div key={`${index}-${word}`} className="flex items-center gap-2 border border-default rounded-xl p-2">
+                <div>{index + 1}: {word}</div>
+                <button type="button" onClick={() => setData((prev) => ({ ...prev, phrase: (prev.phrase || []).filter((_, i) => i !== index) }))}>
                   <TbTrash />
                 </button>
               </div>

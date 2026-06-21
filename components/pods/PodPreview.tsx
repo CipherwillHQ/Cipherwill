@@ -4,12 +4,28 @@
 import { useState } from "react";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
-export function MetamodelName({ name, fallback }: { name?: string | null; fallback: string }) {
+export function MetamodelName({
+  name,
+  fallback,
+  onRename,
+}: {
+  name?: string | null;
+  fallback: string;
+  onRename?: () => void;
+}) {
+  const interactive = !!onRename;
+  const className = "font-semibold text-forest dark:text-cream" +
+    (interactive
+      ? " hover:text-primary dark:hover:text-primary transition-colors cursor-pointer underline decoration-dotted underline-offset-2"
+      : "");
+  if (!interactive) {
+    return <span className={className}>{name || fallback}</span>;
+  }
   return (
     <button
       type="button"
-      className="font-semibold text-forest dark:text-cream hover:text-primary dark:hover:text-primary transition-colors cursor-pointer underline decoration-dotted underline-offset-2"
-      onClick={() => document.getElementById("name-box")?.focus()}
+      className={className}
+      onClick={onRename}
       title="Click to rename"
     >
       {name || fallback}

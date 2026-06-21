@@ -4,11 +4,9 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { TbTrash } from "react-icons/tb";
-import type { PodFieldConfig, PodCustomSectionDef, VisibilityState } from "@/types/interfaces";
+import type { PodFieldConfig, VisibilityState } from "@/types/interfaces";
 import PodFormField from "./PodFormField";
 import PodFormDropdown from "./PodFormDropdown";
-
-export type { PodFieldConfig, PodCustomSectionDef };
 
 interface PodFormProps {
   data: Record<string, any>;
