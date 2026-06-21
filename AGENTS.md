@@ -13,7 +13,6 @@
 - **No throwaway inline functions** - do not write single-use helper functions inside a file; if logic needs extracting, it goes into a shared global utility module where it can be reused across the codebase
 - Do not make changes to AGENTS.md or Design.md or app.design.md ask before you do 
 
-
 ## LLM Readability
 
 - Every file starts with a 2–3 line comment block: what it does, what it owns, what it does NOT do
