@@ -1,14 +1,13 @@
 // Seed phrase pod form: phrase words (custom section), public key, note with live preview.
 // Owns: field config, custom section (phrase), save logic, orchestration. Does NOT own preview rendering.
 "use client";
-import { TbTrash } from "react-icons/tb";
-import SimpleButton from "@/components/common/SimpleButton";
 import toast from "react-hot-toast";
 import { SEED_PHRASE_TYPE } from "@/types/pods/SEED_PHRASE";
 import { usePodForm } from "@/components/common/usePodForm";
 import type { PodFieldConfig, PodCustomSectionDef } from "@/types/interfaces";
 import PodForm from "@/components/common/PodForm";
 import SaveButton from "@/components/common/SaveButton";
+import TagListField from "@/components/common/TagListField";
 import PodFormLayout from "@/components/pods/PodFormLayout";
 import PodFormSkeleton from "@/components/pods/PodFormSkeleton";
 import SeedPhrasePreview from "./SeedPhrasePreview";
@@ -48,49 +47,31 @@ export default function PodDetails({ id }: { id: string }) {
     if (key === "phrase") {
       return (
         <>
-          <div className="font-semibold">Seed Phrase</div>
-          <div className="flex items-center gap-2">
-            <input
-              id="seed-phrase-input"
-              className="bg-secondary border border-default rounded-xl p-2 w-full"
-              type="text"
-              placeholder="Enter seed phrase (space separated)"
-            />
-            <button
-              type="button"
-              className="bg-secondary border border-default rounded-xl p-2"
-              onClick={() => {
-                const input = document.getElementById("seed-phrase-input") as HTMLInputElement;
-                const newWords = input?.value.split(" ").map((c) => c.trim()).filter((c) => c !== "") || [];
-                if (newWords.length === 0) return;
-                setData((prev) => ({ ...prev, phrase: [...(prev.phrase || []), ...newWords] }));
-                input.value = "";
-              }}
-            >
-              Add
-            </button>
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            {(!data.phrase || data.phrase.length === 0) && (
-              <div className="text-sm font-semibold text-neutral-500">No phrases</div>
-            )}
-            {data.phrase?.map((word, index) => (
-              <div key={`${index}-${word}`} className="flex items-center gap-2 border border-default rounded-xl p-2">
-                <div>{index + 1}: {word}</div>
-                <button type="button" onClick={() => setData((prev) => ({ ...prev, phrase: (prev.phrase || []).filter((_, i) => i !== index) }))}>
-                  <TbTrash />
-                </button>
-              </div>
-            ))}
-          </div>
+          <TagListField
+            id="seed-phrase-input"
+            label="Seed Phrase"
+            placeholder="Enter seed phrase (space separated)"
+            values={data.phrase || []}
+            splitBy=" "
+            emptyMessage="No phrases"
+            onChange={(phrase) => setData((prev) => ({ ...prev, phrase }))}
+          />
           {data.phrase && data.phrase.length > 0 && (
-            <div className="flex gap-2">
-              <SimpleButton onClick={() => setData((prev) => ({ ...prev, phrase: [] }))}>
+            <div className="flex gap-2 mt-2">
+              <button
+                type="button"
+                className="text-sm text-neutral-500 hover:text-error"
+                onClick={() => setData((prev) => ({ ...prev, phrase: [] }))}
+              >
                 Remove all words
-              </SimpleButton>
-              <SimpleButton onClick={() => { navigator.clipboard.writeText((data.phrase ?? []).join(" ")); toast.success("Seed phrase copied to clipboard"); }}>
+              </button>
+              <button
+                type="button"
+                className="text-sm text-neutral-500 hover:text-primary"
+                onClick={() => { navigator.clipboard.writeText((data.phrase ?? []).join(" ")); toast.success("Seed phrase copied to clipboard"); }}
+              >
                 Copy Seed Phrase
-              </SimpleButton>
+              </button>
             </div>
           )}
         </>

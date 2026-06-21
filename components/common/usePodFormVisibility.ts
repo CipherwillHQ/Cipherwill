@@ -54,9 +54,7 @@ export function usePodFormVisibility(
     const hasAvailableItems = dropdownFields.length > 0 || dropdownGroups.length > 0 || dropdownSections.length > 0;
 
     return {
-      mandatoryFields,
       mandatoryGroupsMap,
-      toggleableGroupsMap,
       standaloneMandatory,
       mandatorySections,
       visibleStandalone,

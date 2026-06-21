@@ -21,9 +21,7 @@ export interface PodCustomSectionDef {
 }
 
 export interface VisibilityState {
-  mandatoryFields: PodFieldConfig[];
   mandatoryGroupsMap: Map<string, PodFieldConfig[]>;
-  toggleableGroupsMap: Map<string, PodFieldConfig[]>;
   standaloneMandatory: PodFieldConfig[];
   mandatorySections: PodCustomSectionDef[];
   visibleStandalone: PodFieldConfig[];

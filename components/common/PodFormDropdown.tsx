@@ -9,7 +9,6 @@ interface DropdownItem {
 }
 
 interface PodFormDropdownProps {
-  menuOpen: boolean;
   onClose: () => void;
   fields: DropdownItem[];
   groups: DropdownItem[];
@@ -20,7 +19,6 @@ interface PodFormDropdownProps {
 }
 
 export default function PodFormDropdown({
-  menuOpen,
   onClose,
   fields,
   groups,
@@ -33,7 +31,6 @@ export default function PodFormDropdown({
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (!menuOpen) return;
     const handleClick = (e: MouseEvent) => {
       if (
         menuRef.current &&
@@ -46,7 +43,7 @@ export default function PodFormDropdown({
     };
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
-  }, [menuOpen, onClose]);
+  }, [onClose]);
 
   const showFieldSection = fields.length > 0;
   const showGroupSection = groups.length > 0;

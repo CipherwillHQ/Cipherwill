@@ -112,7 +112,6 @@ export default function PodForm({
       {vis.hasAvailableItems &&
         (menuOpen ? (
           <PodFormDropdown
-            menuOpen={menuOpen}
             onClose={() => setMenuOpen(false)}
             fields={vis.dropdownFields}
             groups={vis.dropdownGroups}
