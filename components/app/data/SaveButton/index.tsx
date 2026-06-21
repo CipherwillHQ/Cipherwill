@@ -21,7 +21,7 @@ export default function SaveButton<T extends Record<string, unknown>>({
     <div className="flex flex-col sm:flex-row items-center gap-2">
       <button
         disabled={!dirty || isSaving}
-        className="flex items-center justify-center gap-2 bg-clay text-black/75 ds font-bold py-2 px-4 rounded-sm w-full disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
+        className="flex items-center justify-center gap-2 bg-clay text-black/75 font-bold py-2 px-4 rounded-sm w-full disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
         onClick={onClick}>
         {isSaving && <LoadingIndicator />}
         {isSaving ? "Saving..." : "Save"}
