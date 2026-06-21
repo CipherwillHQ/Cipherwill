@@ -13,6 +13,7 @@ import FormField from "@/components/app/data/FormField";
 import ListField from "@/components/app/data/ListField";
 import AddOptionalField from "@/components/app/data/AddOptionalField";
 import { useOptionalFields } from "@/components/app/data/useOptionalFields";
+import PodDetailsSkeleton from "@/components/app/data/PodDetailsSkeleton";
 
 const SAMPLE: SEED_PHRASE_TYPE = {
   phrase: ["phrase1", "phrase2", "phrase3"],
@@ -44,7 +45,7 @@ export default function PodDetails({ id }) {
       },
     }
   );
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <PodDetailsSkeleton />;
   if (error) return <div>Error: {error}</div>;
 
   return (

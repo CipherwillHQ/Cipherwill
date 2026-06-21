@@ -11,6 +11,7 @@ import SaveButton from "@/components/app/data/SaveButton";
 import FormField from "@/components/app/data/FormField";
 import AddOptionalField from "@/components/app/data/AddOptionalField";
 import { useOptionalFields } from "@/components/app/data/useOptionalFields";
+import PodDetailsSkeleton from "@/components/app/data/PodDetailsSkeleton";
 
 const SAMPLE: DEFI_STACKING = {
   platform: "AAVE",
@@ -48,7 +49,7 @@ export default function PodDetails({ id }) {
       },
     }
   );
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <PodDetailsSkeleton />;
   if (error) return <div>Error: {error}</div>;
 
   return (

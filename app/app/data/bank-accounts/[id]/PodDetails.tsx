@@ -8,6 +8,7 @@ import {
 import { usePod } from "@/contexts/PodHelper";
 import SaveButton from "@/components/app/data/SaveButton";
 import FormField from "@/components/app/data/FormField";
+import PodDetailsSkeleton from "@/components/app/data/PodDetailsSkeleton";
 
 const SAMPLE: BANK_ACCOUNT_TYPE = {
   account_number: "6546489-SAMPLE",
@@ -33,7 +34,7 @@ export default function PodDetails({ id }) {
       },
     }
   );
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <PodDetailsSkeleton />;
   if (error) return <div>Error: {error}</div>;
 
   return (
