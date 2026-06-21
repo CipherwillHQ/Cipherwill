@@ -4,5 +4,6 @@ export * from './people';
 export * from './app';
 export * from './common';
 export * from './metamodel';
+export * from './podForm';
 export * from './faq';
 export * from './press';

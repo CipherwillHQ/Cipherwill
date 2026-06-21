@@ -1,6 +1,6 @@
 // PodForm utilities: value checking and group map construction.
 // Owns: fieldHasValue, buildGroupMap. Does NOT own rendering or state.
-import type { PodFieldConfig } from "./PodForm";
+import type { PodFieldConfig } from "@/types/interfaces";
 
 export function fieldHasValue(value: unknown): boolean {
   if (value === undefined || value === null) return false;
@@ -12,23 +12,20 @@ export function fieldHasValue(value: unknown): boolean {
 }
 
 export function buildGroupMap(
-  fields: PodFieldConfig[]
+  fields: readonly PodFieldConfig[]
 ): Map<string, PodFieldConfig[]> {
   const map = new Map<string, PodFieldConfig[]>();
-  fields.forEach((f) => {
+  for (const f of fields) {
     if (f.group) {
-      const existing = map.get(f.group.id) || [];
-      existing.push(f);
-      map.set(f.group.id, existing);
+      const list = map.get(f.group.id);
+      if (list) list.push(f);
+      else map.set(f.group.id, [f]);
     }
-  });
+  }
 
   for (const [groupId, groupFields] of map) {
     if (groupFields.length < 2) {
       map.delete(groupId);
-      groupFields.forEach((f) => {
-        delete f.group;
-      });
       continue;
     }
     const vis = groupFields[0]!.visibility;

@@ -2,14 +2,11 @@
 // Owns: preview rendering for phrase, public key, and note. Does NOT own form or save logic.
 "use client";
 import { SEED_PHRASE_TYPE } from "@/types/pods/SEED_PHRASE";
+import type { PreviewProps } from "@/types/interfaces";
 import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
-import { MetamodelData } from "@/common/useMetamodelData";
 
-interface Props {
+interface Props extends PreviewProps {
   d: SEED_PHRASE_TYPE;
-  metamodel: MetamodelData | null;
-  addAndClose: (key: string) => void;
-  isSkippable: (key: string) => boolean;
 }
 
 export default function SeedPhrasePreview({ d, metamodel, addAndClose, isSkippable }: Props) {

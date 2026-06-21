@@ -1,15 +1,13 @@
 // Bank account pod form: account number + bank name with live preview.
 // Owns: field config, save logic, orchestration. Does NOT own form chrome or preview rendering.
 "use client";
-import { useState, useRef } from "react";
-import { BANK_ACCOUNT_TYPE } from "../../../../../types/pods/BANK_ACCOUNT";
-import { usePod } from "@/contexts/PodHelper";
-import PodForm, { PodFieldConfig, PodFormHandle } from "@/components/common/PodForm";
+import { BANK_ACCOUNT_TYPE } from "@/types/pods/BANK_ACCOUNT";
+import { usePodForm } from "@/components/common/usePodForm";
+import type { PodFieldConfig } from "@/types/interfaces";
+import PodForm from "@/components/common/PodForm";
 import SaveButton from "@/components/common/SaveButton";
 import PodFormLayout from "@/components/pods/PodFormLayout";
-import { useMetamodelData } from "@/common/useMetamodelData";
 import BankAccountPreview from "./BankAccountPreview";
-import toast from "react-hot-toast";
 
 const BANK_ACCOUNT_SAMPLE: BANK_ACCOUNT_TYPE = {
   account_number: "6546489-SAMPLE",
@@ -21,63 +19,31 @@ const BANK_ACCOUNT_FIELDS: PodFieldConfig[] = [
   { key: "bank_name", label: "Bank name", placeholder: "e.g. Sample Bank", visibility: "mandatory" },
 ];
 
-export default function PodDetails({ id }) {
-  const [data, setData] = useState<BANK_ACCOUNT_TYPE>({});
-  const [initialData, setInitialData] = useState<BANK_ACCOUNT_TYPE | null>(null);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const podFormRef = useRef<PodFormHandle>(null);
-  const metamodel = useMetamodelData(id);
-  const { loading, error, savePod, is_updating } = usePod<BANK_ACCOUNT_TYPE>(
-    {
-      TYPE: "bank_account",
-      VERSION: "0.0.1",
-      REF_ID: id,
-      DATA_SAMPLE: BANK_ACCOUNT_SAMPLE,
-    },
-    {
-      onComplete: (data: null | BANK_ACCOUNT_TYPE) => {
-        if (data) {
-          setData(data);
-          setInitialData(data);
-        }
-      },
-    }
-  );
-
-  const isDirty = initialData !== null && JSON.stringify(initialData) !== JSON.stringify(data);
-
-  async function handleSave() {
-    try {
-      await savePod(data, { metamodel_id: id });
-      setInitialData(JSON.parse(JSON.stringify(data)));
-    } catch {
-      toast.error("Failed to save changes. Please try again.");
-    }
-  }
-
-  function addAndClose(key: string) {
-    podFormRef.current?.addField(key);
-    setPreviewOpen(false);
-  }
+export default function PodDetails({ id }: { id: string }) {
+  const {
+    data, setData, loading, error, isUpdating, handleSave,
+    previewOpen, setPreviewOpen, isDirty, podFormRef,
+    metamodel, isSkippable, addAndClose, addGroupAndClose, addSectionAndClose,
+  } = usePodForm<BANK_ACCOUNT_TYPE>(BANK_ACCOUNT_SAMPLE, {
+    podType: "bank_account", version: "0.0.1", refId: id, fields: BANK_ACCOUNT_FIELDS,
+  });
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <PodFormLayout
-      preview={<BankAccountPreview d={data} metamodel={metamodel} addAndClose={addAndClose} />}
+      preview={<BankAccountPreview d={data} metamodel={metamodel} isSkippable={isSkippable} addAndClose={addAndClose} addGroupAndClose={addGroupAndClose} addSectionAndClose={addSectionAndClose} />}
       previewOpen={previewOpen}
       onTogglePreview={() => setPreviewOpen(!previewOpen)}
       isDirty={isDirty}
-      saveButton={<SaveButton isDirty={isDirty} isUpdating={is_updating} onClick={handleSave} />}
+      saveButton={<SaveButton isDirty={isDirty} isUpdating={isUpdating} onClick={handleSave} />}
     >
       <PodForm
         ref={podFormRef}
         fields={BANK_ACCOUNT_FIELDS}
         data={data}
-        onChange={(key, value) => {
-          setData((prev) => ({ ...prev, [key]: value }));
-        }}
+        onChange={(key, value) => setData((prev) => ({ ...prev, [key]: value }))}
       />
     </PodFormLayout>
   );

@@ -1,16 +1,15 @@
 // Seed phrase pod form: phrase words (custom section), public key, note with live preview.
 // Owns: field config, custom section (phrase), save logic, orchestration. Does NOT own preview rendering.
 "use client";
-import { useState, useRef } from "react";
-import { usePod } from "@/contexts/PodHelper";
-import { SEED_PHRASE_TYPE } from "@/types/pods/SEED_PHRASE";
 import { TbTrash } from "react-icons/tb";
 import SimpleButton from "@/components/common/SimpleButton";
 import toast from "react-hot-toast";
-import PodForm, { PodFieldConfig, PodCustomSectionDef, PodFormHandle } from "@/components/common/PodForm";
+import { SEED_PHRASE_TYPE } from "@/types/pods/SEED_PHRASE";
+import { usePodForm } from "@/components/common/usePodForm";
+import type { PodFieldConfig, PodCustomSectionDef } from "@/types/interfaces";
+import PodForm from "@/components/common/PodForm";
 import SaveButton from "@/components/common/SaveButton";
 import PodFormLayout from "@/components/pods/PodFormLayout";
-import { useMetamodelData } from "@/common/useMetamodelData";
 import SeedPhrasePreview from "./SeedPhrasePreview";
 
 const SEED_PHRASE_SAMPLE: SEED_PHRASE_TYPE = {
@@ -28,33 +27,17 @@ const SEED_PHRASE_CUSTOM_SECTIONS: PodCustomSectionDef[] = [
   { key: "phrase", label: "Seed Phrase", dataKey: "phrase", visibility: "mandatory" },
 ];
 
-export default function PodDetails({ id }) {
-  const [data, setData] = useState<SEED_PHRASE_TYPE>({});
-  const [initialData, setInitialData] = useState<SEED_PHRASE_TYPE | null>(null);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const podFormRef = useRef<PodFormHandle>(null);
-  const metamodel = useMetamodelData(id);
-  const { loading, error, savePod, is_updating } = usePod<SEED_PHRASE_TYPE>(
-    {
-      TYPE: "seed_phrase",
-      VERSION: "0.0.1",
-      REF_ID: id,
-      DATA_SAMPLE: SEED_PHRASE_SAMPLE,
-    },
-    {
-      onComplete: (data: null | SEED_PHRASE_TYPE) => {
-        if (data) {
-          setData(data);
-          setInitialData(data);
-        }
-      },
-    }
-  );
+export default function PodDetails({ id }: { id: string }) {
+  const {
+    data, setData, loading, error, isUpdating, handleSave,
+    previewOpen, setPreviewOpen, isDirty, podFormRef,
+    metamodel, isSkippable, addAndClose, addGroupAndClose, addSectionAndClose,
+  } = usePodForm<SEED_PHRASE_TYPE>(SEED_PHRASE_SAMPLE, {
+    podType: "seed_phrase", version: "0.0.1", refId: id, fields: SEED_PHRASE_FIELDS,
+  });
 
   function handleRemoveCustomSection(key: string) {
-    if (key === "phrase") {
-      setData((prev) => ({ ...prev, phrase: undefined }));
-    }
+    if (key === "phrase") setData((prev) => ({ ...prev, phrase: undefined }));
   }
 
   function renderCustomSection(key: string) {
@@ -72,46 +55,23 @@ export default function PodDetails({ id }) {
             <button
               className="bg-secondary border border-default rounded-xl p-2"
               onClick={() => {
-                let newCodes = (
-                  document.getElementById("seed-phrase-input") as HTMLInputElement
-                )?.value.split(" ");
-                newCodes = newCodes.map((code) => code.trim());
-                newCodes = newCodes.filter((code) => code !== "");
-
-                setData((prev) => ({
-                  ...prev,
-                  phrase: [...(prev.phrase || []), ...newCodes],
-                }));
-                (document.getElementById("seed-phrase-input") as HTMLInputElement).value = "";
+                const input = document.getElementById("seed-phrase-input") as HTMLInputElement;
+                const newCodes = input?.value.split(" ").map((c) => c.trim()).filter((c) => c !== "") || [];
+                setData((prev) => ({ ...prev, phrase: [...(prev.phrase || []), ...newCodes] }));
+                input.value = "";
               }}
             >
               Add
             </button>
           </div>
           <div className="flex gap-2 flex-wrap">
-            {(data.phrase === undefined || data.phrase?.length === 0) && (
-              <div className="text-sm font-semibold text-neutral-500">
-                No phrases
-              </div>
+            {(!data.phrase || data.phrase.length === 0) && (
+              <div className="text-sm font-semibold text-neutral-500">No phrases</div>
             )}
             {data.phrase?.map((phrase_word, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-2 border border-default rounded-xl p-2"
-              >
-                <div>
-                  {index + 1}:{" "}{phrase_word}
-                </div>
-                <button
-                  onClick={() => {
-                    setData((prev) => ({
-                      ...prev,
-                      phrase: (prev.phrase || []).filter(
-                        (_, i) => i !== index
-                      ),
-                    }));
-                  }}
-                >
+              <div key={index} className="flex items-center gap-2 border border-default rounded-xl p-2">
+                <div>{index + 1}: {phrase_word}</div>
+                <button onClick={() => setData((prev) => ({ ...prev, phrase: (prev.phrase || []).filter((_, i) => i !== index) }))}>
                   <TbTrash />
                 </button>
               </div>
@@ -119,19 +79,10 @@ export default function PodDetails({ id }) {
           </div>
           {data.phrase && data.phrase.length > 0 && (
             <div className="flex gap-2">
-              <SimpleButton
-                onClick={() => {
-                  setData((prev) => ({ ...prev, phrase: [] }));
-                }}
-              >
+              <SimpleButton onClick={() => setData((prev) => ({ ...prev, phrase: [] }))}>
                 Remove all words
               </SimpleButton>
-              <SimpleButton
-                onClick={() => {
-                  navigator.clipboard.writeText((data.phrase ?? []).join(" "));
-                  toast.success("Seed phrase copied to clipboard");
-                }}
-              >
+              <SimpleButton onClick={() => { navigator.clipboard.writeText((data.phrase ?? []).join(" ")); toast.success("Seed phrase copied to clipboard"); }}>
                 Copy Seed Phrase
               </SimpleButton>
             </div>
@@ -142,43 +93,22 @@ export default function PodDetails({ id }) {
     return null;
   }
 
-  const isDirty = initialData !== null && JSON.stringify(initialData) !== JSON.stringify(data);
-
-  async function handleSave() {
-    try {
-      await savePod(data, { metamodel_id: id });
-      setInitialData(JSON.parse(JSON.stringify(data)));
-    } catch {
-      toast.error("Failed to save changes. Please try again.");
-    }
-  }
-
-  function addAndClose(key: string) {
-    podFormRef.current?.addField(key);
-    setPreviewOpen(false);
-  }
-
-  const isSkippable = (key: string) =>
-    SEED_PHRASE_FIELDS.find((f) => f.key === key)?.visibility === "skippable";
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <PodFormLayout
-      preview={<SeedPhrasePreview d={data} metamodel={metamodel} addAndClose={addAndClose} isSkippable={isSkippable} />}
+      preview={<SeedPhrasePreview d={data} metamodel={metamodel} isSkippable={isSkippable} addAndClose={addAndClose} addGroupAndClose={addGroupAndClose} addSectionAndClose={addSectionAndClose} />}
       previewOpen={previewOpen}
       onTogglePreview={() => setPreviewOpen(!previewOpen)}
       isDirty={isDirty}
-      saveButton={<SaveButton isDirty={isDirty} isUpdating={is_updating} onClick={handleSave} />}
+      saveButton={<SaveButton isDirty={isDirty} isUpdating={isUpdating} onClick={handleSave} />}
     >
       <PodForm
         ref={podFormRef}
         fields={SEED_PHRASE_FIELDS}
         data={data}
-        onChange={(key, value) => {
-          setData((prev) => ({ ...prev, [key]: value }));
-        }}
+        onChange={(key, value) => setData((prev) => ({ ...prev, [key]: value }))}
         customSections={SEED_PHRASE_CUSTOM_SECTIONS}
         renderCustomSection={renderCustomSection}
         onRemoveCustomSection={handleRemoveCustomSection}

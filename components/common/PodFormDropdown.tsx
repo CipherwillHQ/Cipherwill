@@ -3,7 +3,7 @@
 "use client";
 import { useRef, useEffect } from "react";
 
-export interface DropdownItem {
+interface DropdownItem {
   key: string;
   label: string;
 }

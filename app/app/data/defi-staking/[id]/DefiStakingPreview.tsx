@@ -2,14 +2,11 @@
 // Owns: preview rendering for platform, asset, wallet, and note. Does NOT own form or save logic.
 "use client";
 import { DEFI_STACKING } from "@/types/pods/DEFI_STAKING";
+import type { PreviewProps } from "@/types/interfaces";
 import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
-import { MetamodelData } from "@/common/useMetamodelData";
 
-interface Props {
+interface Props extends PreviewProps {
   d: DEFI_STACKING;
-  metamodel: MetamodelData | null;
-  addAndClose: (key: string) => void;
-  isSkippable: (key: string) => boolean;
 }
 
 export default function DefiStakingPreview({ d, metamodel, addAndClose, isSkippable }: Props) {

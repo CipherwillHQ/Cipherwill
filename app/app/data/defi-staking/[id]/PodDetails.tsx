@@ -1,15 +1,13 @@
 // DeFi staking pod form: platform, asset details, wallet info with live preview.
 // Owns: field config, save logic, orchestration. Does NOT own form chrome or preview rendering.
 "use client";
-import { useState, useRef } from "react";
-import { usePod } from "@/contexts/PodHelper";
 import { DEFI_STACKING } from "@/types/pods/DEFI_STAKING";
-import PodForm, { PodFieldConfig, PodFormHandle } from "@/components/common/PodForm";
+import { usePodForm } from "@/components/common/usePodForm";
+import type { PodFieldConfig } from "@/types/interfaces";
+import PodForm from "@/components/common/PodForm";
 import SaveButton from "@/components/common/SaveButton";
 import PodFormLayout from "@/components/pods/PodFormLayout";
-import { useMetamodelData } from "@/common/useMetamodelData";
 import DefiStakingPreview from "./DefiStakingPreview";
-import toast from "react-hot-toast";
 
 const DEFI_STACKING_SAMPLE: DEFI_STACKING = {
   platform: "AAVE",
@@ -18,7 +16,7 @@ const DEFI_STACKING_SAMPLE: DEFI_STACKING = {
   lock_period: "1 month",
   wallet_address: "0x1234567890",
   username: "johndoe",
-  password: "123456",
+  password: "password",
   note: "This is a sample note",
 };
 
@@ -33,66 +31,31 @@ const DEFI_STACKING_FIELDS: PodFieldConfig[] = [
   { key: "note", label: "Note", type: "textarea", placeholder: "e.g. This is a sample note", visibility: "skippable" },
 ];
 
-export default function PodDetails({ id }) {
-  const [data, setData] = useState<DEFI_STACKING>({});
-  const [initialData, setInitialData] = useState<DEFI_STACKING | null>(null);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const podFormRef = useRef<PodFormHandle>(null);
-  const metamodel = useMetamodelData(id);
-  const { loading, error, savePod, is_updating } = usePod<DEFI_STACKING>(
-    {
-      TYPE: "defi_staking",
-      VERSION: "0.0.1",
-      REF_ID: id,
-      DATA_SAMPLE: DEFI_STACKING_SAMPLE,
-    },
-    {
-      onComplete: (data: null | DEFI_STACKING) => {
-        if (data) {
-          setData(data);
-          setInitialData(data);
-        }
-      },
-    }
-  );
-
-  const isDirty = initialData !== null && JSON.stringify(initialData) !== JSON.stringify(data);
-
-  async function handleSave() {
-    try {
-      await savePod(data, { metamodel_id: id });
-      setInitialData(JSON.parse(JSON.stringify(data)));
-    } catch {
-      toast.error("Failed to save changes. Please try again.");
-    }
-  }
-
-  function addAndClose(key: string) {
-    podFormRef.current?.addField(key);
-    setPreviewOpen(false);
-  }
-
-  const isSkippable = (key: string) =>
-    DEFI_STACKING_FIELDS.find((f) => f.key === key)?.visibility === "skippable";
+export default function PodDetails({ id }: { id: string }) {
+  const {
+    data, setData, loading, error, isUpdating, handleSave,
+    previewOpen, setPreviewOpen, isDirty, podFormRef,
+    metamodel, isSkippable, addAndClose, addGroupAndClose, addSectionAndClose,
+  } = usePodForm<DEFI_STACKING>(DEFI_STACKING_SAMPLE, {
+    podType: "defi_staking", version: "0.0.1", refId: id, fields: DEFI_STACKING_FIELDS,
+  });
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <PodFormLayout
-      preview={<DefiStakingPreview d={data} metamodel={metamodel} addAndClose={addAndClose} isSkippable={isSkippable} />}
+      preview={<DefiStakingPreview d={data} metamodel={metamodel} isSkippable={isSkippable} addAndClose={addAndClose} addGroupAndClose={addGroupAndClose} addSectionAndClose={addSectionAndClose} />}
       previewOpen={previewOpen}
       onTogglePreview={() => setPreviewOpen(!previewOpen)}
       isDirty={isDirty}
-      saveButton={<SaveButton isDirty={isDirty} isUpdating={is_updating} onClick={handleSave} />}
+      saveButton={<SaveButton isDirty={isDirty} isUpdating={isUpdating} onClick={handleSave} />}
     >
       <PodForm
         ref={podFormRef}
         fields={DEFI_STACKING_FIELDS}
         data={data}
-        onChange={(key, value) => {
-          setData((prev) => ({ ...prev, [key]: value }));
-        }}
+        onChange={(key, value) => setData((prev) => ({ ...prev, [key]: value }))}
       />
     </PodFormLayout>
   );

@@ -2,14 +2,11 @@
 // Owns: preview rendering for card type, number, expiry, CVV, issuer, network, note.
 "use client";
 import { PAYMENT_CARD_TYPE } from "@/types/pods/PAYMENT_CARD";
+import type { PreviewProps } from "@/types/interfaces";
 import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
-import { MetamodelData } from "@/common/useMetamodelData";
 
-interface Props {
+interface Props extends PreviewProps {
   d: PAYMENT_CARD_TYPE;
-  metamodel: MetamodelData | null;
-  addAndClose: (key: string) => void;
-  isSkippable: (key: string) => boolean;
 }
 
 export default function PaymentCardPreview({ d, metamodel, addAndClose, isSkippable }: Props) {

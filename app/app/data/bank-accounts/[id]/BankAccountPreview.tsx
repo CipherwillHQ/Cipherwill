@@ -1,14 +1,12 @@
 // Live preview of bank account data in natural-language paragraph.
 // Owns: preview rendering for bank name and account number. Does NOT own form or save logic.
 "use client";
-import { BANK_ACCOUNT_TYPE } from "../../../../../types/pods/BANK_ACCOUNT";
+import { BANK_ACCOUNT_TYPE } from "@/types/pods/BANK_ACCOUNT";
+import type { PreviewProps } from "@/types/interfaces";
 import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
-import { MetamodelData } from "@/common/useMetamodelData";
 
-interface Props {
+interface Props extends PreviewProps {
   d: BANK_ACCOUNT_TYPE;
-  metamodel: MetamodelData | null;
-  addAndClose: (key: string) => void;
 }
 
 export default function BankAccountPreview({ d, metamodel, addAndClose }: Props) {

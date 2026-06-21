@@ -2,14 +2,11 @@
 // Owns: preview rendering for password, pin, and note. Does NOT own form or save logic.
 "use client";
 import { DEVICE_LOCK } from "@/types/pods/DEVICE_LOCK";
+import type { PreviewProps } from "@/types/interfaces";
 import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
-import { MetamodelData } from "@/common/useMetamodelData";
 
-interface Props {
+interface Props extends PreviewProps {
   d: DEVICE_LOCK;
-  metamodel: MetamodelData | null;
-  addAndClose: (key: string) => void;
-  isSkippable: (key: string) => boolean;
 }
 
 export default function DeviceLockPreview({ d, metamodel, addAndClose, isSkippable }: Props) {

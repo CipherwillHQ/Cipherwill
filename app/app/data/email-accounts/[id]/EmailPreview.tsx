@@ -2,32 +2,19 @@
 // Owns: preview rendering for email, recovery info, security info, backup codes, aliases, note.
 "use client";
 import { EMAIL_ACCOUNT_TYPE } from "@/types/pods/EMAIL_ACCOUNT";
+import type { PreviewProps } from "@/types/interfaces";
 import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
-import { PodFormHandle } from "@/components/common/PodForm";
-import { MetamodelData } from "@/common/useMetamodelData";
 
-interface Props {
+interface Props extends PreviewProps {
   d: EMAIL_ACCOUNT_TYPE;
-  metamodel: MetamodelData | null;
-  podFormRef: React.RefObject<PodFormHandle | null>;
-  setPreviewOpen: (v: boolean) => void;
-  addAndClose: (key: string) => void;
-  isSkippable: (key: string) => boolean;
-  isGroupSkippable: (groupId: string) => boolean;
 }
 
 export default function EmailPreview({
-  d,
-  metamodel,
-  podFormRef,
-  setPreviewOpen,
-  addAndClose,
-  isSkippable,
-  isGroupSkippable,
+  d, metamodel, addAndClose, addGroupAndClose, isSkippable, isGroupSkippable,
 }: Props) {
   const canAdd = (key: string) => !isSkippable(key);
-  const recoverySkippable = isGroupSkippable("recovery");
-  const securitySkippable = isGroupSkippable("security");
+  const recoverySkippable = isGroupSkippable?.("recovery") ?? true;
+  const securitySkippable = isGroupSkippable?.("security") ?? true;
   const hasRecovery = !!(d.recoveryEmail || d.recoveryPhone);
   const hasSecurity = !!d.securityQuestion;
 
@@ -47,7 +34,7 @@ export default function EmailPreview({
       {!hasRecovery && !recoverySkippable ? (
         <p>
           I have recovery details set up{" "}
-          <PreviewValue value="" addLabel="Recovery Info" onAdd={() => { podFormRef.current?.addGroup("recovery"); setPreviewOpen(false); }} />.
+          <PreviewValue value="" addLabel="Recovery Info" onAdd={() => addGroupAndClose("recovery")} />.
         </p>
       ) : hasRecovery ? (
         <>
@@ -68,7 +55,7 @@ export default function EmailPreview({
       {!hasSecurity && !securitySkippable ? (
         <p>
           I have security questions set up{" "}
-          <PreviewValue value="" addLabel="Security Info" onAdd={() => { podFormRef.current?.addGroup("security"); setPreviewOpen(false); }} />.
+          <PreviewValue value="" addLabel="Security Info" onAdd={() => addGroupAndClose("security")} />.
         </p>
       ) : hasSecurity ? (
         <p>
@@ -91,7 +78,7 @@ export default function EmailPreview({
         <>
           <p>This account also has these email aliases:</p>
           <ul className="list-disc list-inside pl-2 space-y-0.5">
-            {d.aliasEmails.map((email, i) => (
+            {d.aliasEmails.map((email: string, i: number) => (
               <li key={i} className="font-semibold text-forest dark:text-cream">
                 {email}
               </li>
