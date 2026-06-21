@@ -41,10 +41,8 @@ export default function PodDetails({ id }) {
     },
     {
       onComplete: (d: null | PASSWORD) => {
-        if (d) {
-          setData(d);
-          setInitialData(JSON.parse(JSON.stringify(d)));
-        }
+        if (d) setData(d);
+        setInitialData(JSON.parse(JSON.stringify(d || {})));
       },
     }
   );

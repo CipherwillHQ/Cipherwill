@@ -28,10 +28,8 @@ export default function PodDetails({ id }) {
     },
     {
       onComplete: (d: null | BANK_ACCOUNT_TYPE) => {
-        if (d) {
-          setData(d);
-          setInitialData(JSON.parse(JSON.stringify(d)));
-        }
+        if (d) setData(d);
+        setInitialData(JSON.parse(JSON.stringify(d || {})));
       },
     }
   );

@@ -43,10 +43,8 @@ export default function PodDetails({ id }) {
     },
     {
       onComplete: (d: null | PAYMENT_CARD_TYPE) => {
-        if (d) {
-          setData(d);
-          setInitialData(JSON.parse(JSON.stringify(d)));
-        }
+        if (d) setData(d);
+        setInitialData(JSON.parse(JSON.stringify(d || {})));
       },
     }
   );

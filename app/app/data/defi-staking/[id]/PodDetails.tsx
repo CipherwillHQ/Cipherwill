@@ -43,10 +43,8 @@ export default function PodDetails({ id }) {
     },
     {
       onComplete: (d: null | DEFI_STACKING) => {
-        if (d) {
-          setData(d);
-          setInitialData(JSON.parse(JSON.stringify(d)));
-        }
+        if (d) setData(d);
+        setInitialData(JSON.parse(JSON.stringify(d || {})));
       },
     }
   );
