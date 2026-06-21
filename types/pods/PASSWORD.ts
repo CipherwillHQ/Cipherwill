@@ -16,6 +16,6 @@ export const PASSWORD_MANDATORY: PodFieldMeta[] = [
 
 export const PASSWORD_OPTIONAL: PodFieldMeta[] = [
   { key: "totp_secret", label: "2FA Secret" },
-  { key: "uri", label: "Websites", list: true },
+  { key: "uri", label: "Websites" },
   { key: "note", label: "Note", type: "textarea" },
 ];

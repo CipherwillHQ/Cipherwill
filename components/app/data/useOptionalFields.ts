@@ -50,14 +50,13 @@ export function useOptionalFields(
   const removeField = (key: string) => {
     const keysToRemove = getGroupKeys(key);
     setAddedOptional((prev) => prev.filter((k) => !keysToRemove.includes(k)));
-    for (const k of keysToRemove) {
-      const field = optionalFields.find((f) => f.key === k);
-      if (field?.list) {
-        setData((prev: any) => ({ ...prev, [k]: [] }));
-      } else {
-        setData((prev: any) => ({ ...prev, [k]: "" }));
+    setData((prev: any) => {
+      const next = { ...prev };
+      for (const k of keysToRemove) {
+        next[k] = Array.isArray(next[k]) ? [] : "";
       }
-    }
+      return next;
+    });
   };
 
   const visible = optionalFields.filter((f) => isVisible(f.key));

@@ -8,7 +8,7 @@ export type SEED_PHRASE_TYPE = {
 };
 
 export const SEED_PHRASE_MANDATORY: PodFieldMeta[] = [
-  { key: "phrase", label: "Seed Phrase", list: true },
+  { key: "phrase", label: "Seed Phrase" },
 ];
 
 export const SEED_PHRASE_OPTIONAL: PodFieldMeta[] = [

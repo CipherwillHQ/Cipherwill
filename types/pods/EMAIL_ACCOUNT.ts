@@ -25,7 +25,7 @@ export const EMAIL_ACCOUNT_OPTIONAL: PodFieldMeta[] = [
   { key: "recoveryPhone", label: "Recovery Phone" },
   { key: "securityQuestion", label: "Security Question", group: "security" },
   { key: "securityAnswer", label: "Security Answer", group: "security" },
-  { key: "backupCodes", label: "Backup Codes", list: true },
-  { key: "aliasEmails", label: "Alias Emails", list: true },
+  { key: "backupCodes", label: "Backup Codes" },
+  { key: "aliasEmails", label: "Alias Emails" },
   { key: "note", label: "Note", type: "textarea" },
 ];
