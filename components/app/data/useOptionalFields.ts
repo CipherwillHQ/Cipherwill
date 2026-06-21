@@ -62,5 +62,5 @@ export function useOptionalFields(
   const visible = optionalFields.filter((f) => isVisible(f.key));
   const remaining = optionalFields.filter((f) => !isVisible(f.key));
 
-  return { isVisible, addField, removeField, visible, remaining };
+  return { addField, removeField, visible, remaining };
 }

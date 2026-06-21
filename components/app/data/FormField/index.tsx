@@ -9,7 +9,7 @@ import { TbTrash } from "react-icons/tb";
 interface FormFieldProps {
   label: string;
   type?: "text" | "email" | "textarea";
-  value: string;
+  value?: string;
   onChange: (value: string) => void;
   placeholder?: string;
   required?: boolean;
@@ -38,7 +38,7 @@ export default function FormField({
       <textarea
         className={inputClasses}
         placeholder={placeholder}
-        value={value}
+        value={value ?? ""}
         onChange={(e) => onChange(e.target.value)}
       />
     ) : (
@@ -46,7 +46,7 @@ export default function FormField({
         className={inputClasses}
         type={resolvedType}
         placeholder={placeholder}
-        value={value}
+        value={value ?? ""}
         onChange={(e) => onChange(e.target.value)}
       />
     );

@@ -57,11 +57,11 @@ export default function PodDetails({ id }) {
         <FormField
           key={f.key}
           label={f.label}
-          type={f.type as "text" | "email" | "textarea" | undefined}
+          type={f.type}
           sensitive={f.sensitive}
           placeholder={f.placeholder}
           required
-          value={String(data[f.key] || "")}
+          value={data[f.key]}
           onChange={(v) => setData({ ...data, [f.key]: v })}
         />
       ))}
@@ -70,10 +70,10 @@ export default function PodDetails({ id }) {
         <FormField
           key={f.key}
           label={f.label}
-          type={f.type as "text" | "email" | "textarea" | undefined}
+          type={f.type}
           sensitive={f.sensitive}
           placeholder={f.placeholder}
-          value={String(data[f.key] || "")}
+          value={data[f.key]}
           onChange={(v) => setData({ ...data, [f.key]: v })}
           onRemove={() => removeField(f.key)}
         />

@@ -1,3 +1,4 @@
+"use client";
 // Shared save button with disabled/saving/saved states.
 // Uses design system primary color, dark/light mode friendly.
 import LoadingIndicator from "@/components/common/LoadingIndicator";
