@@ -1,7 +1,9 @@
 // useOptionalFields: shared hook for mandatory/optional field visibility state.
 // Owns addedOptional tracking, provides hasData, isVisible, addField, removeField, remaining.
+// Supports grouped fields via PodFieldMeta.group — adding/removing one adds/removes all siblings.
 
 "use client";
+import { useCallback } from "react";
 import { useState } from "react";
 import { PodFieldMeta } from "@/types/interfaces";
 
@@ -18,20 +20,43 @@ export function useOptionalFields(
     return val !== undefined && val !== null && val !== "";
   };
 
-  const isVisible = (key: string) =>
-    addedOptional.includes(key) || hasData(key);
+  const getGroupKeys = useCallback(
+    (key: string): string[] => {
+      const field = optionalFields.find((f) => f.key === key);
+      if (!field?.group) return [key];
+      return optionalFields
+        .filter((f) => f.group === field.group)
+        .map((f) => f.key);
+    },
+    [optionalFields],
+  );
+
+  const isVisible = (key: string) => {
+    if (addedOptional.includes(key)) return true;
+    if (hasData(key)) return true;
+    const siblings = getGroupKeys(key);
+    if (siblings.length > 1) {
+      return siblings.some(
+        (k) => k !== key && (hasData(k) || addedOptional.includes(k)),
+      );
+    }
+    return false;
+  };
 
   const addField = (key: string) => {
-    setAddedOptional((prev) => [...new Set([...prev, key])]);
+    setAddedOptional((prev) => [...new Set([...prev, ...getGroupKeys(key)])]);
   };
 
   const removeField = (key: string) => {
-    setAddedOptional((prev) => prev.filter((k) => k !== key));
-    const field = optionalFields.find((f) => f.key === key);
-    if (field?.list) {
-      setData((prev: any) => ({ ...prev, [key]: [] }));
-    } else {
-      setData((prev: any) => ({ ...prev, [key]: "" }));
+    const keysToRemove = getGroupKeys(key);
+    setAddedOptional((prev) => prev.filter((k) => !keysToRemove.includes(k)));
+    for (const k of keysToRemove) {
+      const field = optionalFields.find((f) => f.key === k);
+      if (field?.list) {
+        setData((prev: any) => ({ ...prev, [k]: [] }));
+      } else {
+        setData((prev: any) => ({ ...prev, [k]: "" }));
+      }
     }
   };
 

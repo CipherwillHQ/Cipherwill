@@ -6,4 +6,5 @@ export interface PodFieldMeta {
   sensitive?: boolean;
   list?: boolean;
   placeholder?: string;
+  group?: string;
 }
