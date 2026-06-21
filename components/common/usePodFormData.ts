@@ -3,13 +3,14 @@
 "use client";
 import { useState, useCallback } from "react";
 import { usePod } from "@/contexts/PodHelper";
+import type { POD_TYPE } from "@/types/POD";
 import toast from "react-hot-toast";
 
-interface UsePodFormDataConfig {
-  podType: string;
+interface UsePodFormDataConfig<T> {
+  podType: POD_TYPE;
   version: string;
   refId: string;
-  sample: Record<string, any>;
+  sample: T;
 }
 
 export interface UsePodFormDataReturn<T> {
@@ -25,7 +26,7 @@ export interface UsePodFormDataReturn<T> {
 }
 
 export function usePodFormData<T extends Record<string, any>>(
-  config: UsePodFormDataConfig,
+  config: UsePodFormDataConfig<T>,
 ): UsePodFormDataReturn<T> {
   const { podType, version, refId, sample } = config;
   const [data, setData] = useState<T>({} as T);
