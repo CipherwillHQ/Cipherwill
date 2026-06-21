@@ -1,11 +1,12 @@
-// Shared hook for pod forms: data, dirty tracking, save, preview toggle, add-to-form helpers.
-// Owns: state management, save orchestration, preview control. Does NOT own rendering.
+// Shared hook for pod forms: data, dirty tracking, save, preview toggle, add/remove state.
+// Owns: state management, save orchestration, visibility derivation, add/remove handlers. Does NOT own rendering.
 "use client";
-import { useState, useRef, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { usePod } from "@/contexts/PodHelper";
 import { useMetamodelData } from "@/common/useMetamodelData";
 import type { POD_TYPE } from "@/types/POD";
-import type { PodFieldConfig, PodFormHandle } from "@/types/interfaces";
+import type { PodFieldConfig, PodCustomSectionDef, VisibilityState } from "@/types/interfaces";
+import { usePodFormVisibility } from "./usePodFormVisibility";
 import toast from "react-hot-toast";
 
 interface UsePodFormConfig {
@@ -13,6 +14,7 @@ interface UsePodFormConfig {
   version: string;
   refId: string;
   fields: PodFieldConfig[];
+  customSections?: PodCustomSectionDef[];
 }
 
 interface UsePodFormReturn<T> {
@@ -25,12 +27,17 @@ interface UsePodFormReturn<T> {
   previewOpen: boolean;
   setPreviewOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isDirty: boolean;
-  podFormRef: React.RefObject<PodFormHandle | null>;
   metamodel: ReturnType<typeof useMetamodelData>;
+  vis: VisibilityState;
+  onChange: (key: string, value: string) => void;
+  markAdded: (key: string) => void;
+  markRemoved: (key: string) => void;
+  addGroup: (groupId: string) => void;
+  removeGroup: (groupId: string) => void;
   isSkippable: (key: string) => boolean;
+  isAddable: (key: string) => boolean;
   isGroupSkippable: (groupId: string) => boolean;
   addAndClose: (key: string) => void;
-  addGroupAndClose: (groupId: string) => void;
   addSectionAndClose: (key: string) => void;
 }
 
@@ -38,11 +45,12 @@ export function usePodForm<T extends Record<string, any>>(
   sample: T,
   config: UsePodFormConfig,
 ): UsePodFormReturn<T> {
-  const { podType, version, refId, fields } = config;
+  const { podType, version, refId, fields, customSections = [] } = config;
   const [data, setData] = useState<T>({} as T);
   const [initialData, setInitialData] = useState<T | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const podFormRef = useRef<PodFormHandle>(null);
+  const [manuallyAdded, setManuallyAdded] = useState<Set<string>>(new Set());
+  const [manuallyRemoved, setManuallyRemoved] = useState<Set<string>>(new Set());
   const metamodel = useMetamodelData(refId);
 
   const { loading, error, savePod, is_updating: isUpdating } = usePod<T>(
@@ -65,8 +73,43 @@ export function usePodForm<T extends Record<string, any>>(
     }
   }, [savePod, data, refId]);
 
+  const onChange = useCallback((key: string, value: string) => {
+    setData((prev) => ({ ...prev, [key]: value }));
+  }, []);
+
+  const vis = usePodFormVisibility(fields, customSections, data, manuallyAdded, manuallyRemoved);
+
+  const markAdded = useCallback((key: string) => {
+    setManuallyAdded((prev) => new Set(prev).add(key));
+    setManuallyRemoved((prev) => { const n = new Set(prev); n.delete(key); return n; });
+  }, []);
+
+  const markRemoved = useCallback((key: string) => {
+    setManuallyAdded((prev) => { const n = new Set(prev); n.delete(key); return n; });
+    setManuallyRemoved((prev) => new Set(prev).add(key));
+    onChange(key, "");
+  }, [onChange]);
+
+  const addGroup = useCallback((groupId: string) => {
+    const g = vis.toggleableGroupsMap.get(groupId) || [];
+    setManuallyAdded((prev) => { const n = new Set(prev); g.forEach((f) => n.add(f.key)); return n; });
+    setManuallyRemoved((prev) => { const n = new Set(prev); g.forEach((f) => n.delete(f.key)); return n; });
+  }, [vis.toggleableGroupsMap]);
+
+  const removeGroup = useCallback((groupId: string) => {
+    const g = vis.toggleableGroupsMap.get(groupId) || [];
+    setManuallyAdded((prev) => { const n = new Set(prev); g.forEach((f) => n.delete(f.key)); return n; });
+    setManuallyRemoved((prev) => { const n = new Set(prev); g.forEach((f) => n.add(f.key)); return n; });
+    g.forEach((f) => onChange(f.key, ""));
+  }, [vis.toggleableGroupsMap, onChange]);
+
   const isSkippable = useCallback(
     (key: string) => fields.find((f) => f.key === key)?.visibility === "skippable",
+    [fields],
+  );
+
+  const isAddable = useCallback(
+    (key: string) => fields.find((f) => f.key === key)?.visibility !== "mandatory",
     [fields],
   );
 
@@ -77,19 +120,14 @@ export function usePodForm<T extends Record<string, any>>(
   );
 
   const addAndClose = useCallback((key: string) => {
-    podFormRef.current?.addField(key);
+    markAdded(key);
     setPreviewOpen(false);
-  }, []);
-
-  const addGroupAndClose = useCallback((groupId: string) => {
-    podFormRef.current?.addGroup(groupId);
-    setPreviewOpen(false);
-  }, []);
+  }, [markAdded]);
 
   const addSectionAndClose = useCallback((key: string) => {
-    podFormRef.current?.addSection(key);
+    markAdded(key);
     setPreviewOpen(false);
-  }, []);
+  }, [markAdded]);
 
   return {
     data, setData,
@@ -97,12 +135,11 @@ export function usePodForm<T extends Record<string, any>>(
     handleSave,
     previewOpen, setPreviewOpen,
     isDirty,
-    podFormRef,
     metamodel,
-    isSkippable,
-    isGroupSkippable,
-    addAndClose,
-    addGroupAndClose,
-    addSectionAndClose,
+    vis,
+    onChange,
+    markAdded, markRemoved, addGroup, removeGroup,
+    isSkippable, isAddable, isGroupSkippable,
+    addAndClose, addSectionAndClose,
   };
 }

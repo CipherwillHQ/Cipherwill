@@ -33,10 +33,13 @@ const PASSWORD_CUSTOM_SECTIONS: PodCustomSectionDef[] = [
 export default function PodDetails({ id }: { id: string }) {
   const {
     data, setData, loading, error, isUpdating, handleSave,
-    previewOpen, setPreviewOpen, isDirty, podFormRef,
-    metamodel, isSkippable, addAndClose, addGroupAndClose, addSectionAndClose,
+    previewOpen, setPreviewOpen, isDirty,
+    metamodel, vis, onChange, markAdded, markRemoved, addGroup, removeGroup,
+    isSkippable, isAddable,
+    addAndClose, addSectionAndClose,
   } = usePodForm<PASSWORD>(PASSWORD_SAMPLE, {
-    podType: "password", version: "0.0.1", refId: id, fields: PASSWORD_FIELDS,
+    podType: "password", version: "0.0.1", refId: id,
+    fields: PASSWORD_FIELDS, customSections: PASSWORD_CUSTOM_SECTIONS,
   });
 
   function handleRemoveCustomSection(key: string) {
@@ -92,18 +95,20 @@ export default function PodDetails({ id }: { id: string }) {
 
   return (
     <PodFormLayout
-      preview={<PasswordPreview d={data} metamodel={metamodel} isSkippable={isSkippable} addAndClose={addAndClose} addGroupAndClose={addGroupAndClose} addSectionAndClose={addSectionAndClose} />}
+      preview={<PasswordPreview d={data} metamodel={metamodel} isSkippable={isSkippable} isAddable={isAddable} addAndClose={addAndClose} addSectionAndClose={addSectionAndClose} />}
       previewOpen={previewOpen}
       onTogglePreview={() => setPreviewOpen(!previewOpen)}
       isDirty={isDirty}
       saveButton={<SaveButton isDirty={isDirty} isUpdating={isUpdating} onClick={handleSave} />}
     >
       <PodForm
-        ref={podFormRef}
-        fields={PASSWORD_FIELDS}
         data={data}
-        onChange={(key, value) => setData((prev) => ({ ...prev, [key]: value }))}
-        customSections={PASSWORD_CUSTOM_SECTIONS}
+        onChange={onChange}
+        vis={vis}
+        markAdded={markAdded}
+        markRemoved={markRemoved}
+        addGroup={addGroup}
+        removeGroup={removeGroup}
         renderCustomSection={renderCustomSection}
         onRemoveCustomSection={handleRemoveCustomSection}
       />

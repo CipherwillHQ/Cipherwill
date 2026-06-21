@@ -20,18 +20,27 @@ export interface PodCustomSectionDef {
   visibility: PodFieldVisibility;
 }
 
-export interface PodFormHandle {
-  addField: (key: string) => void;
-  addGroup: (groupId: string) => void;
-  addSection: (key: string) => void;
+export interface VisibilityState {
+  mandatoryFields: PodFieldConfig[];
+  mandatoryGroupsMap: Map<string, PodFieldConfig[]>;
+  toggleableGroupsMap: Map<string, PodFieldConfig[]>;
+  standaloneMandatory: PodFieldConfig[];
+  mandatorySections: PodCustomSectionDef[];
+  visibleStandalone: PodFieldConfig[];
+  visibleGroups: [string, PodFieldConfig[]][];
+  visibleSections: PodCustomSectionDef[];
+  dropdownFields: { key: string; label: string }[];
+  dropdownGroups: { key: string; label: string }[];
+  dropdownSections: { key: string; label: string }[];
+  hasAvailableItems: boolean;
 }
 
 export interface PreviewProps {
   d: Record<string, any>;
   metamodel: MetamodelData | null;
   isSkippable: (key: string) => boolean;
+  isAddable: (key: string) => boolean;
   isGroupSkippable?: (groupId: string) => boolean;
   addAndClose: (key: string) => void;
-  addGroupAndClose: (groupId: string) => void;
-  addSectionAndClose: (key: string) => void;
+  addSectionAndClose?: (key: string) => void;
 }

@@ -31,10 +31,13 @@ const SEED_PHRASE_CUSTOM_SECTIONS: PodCustomSectionDef[] = [
 export default function PodDetails({ id }: { id: string }) {
   const {
     data, setData, loading, error, isUpdating, handleSave,
-    previewOpen, setPreviewOpen, isDirty, podFormRef,
-    metamodel, isSkippable, addAndClose, addGroupAndClose, addSectionAndClose,
+    previewOpen, setPreviewOpen, isDirty,
+    metamodel, vis, onChange, markAdded, markRemoved, addGroup, removeGroup,
+    isSkippable, isAddable,
+    addAndClose,
   } = usePodForm<SEED_PHRASE_TYPE>(SEED_PHRASE_SAMPLE, {
-    podType: "seed_phrase", version: "0.0.1", refId: id, fields: SEED_PHRASE_FIELDS,
+    podType: "seed_phrase", version: "0.0.1", refId: id,
+    fields: SEED_PHRASE_FIELDS, customSections: SEED_PHRASE_CUSTOM_SECTIONS,
   });
 
   function handleRemoveCustomSection(key: string) {
@@ -99,18 +102,20 @@ export default function PodDetails({ id }: { id: string }) {
 
   return (
     <PodFormLayout
-      preview={<SeedPhrasePreview d={data} metamodel={metamodel} isSkippable={isSkippable} addAndClose={addAndClose} addGroupAndClose={addGroupAndClose} addSectionAndClose={addSectionAndClose} />}
+      preview={<SeedPhrasePreview d={data} metamodel={metamodel} isSkippable={isSkippable} isAddable={isAddable} addAndClose={addAndClose} />}
       previewOpen={previewOpen}
       onTogglePreview={() => setPreviewOpen(!previewOpen)}
       isDirty={isDirty}
       saveButton={<SaveButton isDirty={isDirty} isUpdating={isUpdating} onClick={handleSave} />}
     >
       <PodForm
-        ref={podFormRef}
-        fields={SEED_PHRASE_FIELDS}
         data={data}
-        onChange={(key, value) => setData((prev) => ({ ...prev, [key]: value }))}
-        customSections={SEED_PHRASE_CUSTOM_SECTIONS}
+        onChange={onChange}
+        vis={vis}
+        markAdded={markAdded}
+        markRemoved={markRemoved}
+        addGroup={addGroup}
+        removeGroup={removeGroup}
         renderCustomSection={renderCustomSection}
         onRemoveCustomSection={handleRemoveCustomSection}
       />

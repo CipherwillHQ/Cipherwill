@@ -10,11 +10,8 @@ interface Props extends PreviewProps {
 }
 
 export default function EmailPreview({
-  d, metamodel, addAndClose, addGroupAndClose, isSkippable, isGroupSkippable,
+  d, metamodel, addAndClose, isSkippable, isAddable,
 }: Props) {
-  const canAdd = (key: string) => !isSkippable(key);
-  const recoverySkippable = isGroupSkippable?.("recovery") ?? true;
-  const securitySkippable = isGroupSkippable?.("security") ?? true;
   const hasRecovery = !!(d.recoveryEmail || d.recoveryPhone);
   const hasSecurity = !!d.securityQuestion;
 
@@ -25,18 +22,13 @@ export default function EmailPreview({
           <>I have an email account <MetamodelName name={metamodel?.name} fallback="..." /></>
         ) : (
           <>I have an email account{" "}
-          <PreviewValue value={d.email} addLabel={canAdd("email") ? "Email" : undefined} onAdd={canAdd("email") ? () => addAndClose("email") : undefined} /></>
+          <PreviewValue value={d.email} addLabel={isAddable("email") ? "Email" : undefined} onAdd={isAddable("email") ? () => addAndClose("email") : undefined} /></>
         )}, with the provider{" "}
-        <PreviewValue value={d.provider} fallback="a provider" addLabel={canAdd("provider") ? "Provider" : undefined} onAdd={canAdd("provider") ? () => addAndClose("provider") : undefined} />,
+        <PreviewValue value={d.provider} fallback="a provider" addLabel={isAddable("provider") ? "Provider" : undefined} onAdd={isAddable("provider") ? () => addAndClose("provider") : undefined} />,
         and the password is{" "}
         <PreviewValue value={d.password} sensitive />.
       </p>
-      {!hasRecovery && !recoverySkippable ? (
-        <p>
-          I have recovery details set up{" "}
-          <PreviewValue value="" addLabel="Recovery Info" onAdd={() => addGroupAndClose("recovery")} />.
-        </p>
-      ) : hasRecovery ? (
+      {hasRecovery && (
         <>
           {d.recoveryEmail && (
             <p>
@@ -51,20 +43,15 @@ export default function EmailPreview({
             </p>
           )}
         </>
-      ) : null}
-      {!hasSecurity && !securitySkippable ? (
-        <p>
-          I have security questions set up{" "}
-          <PreviewValue value="" addLabel="Security Info" onAdd={() => addGroupAndClose("security")} />.
-        </p>
-      ) : hasSecurity ? (
+      )}
+      {hasSecurity && (
         <p>
           For security, my question is{" "}
           &ldquo;<PreviewValue value={d.securityQuestion} />&rdquo;{" "}
           and the answer is{" "}
           <PreviewValue value={d.securityAnswer} sensitive />.
         </p>
-      ) : null}
+      )}
       {d.backupCodes && d.backupCodes.length > 0 && (
         <p>
           I have these backup codes saved:{" "}
@@ -88,7 +75,7 @@ export default function EmailPreview({
       )}
       {(d.note || !isSkippable("note")) && (
         <p>
-          For context, <PreviewValue value={d.note} addLabel={canAdd("note") ? "Note" : undefined} onAdd={canAdd("note") ? () => addAndClose("note") : undefined} />.
+          For context, <PreviewValue value={d.note} addLabel={isAddable("note") ? "Note" : undefined} onAdd={isAddable("note") ? () => addAndClose("note") : undefined} />.
         </p>
       )}
     </PodPreviewSection>

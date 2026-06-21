@@ -9,8 +9,7 @@ interface Props extends PreviewProps {
   d: SEED_PHRASE_TYPE;
 }
 
-export default function SeedPhrasePreview({ d, metamodel, addAndClose, isSkippable }: Props) {
-  const canAdd = (key: string) => !isSkippable(key);
+export default function SeedPhrasePreview({ d, metamodel, addAndClose, isSkippable, isAddable }: Props) {
   return (
     <PodPreviewSection>
       <p>
@@ -20,12 +19,12 @@ export default function SeedPhrasePreview({ d, metamodel, addAndClose, isSkippab
       {(d.public_key || !isSkippable("public_key")) && (
         <p>
           My public key is{" "}
-          <PreviewValue value={d.public_key} addLabel={canAdd("public_key") ? "Public Key" : undefined} onAdd={canAdd("public_key") ? () => addAndClose("public_key") : undefined} />.
+          <PreviewValue value={d.public_key} addLabel={isAddable("public_key") ? "Public Key" : undefined} onAdd={isAddable("public_key") ? () => addAndClose("public_key") : undefined} />.
         </p>
       )}
       {(d.note || !isSkippable("note")) && (
         <p>
-          For context, <PreviewValue value={d.note} addLabel={canAdd("note") ? "Note" : undefined} onAdd={canAdd("note") ? () => addAndClose("note") : undefined} />.
+          For context, <PreviewValue value={d.note} addLabel={isAddable("note") ? "Note" : undefined} onAdd={isAddable("note") ? () => addAndClose("note") : undefined} />.
         </p>
       )}
     </PodPreviewSection>

@@ -43,11 +43,13 @@ const EMAIL_ACCOUNT_CUSTOM_SECTIONS: PodCustomSectionDef[] = [
 export default function PodDetails({ id }: { id: string }) {
   const {
     data, setData, loading, error, isUpdating, handleSave,
-    previewOpen, setPreviewOpen, isDirty, podFormRef,
-    metamodel, isSkippable, isGroupSkippable,
-    addAndClose, addGroupAndClose, addSectionAndClose,
+    previewOpen, setPreviewOpen, isDirty,
+    metamodel, vis, onChange, markAdded, markRemoved, addGroup, removeGroup,
+    isSkippable, isAddable, isGroupSkippable,
+    addAndClose,
   } = usePodForm<EMAIL_ACCOUNT_TYPE>(EMAIL_ACCOUNT_SAMPLE, {
-    podType: "email_account", version: "0.0.1", refId: id, fields: EMAIL_ACCOUNT_FIELDS,
+    podType: "email_account", version: "0.0.1", refId: id,
+    fields: EMAIL_ACCOUNT_FIELDS, customSections: EMAIL_ACCOUNT_CUSTOM_SECTIONS,
   });
 
   function handleRemoveCustomSection(key: string) {
@@ -148,18 +150,20 @@ export default function PodDetails({ id }: { id: string }) {
 
   return (
     <PodFormLayout
-      preview={<EmailPreview d={data} metamodel={metamodel} isSkippable={isSkippable} isGroupSkippable={isGroupSkippable} addAndClose={addAndClose} addGroupAndClose={addGroupAndClose} addSectionAndClose={addSectionAndClose} />}
+      preview={<EmailPreview d={data} metamodel={metamodel} isSkippable={isSkippable} isAddable={isAddable} isGroupSkippable={isGroupSkippable} addAndClose={addAndClose} />}
       previewOpen={previewOpen}
       onTogglePreview={() => setPreviewOpen(!previewOpen)}
       isDirty={isDirty}
       saveButton={<SaveButton isDirty={isDirty} isUpdating={isUpdating} onClick={handleSave} />}
     >
       <PodForm
-        ref={podFormRef}
-        fields={EMAIL_ACCOUNT_FIELDS}
         data={data}
-        onChange={(key, value) => setData((prev) => ({ ...prev, [key]: value }))}
-        customSections={EMAIL_ACCOUNT_CUSTOM_SECTIONS}
+        onChange={onChange}
+        vis={vis}
+        markAdded={markAdded}
+        markRemoved={markRemoved}
+        addGroup={addGroup}
+        removeGroup={removeGroup}
         renderCustomSection={renderCustomSection}
         onRemoveCustomSection={handleRemoveCustomSection}
       />

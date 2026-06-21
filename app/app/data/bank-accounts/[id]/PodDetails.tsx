@@ -22,9 +22,11 @@ const BANK_ACCOUNT_FIELDS: PodFieldConfig[] = [
 
 export default function PodDetails({ id }: { id: string }) {
   const {
-    data, setData, loading, error, isUpdating, handleSave,
-    previewOpen, setPreviewOpen, isDirty, podFormRef,
-    metamodel, isSkippable, addAndClose, addGroupAndClose, addSectionAndClose,
+    data, loading, error, isUpdating, handleSave,
+    previewOpen, setPreviewOpen, isDirty,
+    metamodel, vis, onChange, markAdded, markRemoved, addGroup, removeGroup,
+    isSkippable, isAddable,
+    addAndClose,
   } = usePodForm<BANK_ACCOUNT_TYPE>(BANK_ACCOUNT_SAMPLE, {
     podType: "bank_account", version: "0.0.1", refId: id, fields: BANK_ACCOUNT_FIELDS,
   });
@@ -34,17 +36,20 @@ export default function PodDetails({ id }: { id: string }) {
 
   return (
     <PodFormLayout
-      preview={<BankAccountPreview d={data} metamodel={metamodel} isSkippable={isSkippable} addAndClose={addAndClose} addGroupAndClose={addGroupAndClose} addSectionAndClose={addSectionAndClose} />}
+      preview={<BankAccountPreview d={data} metamodel={metamodel} isSkippable={isSkippable} isAddable={isAddable} addAndClose={addAndClose} />}
       previewOpen={previewOpen}
       onTogglePreview={() => setPreviewOpen(!previewOpen)}
       isDirty={isDirty}
       saveButton={<SaveButton isDirty={isDirty} isUpdating={isUpdating} onClick={handleSave} />}
     >
       <PodForm
-        ref={podFormRef}
-        fields={BANK_ACCOUNT_FIELDS}
         data={data}
-        onChange={(key, value) => setData((prev) => ({ ...prev, [key]: value }))}
+        onChange={onChange}
+        vis={vis}
+        markAdded={markAdded}
+        markRemoved={markRemoved}
+        addGroup={addGroup}
+        removeGroup={removeGroup}
       />
     </PodFormLayout>
   );

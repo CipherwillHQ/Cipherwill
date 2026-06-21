@@ -10,16 +10,15 @@ interface Props extends PreviewProps {
 }
 
 export default function PasswordPreview({
-  d, metamodel, addAndClose, addSectionAndClose, isSkippable,
+  d, metamodel, addAndClose, addSectionAndClose, isSkippable, isAddable,
 }: Props) {
-  const canAdd = (key: string) => !isSkippable(key);
   return (
     <PodPreviewSection>
       <p>
         I have a login for <MetamodelName name={metamodel?.name} fallback="this account" />, with the username{" "}
-        <PreviewValue value={d.username} addLabel="Username" onAdd={() => addAndClose("username")} />,
+        <PreviewValue value={d.username} addLabel={isAddable("username") ? "Username" : undefined} onAdd={isAddable("username") ? () => addAndClose("username") : undefined} />,
         and the password is{" "}
-        <PreviewValue value={d.password} sensitive addLabel="Password" onAdd={() => addAndClose("password")} />.
+        <PreviewValue value={d.password} sensitive addLabel={isAddable("password") ? "Password" : undefined} onAdd={isAddable("password") ? () => addAndClose("password") : undefined} />.
       </p>
       {d.totp_secret && (
         <p>
@@ -40,12 +39,12 @@ export default function PasswordPreview({
       ) : (
         <p>
           This login is used on{" "}
-          <PreviewValue value="" addLabel="Websites" onAdd={() => addSectionAndClose("uri")} />.
+          <PreviewValue value="" addLabel="Websites" onAdd={addSectionAndClose ? () => addSectionAndClose("uri") : undefined} />.
         </p>
       )}
       {(d.note || !isSkippable("note")) && (
         <p>
-          For context, <PreviewValue value={d.note} addLabel={canAdd("note") ? "Note" : undefined} onAdd={canAdd("note") ? () => addAndClose("note") : undefined} />.
+          For context, <PreviewValue value={d.note} addLabel={isAddable("note") ? "Note" : undefined} onAdd={isAddable("note") ? () => addAndClose("note") : undefined} />.
         </p>
       )}
     </PodPreviewSection>

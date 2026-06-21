@@ -9,20 +9,19 @@ interface Props extends PreviewProps {
   d: DEVICE_LOCK;
 }
 
-export default function DeviceLockPreview({ d, metamodel, addAndClose, isSkippable }: Props) {
-  const canAdd = (key: string) => !isSkippable(key);
+export default function DeviceLockPreview({ d, metamodel, addAndClose, isSkippable, isAddable }: Props) {
   return (
     <PodPreviewSection>
       <p>
         I have a <MetamodelName name={metamodel?.name} fallback="device" /> with password{" "}
-        <PreviewValue value={d.password} sensitive addLabel="Password" onAdd={() => addAndClose("password")} />{d.pin ? "," : "."}
+        <PreviewValue value={d.password} sensitive addLabel={isAddable("password") ? "Password" : undefined} onAdd={isAddable("password") ? () => addAndClose("password") : undefined} />{d.pin ? "," : "."}
         {d.pin && (
           <> and pin <PreviewValue value={d.pin} sensitive />.</>
         )}
       </p>
       {(d.note || !isSkippable("note")) && (
         <p>
-          For context, <PreviewValue value={d.note} addLabel={canAdd("note") ? "Note" : undefined} onAdd={canAdd("note") ? () => addAndClose("note") : undefined} />.
+          For context, <PreviewValue value={d.note} addLabel={isAddable("note") ? "Note" : undefined} onAdd={isAddable("note") ? () => addAndClose("note") : undefined} />.
         </p>
       )}
     </PodPreviewSection>

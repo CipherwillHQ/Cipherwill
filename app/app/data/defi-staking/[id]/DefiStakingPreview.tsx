@@ -9,19 +9,18 @@ interface Props extends PreviewProps {
   d: DEFI_STACKING;
 }
 
-export default function DefiStakingPreview({ d, metamodel, addAndClose, isSkippable }: Props) {
-  const canAdd = (key: string) => !isSkippable(key);
+export default function DefiStakingPreview({ d, metamodel, addAndClose, isSkippable, isAddable }: Props) {
   return (
     <PodPreviewSection>
       <p>
         I have a <MetamodelName name={metamodel?.name} fallback="DeFi stake" /> of{" "}
-        <PreviewValue value={d.asset_amount} addLabel="Amount" onAdd={() => addAndClose("asset_amount")} />{" "}
-        <PreviewValue value={d.asset_name} addLabel="Asset name" onAdd={() => addAndClose("asset_name")} /> on{" "}
-        <PreviewValue value={d.platform} addLabel="Platform" onAdd={() => addAndClose("platform")} />,
+        <PreviewValue value={d.asset_amount} addLabel={isAddable("asset_amount") ? "Amount" : undefined} onAdd={isAddable("asset_amount") ? () => addAndClose("asset_amount") : undefined} />{" "}
+        <PreviewValue value={d.asset_name} addLabel={isAddable("asset_name") ? "Asset name" : undefined} onAdd={isAddable("asset_name") ? () => addAndClose("asset_name") : undefined} /> on{" "}
+        <PreviewValue value={d.platform} addLabel={isAddable("platform") ? "Platform" : undefined} onAdd={isAddable("platform") ? () => addAndClose("platform") : undefined} />,
         locked for{" "}
-        <PreviewValue value={d.lock_period} addLabel={canAdd("lock_period") ? "Lock period" : undefined} onAdd={canAdd("lock_period") ? () => addAndClose("lock_period") : undefined} />,
+        <PreviewValue value={d.lock_period} addLabel={isAddable("lock_period") ? "Lock period" : undefined} onAdd={isAddable("lock_period") ? () => addAndClose("lock_period") : undefined} />,
         in wallet{" "}
-        <PreviewValue value={d.wallet_address} addLabel="Wallet address" onAdd={() => addAndClose("wallet_address")} />.
+        <PreviewValue value={d.wallet_address} addLabel={isAddable("wallet_address") ? "Wallet address" : undefined} onAdd={isAddable("wallet_address") ? () => addAndClose("wallet_address") : undefined} />.
       </p>
       {d.username && (
         <p>
@@ -35,7 +34,7 @@ export default function DefiStakingPreview({ d, metamodel, addAndClose, isSkippa
       )}
       {(d.note || !isSkippable("note")) && (
         <p>
-          For context, <PreviewValue value={d.note} addLabel={canAdd("note") ? "Note" : undefined} onAdd={canAdd("note") ? () => addAndClose("note") : undefined} />.
+          For context, <PreviewValue value={d.note} addLabel={isAddable("note") ? "Note" : undefined} onAdd={isAddable("note") ? () => addAndClose("note") : undefined} />.
         </p>
       )}
     </PodPreviewSection>

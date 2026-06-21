@@ -1,24 +1,8 @@
 // Computes which fields, groups, and sections are visible based on data, manual add/remove state.
 // Owns: visibility derivation. Does NOT own rendering or animation.
 import { useMemo } from "react";
-import type { PodFieldConfig, PodCustomSectionDef } from "@/types/interfaces";
+import type { PodFieldConfig, PodCustomSectionDef, VisibilityState } from "@/types/interfaces";
 import { fieldHasValue, buildGroupMap } from "./podFormUtils";
-
-export interface VisibilityState {
-  mandatoryFields: PodFieldConfig[];
-  mandatoryGroupsMap: Map<string, PodFieldConfig[]>;
-  standaloneMandatory: PodFieldConfig[];
-  mandatorySections: PodCustomSectionDef[];
-
-  visibleStandalone: PodFieldConfig[];
-  visibleGroups: [string, PodFieldConfig[]][];
-  visibleSections: PodCustomSectionDef[];
-
-  dropdownFields: { key: string; label: string }[];
-  dropdownGroups: { key: string; label: string }[];
-  dropdownSections: { key: string; label: string }[];
-  hasAvailableItems: boolean;
-}
 
 export function usePodFormVisibility(
   fields: PodFieldConfig[],
@@ -72,6 +56,7 @@ export function usePodFormVisibility(
     return {
       mandatoryFields,
       mandatoryGroupsMap,
+      toggleableGroupsMap,
       standaloneMandatory,
       mandatorySections,
       visibleStandalone,

@@ -1,22 +1,23 @@
-// Config-driven pod form with mandatory/optional/skippable field visibility and add/remove controls.
-// Owns: add/remove state, form layout, animation. Does NOT own visibility computation or field rendering.
+// Config-driven pod form view: renders mandatory/optional/skippable fields and add/remove controls.
+// Owns: dropdown menu toggle, field rendering, remove buttons. Does NOT own visibility state or add/remove logic.
 "use client";
-import { useState, forwardRef, useImperativeHandle } from "react";
+import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { TbTrash } from "react-icons/tb";
-import type { PodFieldConfig, PodCustomSectionDef, PodFormHandle } from "@/types/interfaces";
-import { usePodFormVisibility } from "./usePodFormVisibility";
-import { buildGroupMap } from "./podFormUtils";
+import type { PodFieldConfig, PodCustomSectionDef, VisibilityState } from "@/types/interfaces";
 import PodFormField from "./PodFormField";
 import PodFormDropdown from "./PodFormDropdown";
 
-export type { PodFieldConfig, PodCustomSectionDef, PodFormHandle };
+export type { PodFieldConfig, PodCustomSectionDef };
 
 interface PodFormProps {
-  fields: PodFieldConfig[];
   data: Record<string, any>;
   onChange: (key: string, value: string) => void;
-  customSections?: PodCustomSectionDef[];
+  vis: VisibilityState;
+  markAdded: (key: string) => void;
+  markRemoved: (key: string) => void;
+  addGroup: (groupId: string) => void;
+  removeGroup: (groupId: string) => void;
   renderCustomSection?: (key: string) => React.ReactNode;
   onRemoveCustomSection?: (key: string) => void;
 }
@@ -28,59 +29,23 @@ const itemAnim = {
   transition: { duration: 0.28, ease: [0.25, 1, 0.5, 1] as [number, number, number, number] },
 };
 
-const PodForm = forwardRef<PodFormHandle, PodFormProps>(function PodForm({
-  fields,
+export default function PodForm({
   data,
   onChange,
-  customSections = [],
+  vis,
+  markAdded,
+  markRemoved,
+  addGroup,
+  removeGroup,
   renderCustomSection,
   onRemoveCustomSection,
-}, ref) {
-  const [manuallyAdded, setManuallyAdded] = useState<Set<string>>(new Set());
-  const [manuallyRemoved, setManuallyRemoved] = useState<Set<string>>(new Set());
+}: PodFormProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-
-  const vis = usePodFormVisibility(fields, customSections, data, manuallyAdded, manuallyRemoved);
-  const toggleableGroupsMap = buildGroupMap(fields.filter((f) => f.visibility !== "mandatory"));
-
-  function markAdded(key: string) {
-    setManuallyAdded((prev) => new Set(prev).add(key));
-    setManuallyRemoved((prev) => { const n = new Set(prev); n.delete(key); return n; });
-    setMenuOpen(false);
-  }
-
-  function markRemoved(key: string) {
-    setManuallyAdded((prev) => { const n = new Set(prev); n.delete(key); return n; });
-    setManuallyRemoved((prev) => new Set(prev).add(key));
-    onChange(key, "");
-  }
-
-  function addGroup(groupId: string) {
-    const g = toggleableGroupsMap.get(groupId) || [];
-    setManuallyAdded((prev) => { const n = new Set(prev); g.forEach((f) => n.add(f.key)); return n; });
-    setManuallyRemoved((prev) => { const n = new Set(prev); g.forEach((f) => n.delete(f.key)); return n; });
-    setMenuOpen(false);
-  }
-
-  function removeGroup(groupId: string) {
-    const g = toggleableGroupsMap.get(groupId) || [];
-    setManuallyAdded((prev) => { const n = new Set(prev); g.forEach((f) => n.delete(f.key)); return n; });
-    setManuallyRemoved((prev) => { const n = new Set(prev); g.forEach((f) => n.add(f.key)); return n; });
-    g.forEach((f) => onChange(f.key, ""));
-  }
 
   function removeSection(key: string) {
     markRemoved(key);
     onRemoveCustomSection?.(key);
   }
-
-  useImperativeHandle(ref, () => ({
-    addField: (k: string) => markAdded(k),
-    addGroup: (g: string) => addGroup(g),
-    addSection: (k: string) => markAdded(k),
-  }));
-
-  if (fields.length === 0 && customSections.length === 0) return null;
 
   function renderField(f: PodFieldConfig) {
     return (
@@ -154,9 +119,9 @@ const PodForm = forwardRef<PodFormHandle, PodFormProps>(function PodForm({
             fields={vis.dropdownFields}
             groups={vis.dropdownGroups}
             sections={vis.dropdownSections}
-            onAddField={(k) => markAdded(k)}
-            onAddGroup={(g) => addGroup(g)}
-            onAddSection={(k) => markAdded(k)}
+            onAddField={(k) => { markAdded(k); setMenuOpen(false); }}
+            onAddGroup={(g) => { addGroup(g); setMenuOpen(false); }}
+            onAddSection={(k) => { markAdded(k); setMenuOpen(false); }}
           />
         ) : (
           <button type="button" className="text-sm text-blue-500 hover:text-blue-600 font-medium text-left py-1" onClick={() => setMenuOpen(true)}>
@@ -165,6 +130,4 @@ const PodForm = forwardRef<PodFormHandle, PodFormProps>(function PodForm({
         ))}
     </>
   );
-});
-
-export default PodForm;
+}
