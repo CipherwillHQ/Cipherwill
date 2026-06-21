@@ -1,5 +1,5 @@
 // Password pod form: username, password, 2FA, websites, note with live preview.
-// Owns: field config, custom section (websites), save logic, preview. Does NOT own form chrome.
+// Owns: field config, custom section (websites), save logic, orchestration. Does NOT own preview rendering.
 "use client";
 import { useState, useRef } from "react";
 import { usePod } from "@/contexts/PodHelper";
@@ -8,8 +8,8 @@ import { PASSWORD } from "@/types/pods/PASSWORD";
 import PodForm, { PodFieldConfig, PodCustomSectionDef, PodFormHandle } from "@/components/common/PodForm";
 import SaveButton from "@/components/common/SaveButton";
 import PodFormLayout from "@/components/pods/PodFormLayout";
-import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
 import { useMetamodelData } from "@/common/useMetamodelData";
+import PasswordPreview from "./PasswordPreview";
 import toast from "react-hot-toast";
 
 const PASSWORD_SAMPLE: PASSWORD = {
@@ -139,53 +139,21 @@ export default function PodDetails({ id }) {
   const isSkippable = (key: string) =>
     PASSWORD_FIELDS.find((f) => f.key === key)?.visibility === "skippable";
 
-  function renderPreview(d: PASSWORD) {
-    const canAdd = (key: string) => !isSkippable(key);
-    return (
-      <PodPreviewSection>
-        <p>
-          I have a login for {metamodel?.name || "this account"}, with the username{" "}
-          <PreviewValue value={d.username} addLabel="Username" onAdd={() => addAndClose("username")} />,
-          and the password is{" "}
-          <PreviewValue value={d.password} sensitive addLabel="Password" onAdd={() => addAndClose("password")} />.
-        </p>
-        {d.totp_secret && (
-          <p>
-            I use 2FA with the secret <PreviewValue value={d.totp_secret} sensitive />.
-          </p>
-        )}
-        {d.uri && d.uri.length > 0 ? (
-          <>
-            <p>This login is used on these websites:</p>
-            <ul className="list-disc list-inside pl-2 space-y-0.5">
-              {d.uri.map((url, i) => (
-                <li key={i} className="font-semibold text-forest dark:text-cream">
-                  {url}
-                </li>
-              ))}
-            </ul>
-          </>
-        ) : (
-          <p>
-            This login is used on{" "}
-            <PreviewValue value="" addLabel="Websites" onAdd={() => { podFormRef.current?.addSection("uri"); setPreviewOpen(false); }} />.
-          </p>
-        )}
-        {(d.note || !isSkippable("note")) && (
-          <p>
-            For context, <PreviewValue value={d.note} addLabel={canAdd("note") ? "Note" : undefined} onAdd={canAdd("note") ? () => addAndClose("note") : undefined} />.
-          </p>
-        )}
-      </PodPreviewSection>
-    );
-  }
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <PodFormLayout
-      preview={renderPreview(data)}
+      preview={
+        <PasswordPreview
+          d={data}
+          metamodel={metamodel}
+          podFormRef={podFormRef}
+          setPreviewOpen={setPreviewOpen}
+          addAndClose={addAndClose}
+          isSkippable={isSkippable}
+        />
+      }
       previewOpen={previewOpen}
       onTogglePreview={() => setPreviewOpen(!previewOpen)}
       isDirty={isDirty}

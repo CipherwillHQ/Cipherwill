@@ -1,5 +1,5 @@
 // Payment card pod form: card type, number, expiry, CVV, issuer with live preview.
-// Owns: field config, save logic, preview rendering. Does NOT own form chrome or field rendering.
+// Owns: field config, save logic, orchestration. Does NOT own form chrome or preview rendering.
 "use client";
 import { useState, useRef } from "react";
 import { usePod } from "@/contexts/PodHelper";
@@ -7,8 +7,8 @@ import { PAYMENT_CARD_TYPE } from "@/types/pods/PAYMENT_CARD";
 import PodForm, { PodFieldConfig, PodFormHandle } from "@/components/common/PodForm";
 import SaveButton from "@/components/common/SaveButton";
 import PodFormLayout from "@/components/pods/PodFormLayout";
-import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
 import { useMetamodelData } from "@/common/useMetamodelData";
+import PaymentCardPreview from "./PaymentCardPreview";
 import toast from "react-hot-toast";
 
 const PAYMENT_CARD_SAMPLE: PAYMENT_CARD_TYPE = {
@@ -75,43 +75,12 @@ export default function PodDetails({ id }) {
   const isSkippable = (key: string) =>
     PAYMENT_CARD_FIELDS.find((f) => f.key === key)?.visibility === "skippable";
 
-  function renderPreview(d: PAYMENT_CARD_TYPE) {
-    const canAdd = (key: string) => !isSkippable(key);
-    return (
-      <PodPreviewSection>
-        <p>
-          I have a {metamodel?.name || "card"} with the number ending in{" "}
-          <PreviewValue value={d.card_number} maskLast4 addLabel="Card Number" onAdd={() => addAndClose("card_number")} />.
-        </p>
-        <p>
-          It is a{" "}
-          <PreviewValue value={d.type} fallback="card" addLabel={canAdd("type") ? "Type" : undefined} onAdd={canAdd("type") ? () => addAndClose("type") : undefined} /> card,
-          issued by{" "}
-          <PreviewValue value={d.issuer} addLabel={canAdd("issuer") ? "Issuer" : undefined} onAdd={canAdd("issuer") ? () => addAndClose("issuer") : undefined} /> on
-          the <PreviewValue value={d.network} addLabel={canAdd("network") ? "Network" : undefined} onAdd={canAdd("network") ? () => addAndClose("network") : undefined} /> network.
-          It expires on{" "}
-          <PreviewValue value={d.expiry_date} addLabel="Expiry Date" onAdd={() => addAndClose("expiry_date")} />.
-        </p>
-        {d.cvv && (
-          <p>
-            The CVV is <PreviewValue value={d.cvv} sensitive />.
-          </p>
-        )}
-        {(d.note || !isSkippable("note")) && (
-          <p>
-            For context, <PreviewValue value={d.note} addLabel={canAdd("note") ? "Note" : undefined} onAdd={canAdd("note") ? () => addAndClose("note") : undefined} />.
-          </p>
-        )}
-      </PodPreviewSection>
-    );
-  }
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <PodFormLayout
-      preview={renderPreview(data)}
+      preview={<PaymentCardPreview d={data} metamodel={metamodel} addAndClose={addAndClose} isSkippable={isSkippable} />}
       previewOpen={previewOpen}
       onTogglePreview={() => setPreviewOpen(!previewOpen)}
       isDirty={isDirty}

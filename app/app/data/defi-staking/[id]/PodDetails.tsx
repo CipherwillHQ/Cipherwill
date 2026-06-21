@@ -1,5 +1,5 @@
 // DeFi staking pod form: platform, asset details, wallet info with live preview.
-// Owns: field config, save logic, preview rendering. Does NOT own form chrome or field rendering.
+// Owns: field config, save logic, orchestration. Does NOT own form chrome or preview rendering.
 "use client";
 import { useState, useRef } from "react";
 import { usePod } from "@/contexts/PodHelper";
@@ -7,8 +7,8 @@ import { DEFI_STACKING } from "@/types/pods/DEFI_STAKING";
 import PodForm, { PodFieldConfig, PodFormHandle } from "@/components/common/PodForm";
 import SaveButton from "@/components/common/SaveButton";
 import PodFormLayout from "@/components/pods/PodFormLayout";
-import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
 import { useMetamodelData } from "@/common/useMetamodelData";
+import DefiStakingPreview from "./DefiStakingPreview";
 import toast from "react-hot-toast";
 
 const DEFI_STACKING_SAMPLE: DEFI_STACKING = {
@@ -75,45 +75,12 @@ export default function PodDetails({ id }) {
   const isSkippable = (key: string) =>
     DEFI_STACKING_FIELDS.find((f) => f.key === key)?.visibility === "skippable";
 
-  function renderPreview(d: DEFI_STACKING) {
-    const canAdd = (key: string) => !isSkippable(key);
-    return (
-      <PodPreviewSection>
-        <p>
-          I have a {metamodel?.name || "DeFi stake"} of{" "}
-          <PreviewValue value={d.asset_amount} addLabel="Amount" onAdd={() => addAndClose("asset_amount")} />{" "}
-          <PreviewValue value={d.asset_name} addLabel="Asset name" onAdd={() => addAndClose("asset_name")} /> on{" "}
-          <PreviewValue value={d.platform} addLabel="Platform" onAdd={() => addAndClose("platform")} />,
-          locked for{" "}
-          <PreviewValue value={d.lock_period} addLabel={canAdd("lock_period") ? "Lock period" : undefined} onAdd={canAdd("lock_period") ? () => addAndClose("lock_period") : undefined} />,
-          in wallet{" "}
-          <PreviewValue value={d.wallet_address} addLabel="Wallet address" onAdd={() => addAndClose("wallet_address")} />.
-        </p>
-        {d.username && (
-          <p>
-            My username is <PreviewValue value={d.username} />.
-          </p>
-        )}
-        {d.password && (
-          <p>
-            The password is <PreviewValue value={d.password} sensitive />.
-          </p>
-        )}
-        {(d.note || !isSkippable("note")) && (
-          <p>
-            For context, <PreviewValue value={d.note} addLabel={canAdd("note") ? "Note" : undefined} onAdd={canAdd("note") ? () => addAndClose("note") : undefined} />.
-          </p>
-        )}
-      </PodPreviewSection>
-    );
-  }
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <PodFormLayout
-      preview={renderPreview(data)}
+      preview={<DefiStakingPreview d={data} metamodel={metamodel} addAndClose={addAndClose} isSkippable={isSkippable} />}
       previewOpen={previewOpen}
       onTogglePreview={() => setPreviewOpen(!previewOpen)}
       isDirty={isDirty}

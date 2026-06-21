@@ -1,8 +1,11 @@
-// Config-driven pod form with mandatory/optional/skippable field visibility.
-// Owns: field visibility logic, add/remove toggles for optional items. Does NOT own rendering or data fetching.
+// Config-driven pod form with mandatory/optional/skippable field visibility and add/remove controls.
+// Owns: visibility logic, field/group/section add/remove state, form layout and animation.
 "use client";
-import { useState, useMemo, useCallback, forwardRef, useImperativeHandle } from "react";
-import PodFormRenderer from "./PodFormRenderer";
+import { useState, forwardRef, useImperativeHandle } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { TbTrash } from "react-icons/tb";
+import PodFormField from "./PodFormField";
+import PodFormDropdown from "./PodFormDropdown";
 import { fieldHasValue, buildGroupMap } from "./podFormUtils";
 
 export type PodFieldVisibility = "mandatory" | "optional" | "skippable";
@@ -38,6 +41,13 @@ interface PodFormProps {
   onRemoveCustomSection?: (key: string) => void;
 }
 
+const itemAnim = {
+  initial: { opacity: 0, y: 8 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
+  transition: { duration: 0.28, ease: [0.25, 1, 0.5, 1] as [number, number, number, number] },
+};
+
 const PodForm = forwardRef<PodFormHandle, PodFormProps>(function PodForm({
   fields,
   data,
@@ -46,105 +56,52 @@ const PodForm = forwardRef<PodFormHandle, PodFormProps>(function PodForm({
   renderCustomSection,
   onRemoveCustomSection,
 }, ref) {
-  const mandatoryFields = useMemo(() => fields.filter((f) => f.visibility === "mandatory"), [fields]);
-  const toggleableFields = useMemo(() => fields.filter((f) => f.visibility !== "mandatory"), [fields]);
-
-  const mandatoryGroupsMap = useMemo(() => buildGroupMap(mandatoryFields), [mandatoryFields]);
-  const toggleableGroupsMap = useMemo(() => buildGroupMap(toggleableFields), [toggleableFields]);
-
-  const standaloneMandatory = useMemo(
-    () => mandatoryFields.filter((f) => !f.group),
-    [mandatoryFields]
-  );
-  const standaloneToggleable = useMemo(
-    () => toggleableFields.filter((f) => !f.group),
-    [toggleableFields]
-  );
-
-  const mandatorySections = useMemo(
-    () => customSections.filter((s) => s.visibility === "mandatory"),
-    [customSections]
-  );
-  const toggleableSections = useMemo(
-    () => customSections.filter((s) => s.visibility !== "mandatory"),
-    [customSections]
-  );
-
   const [manuallyAdded, setManuallyAdded] = useState<Set<string>>(new Set());
   const [manuallyRemoved, setManuallyRemoved] = useState<Set<string>>(new Set());
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const visibleFieldKeys = useMemo(() => {
-    const keys = new Set<string>();
-    toggleableFields.forEach((f) => {
-      if (fieldHasValue(data[f.key])) keys.add(f.key);
-      if (manuallyAdded.has(f.key)) keys.add(f.key);
-      if (manuallyRemoved.has(f.key)) keys.delete(f.key);
-    });
-    return keys;
-  }, [toggleableFields, data, manuallyAdded, manuallyRemoved]);
+  const mandatoryFields = fields.filter((f) => f.visibility === "mandatory");
+  const toggleableFields = fields.filter((f) => f.visibility !== "mandatory");
+  const mandatoryGroupsMap = buildGroupMap(mandatoryFields);
+  const toggleableGroupsMap = buildGroupMap(toggleableFields);
+  const standaloneMandatory = mandatoryFields.filter((f) => !f.group);
+  const standaloneToggleable = toggleableFields.filter((f) => !f.group);
+  const mandatorySections = customSections.filter((s) => s.visibility === "mandatory");
+  const toggleableSections = customSections.filter((s) => s.visibility !== "mandatory");
 
-  const visibleGroupIds = useMemo(() => {
-    const ids = new Set<string>();
-    toggleableGroupsMap.forEach((groupFields, groupId) => {
-      if (groupFields.some((f) => visibleFieldKeys.has(f.key))) ids.add(groupId);
-    });
-    return ids;
-  }, [toggleableGroupsMap, visibleFieldKeys]);
+  const visibleFieldKeys = new Set<string>();
+  toggleableFields.forEach((f) => {
+    if (fieldHasValue(data[f.key])) visibleFieldKeys.add(f.key);
+    if (manuallyAdded.has(f.key)) visibleFieldKeys.add(f.key);
+    if (manuallyRemoved.has(f.key)) visibleFieldKeys.delete(f.key);
+  });
 
-  const visibleStandalone = useMemo(
-    () => standaloneToggleable.filter((f) => visibleFieldKeys.has(f.key)),
-    [standaloneToggleable, visibleFieldKeys]
-  );
+  const visibleGroupIds = new Set<string>();
+  toggleableGroupsMap.forEach((groupFields, groupId) => {
+    if (groupFields.some((f) => visibleFieldKeys.has(f.key))) visibleGroupIds.add(groupId);
+  });
 
-  const visibleGroups = useMemo(
-    () =>
-      Array.from(toggleableGroupsMap.entries()).filter(([groupId]) =>
-        visibleGroupIds.has(groupId)
-      ),
-    [toggleableGroupsMap, visibleGroupIds]
-  );
+  const visibleStandalone = standaloneToggleable.filter((f) => visibleFieldKeys.has(f.key));
+  const visibleGroups = Array.from(toggleableGroupsMap.entries()).filter(([id]) => visibleGroupIds.has(id));
+  const visibleSections = toggleableSections.filter((s) => {
+    if (fieldHasValue(data[s.dataKey])) return true;
+    if (manuallyAdded.has(s.key)) return true;
+    if (manuallyRemoved.has(s.key)) return false;
+    return false;
+  });
 
-  const visibleSections = useMemo(() => {
-    return toggleableSections.filter((s) => {
-      if (fieldHasValue(data[s.dataKey])) return true;
-      if (manuallyAdded.has(s.key)) return true;
-      if (manuallyRemoved.has(s.key)) return false;
-      return false;
-    });
-  }, [toggleableSections, data, manuallyAdded, manuallyRemoved]);
+  const dropdownFields = standaloneToggleable
+    .filter((f) => !visibleFieldKeys.has(f.key))
+    .map((f) => ({ key: f.key, label: f.label }));
+  const dropdownGroups = Array.from(toggleableGroupsMap.entries())
+    .filter(([id]) => !visibleGroupIds.has(id))
+    .map(([id, groupFields]) => ({ key: id, label: groupFields[0]!.group!.label }));
+  const dropdownSections = toggleableSections
+    .filter((s) => !visibleSections.some((vs) => vs.key === s.key))
+    .map((s) => ({ key: s.key, label: s.label }));
+  const hasAvailableItems = dropdownFields.length > 0 || dropdownGroups.length > 0 || dropdownSections.length > 0;
 
-  const dropdownFields = useMemo(
-    () =>
-      standaloneToggleable
-        .filter((f) => !visibleFieldKeys.has(f.key))
-        .map((f) => ({ key: f.key, label: f.label })),
-    [standaloneToggleable, visibleFieldKeys]
-  );
-
-  const dropdownGroups = useMemo(
-    () =>
-      Array.from(toggleableGroupsMap.entries())
-        .filter(([groupId]) => !visibleGroupIds.has(groupId))
-        .map(([groupId, groupFields]) => ({
-          key: groupId,
-          label: groupFields[0]!.group!.label,
-        })),
-    [toggleableGroupsMap, visibleGroupIds]
-  );
-
-  const dropdownSections = useMemo(
-    () =>
-      toggleableSections
-        .filter((s) => !visibleSections.find((vs) => vs.key === s.key))
-        .map((s) => ({ key: s.key, label: s.label })),
-    [toggleableSections, visibleSections]
-  );
-
-  const hasAvailableItems =
-    dropdownFields.length > 0 || dropdownGroups.length > 0 || dropdownSections.length > 0;
-
-  const markAdded = useCallback((key: string) => {
+  function markAdded(key: string) {
     setManuallyAdded((prev) => new Set(prev).add(key));
     setManuallyRemoved((prev) => {
       const next = new Set(prev);
@@ -152,98 +109,163 @@ const PodForm = forwardRef<PodFormHandle, PodFormProps>(function PodForm({
       return next;
     });
     setMenuOpen(false);
-  }, []);
+  }
 
-  const markRemoved = useCallback(
-    (key: string) => {
-      setManuallyAdded((prev) => {
-        const next = new Set(prev);
-        next.delete(key);
-        return next;
-      });
-      setManuallyRemoved((prev) => new Set(prev).add(key));
-      onChange(key, "");
-    },
-    [onChange]
-  );
+  function markRemoved(key: string) {
+    setManuallyAdded((prev) => {
+      const next = new Set(prev);
+      next.delete(key);
+      return next;
+    });
+    setManuallyRemoved((prev) => new Set(prev).add(key));
+    onChange(key, "");
+  }
 
-  const addGroup = useCallback(
-    (groupId: string) => {
-      const groupFields = toggleableGroupsMap.get(groupId) || [];
-      setManuallyAdded((prev) => {
-        const next = new Set(prev);
-        groupFields.forEach((f) => next.add(f.key));
-        return next;
-      });
-      setManuallyRemoved((prev) => {
-        const next = new Set(prev);
-        groupFields.forEach((f) => next.delete(f.key));
-        return next;
-      });
-      setMenuOpen(false);
-    },
-    [toggleableGroupsMap]
-  );
+  function addGroup(groupId: string) {
+    const groupFields = toggleableGroupsMap.get(groupId) || [];
+    setManuallyAdded((prev) => {
+      const next = new Set(prev);
+      groupFields.forEach((f) => next.add(f.key));
+      return next;
+    });
+    setManuallyRemoved((prev) => {
+      const next = new Set(prev);
+      groupFields.forEach((f) => next.delete(f.key));
+      return next;
+    });
+    setMenuOpen(false);
+  }
 
-  const removeGroup = useCallback(
-    (groupId: string) => {
-      const groupFields = toggleableGroupsMap.get(groupId) || [];
-      setManuallyAdded((prev) => {
-        const next = new Set(prev);
-        groupFields.forEach((f) => next.delete(f.key));
-        return next;
-      });
-      setManuallyRemoved((prev) => {
-        const next = new Set(prev);
-        groupFields.forEach((f) => next.add(f.key));
-        return next;
-      });
-      groupFields.forEach((f) => onChange(f.key, ""));
-    },
-    [toggleableGroupsMap, onChange]
-  );
+  function removeGroup(groupId: string) {
+    const groupFields = toggleableGroupsMap.get(groupId) || [];
+    setManuallyAdded((prev) => {
+      const next = new Set(prev);
+      groupFields.forEach((f) => next.delete(f.key));
+      return next;
+    });
+    setManuallyRemoved((prev) => {
+      const next = new Set(prev);
+      groupFields.forEach((f) => next.add(f.key));
+      return next;
+    });
+    groupFields.forEach((f) => onChange(f.key, ""));
+  }
 
-  const removeSection = useCallback(
-    (key: string) => {
-      markRemoved(key);
-      onRemoveCustomSection?.(key);
-    },
-    [markRemoved, onRemoveCustomSection]
-  );
+  function removeSection(key: string) {
+    markRemoved(key);
+    onRemoveCustomSection?.(key);
+  }
 
   useImperativeHandle(ref, () => ({
-    addField: markAdded,
-    addGroup,
-    addSection: markAdded,
-  }), [markAdded, addGroup]);
+    addField: (k: string) => markAdded(k),
+    addGroup: (g: string) => addGroup(g),
+    addSection: (k: string) => markAdded(k),
+  }));
 
   if (fields.length === 0 && customSections.length === 0) return null;
 
+  function renderFieldValue(field: PodFieldConfig) {
+    return (
+      <PodFormField
+        key={field.key}
+        label={field.label}
+        placeholder={field.placeholder}
+        type={field.type}
+        value={String(data[field.key] ?? "")}
+        onChange={(value) => onChange(field.key, value)}
+      />
+    );
+  }
+
   return (
-    <PodFormRenderer
-      standaloneMandatory={standaloneMandatory}
-      mandatoryGroups={Array.from(mandatoryGroupsMap.entries())}
-      mandatorySections={mandatorySections}
-      visibleStandalone={visibleStandalone}
-      visibleGroups={visibleGroups}
-      visibleSections={visibleSections}
-      dropdownFields={dropdownFields}
-      dropdownGroups={dropdownGroups}
-      dropdownSections={dropdownSections}
-      menuOpen={menuOpen}
-      hasAvailableItems={hasAvailableItems}
-      data={data}
-      onChange={onChange}
-      renderCustomSection={renderCustomSection}
-      onRemoveField={markRemoved}
-      onRemoveGroup={removeGroup}
-      onRemoveSection={removeSection}
-      onAddField={markAdded}
-      onAddGroup={addGroup}
-      onAddSection={markAdded}
-      onOpenMenu={() => setMenuOpen(true)}
-      onCloseMenu={() => setMenuOpen(false)}
-    />
+    <>
+      {standaloneMandatory.map((f) => renderFieldValue(f))}
+
+      {Array.from(mandatoryGroupsMap.entries()).map(([groupId, groupFields]) => (
+        <div key={groupId}>
+          <div className="font-semibold text-sm mb-2">{groupFields[0]!.group!.label}</div>
+          <div className="flex flex-col gap-4">
+            {groupFields.map((f) => renderFieldValue(f))}
+          </div>
+        </div>
+      ))}
+
+      {mandatorySections.map((section) => (
+        <div key={section.key}>{renderCustomSection?.(section.key)}</div>
+      ))}
+
+      <AnimatePresence>
+        {visibleStandalone.map((field) => (
+          <motion.div key={field.key} {...itemAnim} className="flex items-center gap-1">
+            <div className="flex-1">{renderFieldValue(field)}</div>
+            <button
+              type="button"
+              className="text-neutral-400 hover:text-error shrink-0 mt-5"
+              onClick={() => markRemoved(field.key)}
+            >
+              <TbTrash size={16} />
+            </button>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {visibleGroups.map(([groupId, groupFields]) => (
+          <motion.div key={groupId} {...itemAnim}>
+            <div className="font-semibold text-sm mb-2">{groupFields[0]!.group!.label}</div>
+            <div className="flex items-start gap-1">
+              <div className="flex-1 flex flex-col gap-4">
+                {groupFields.map((f) => renderFieldValue(f))}
+              </div>
+              <button
+                type="button"
+                className="text-neutral-400 hover:text-error shrink-0 mt-1"
+                onClick={() => removeGroup(groupId)}
+              >
+                <TbTrash size={16} />
+              </button>
+            </div>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {visibleSections.map((section) => (
+          <motion.div key={section.key} {...itemAnim} className="flex items-start gap-1">
+            <div className="flex-1">{renderCustomSection?.(section.key)}</div>
+            <button
+              type="button"
+              className="text-neutral-400 hover:text-error shrink-0 mt-1"
+              onClick={() => removeSection(section.key)}
+            >
+              <TbTrash size={16} />
+            </button>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+
+      {hasAvailableItems &&
+        (menuOpen ? (
+          <PodFormDropdown
+            menuOpen={menuOpen}
+            onClose={() => setMenuOpen(false)}
+            fields={dropdownFields}
+            groups={dropdownGroups}
+            sections={dropdownSections}
+            onAddField={(k) => markAdded(k)}
+            onAddGroup={(g) => addGroup(g)}
+            onAddSection={(k) => markAdded(k)}
+          />
+        ) : (
+          <button
+            type="button"
+            className="text-sm text-blue-500 hover:text-blue-600 font-medium text-left py-1"
+            onClick={() => setMenuOpen(true)}
+          >
+            + Add more details
+          </button>
+        ))}
+    </>
   );
 });
 

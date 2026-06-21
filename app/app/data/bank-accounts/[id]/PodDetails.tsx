@@ -1,5 +1,5 @@
 // Bank account pod form: account number + bank name with live preview.
-// Owns: field config, save logic, preview rendering. Does NOT own form chrome or field rendering.
+// Owns: field config, save logic, orchestration. Does NOT own form chrome or preview rendering.
 "use client";
 import { useState, useRef } from "react";
 import { BANK_ACCOUNT_TYPE } from "../../../../../types/pods/BANK_ACCOUNT";
@@ -7,8 +7,8 @@ import { usePod } from "@/contexts/PodHelper";
 import PodForm, { PodFieldConfig, PodFormHandle } from "@/components/common/PodForm";
 import SaveButton from "@/components/common/SaveButton";
 import PodFormLayout from "@/components/pods/PodFormLayout";
-import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
 import { useMetamodelData } from "@/common/useMetamodelData";
+import BankAccountPreview from "./BankAccountPreview";
 import toast from "react-hot-toast";
 
 const BANK_ACCOUNT_SAMPLE: BANK_ACCOUNT_TYPE = {
@@ -60,25 +60,12 @@ export default function PodDetails({ id }) {
     setPreviewOpen(false);
   }
 
-  function renderPreview(d: BANK_ACCOUNT_TYPE) {
-    return (
-      <PodPreviewSection>
-        <p>
-          I have a {metamodel?.name || "bank account"} with{" "}
-          <PreviewValue value={d.bank_name} addLabel="Bank name" onAdd={() => addAndClose("bank_name")} />,
-          account number{" "}
-          <PreviewValue value={d.account_number} addLabel="Account number" onAdd={() => addAndClose("account_number")} />.
-        </p>
-      </PodPreviewSection>
-    );
-  }
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <PodFormLayout
-      preview={renderPreview(data)}
+      preview={<BankAccountPreview d={data} metamodel={metamodel} addAndClose={addAndClose} />}
       previewOpen={previewOpen}
       onTogglePreview={() => setPreviewOpen(!previewOpen)}
       isDirty={isDirty}

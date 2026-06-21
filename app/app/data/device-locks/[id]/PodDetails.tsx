@@ -1,5 +1,5 @@
 // Device lock pod form: password + optional pin and note with live preview.
-// Owns: field config, save logic, preview rendering. Does NOT own form chrome or field rendering.
+// Owns: field config, save logic, orchestration. Does NOT own form chrome or preview rendering.
 "use client";
 import { useState, useRef } from "react";
 import { usePod } from "@/contexts/PodHelper";
@@ -7,8 +7,8 @@ import { DEVICE_LOCK } from "@/types/pods/DEVICE_LOCK";
 import PodForm, { PodFieldConfig, PodFormHandle } from "@/components/common/PodForm";
 import SaveButton from "@/components/common/SaveButton";
 import PodFormLayout from "@/components/pods/PodFormLayout";
-import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
 import { useMetamodelData } from "@/common/useMetamodelData";
+import DeviceLockPreview from "./DeviceLockPreview";
 import toast from "react-hot-toast";
 
 const DEVICE_LOCK_SAMPLE: DEVICE_LOCK = {
@@ -65,32 +65,12 @@ export default function PodDetails({ id }) {
   const isSkippable = (key: string) =>
     DEVICE_LOCK_FIELDS.find((f) => f.key === key)?.visibility === "skippable";
 
-  function renderPreview(d: DEVICE_LOCK) {
-    const canAdd = (key: string) => !isSkippable(key);
-    return (
-      <PodPreviewSection>
-        <p>
-          I have a {metamodel?.name || "device"} with password{" "}
-          <PreviewValue value={d.password} sensitive addLabel="Password" onAdd={() => addAndClose("password")} />{d.pin ? "," : "."}
-          {d.pin && (
-            <> and pin <PreviewValue value={d.pin} sensitive />.</>
-          )}
-        </p>
-        {(d.note || !isSkippable("note")) && (
-          <p>
-            For context, <PreviewValue value={d.note} addLabel={canAdd("note") ? "Note" : undefined} onAdd={canAdd("note") ? () => addAndClose("note") : undefined} />.
-          </p>
-        )}
-      </PodPreviewSection>
-    );
-  }
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <PodFormLayout
-      preview={renderPreview(data)}
+      preview={<DeviceLockPreview d={data} metamodel={metamodel} addAndClose={addAndClose} isSkippable={isSkippable} />}
       previewOpen={previewOpen}
       onTogglePreview={() => setPreviewOpen(!previewOpen)}
       isDirty={isDirty}

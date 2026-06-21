@@ -1,5 +1,5 @@
 // Seed phrase pod form: phrase words (custom section), public key, note with live preview.
-// Owns: field config, custom section (phrase), save logic, preview. Does NOT own form chrome.
+// Owns: field config, custom section (phrase), save logic, orchestration. Does NOT own preview rendering.
 "use client";
 import { useState, useRef } from "react";
 import { usePod } from "@/contexts/PodHelper";
@@ -10,8 +10,8 @@ import toast from "react-hot-toast";
 import PodForm, { PodFieldConfig, PodCustomSectionDef, PodFormHandle } from "@/components/common/PodForm";
 import SaveButton from "@/components/common/SaveButton";
 import PodFormLayout from "@/components/pods/PodFormLayout";
-import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
 import { useMetamodelData } from "@/common/useMetamodelData";
+import SeedPhrasePreview from "./SeedPhrasePreview";
 
 const SEED_PHRASE_SAMPLE: SEED_PHRASE_TYPE = {
   phrase: ["phrase1", "phrase2", "phrase3"],
@@ -161,39 +161,12 @@ export default function PodDetails({ id }) {
   const isSkippable = (key: string) =>
     SEED_PHRASE_FIELDS.find((f) => f.key === key)?.visibility === "skippable";
 
-  function renderPreview(d: SEED_PHRASE_TYPE) {
-    const canAdd = (key: string) => !isSkippable(key);
-    return (
-      <PodPreviewSection>
-        <p>
-          I have a {metamodel?.name || "seed phrase"}:{" "}
-          <PreviewValue
-            value={d.phrase?.join(", ")}
-            sensitive
-          />
-          .
-        </p>
-        {(d.public_key || !isSkippable("public_key")) && (
-          <p>
-            My public key is{" "}
-            <PreviewValue value={d.public_key} addLabel={canAdd("public_key") ? "Public Key" : undefined} onAdd={canAdd("public_key") ? () => addAndClose("public_key") : undefined} />.
-          </p>
-        )}
-        {(d.note || !isSkippable("note")) && (
-          <p>
-            For context, <PreviewValue value={d.note} addLabel={canAdd("note") ? "Note" : undefined} onAdd={canAdd("note") ? () => addAndClose("note") : undefined} />.
-          </p>
-        )}
-      </PodPreviewSection>
-    );
-  }
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <PodFormLayout
-      preview={renderPreview(data)}
+      preview={<SeedPhrasePreview d={data} metamodel={metamodel} addAndClose={addAndClose} isSkippable={isSkippable} />}
       previewOpen={previewOpen}
       onTogglePreview={() => setPreviewOpen(!previewOpen)}
       isDirty={isDirty}
