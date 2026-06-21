@@ -12,20 +12,25 @@ export function MetamodelName({
   fallback: string;
 }) {
   return (
-    <span className="font-semibold text-forest dark:text-cream">
+    <button
+      type="button"
+      className="font-semibold text-forest dark:text-cream hover:underline cursor-pointer"
+      onClick={() => document.getElementById("name-box")?.focus()}
+    >
       {name || fallback}
-    </span>
+    </button>
   );
 }
 
-interface PreviewValueProps {
+type PreviewValueProps = {
   value?: string;
   fallback?: string;
-  sensitive?: boolean;
-  maskLast4?: boolean;
   addLabel?: string;
   onAdd?: () => void;
-}
+} & (
+  | { sensitive?: boolean; maskLast4?: undefined }
+  | { maskLast4?: boolean; sensitive?: undefined }
+);
 
 export function PreviewValue({
   value,
@@ -96,8 +101,10 @@ export function buildAddButtonProps(
   isAddable: (key: string) => boolean,
   addAndClose: (key: string) => void,
 ): AddButtonProps {
-  if (!isAddable(fieldKey)) return {};
-  return { addLabel: fieldLabel, onAdd: () => addAndClose(fieldKey) };
+  if (isAddable(fieldKey)) {
+    return { addLabel: fieldLabel, onAdd: () => addAndClose(fieldKey) };
+  }
+  return { addLabel: fieldLabel, onAdd: () => { document.getElementById(fieldKey)?.focus(); } };
 }
 
 interface NotePreviewProps {

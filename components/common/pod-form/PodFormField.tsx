@@ -5,6 +5,7 @@ import { useState } from "react";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 interface PodFormFieldProps {
+  id?: string;
   label: string;
   type?: "text" | "password" | "textarea";
   value: string;
@@ -16,6 +17,7 @@ const inputClasses =
   "w-full min-h-[44px] px-3 py-2 rounded-xl bg-secondary border border-default text-forest dark:text-cream placeholder:text-neutral-400 focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:outline-none";
 
 export default function PodFormField({
+  id,
   label,
   type = "text",
   value,
@@ -26,12 +28,13 @@ export default function PodFormField({
 
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-sm font-medium text-forest dark:text-cream">
+      <label className="text-sm font-medium text-forest dark:text-cream" htmlFor={id}>
         {label}
       </label>
 
       {type === "textarea" ? (
         <textarea
+          id={id}
           className={`${inputClasses} min-h-[80px]`}
           placeholder={placeholder}
           value={value}
@@ -40,6 +43,7 @@ export default function PodFormField({
       ) : type === "password" ? (
         <div className="relative">
           <input
+            id={id}
             className={`${inputClasses} pr-10`}
             type={showPassword ? "text" : "password"}
             placeholder={placeholder}
@@ -56,6 +60,7 @@ export default function PodFormField({
         </div>
       ) : (
         <input
+          id={id}
           className={inputClasses}
           type="text"
           placeholder={placeholder}

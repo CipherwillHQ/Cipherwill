@@ -13,7 +13,9 @@ export default function PaymentCardPreview({ d, metamodel, addAndClose, isSkippa
   return (
     <PodPreviewSection>
       <p>
-        I have a <MetamodelName name={metamodel?.name} fallback="card" /> with the number ending in{" "}
+        I have a <MetamodelName name={metamodel?.name} fallback="card" />, belonging to{" "}
+        <PreviewValue value={d.card_holder_name} {...buildAddButtonProps("card_holder_name", "Card Holder Name", isAddable, addAndClose)} />,
+        with the number ending in{" "}
         <PreviewValue value={d.card_number} maskLast4 {...buildAddButtonProps("card_number", "Card Number", isAddable, addAndClose)} />.
       </p>
       <p>
@@ -25,11 +27,10 @@ export default function PaymentCardPreview({ d, metamodel, addAndClose, isSkippa
         It expires on{" "}
         <PreviewValue value={d.expiry_date} {...buildAddButtonProps("expiry_date", "Expiry Date", isAddable, addAndClose)} />.
       </p>
-      {d.cvv && (
-        <p>
-          The CVV is <PreviewValue value={d.cvv} sensitive />.
-        </p>
-      )}
+      <p>
+        The CVV is{" "}
+        <PreviewValue value={d.cvv} sensitive {...buildAddButtonProps("cvv", "CVV", isAddable, addAndClose)} />.
+      </p>
       <NotePreview value={d.note} skippable={isSkippable("note")} addable={isAddable("note")} addAndClose={addAndClose} />
     </PodPreviewSection>
   );

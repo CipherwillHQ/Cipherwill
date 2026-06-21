@@ -10,13 +10,15 @@ interface Props extends PreviewProps {
 }
 
 export default function SeedPhrasePreview({ d, metamodel, addAndClose, isSkippable, isAddable }: Props) {
+  const showPublicKey = !!d.public_key || isAddable("public_key");
+
   return (
     <PodPreviewSection>
       <p>
         I have a <MetamodelName name={metamodel?.name} fallback="seed phrase" />:{" "}
         <PreviewValue value={d.phrase?.join(", ")} sensitive />.
       </p>
-      {(d.public_key || !isSkippable("public_key")) && (
+      {showPublicKey && (
         <p>
           My public key is{" "}
           <PreviewValue value={d.public_key} {...buildAddButtonProps("public_key", "Public Key", isAddable, addAndClose)} />.

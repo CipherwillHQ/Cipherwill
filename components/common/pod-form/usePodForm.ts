@@ -59,7 +59,7 @@ export function usePodForm<T extends Record<string, any>>(
   );
 
   const actions = usePodFormActions<T>({
-    fields, data: formData.data, setData: formData.setData,
+    fields, setData: formData.setData,
     manuallyAdded, setManuallyAdded,
     manuallyRemoved, setManuallyRemoved,
     setIsDirty: formData.setIsDirty,

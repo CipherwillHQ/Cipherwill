@@ -50,6 +50,7 @@ export default function PodForm({
     return (
       <PodFormField
         key={f.key}
+        id={f.key}
         label={f.label}
         placeholder={f.placeholder}
         type={f.type}

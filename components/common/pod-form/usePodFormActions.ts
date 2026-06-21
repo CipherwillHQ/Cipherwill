@@ -7,7 +7,6 @@ import { buildGroupMap } from "./podFormUtils";
 
 interface UsePodFormActionsParams<T> {
   fields: PodFieldConfig[];
-  data: T;
   setData: React.Dispatch<React.SetStateAction<T>>;
   manuallyAdded: Set<string>;
   setManuallyAdded: React.Dispatch<React.SetStateAction<Set<string>>>;
@@ -29,7 +28,7 @@ export function usePodFormActions<T extends Record<string, any>>(
   params: UsePodFormActionsParams<T>,
 ): UsePodFormActionsReturn {
   const {
-    fields, data, setData,
+    fields, setData,
     manuallyAdded, setManuallyAdded,
     manuallyRemoved, setManuallyRemoved,
     setIsDirty,

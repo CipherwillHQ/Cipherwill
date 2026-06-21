@@ -19,10 +19,10 @@ export default function EmailPreview({
     <PodPreviewSection>
       <p>
         I have an email account <MetamodelName name={metamodel?.name} fallback="this account" />, with the email{" "}
-        <PreviewValue value={d.email} />, from{" "}
+        <PreviewValue value={d.email} {...buildAddButtonProps("email", "Email", isAddable, addAndClose)} />, from{" "}
         <PreviewValue value={d.provider} fallback="a provider" {...buildAddButtonProps("provider", "Provider", isAddable, addAndClose)} />,
         and the password is{" "}
-        <PreviewValue value={d.password} sensitive />.
+        <PreviewValue value={d.password} sensitive {...buildAddButtonProps("password", "Password", isAddable, addAndClose)} />.
       </p>
       {hasRecovery && (
         <>
