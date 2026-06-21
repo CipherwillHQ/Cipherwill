@@ -3,7 +3,7 @@
 "use client";
 import { PASSWORD } from "@/types/pods/PASSWORD";
 import type { PreviewProps } from "@/types/interfaces";
-import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
+import PodPreviewSection, { PreviewValue, MetamodelName } from "@/components/pods/PodPreview";
 
 interface Props extends PreviewProps {
   d: PASSWORD;
@@ -16,7 +16,7 @@ export default function PasswordPreview({
   return (
     <PodPreviewSection>
       <p>
-        I have a login for {metamodel?.name || "this account"}, with the username{" "}
+        I have a login for <MetamodelName name={metamodel?.name} fallback="this account" />, with the username{" "}
         <PreviewValue value={d.username} addLabel="Username" onAdd={() => addAndClose("username")} />,
         and the password is{" "}
         <PreviewValue value={d.password} sensitive addLabel="Password" onAdd={() => addAndClose("password")} />.

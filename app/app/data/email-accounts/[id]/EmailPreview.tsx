@@ -3,7 +3,7 @@
 "use client";
 import { EMAIL_ACCOUNT_TYPE } from "@/types/pods/EMAIL_ACCOUNT";
 import type { PreviewProps } from "@/types/interfaces";
-import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
+import PodPreviewSection, { PreviewValue, MetamodelName } from "@/components/pods/PodPreview";
 
 interface Props extends PreviewProps {
   d: EMAIL_ACCOUNT_TYPE;
@@ -22,7 +22,7 @@ export default function EmailPreview({
     <PodPreviewSection>
       <p>
         {isSkippable("email") && !d.email ? (
-          <>I have an email account {metamodel?.name || "..."}</>
+          <>I have an email account <MetamodelName name={metamodel?.name} fallback="..." /></>
         ) : (
           <>I have an email account{" "}
           <PreviewValue value={d.email} addLabel={canAdd("email") ? "Email" : undefined} onAdd={canAdd("email") ? () => addAndClose("email") : undefined} /></>

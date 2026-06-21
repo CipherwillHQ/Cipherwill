@@ -3,7 +3,7 @@
 "use client";
 import { DEVICE_LOCK } from "@/types/pods/DEVICE_LOCK";
 import type { PreviewProps } from "@/types/interfaces";
-import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
+import PodPreviewSection, { PreviewValue, MetamodelName } from "@/components/pods/PodPreview";
 
 interface Props extends PreviewProps {
   d: DEVICE_LOCK;
@@ -14,7 +14,7 @@ export default function DeviceLockPreview({ d, metamodel, addAndClose, isSkippab
   return (
     <PodPreviewSection>
       <p>
-        I have a {metamodel?.name || "device"} with password{" "}
+        I have a <MetamodelName name={metamodel?.name} fallback="device" /> with password{" "}
         <PreviewValue value={d.password} sensitive addLabel="Password" onAdd={() => addAndClose("password")} />{d.pin ? "," : "."}
         {d.pin && (
           <> and pin <PreviewValue value={d.pin} sensitive />.</>

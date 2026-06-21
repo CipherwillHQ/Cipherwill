@@ -22,7 +22,7 @@ export default function PodFormLayout({
   isDirty,
 }: PodFormLayoutProps) {
   return (
-    <div className="flex flex-col sm:flex-row sm:min-h-0 sm:flex-1 w-full">
+    <div className="flex flex-col sm:flex-row sm:min-h-0 sm:flex-1 w-full p-2">
       <div className="sm:w-1/2 flex flex-col gap-4 px-4 py-4 sm:py-6 w-full">
         {children}
         {isDirty && (
@@ -42,7 +42,7 @@ export default function PodFormLayout({
         </div>
       </div>
 
-      <div className="hidden sm:block sm:w-1/2 border-l border-default bg-secondary overflow-y-auto">
+      <div className="hidden sm:block sm:w-1/2 border-l border-default bg-white dark:bg-darkCard overflow-y-auto rounded-xl">
         {preview}
       </div>
 
@@ -57,19 +57,22 @@ export default function PodFormLayout({
               onClick={onTogglePreview}
             />
             <motion.div
-              className="sm:hidden fixed top-0 right-0 bottom-0 w-full max-w-sm z-40 bg-secondary shadow-xl flex flex-col"
+              className="sm:hidden fixed top-0 right-0 bottom-0 w-full max-w-sm z-40 bg-white dark:bg-darkCard shadow-xl flex flex-col"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ duration: 0.28, ease: [0.25, 1, 0.5, 1] }}
             >
               <div className="shrink-0 flex items-center justify-between p-4 border-b border-default">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-neutral-400">
+                  Preview
+                </span>
                 <button
                   type="button"
                   className="text-sm font-medium text-forest dark:text-cream"
                   onClick={onTogglePreview}
                 >
-                  Close Preview
+                  Close
                 </button>
               </div>
               <div className="flex-1 overflow-y-auto">

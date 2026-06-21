@@ -3,7 +3,7 @@
 "use client";
 import { SEED_PHRASE_TYPE } from "@/types/pods/SEED_PHRASE";
 import type { PreviewProps } from "@/types/interfaces";
-import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
+import PodPreviewSection, { PreviewValue, MetamodelName } from "@/components/pods/PodPreview";
 
 interface Props extends PreviewProps {
   d: SEED_PHRASE_TYPE;
@@ -14,7 +14,7 @@ export default function SeedPhrasePreview({ d, metamodel, addAndClose, isSkippab
   return (
     <PodPreviewSection>
       <p>
-        I have a {metamodel?.name || "seed phrase"}:{" "}
+        I have a <MetamodelName name={metamodel?.name} fallback="seed phrase" />:{" "}
         <PreviewValue value={d.phrase?.join(", ")} sensitive />.
       </p>
       {(d.public_key || !isSkippable("public_key")) && (

@@ -3,7 +3,7 @@
 "use client";
 import { DEFI_STACKING } from "@/types/pods/DEFI_STAKING";
 import type { PreviewProps } from "@/types/interfaces";
-import PodPreviewSection, { PreviewValue } from "@/components/pods/PodPreview";
+import PodPreviewSection, { PreviewValue, MetamodelName } from "@/components/pods/PodPreview";
 
 interface Props extends PreviewProps {
   d: DEFI_STACKING;
@@ -14,7 +14,7 @@ export default function DefiStakingPreview({ d, metamodel, addAndClose, isSkippa
   return (
     <PodPreviewSection>
       <p>
-        I have a {metamodel?.name || "DeFi stake"} of{" "}
+        I have a <MetamodelName name={metamodel?.name} fallback="DeFi stake" /> of{" "}
         <PreviewValue value={d.asset_amount} addLabel="Amount" onAdd={() => addAndClose("asset_amount")} />{" "}
         <PreviewValue value={d.asset_name} addLabel="Asset name" onAdd={() => addAndClose("asset_name")} /> on{" "}
         <PreviewValue value={d.platform} addLabel="Platform" onAdd={() => addAndClose("platform")} />,

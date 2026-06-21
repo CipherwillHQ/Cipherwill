@@ -1,8 +1,21 @@
 // Live preview of pod data in natural-language format with sensitive value masking.
-// Owns: PreviewValue (masked/plain/add-button states) and PodPreviewSection (layout wrapper).
+// Owns: PreviewValue (masked/plain/add-button states), PodPreviewSection (layout wrapper), MetamodelName.
 "use client";
 import { useState } from "react";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
+
+export function MetamodelName({ name, fallback }: { name?: string | null; fallback: string }) {
+  return (
+    <button
+      type="button"
+      className="font-semibold text-forest dark:text-cream hover:text-primary dark:hover:text-primary transition-colors cursor-pointer underline decoration-dotted underline-offset-2"
+      onClick={() => document.getElementById("name-box")?.focus()}
+      title="Click to rename"
+    >
+      {name || fallback}
+    </button>
+  );
+}
 
 interface PreviewValueProps {
   value?: string;
@@ -74,12 +87,14 @@ interface PodPreviewSectionProps {
 
 export default function PodPreviewSection({ children }: PodPreviewSectionProps) {
   return (
-    <div className="p-6 h-full overflow-y-auto">
-      <div className="text-xs font-semibold uppercase tracking-wide text-neutral-400 mb-4">
-        Preview
-      </div>
-      <div className="text-sm text-forest dark:text-cream leading-relaxed space-y-3">
-        {children}
+    <div className="h-full overflow-y-auto">
+      <div className="p-6 sm:p-8">
+        <div className="hidden sm:block text-[11px] font-semibold uppercase tracking-[0.2em] text-neutral-400 mb-6">
+          Preview
+        </div>
+        <div className="text-[15px] text-forest dark:text-cream leading-[1.8] space-y-5 font-normal">
+          {children}
+        </div>
       </div>
     </div>
   );

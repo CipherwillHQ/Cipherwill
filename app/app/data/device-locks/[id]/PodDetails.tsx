@@ -7,6 +7,7 @@ import type { PodFieldConfig } from "@/types/interfaces";
 import PodForm from "@/components/common/PodForm";
 import SaveButton from "@/components/common/SaveButton";
 import PodFormLayout from "@/components/pods/PodFormLayout";
+import PodFormSkeleton from "@/components/pods/PodFormSkeleton";
 import DeviceLockPreview from "./DeviceLockPreview";
 
 const DEVICE_LOCK_SAMPLE: DEVICE_LOCK = {
@@ -30,7 +31,7 @@ export default function PodDetails({ id }: { id: string }) {
     podType: "device_lock", version: "0.0.1", refId: id, fields: DEVICE_LOCK_FIELDS,
   });
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <PodFormSkeleton />;
   if (error) return <div>Error: {error}</div>;
 
   return (

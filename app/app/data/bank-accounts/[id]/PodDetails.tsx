@@ -7,6 +7,7 @@ import type { PodFieldConfig } from "@/types/interfaces";
 import PodForm from "@/components/common/PodForm";
 import SaveButton from "@/components/common/SaveButton";
 import PodFormLayout from "@/components/pods/PodFormLayout";
+import PodFormSkeleton from "@/components/pods/PodFormSkeleton";
 import BankAccountPreview from "./BankAccountPreview";
 
 const BANK_ACCOUNT_SAMPLE: BANK_ACCOUNT_TYPE = {
@@ -28,7 +29,7 @@ export default function PodDetails({ id }: { id: string }) {
     podType: "bank_account", version: "0.0.1", refId: id, fields: BANK_ACCOUNT_FIELDS,
   });
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <PodFormSkeleton />;
   if (error) return <div>Error: {error}</div>;
 
   return (

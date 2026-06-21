@@ -10,6 +10,7 @@ import type { PodFieldConfig, PodCustomSectionDef } from "@/types/interfaces";
 import PodForm from "@/components/common/PodForm";
 import SaveButton from "@/components/common/SaveButton";
 import PodFormLayout from "@/components/pods/PodFormLayout";
+import PodFormSkeleton from "@/components/pods/PodFormSkeleton";
 import SeedPhrasePreview from "./SeedPhrasePreview";
 
 const SEED_PHRASE_SAMPLE: SEED_PHRASE_TYPE = {
@@ -93,7 +94,7 @@ export default function PodDetails({ id }: { id: string }) {
     return null;
   }
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <PodFormSkeleton />;
   if (error) return <div>Error: {error}</div>;
 
   return (
