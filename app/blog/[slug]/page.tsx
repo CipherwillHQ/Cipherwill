@@ -16,7 +16,6 @@ const CoverImage = dynamic(() => import("./CoverImage"));
 
 // Page cache not working because of dynamic route
 // making function getPost memoizable and using fetchPostApi to cache data
-export const revalidate = 3600; // 1 hour
 
 export async function generateStaticParams() {
   const { client: supabase, error } = getSupabaseServerClient();

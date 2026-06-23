@@ -3,8 +3,6 @@ import { getSupabaseServerClient } from "@/common/supabase/server";
 const BASE_URL =
   process.env.NEXT_PUBLIC_FULL_HOSTNAME || "https://www.cipherwill.com";
 
-export const revalidate = 3600;
-
 export async function GET() {
   const { client: supabase, error: supabaseClientError } =
     getSupabaseServerClient();

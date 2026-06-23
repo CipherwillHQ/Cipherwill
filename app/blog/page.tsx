@@ -8,8 +8,7 @@ import CTA from "@/components/public/CTA";
 import FirstPost from "@/components/app/blog/FirstPost";
 import getBlogPosts from "./getBlogPosts";
 
-// Page cache configs
-export const revalidate = 3600; // 1 hour
+// Page cache configs (statically generated at build-time)
 
 const title = "Digital Legacy Blog by Cipherwill";
 const description =
