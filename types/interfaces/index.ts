@@ -7,3 +7,4 @@ export * from './metamodel';
 export * from './faq';
 export * from './press';
 export * from './pod';
+export * from './compare';

@@ -3,7 +3,7 @@ import LinkToTheTop from "../public/LinkToTheTop";
 
 export default function LinkColumns() {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-8">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-y-10 gap-x-8">
       {menu.map((column) => (
         <div key={column.title}>
           <p className="text-sm font-semibold uppercase tracking-wider text-cream/50">

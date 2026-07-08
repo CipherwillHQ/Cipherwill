@@ -70,6 +70,27 @@ const menu = [
     ],
   },
   {
+    title: "Comparison",
+    items: [
+      {
+        title: "vs Trust & Will",
+        path: "/compare/trust-and-will",
+      },
+      {
+        title: "vs LegalZoom",
+        path: "/compare/legalzoom",
+      },
+      {
+        title: "vs Everplans",
+        path: "/compare/everplans",
+      },
+      {
+        title: "vs GoodTrust",
+        path: "/compare/goodtrust",
+      },
+    ],
+  },
+  {
     title: "Resources",
     items: [
       {
