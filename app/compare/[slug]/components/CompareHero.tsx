@@ -42,7 +42,15 @@ export default function CompareHero({ competitor }: CompareHeroProps) {
             <span className="font-bold text-lg sm:text-xl text-forest tracking-tight">Cipherwill</span>
           </div>
           <span className="text-xs font-bold text-forest/40 uppercase tracking-wider bg-forest/5 px-2.5 py-1 rounded-md">VS</span>
-          <CompetitorLogo slug={competitor.slug} size={36} className="text-lg sm:text-xl" />
+          <a
+            href={competitor.websiteUrl}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            className="hover:opacity-90 transition-opacity inline-block"
+            title={`Visit ${competitor.name} Website`}
+          >
+            <CompetitorLogo slug={competitor.slug} size={36} className="text-lg sm:text-xl" />
+          </a>
         </div>
 
         <h1 className="font-playfair text-4xl sm:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight text-forest max-w-4xl">

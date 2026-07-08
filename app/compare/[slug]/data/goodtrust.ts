@@ -14,7 +14,7 @@ export const goodTrustData: CompetitorData = {
   metaDescription: "Compare Cipherwill and GoodTrust. Understand why client-side encryption and automated check-ins provide superior security for digital inheritance over manual vaults.",
   heroHeading: "Cipherwill vs GoodTrust",
   heroSubheading: "GoodTrust focuses on social media cleanup and traditional estate docs. Cipherwill is a secure, developer-friendly platform built to cryptographically hand off digital secrets automatically.",
-  
+  websiteUrl: "https://mygoodtrust.com",
   diffIntro: "GoodTrust is designed to help close online profiles after death, but it lacks the Zero-Knowledge infrastructure and automated triggers required to pass on sensitive digital assets.",
   diffCards: [
     {

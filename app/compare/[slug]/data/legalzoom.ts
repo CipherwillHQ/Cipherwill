@@ -14,7 +14,7 @@ export const legalZoomData: CompetitorData = {
   metaDescription: "Compare Cipherwill and LegalZoom. Discover why generic legal templates fail to secure digital files, Web3 accounts, and passwords, and how cryptographic automation solves it.",
   heroHeading: "Cipherwill vs LegalZoom",
   heroSubheading: "LegalZoom is a general document generator. Cipherwill is a specialized, zero-knowledge platform built to securely transfer your digital assets without court delay.",
-  
+  websiteUrl: "https://www.legalzoom.com",
   diffIntro: "LegalZoom generates traditional legal papers for physical assets. However, digital files and cryptographic assets require software-driven, zero-knowledge transfer mechanisms.",
   diffCards: [
     {

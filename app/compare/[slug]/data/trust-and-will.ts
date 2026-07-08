@@ -14,7 +14,7 @@ export const trustAndWillData: CompetitorData = {
   metaDescription: "Compare Cipherwill and Trust & Will. Learn why Zero-Knowledge E2E encryption and automated dead man's switch are crucial for securing digital assets and Web3 holdings.",
   heroHeading: "Cipherwill vs Trust & Will",
   heroSubheading: "Trust & Will is built for traditional paper execution. Cipherwill is built to secure and automate the transfer of your digital assets and Web3 legacy.",
-  
+  websiteUrl: "https://trustandwill.com",
   diffIntro: "While Trust & Will is a popular tool for traditional estate planning, it falls short when it comes to the immediate, secure, and private transfer of digital secrets.",
   diffCards: [
     {

@@ -24,7 +24,7 @@ export interface CompetitorData {
   metaDescription: string;
   heroHeading: string;
   heroSubheading: string;
-  
+  websiteUrl: string;
   // Section 2: Core differences cards
   diffIntro: string;
   diffCards: {

@@ -43,7 +43,17 @@ export default function CompareTable({ competitor }: CompareTableProps) {
                   </div>
                 </th>
                 <th className="px-6 py-5 text-sm sm:text-base font-bold text-forest/70">
-                  <CompetitorLogo slug={competitor.slug} size={20} />
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <CompetitorLogo slug={competitor.slug} size={20} />
+                    <a
+                      href={competitor.websiteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer nofollow"
+                      className="text-xs text-forest/50 hover:text-primary hover:underline transition-colors font-medium inline-flex items-center gap-0.5"
+                    >
+                      Visit Site ↗
+                    </a>
+                  </div>
                 </th>
                 <th className="hidden lg:table-cell px-6 py-5 text-sm sm:text-base font-bold text-forest/50 uppercase tracking-wider">
                   Why it matters

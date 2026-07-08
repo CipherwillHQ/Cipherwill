@@ -14,7 +14,7 @@ export const everplansData: CompetitorData = {
   metaDescription: "Compare Cipherwill and Everplans. Learn why automated dead man's switch and Zero-Knowledge client-side encryption offer superior protection for your digital secrets.",
   heroHeading: "Cipherwill vs Everplans",
   heroSubheading: "Everplans is a life organizer. Cipherwill is a Zero-Knowledge security vault with an automated Dead Man's Switch to ensure your digital legacy is delivered instantly and securely.",
-  
+  websiteUrl: "https://www.everplans.com",
   diffIntro: "Everplans provides a clean organizer for estate plans. However, it relies on manual verification processes by company staff and stores your vault data in a custodial format.",
   diffCards: [
     {
