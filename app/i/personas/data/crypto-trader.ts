@@ -10,7 +10,8 @@ export const cryptoTraderPersona: PersonaGuide = {
   persona: "Crypto Trader",
   title: "Why Crypto Traders Must Have a Digital Will?",
   slug: "why-crypto-traders-must-have-a-digital-will",
-  date: "2024-09-23",
+  date: "2026-08-04",
+
   data: [
     {
       header: "Protect Your Digital Investments from Loss",

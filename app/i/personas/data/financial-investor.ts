@@ -10,7 +10,8 @@ export const financialInvestorPersona: PersonaGuide = {
   persona: "Financial Investor",
   title: "Why Financial Investors Must Have a Digital Will?",
   slug: "why-financial-investors-must-have-a-digital-will",
-  date: "2024-09-23",
+  date: "2026-08-04",
+
   data: [
     {
       header: "Protect Complex Investment Portfolios from Being Lost",

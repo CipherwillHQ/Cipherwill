@@ -10,7 +10,8 @@ export const softwareEngineerPersona: PersonaGuide = {
   persona: "Software Engineer",
   title: "Why Software engineers should have Digital Will?",
   slug: "why-software-engineers-should-have-digital-will",
-  date: "2024-09-23",
+  date: "2026-08-04",
+
   data: [
     {
       header:

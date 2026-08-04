@@ -10,7 +10,8 @@ export const businessOwnerPersona: PersonaGuide = {
   persona: "Business Owner",
   title: "Why Business Owners & Entrepreneurs Need a Digital Will?",
   slug: "why-business-owners-need-a-digital-will",
-  date: "2024-09-23",
+  date: "2026-08-04",
+
   data: [
     {
       header: "Ensure Business Continuity & Operations Survival",
