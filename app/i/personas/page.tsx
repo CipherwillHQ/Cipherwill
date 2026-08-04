@@ -10,7 +10,7 @@ import SmoothPageScroll from "@/components/animated/SmoothPageScroll";
 import personas from "./data";
 import Link from "next/link";
 import { FULL_HOSTNAME } from "@/common/constant";
-import { TbCode, TbCoins, TbCircleCheck, TbArrowRight } from "react-icons/tb";
+import { TbCode, TbCoins, TbTrendingUp, TbBriefcase, TbCircleCheck, TbArrowRight } from "react-icons/tb";
 import CTA from "@/components/public/CTA";
 
 const title = "Guide to Manage Your Digital Will - Cipherwill";
@@ -61,6 +61,30 @@ const personaMeta: Record<
       "Ensuring transfer of centralized exchange access",
       "Documenting private keys and seed phrases securely",
       "Preventing permanent asset loss in DeFi and Web3",
+    ],
+  },
+  "why-financial-investors-must-have-a-digital-will": {
+    icon: TbTrendingUp,
+    color: "text-sage",
+    bgColor: "bg-sage/10",
+    description: "Protect your portfolio, brokerage accounts, bank credentials, tax documents, and private equity investments from being frozen or lost.",
+    highlights: [
+      "Securing online brokerage & trading account access",
+      "Protecting private equity, bond & fund documentation",
+      "Safeguarding password managers & financial vaults",
+      "Ensuring seamless tax & estate asset transfer",
+    ],
+  },
+  "why-business-owners-need-a-digital-will": {
+    icon: TbBriefcase,
+    color: "text-primary",
+    bgColor: "bg-primary/10",
+    description: "Ensure business continuity. Protect cloud infrastructure, payment gateways, domain portfolios, vendor access, and SaaS credentials.",
+    highlights: [
+      "Securing domain portfolios & hosting infrastructure",
+      "Ensuring continuous payment gateway & banking access",
+      "Transferring admin rights for cloud SaaS & team tools",
+      "Preventing operational disruption & customer loss",
     ],
   },
 };
