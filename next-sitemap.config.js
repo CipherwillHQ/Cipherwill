@@ -11,6 +11,8 @@ module.exports = {
     "/auth/*",
     "/executor",
     "/feed.xml",
+    "/blog",
+    "/blog/*",
     "/blogs-sitemap.xml",
     "/executor/*",
     "/app",
