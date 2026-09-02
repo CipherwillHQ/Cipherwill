@@ -5,8 +5,9 @@ import { BiCheckCircle } from "react-icons/bi";
 import { useAuth } from "../../../contexts/AuthContext";
 import toast from "react-hot-toast";
 import { RedirectType, redirect } from "next/navigation";
-import { useLazyQuery } from "@apollo/client/react";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
 import ME from "../../../graphql/ops/auth/queries/ME";
+import SEND_EMAIL_VERIFICATION from "../../../graphql/ops/auth/mutations/SEND_EMAIL_VERIFICATION";
 import { sleep } from "../../../common/time/sleep";
 import Link from "next/link";
 import type { MeQuery } from "@/types/interfaces/metamodel";
@@ -14,11 +15,12 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import SimpleButton from "@/components/common/SimpleButton";
 
 export default function VerifyEmail() {
-  const { isLoading, user, getIdToken, sendEmailVerification } = useAuth();
+  const { isLoading, user, getIdToken } = useAuth();
   const [emailSent, setEmailSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [validatingEmail, setValidatingEmail] = useState(false);
   const [sendingEmail, setSendingEmail] = useState(false);
+  const [sendVerificationEmailMutation] = useMutation(SEND_EMAIL_VERIFICATION);
   const [fetchUser, { data: userData }] = useLazyQuery<MeQuery>(ME, {
     fetchPolicy: "network-only",
   });
@@ -96,14 +98,23 @@ export default function VerifyEmail() {
                 onClick={async () => {
                   setError(null);
                   setSendingEmail(true);
-                  const res = await sendEmailVerification();
-                  if (res && res.error) {
-                    setError(res.error);
-                  } else {
+                  try {
+                    const res = await sendVerificationEmailMutation();
+                    if (res.error) {
+                      setError(res.error.message);
+                      return;
+                    }
                     toast.success("Verification email sent");
                     setEmailSent(true);
+                  } catch (err: unknown) {
+                    setError(
+                      err instanceof Error
+                        ? err.message
+                        : "Failed to send verification email"
+                    );
+                  } finally {
+                    setSendingEmail(false);
                   }
-                  setSendingEmail(false);
                 }}
               >
                 <IoMailOutline size={18} />
