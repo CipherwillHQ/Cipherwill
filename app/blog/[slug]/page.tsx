@@ -1,3 +1,9 @@
+/**
+ * Renders published blog articles and their metadata from Supabase and R2.
+ * Owns static paths and timed regeneration for refreshed article content.
+ * Does not edit or publish article content.
+ */
+
 import Footer from "../../../components/Footer";
 import Header from "../../../components/Header";
 import getTimeAgo from "@/common/time/getTimeAgo";
@@ -14,8 +20,7 @@ import { getSupabaseServerClient } from "@/common/supabase/server";
 
 const CoverImage = dynamic(() => import("./CoverImage"));
 
-// Page cache not working because of dynamic route
-// making function getPost memoizable and using fetchPostApi to cache data
+export const revalidate = 900;
 
 export async function generateStaticParams() {
   const { client: supabase, error } = getSupabaseServerClient();
