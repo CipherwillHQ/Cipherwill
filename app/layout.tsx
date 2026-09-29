@@ -1,3 +1,6 @@
+// Provides the shared document shell, metadata, and application providers.
+// Owns the production URL base and default canonical for each route.
+// Leaves content-specific metadata and pagination to individual pages.
 import { AuthProvider } from "../contexts/AuthContext";
 import { ApolloContext } from "../contexts/ApolloContext";
 import { Metadata, Viewport } from "next";
@@ -31,6 +34,9 @@ export const metadata: Metadata = {
   },
   robots: {
     index: IS_PRODUCTION,
+  },
+  alternates: {
+    canonical: "./",
   },
   metadataBase: new URL("https://www.cipherwill.com"),
 };

@@ -1,5 +1,10 @@
+// Renders the public blog listing and its cursor-based pagination.
+// Owns listing metadata, including a canonical URL for each results page.
+// Does not fetch or render individual article bodies.
 import Link from "next/link";
 import Image from "next/image";
+import type { Metadata } from "next";
+import type { BlogListingPageProps } from "@/types/interfaces";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import getTimeAgo from "@/common/time/getTimeAgo";
@@ -7,6 +12,7 @@ import { FULL_HOSTNAME } from "@/common/constant";
 import CTA from "@/components/public/CTA";
 import FirstPost from "@/components/app/blog/FirstPost";
 import getBlogPosts from "./getBlogPosts";
+import getSingleSearchParam from "@/common/url/getSingleSearchParam";
 
 // Page cache configs (statically generated at build-time)
 
@@ -14,20 +20,34 @@ const title = "Digital Legacy Blog by Cipherwill";
 const description =
   "Discover insights and tips on managing your digital legacy. Stay informed about digital estate planning, online security, and protecting your digital assets.";
 
-export const metadata = {
-  title,
-  description,
-  openGraph: {
-    type: "website",
+export async function generateMetadata({
+  searchParams,
+}: BlogListingPageProps): Promise<Metadata> {
+  const query = await searchParams;
+  const cursor = getSingleSearchParam(query.cursor);
+  const canonical = cursor
+    ? `/blog?${new URLSearchParams({ cursor }).toString()}`
+    : "/blog";
+
+  return {
     title,
     description,
-    images: ["/og-img.png"],
-    url: `${FULL_HOSTNAME}/blog`,
-  },
-};
+    alternates: {
+      canonical,
+    },
+    openGraph: {
+      type: "website",
+      title,
+      description,
+      images: ["/og-img.png"],
+      url: `${FULL_HOSTNAME}${canonical}`,
+    },
+  };
+}
 
-export default async function Blog({ params, searchParams }: any) {
-  const { cursor } = await searchParams;
+export default async function Blog({ searchParams }: BlogListingPageProps) {
+  const query = await searchParams;
+  const cursor = getSingleSearchParam(query.cursor);
   const { pages, has_more, next_cursor } = await getBlogPosts({ cursor });
   const first_page = pages ? pages[0] : null;
   const remaining_pages = pages ? pages.slice(1) : [];
