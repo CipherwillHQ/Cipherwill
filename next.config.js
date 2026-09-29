@@ -1,3 +1,9 @@
+/**
+ * Configures Next.js build, routes, and public response headers.
+ * Owns CDN caching rules, including the shorter blog article cache.
+ * Does not edit or publish blog content.
+ */
+
 const { version } = require("./package.json");
 const path = require('path')
 
@@ -16,6 +22,21 @@ const siteCacheHeaders = [
   },
 ];
 
+const blogArticleCacheHeaders = [
+  {
+    key: "Cache-Control",
+    value: "public, max-age=0, s-maxage=900, stale-while-revalidate=60",
+  },
+  {
+    key: "CDN-Cache-Control",
+    value: "public, s-maxage=900, stale-while-revalidate=60",
+  },
+  {
+    key: "Vercel-CDN-Cache-Control",
+    value: "public, s-maxage=900, stale-while-revalidate=60",
+  },
+];
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   turbopack: {
@@ -30,6 +51,10 @@ const nextConfig = {
       {
         source: "/:path((?!app(?:/|$)|executor(?:/|$)).+)",
         headers: siteCacheHeaders,
+      },
+      {
+        source: "/blog/:slug",
+        headers: blogArticleCacheHeaders,
       },
       {
         source: "/image/:path*",
