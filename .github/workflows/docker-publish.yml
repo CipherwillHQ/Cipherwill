@@ -1,6 +1,6 @@
-# Builds the production image on GitHub and publishes it to Docker Hub.
-# Owns build credentials, caching, and publishing cipherwill/cipherwill:latest.
-# Does not redeploy Dokploy or change the resources of its running services.
+# Builds the production image, publishes it, and requests a Dokploy deployment.
+# Owns build credentials, caching, and the deployment webhook request.
+# Does not change Dokploy resources or verify deployment completion.
 
 name: Publish Docker image
 
@@ -27,8 +27,9 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           DOCKER_BUILD_ENV: ${{ secrets.DOCKER_BUILD_ENV }}
+          DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_WEBHOOK_URL }}
         run: |
-          for name in DOCKERHUB_USERNAME DOCKERHUB_TOKEN DOCKER_BUILD_ENV; do
+          for name in DOCKERHUB_USERNAME DOCKERHUB_TOKEN DOCKER_BUILD_ENV DOKPLOY_WEBHOOK_URL; do
             if [ -z "${!name}" ]; then
               echo "::error::Add the $name repository secret before publishing."
               exit 1
@@ -59,4 +60,21 @@ jobs:
           no-cache-filters: builder
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Request Dokploy redeployment
+        env:
+          DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_WEBHOOK_URL }}
+        run: |
+          response_code=$(curl --silent --show-error \
+            --connect-timeout 10 --max-time 60 \
+            --output /dev/null --write-out '%{http_code}' \
+            --request POST --user-agent 'Go-http-client/1.1' \
+            --header 'Content-Type: application/json' \
+            --data '{"repository":{"repo_name":"cipherwill/cipherwill"},"push_data":{"tag":"latest","pusher":"GitHub Actions"}}' \
+            "$DOKPLOY_WEBHOOK_URL")
+          if [ "$response_code" != "200" ]; then
+            echo "::error::Dokploy rejected the deployment request (HTTP $response_code). Check Auto Deploy, the Docker source, image tag, and webhook URL."
+            exit 1
+          fi
+          echo "Dokploy accepted the deployment request. Check its deployment logs for completion."
 
