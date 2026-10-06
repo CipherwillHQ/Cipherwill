@@ -39,6 +39,7 @@ const blogArticleCacheHeaders = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   turbopack: {
     root: path.join(__dirname, "."),
   },
