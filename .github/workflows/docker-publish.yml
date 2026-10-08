@@ -22,19 +22,23 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - name: Check required secrets
+      - name: Check required secrets and variables
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-          DOCKER_BUILD_ENV: ${{ secrets.DOCKER_BUILD_ENV }}
+          DOCKER_BUILD_ENV: ${{ vars.DOCKER_BUILD_ENV }}
           DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_WEBHOOK_URL }}
         run: |
-          for name in DOCKERHUB_USERNAME DOCKERHUB_TOKEN DOCKER_BUILD_ENV DOKPLOY_WEBHOOK_URL; do
+          for name in DOCKERHUB_USERNAME DOCKERHUB_TOKEN DOKPLOY_WEBHOOK_URL; do
             if [ -z "${!name}" ]; then
               echo "::error::Add the $name repository secret before publishing."
               exit 1
             fi
           done
+          if [ -z "$DOCKER_BUILD_ENV" ]; then
+            echo "::error::Add the DOCKER_BUILD_ENV repository variable before publishing."
+            exit 1
+          fi
 
       - uses: actions/checkout@v4
 
@@ -49,7 +53,7 @@ jobs:
       - name: Build and push production image
         uses: docker/build-push-action@v6
         env:
-          DOCKER_BUILD_ENV: ${{ secrets.DOCKER_BUILD_ENV }}
+          DOCKER_BUILD_ENV: ${{ vars.DOCKER_BUILD_ENV }}
         with:
           context: .
           platforms: linux/amd64
