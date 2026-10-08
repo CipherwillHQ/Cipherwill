@@ -22,7 +22,7 @@ export const metadata = {
 };
 
 export default async function LiveStatus() {
-  let data = await fetch("https://api.cipherwill.com/rest/v1/live-status");
+  let data = await fetch("https://api.stack.cipherwill.com/rest/v1/live-status");
   let status = await data.json();
 
   return (
