@@ -9,9 +9,9 @@
 
 import { useQuery } from "@apollo/client/react";
 import { useUserContext } from "@/contexts/UserSetupContext";
-import GET_METAMODELS from "@/graphql/ops/app/metamodel/queries/GET_METAMODELS";
+import GET_STORAGE_USED from "@/graphql/ops/auth/queries/GET_STORAGE_USED";
 import GET_SMARTWILL_BENEFICIARY from "@/graphql/ops/app/smartwill/queries/GET_SMARTWILL_BENEFICIARY";
-import { GetMetamodelsQuery, GetMetamodelsVariables } from "@/types/interfaces/metamodel";
+import { GetStorageUsedQuery } from "@/types/interfaces/metamodel";
 import { SmartWillBeneficiariesData } from "@/types/interfaces/graphql";
 
 import CompleteProfileStep from "./CompleteProfileStep";
@@ -21,35 +21,32 @@ import AddBeneficiaryStep from "./AddBeneficiaryStep";
 export default function OnboardingChecklist() {
   const { user } = useUserContext();
 
-  const { data: notesData, loading: notesLoading } = useQuery<
-    GetMetamodelsQuery,
-    GetMetamodelsVariables
-  >(GET_METAMODELS, {
-    variables: {
-      type: "NOTE",
-    },
+  const { data: storageData, loading: storageLoading } = useQuery<GetStorageUsedQuery>(GET_STORAGE_USED, {
+    fetchPolicy: "network-only",
   });
 
   const { data: beneficiariesData, loading: beneficiariesLoading } =
     useQuery<SmartWillBeneficiariesData>(GET_SMARTWILL_BENEFICIARY);
 
   // If queries are still loading, return null to prevent content flashing
-  if (notesLoading || beneficiariesLoading) {
+  if (storageLoading || beneficiariesLoading) {
     return null;
   }
 
   // Calculate completion states
-  const isProfileComplete = user
-    ? !(user.first_name === "" || user.birth_date === "0")
-    : false;
+  const isProfileComplete = Boolean(
+    user?.first_name?.trim() && user.birth_date &&
+    user.birth_date !== "0" && Number.isFinite(Number(user.birth_date)),
+  );
 
-  const isNoteComplete = (notesData?.getMetamodels?.models?.length ?? 0) > 0;
+  const isItemComplete = Number(storageData?.getStorageUsed?.text_pods ?? 0) > 0 ||
+    Number(storageData?.getStorageUsed?.storage_pods ?? 0) > 0;
 
   const isBeneficiaryComplete =
     (beneficiariesData?.getSmartWillBeneficiaries?.length ?? 0) > 0;
 
   // Auto-hide if all tasks are complete
-  const allComplete = isProfileComplete && isNoteComplete && isBeneficiaryComplete;
+  const allComplete = isProfileComplete && isItemComplete && isBeneficiaryComplete;
   if (allComplete) {
     return null;
   }
@@ -57,7 +54,7 @@ export default function OnboardingChecklist() {
   // Calculate completed count
   const completedCount =
     (isProfileComplete ? 1 : 0) +
-    (isNoteComplete ? 1 : 0) +
+    (isItemComplete ? 1 : 0) +
     (isBeneficiaryComplete ? 1 : 0);
 
   return (
@@ -78,7 +75,7 @@ export default function OnboardingChecklist() {
 
       <div className="flex flex-col gap-3">
         <CompleteProfileStep isComplete={isProfileComplete} />
-        <CompleteNoteCreationStep isComplete={isNoteComplete} />
+        <CompleteNoteCreationStep isComplete={isItemComplete} />
         <AddBeneficiaryStep isComplete={isBeneficiaryComplete} />
       </div>
     </div>

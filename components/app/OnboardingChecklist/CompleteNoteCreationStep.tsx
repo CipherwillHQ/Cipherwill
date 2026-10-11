@@ -1,6 +1,6 @@
 /**
  * OnboardingChecklist/CompleteNoteCreationStep.tsx
- * What it does: Renders the "Add a Note" checklist step with its link, icons, and descriptions.
+ * What it does: Renders the "Save your first item" checklist step with a note as its starting point.
  * What it owns: The presentation and interaction states for the Note Creation step in the onboarding list.
  * What it does NOT do: Does not fetch note or metamodel state directly (provided as props from the parent).
  */
@@ -39,10 +39,10 @@ export default function CompleteNoteCreationStep({ isComplete }: CompleteNoteCre
               : "text-gray-800 dark:text-gray-200 group-hover:text-primary"
           }`}
         >
-          Add a note
+          Save your first item
         </span>
         <span className="text-xs text-gray-500 dark:text-gray-400 leading-normal">
-          Save and secure a sample note to understand the system.
+          Save a note, password, or document for your beneficiary.
         </span>
       </div>
     </Link>
