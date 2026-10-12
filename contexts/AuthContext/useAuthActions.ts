@@ -1,3 +1,6 @@
+// Provides authentication actions and tracks successful authentication outcomes.
+// Owns Firebase calls, loading state, and conversion callback wiring.
+// Does not initialize profiles or choose post-login destinations.
 "use client";
 
 import { useCallback, useMemo } from "react";
@@ -10,8 +13,10 @@ import {
   sendEmailVerification,
   getIdToken,
   sendPasswordResetEmail,
+  type UserCredential,
 } from "firebase/auth";
 import { usePostHog } from "posthog-js/react";
+import trackSignupConversion from "@/common/analytics/trackSignupConversion";
 import { authApp } from "./firebase";
 import { handle_firebase_error } from "./errors";
 
@@ -20,19 +25,23 @@ type LoginConversionFn = (method: string) => Promise<void>;
 type AuthActionsDependencies = {
   setIsGoogleLoading: React.Dispatch<React.SetStateAction<boolean>>;
   loginConversion: LoginConversionFn;
+  signupConversion?: (credential: UserCredential) => Promise<void>;
   onLogout?: () => void;
 };
 
 export function createAuthActions({
   setIsGoogleLoading,
   loginConversion,
+  signupConversion,
   onLogout,
 }: AuthActionsDependencies) {
   return {
     login: () => {},
     createUserWithEmailAndPassword: async (email: string, password: string) => {
       try {
-        return await createUserWithEmailAndPassword(authApp, email, password);
+        const credential = await createUserWithEmailAndPassword(authApp, email, password);
+        await signupConversion?.(credential);
+        return credential;
       } catch (error) {
         return handle_firebase_error(error);
       }
@@ -40,14 +49,17 @@ export function createAuthActions({
     signInWithEmailAndPassword: async (email: string, password: string) => {
       try {
         return await signInWithEmailAndPassword(authApp, email, password).then(
-          function onSuccess() {
+          async function onSuccess(credential) {
+            await signupConversion?.(credential);
             loginConversion("email");
           }
         );
       } catch (error) {
         if (error.code === "auth/user-not-found") {
           try {
-            return await createUserWithEmailAndPassword(authApp, email, password);
+            const credential = await createUserWithEmailAndPassword(authApp, email, password);
+            await signupConversion?.(credential);
+            return credential;
           } catch (innerError) {
             return handle_firebase_error(innerError);
           }
@@ -78,7 +90,8 @@ export function createAuthActions({
         const provider = new GoogleAuthProvider();
         provider.addScope("email");
         return await signInWithPopup(authApp, provider).then(
-          function onSuccess() {
+          async function onSuccess(credential) {
+            await signupConversion?.(credential);
             loginConversion("google");
             setIsGoogleLoading(false);
           }
@@ -92,7 +105,8 @@ export function createAuthActions({
       if (!authApp) return;
       try {
         return await signInWithCustomToken(authApp, token).then(
-          function onSuccess() {
+          async function onSuccess(credential) {
+            await signupConversion?.(credential);
             loginConversion("custom token");
           }
         );
@@ -119,6 +133,11 @@ export function useAuthActions({
 }) {
   const posthog = usePostHog();
 
+  const signupConversion = useCallback(
+    (credential: UserCredential) => trackSignupConversion(credential, posthog),
+    [posthog]
+  );
+
   const loginConversion = useCallback(
     async (method: string) => {
       posthog.capture("login", {
@@ -137,9 +156,10 @@ export function useAuthActions({
       createAuthActions({
         setIsGoogleLoading,
         loginConversion,
+        signupConversion,
         onLogout,
       }),
-    [loginConversion, onLogout, setIsGoogleLoading]
+    [loginConversion, signupConversion, onLogout, setIsGoogleLoading]
   );
 }
 

@@ -1,15 +1,11 @@
-/**
- * Two-step onboarding shell with split-panel layout.
- * Left: brand panel (desktop). Right: question steps with progress indicator.
- * Owns onboarding query/mutation wiring plus step-local state transitions.
- * Does not own shared app navigation, global auth, or dashboard rendering.
- */
+// Renders the two onboarding questions in place on the requested app route.
+// Owns query/mutation wiring and step-local state transitions.
+// Does not choose navigation; the app guard reveals the route after completion.
 "use client";
 
 import { AnimatePresence } from "framer-motion";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import COMPLETE_MY_ONBOARDING from "@/graphql/ops/auth/mutations/COMPLETE_MY_ONBOARDING";
 import GET_MY_ONBOARDING from "@/graphql/ops/auth/queries/GET_MY_ONBOARDING";
@@ -26,11 +22,11 @@ import StepHeardFrom from "./StepHeardFrom";
 import StepExpectations from "./StepExpectations";
 import OnboardingActions from "./OnboardingActions";
 import OnboardingBrandPanel from "./OnboardingBrandPanel";
+import OnboardingStepIndicator from "./OnboardingStepIndicator";
 import SymbolicLogo from "@/components/public/logo/SymbolicLogo";
 import { OnboardingOption } from "./types";
 
 export default function OnboardingFlow() {
-  const router = useRouter();
   const [step, setStep] = useState(1);
   const [heardFromOptionId, setHeardFromOptionId] = useState("");
   const [heardFromCustom, setHeardFromCustom] = useState("");
@@ -54,11 +50,6 @@ export default function OnboardingFlow() {
     setExpectationOptions(shuffle([...rawExpectationOptions]));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onboarding]);
-
-  useEffect(() => {
-    if (!onboarding?.is_completed) return;
-    router.replace("/app");
-  }, [onboarding?.is_completed, router]);
 
   const selectedHeardFromOption: OnboardingOption | null =
     heardFromOptions.find((item) => item.id === heardFromOptionId) || null;
@@ -103,7 +94,6 @@ export default function OnboardingFlow() {
       });
       await refetch();
       toast.success("Onboarding skipped. You can update it later.");
-      router.replace("/app");
     } catch (submitError) {
       toast.error(submitError instanceof Error ? submitError.message : "Unable to skip onboarding");
     }
@@ -127,7 +117,6 @@ export default function OnboardingFlow() {
       });
       await refetch();
       toast.success("Thanks, onboarding completed.");
-      router.replace("/app");
     } catch (submitError) {
       toast.error(submitError instanceof Error ? submitError.message : "Unable to save onboarding");
     }
@@ -162,24 +151,7 @@ export default function OnboardingFlow() {
 
         {/* Main content - vertically centered via auto margins */}
         <div className="my-auto flex w-full max-w-lg flex-col self-center px-5 sm:px-8">
-          {/* Compact progress indicator */}
-          <div className="mb-4 flex items-center gap-1.5">
-            {[1, 2].map((s) => (
-              <div
-                key={s}
-                className={[
-                  "h-1.5 rounded-full transition-all duration-300",
-                  s === 1 ? "w-4" : "w-1.5",
-                  step >= s
-                    ? "bg-primary"
-                    : "bg-gray-200",
-                ].join(" ")}
-              />
-            ))}
-            <span className="ml-1.5 text-xs font-medium text-gray-400">
-              Step {step}/2
-            </span>
-          </div>
+          <OnboardingStepIndicator step={step} />
 
           {/* Question area */}
           <div>

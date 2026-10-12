@@ -1,15 +1,16 @@
+// Loads the current profile and preferences and initializes a missing country.
+// Owns profile identification and setup state shared by app components.
+// Does not classify account creation or record signup conversions.
 "use client";
 import {
   ReactNode,
   createContext,
-  useCallback,
   useContext,
   useEffect,
 } from "react";
 import { useAuth } from "../AuthContext";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client/react";
 import ME from "../../graphql/ops/auth/queries/ME";
-import logger from "../../common/debug/logger";
 import getLocalCountry from "../../common/country/getLocalCountry";
 import toast from "react-hot-toast";
 import getCountryNameByCode from "../../common/country/getCountryNameByCode";
@@ -32,18 +33,6 @@ const UserSetupContext = createContext<any>({});
 export function UserSetupProvider({ children }: Props) {
   const { user } = useAuth();
   const posthog = usePostHog();
-  const signup_conversion = useCallback(async () => {
-    if ((window as any).GoogleConverted) {
-      await (window as any).GoogleConverted();
-    } else {
-      logger.error("GoogleConverted is not defined");
-    }
-    // if ((window as any).uetq) {
-    //   (window as any).uetq = (window as any).uetq || [];
-    //   (window as any).uetq.push("event", "login", {});
-    // }
-    posthog.capture("signup");
-  }, [posthog]);
   const [
     setupPreferences,
     { data: preferences_data, loading: loading_preferences },
@@ -72,8 +61,7 @@ export function UserSetupProvider({ children }: Props) {
       };
       posthog.identify(user_data_me.id, user_analytics_data);
       if (user_data_me.country === null) {
-        // This is a new user, add their country
-        signup_conversion();
+        // Initialize a missing country independently of account age.
         const country = getLocalCountry();
         const countryName = getCountryNameByCode(country);
         toast.success(`Added ${countryName} as your country`);
@@ -85,11 +73,9 @@ export function UserSetupProvider({ children }: Props) {
           },
           refetchQueries: [{ query: ME }],
         });
-      } else {
-        // This is an existing user, logging in
       }
     }
-  }, [user_data, setupPreferences, posthog, signup_conversion, setupCountry]);
+  }, [user_data, setupPreferences, posthog, setupCountry]);
 
   return (
     <UserSetupContext.Provider
