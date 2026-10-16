@@ -13,7 +13,7 @@ export default function ProfileSettingsTab() {
   const [deleteAccount] = useMutation(DELETE_ACCOUNT);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col p-2 gap-4">
       <Profile />
 
       <div className="max-w-3xl bg-secondary p-4 rounded-md border border-default">
