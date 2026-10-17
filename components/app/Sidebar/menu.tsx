@@ -1,9 +1,14 @@
+// What it does: Defines the dashboard navigation menu.
+// What it owns: Navigation labels, icons, paths, and section ordering.
+// What it does NOT do: Evaluate permissions or feature flags.
+
 import { AiOutlineHome } from "react-icons/ai";
 import {
   TbCell,
   TbClockPlay,
   TbFileInvoice,
   TbLockAccess,
+  TbMessageCircle,
   TbTableSpark,
 } from "react-icons/tb";
 import { VscSettings } from "react-icons/vsc";
@@ -22,6 +27,14 @@ const menu: (Divider | Segment)[] = [
     plan_required: "free",
     preference_key: null,
     path: "/app",
+  },
+  {
+    icon: <TbMessageCircle />,
+    title: "Chat",
+    description: "Chat with Cipherwill",
+    plan_required: "free",
+    preference_key: null,
+    path: "/app/chat",
   },
   {
     icon: <TbCell />,

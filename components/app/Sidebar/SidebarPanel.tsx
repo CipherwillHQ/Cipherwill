@@ -1,3 +1,7 @@
+// What it does: Renders the shared desktop and mobile dashboard navigation.
+// What it owns: Menu visibility, active selection, and account controls.
+// What it does NOT do: Enforce page access or manage feature flag targeting.
+
 "use client";
 import Link from "next/link";
 import menu from "./menu";
@@ -14,9 +18,11 @@ import { Divider, Segment } from "@/types/Segments";
 import LiveChatBox from "../LiveChatBox";
 import { motion } from "framer-motion";
 import { useLayoutEffect, useRef, useState } from "react";
+import { useFeatureFlagEnabled } from "posthog-js/react";
 
 export default function SidebarPanel() {
   const pathname = usePathname();
+  const chatEnabled = useFeatureFlagEnabled("chat-feature");
   const { lock, session } = useSession();
   const { preferences } = useUserContext();
   const menuItemsRef = useRef<HTMLDivElement>(null);
@@ -57,7 +63,7 @@ export default function SidebarPanel() {
     return () => {
       window.removeEventListener("resize", updateActiveSelection);
     };
-  }, [pathname, preferences]);
+  }, [pathname, preferences, chatEnabled]);
 
   return (
     <div className="flex flex-col flex-1 justify-between overflow-hidden">
@@ -80,6 +86,9 @@ export default function SidebarPanel() {
             />
           )}
           {menu.map((item, index) => {
+            if (item.path === "/app/chat" && chatEnabled !== true) {
+              return null;
+            }
             if ((item as Divider).divider) {
               // if all segments are disabled then don't show the divider
               if (
