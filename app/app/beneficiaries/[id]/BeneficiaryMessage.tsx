@@ -7,8 +7,8 @@ import type { SmartWillBeneficiary } from "@/types/interfaces";
 
 export default function BeneficiaryMessage({ beneficiary }: { beneficiary: SmartWillBeneficiary }) {
   return (
-    <section className="bg-secondary border border-default rounded-2xl p-4 sm:p-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <section className="min-w-0 bg-secondary border border-default rounded-2xl p-4 sm:p-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-base font-semibold">Custom message</h2>
         <CustomMessage beneficiary_id={beneficiary.id} custom_message={beneficiary.custom_message} />
       </div>
@@ -16,7 +16,7 @@ export default function BeneficiaryMessage({ beneficiary }: { beneficiary: Smart
         This personal message will be delivered when your will is executed.
       </p>
       {beneficiary.custom_message ? (
-        <p className="mt-4 whitespace-pre-wrap wrap-break-word select-text" data-cy="beneficiary-custom-message">
+        <p className="mt-4 whitespace-pre-wrap wrap-break-word leading-relaxed select-text" data-cy="beneficiary-custom-message">
           {beneficiary.custom_message}
         </p>
       ) : (

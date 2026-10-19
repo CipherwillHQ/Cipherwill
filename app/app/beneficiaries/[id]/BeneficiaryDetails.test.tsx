@@ -32,6 +32,7 @@ const query = mock.fn((document: unknown, options: { skip?: boolean }) => {
 let messageProps: { beneficiary_id: string; custom_message: string | null } | undefined;
 
 mock.module("@apollo/client/react", { namedExports: { useQuery: query } });
+mock.module("./BeneficiaryDetails.module.css", { defaultExport: { page: "beneficiary-details-page" } });
 mock.module("../../../../components/app/smartwill/CustomMessage.tsx", {
   defaultExport: (props: typeof messageProps) => { messageProps = props; return null; },
 });

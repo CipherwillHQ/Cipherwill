@@ -19,9 +19,9 @@ export default function BeneficiaryOverview({
   const isGuest = person.__typename === "Guest";
 
   return (
-    <section className="bg-secondary border border-default rounded-2xl p-4 sm:p-6">
+    <section className="grid min-w-0 grid-cols-1 gap-6 bg-secondary border border-default rounded-2xl p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:items-center">
       <div className="flex items-start gap-3">
-        <div className="rounded-xl bg-primary-50 dark:bg-darkAccent p-3 text-primary dark:text-primary-300">
+        <div className="shrink-0 rounded-xl bg-primary-50 dark:bg-darkAccent p-3 text-primary dark:text-primary-300">
           <TbUser size={24} aria-hidden="true" />
         </div>
         <div className="min-w-0">
@@ -31,7 +31,7 @@ export default function BeneficiaryOverview({
           </p>
         </div>
       </div>
-      <dl className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6 pt-6 border-t border-default">
+      <dl className="grid min-w-0 grid-cols-1 gap-6 border-t border-default pt-6 sm:grid-cols-2 lg:border-t-0 lg:border-l lg:pl-6 lg:pt-0">
         <div>
           <dt className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
             <TbCalendarEvent size={20} aria-hidden="true" /> Added as beneficiary

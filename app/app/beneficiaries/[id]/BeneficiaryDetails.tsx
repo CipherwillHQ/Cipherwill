@@ -1,5 +1,5 @@
 // Loads a beneficiary and their current person record for the detail page.
-// Owns page loading, missing-record, and error states with back navigation.
+// Owns the full-width dashboard layout and page states with back navigation.
 // Does not calculate segment access or edit custom messages itself.
 "use client";
 
@@ -12,6 +12,7 @@ import type { GetPersonByIdsData, SmartWillBeneficiariesData } from "@/types/int
 import BeneficiaryOverview from "./BeneficiaryOverview";
 import BeneficiarySegmentAccess from "./BeneficiarySegmentAccess";
 import BeneficiaryMessage from "./BeneficiaryMessage";
+import styles from "./BeneficiaryDetails.module.css";
 
 export default function BeneficiaryDetails({ beneficiaryId }: { beneficiaryId: string }) {
   const { data, loading, error } = useQuery<SmartWillBeneficiariesData>(
@@ -47,16 +48,18 @@ export default function BeneficiaryDetails({ beneficiaryId }: { beneficiaryId: s
     content = (
       <>
         <BeneficiaryOverview beneficiary={beneficiary} person={person} />
-        <BeneficiarySegmentAccess beneficiaryId={beneficiary.id} />
-        <BeneficiaryMessage beneficiary={beneficiary} />
+        <div className="grid min-w-0 grid-cols-1 items-start gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+          <BeneficiarySegmentAccess beneficiaryId={beneficiary.id} />
+          <BeneficiaryMessage beneficiary={beneficiary} />
+        </div>
       </>
     );
   }
 
   return (
-    <div className="w-full">
+    <div className={styles.page}>
       <DesktopAndMobilePageHeader title="Beneficiary details" backPath="/app/beneficiaries" />
-      <div className="p-4 space-y-6 max-w-5xl">{content}</div>
+      <div className="flex w-full min-w-0 flex-col gap-6 px-4 pb-8 sm:px-6">{content}</div>
     </div>
   );
 }

@@ -23,7 +23,7 @@ export default function BeneficiarySegmentAccess({ beneficiaryId }: { beneficiar
   const segmentCount = counts.filter((entry) => entry.count > 0).length;
 
   return (
-    <section className="bg-secondary border border-default rounded-2xl p-4 sm:p-6">
+    <section className="min-w-0 bg-secondary border border-default rounded-2xl p-4 sm:p-6">
       <h2 className="text-base font-semibold">Data they will receive</h2>
       <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
         Based on your current beneficiary choices, excluding items withheld from this person.
@@ -42,21 +42,25 @@ export default function BeneficiarySegmentAccess({ beneficiaryId }: { beneficiar
               No data is currently assigned to this beneficiary.
             </p>
           )}
-          <ul className="mt-4 divide-y divide-forest/10 dark:divide-cream/10">
+          <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {dataSegments.map((segment) => {
               const count = countsByType[segment.metamodel_type] || 0;
               return (
-                <li key={segment.metamodel_type} className="flex items-center justify-between gap-4 py-3">
+                <li key={segment.metamodel_type} className="min-w-0">
                   <Link
                     href={segment.path}
-                    className="flex min-h-11 items-center gap-3 rounded-xl text-sm hover:text-primary dark:hover:text-primary-300 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+                    className="flex h-full min-w-0 flex-col gap-4 rounded-2xl border border-default bg-secondary p-4 hover:border-primary/30 transition-colors active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                   >
-                    <span aria-hidden="true">{segment.icon}</span>
-                    {segment.title}
+                    <div className="flex items-center gap-3">
+                      <span className="shrink-0 text-xl text-primary dark:text-primary-300" aria-hidden="true">
+                        {segment.icon}
+                      </span>
+                      <span className="min-w-0 text-sm font-medium">{segment.title}</span>
+                    </div>
+                    <span className="text-base font-semibold tabular-nums" data-cy={`beneficiary-count-${segment.slug}`}>
+                      {count} {count === 1 ? "item" : "items"}
+                    </span>
                   </Link>
-                  <span className="shrink-0 text-sm font-semibold tabular-nums" data-cy={`beneficiary-count-${segment.slug}`}>
-                    {count} {count === 1 ? "item" : "items"}
-                  </span>
                 </li>
               );
             })}

@@ -1,0 +1,12 @@
+/* Lets beneficiary details fill the available app content area.
+ * Owns this page's width and its override of the reading layout.
+ * Does not change saved preferences or the width of other pages. */
+
+.page {
+  width: 100%;
+  min-width: 0;
+}
+
+:global(html[data-content-width='reading']) :global(.cw-content-width-wrapper):has(.page) {
+  max-width: none;
+}
