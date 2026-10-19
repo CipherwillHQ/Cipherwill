@@ -1,9 +1,14 @@
+// Displays a clickable beneficiary with existing management actions.
+// Owns detail navigation, migration status, message editing, and removal.
+// Does not load the beneficiary's detail page or count segment access.
 "use client";
 
 import { useApolloClient, useMutation } from "@apollo/client/react";
 import toast from "react-hot-toast";
 import { useSession } from "../../../../contexts/SessionContext";
 import { useState } from "react";
+import Link from "next/link";
+import getPersonDisplayName from "@/common/people/getPersonDisplayName";
 import DELETE_SMARTWILL_BENEFICIARY from "../../../../graphql/ops/app/smartwill/mutations/DELETE_SMARTWILL_BENEFICIARY";
 import GET_SMARTWILL_BENEFICIARY from "../../../../graphql/ops/app/smartwill/queries/GET_SMARTWILL_BENEFICIARY";
 import CustomMessage from "../CustomMessage";
@@ -66,15 +71,20 @@ export default function BeneficiaryPersonTile({
     });
   }
   return (
-    <div className="flex flex-col gap-2 md:flex-row justify-between items-start md:items-center my-1 bg-secondary rounded-md p-2 border border-default">
-      <div className="py-1">
+    <div className="relative flex flex-col gap-2 md:flex-row justify-between items-start md:items-center my-1 bg-secondary rounded-md p-2 border border-default hover:border-primary/30 transition-colors">
+      <Link
+        href={`/app/beneficiaries/${beneficiary.id}`}
+        data-cy="beneficiary-details-link"
+        className="block py-1 after:absolute after:inset-0 after:rounded-md active:after:bg-primary/5 focus-visible:after:outline-2 focus-visible:after:outline-primary focus-visible:after:outline-offset-2"
+      >
         <div>
-          {person.first_name} {person.last_name}
+          {getPersonDisplayName(person)}
         </div>
         <div data-cy="beneficiary-email" className="text-sm md:text-base">
           {person.email}
         </div>
-      </div>
+        <div className="text-xs text-primary dark:text-primary-300">View details →</div>
+      </Link>
       {minimum_count === max_key_count && (
         <div className="p-1">
           <div data-cy="in-sync-status">In Sync</div>
@@ -92,6 +102,7 @@ export default function BeneficiaryPersonTile({
             {minimum_count}
           </div>
           <SimpleButton
+            className="relative"
             variant="danger"
             data-cy="requires-migration-button"
             onClick={async () => {
@@ -136,7 +147,7 @@ export default function BeneficiaryPersonTile({
         </>
       )}
 
-      <div className="flex md:flex-col items-center md:items-end justify-center gap-2">
+      <div className="relative flex md:flex-col items-center md:items-end justify-center gap-2">
         <CustomMessage
           beneficiary_id={beneficiary.id}
           custom_message={beneficiary.custom_message}

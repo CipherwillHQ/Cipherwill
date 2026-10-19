@@ -1,3 +1,7 @@
+// Requests the owner's beneficiary records.
+// Owns the fields needed for beneficiary management and detail pages.
+// Does not resolve people or calculate segment access.
+
 import { gql } from "@apollo/client";
 
 const GET_SMARTWILL_BENEFICIARY = gql`
@@ -8,6 +12,7 @@ const GET_SMARTWILL_BENEFICIARY = gql`
       person_id
       publicKey
       custom_message
+      created_at
     }
   }
 `;

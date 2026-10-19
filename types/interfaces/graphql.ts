@@ -1,4 +1,6 @@
-// GraphQL response type definitions
+// Defines shared GraphQL response contracts for app data.
+// Owns beneficiary, account, billing, and key-count interfaces.
+// Does not fetch data or implement query behavior.
 
 export interface GraphQLErrorLike {
   errors?: Array<{
@@ -69,7 +71,8 @@ export interface SmartWillBeneficiary {
   user_id: string;
   person_id: string;
   publicKey: string;
-  custom_message: string;
+  custom_message: string | null;
+  created_at: string;
 }
 
 export interface SmartWillBeneficiariesData {
