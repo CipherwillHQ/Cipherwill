@@ -1,85 +1,9 @@
-"use client";
+// Renders a shared notes item.
+// Owns integration with the executor's read-only detail view.
+// Does not decrypt contents or manage permissions.
 
-import { useQuery } from "@apollo/client/react";
-import getTimeAgo from "../../../../../common/time/getTimeAgo";
-import { useState } from "react";
-import GET_GRANTED_METAMODEL from "../../../../../graphql/ops/app/executor/metamodels/GET_GRANTED_METAMODEL";
-import { NOTE_TYPE } from "../../../../../types/pods/NOTE";
-import { useParams } from "next/navigation";
-import useDecryptedPod from "@/common/executor/hooks/useDecryptedPod";
-import sanitizeHtml from "@/common/security/sanitizeHtml";
-import type { 
-  GetGrantedMetamodelQuery, 
-  GetGrantedMetamodelVariables 
-} from "@/types/interfaces/metamodel";
+import GrantedDataDetails from "@/components/executor/GrantedDataDetails";
 
 export default function ExecutorNoteView() {
-  const params = useParams();
-  const access_id: string = params?.id as string;
-  const note_id: string = params?.noteId as string;
-
-  const [decryptedValue, setDecryptedValue] = useState<NOTE_TYPE | string>(
-    "loading..."
-  );
-  const [keyMetadata, setKeyMetadata] = useState<any|null>(null);
-  useDecryptedPod({
-    access_id,
-    metamodel_id: note_id,
-    setData(data) {
-      setDecryptedValue(data);
-    },
-    setKeyMetadata(data) {
-      setKeyMetadata(data);
-    },
-  });
-
-  const { data: granted_metamodel } = useQuery<GetGrantedMetamodelQuery, GetGrantedMetamodelVariables>(
-    GET_GRANTED_METAMODEL, 
-    {
-      variables: {
-        access_id,
-        model_id: note_id,
-      },
-    }
-  );
-  
-  if (!granted_metamodel) return <div>Loading Granted Models...</div>;
-
-  const parsed_data = JSON.parse(
-    granted_metamodel.getGrantedMetamodel.metadata
-  );
-  const sanitizedContent =
-    typeof decryptedValue === "string"
-      ? ""
-      : sanitizeHtml(decryptedValue.content ?? "");
-
-  return (
-    <div className="w-full">
-      <div className="p-2">
-        Title : {parsed_data.title || "Untitled"}
-        <br />
-        {keyMetadata && (
-          <div>
-            Created At: {getTimeAgo(parseInt(keyMetadata.created_at))}
-            <br />
-            Updated At : {getTimeAgo(parseInt(keyMetadata.updated_at))}
-          </div>
-        )}
-        <div className="border-b my-2" />
-        Content :
-        <br />
-        <div className="whitespace-pre-line bg-secondary p-2">
-          {typeof decryptedValue === "string" ? (
-            decryptedValue
-          ) : (
-            <div
-              dangerouslySetInnerHTML={{
-                __html: sanitizedContent,
-              }}
-            ></div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+  return <GrantedDataDetails slug="notes" />;
 }

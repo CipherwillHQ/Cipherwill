@@ -1,38 +1,27 @@
-import segments from "@/app/app/segments/segments";
-import { Segment } from "@/types/Segments";
-import { AiOutlineHome } from "react-icons/ai";
-import { TbApiApp, TbHomeShield, TbNotes, TbSignLeft } from "react-icons/tb";
+// Builds the executor sidebar from the existing data categories.
+// Owns overview routes and category links for the current will.
+// Does not fetch donor details or filter granted data.
 
-function getExecutorMenu(pathname: string) {
-  const exeutorId = pathname.split("/")[2];
-  const menu: any = [
-    {
-      icon: <AiOutlineHome />,
-      title: "Home",
-      path: `/executor`,
-    },
+import { TbFileDescription, TbLayoutDashboard } from "react-icons/tb";
+import { executorSegments } from "@/common/executor/segments";
+import type { ExecutorMenuItem } from "@/types/interfaces";
+import type { Divider } from "@/types/Segments";
+
+export default function getExecutorMenu(pathname: string): (ExecutorMenuItem | Divider)[] {
+  const accessId = pathname.split("/")[2];
+  const menu: (ExecutorMenuItem | Divider)[] = [
+    { icon: <TbLayoutDashboard />, title: "Shared wills", path: "/executor" },
   ];
 
-  if (exeutorId) {
-    menu.push({
-      donor: true,
-    });
-  
-    segments.forEach((segment) => {
-      if ('divider' in segment && segment.divider) {
-        menu.push({
-          divider: true,
-        });
-        return;
-      }
-      menu.push({
-        icon: (segment as Segment).icon,
-        title: (segment as Segment).title,
-        path: `/executor/${exeutorId}/${(segment as Segment).slug}`,
-      });
-    });
+  if (accessId) {
+    menu.push(
+      { icon: <TbFileDescription />, title: "Will overview", path: "/executor/" + accessId },
+      ...executorSegments.map((segment) =>
+        "divider" in segment
+          ? segment
+          : { icon: segment.icon, title: segment.title, path: "/executor/" + accessId + "/" + segment.slug },
+      ),
+    );
   }
   return menu;
 }
-
-export default getExecutorMenu;

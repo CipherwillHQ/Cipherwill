@@ -14,4 +14,5 @@ export * from './compare';
 export * from './persona';
 export * from './blog';
 export * from './landing';
+export * from './executor';
 

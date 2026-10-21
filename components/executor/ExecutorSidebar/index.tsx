@@ -1,73 +1,71 @@
+// Renders the executor's responsive sidebar and workspace shortcuts.
+// Owns navigation grouping, donor context, and active route styling.
+// Does not fetch granted contents or change permissions.
+
 "use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { TbHomeShield, TbShieldCheck } from "react-icons/tb";
+import SidebarLogo from "@/components/app/Sidebar/SidebarLogo";
+import SwitchThemeButton from "@/components/app/Sidebar/SwitchThemeButton";
+import SymbolicLogo from "@/components/public/logo/SymbolicLogo";
 import getExecutorMenu from "./getExecutorMenu";
 import DonorName from "./DonorName";
-import SidebarLogo from "../../app/Sidebar/SidebarLogo";
-import SwitchThemeButton from "@/components/app/Sidebar/SwitchThemeButton";
-import { TbHomeShield } from "react-icons/tb";
 
 export default function ExecutorSidebar() {
-  const pathname = usePathname();
-  const exeutorId = pathname?.split("/")[2];
+  const pathname = usePathname() ?? "/executor";
+  const accessId = pathname.split("/")[2];
 
   return (
-    <div className="flex flex-col h-full w-min sm:w-60 justify-between bg-white dark:bg-darkCanvas p-1 sm:p-2 border-r border-default">
-      <div>
-        <SidebarLogo />
-
-        <div className="w-full flex flex-1 flex-col overflow-auto">
-          {pathname &&
-            exeutorId &&
-            getExecutorMenu(pathname).map((item, index) => {
-              if (item.divider) {
-                return (
-                  <div
-                    key={`divider-${index}`}
-                    className="border-t border-gray-300 mx-1 my-2"
-                  />
-                );
-              }
-              if (item.donor) {
-                return (
-                  <div
-                    key={`donor-${index}`}
-                    className="p-1 text-xs sm:text-base text-center"
-                  >
-                    Data of <DonorName access_id={exeutorId} />
-                  </div>
-                );
-              }
-              return (
-                <Link
-                  key={item.path}
-                  href={item.path}
-                  data-cy={`executor-sidebar-${item.title}`}
-                >
-                  <div
-                    className={`flex items-center m-1 p-2 rounded-md justify-center sm:justify-start ${item.path === pathname ? "font-semibold" : "hover:underline"}`}
-                  >
-                    <div className={`sm:mr-2 text-2xl sm:text-xl`}>
-                      {item.icon}
-                    </div>
-                    <div className={`text-sm hidden sm:flex`}>{item.title}</div>
-                  </div>
-                </Link>
-              );
-            })}
-        </div>
-        <Link href={`/app`}>
-          <div
-            className={`flex items-center m-1 p-2 rounded-md justify-center sm:justify-start`}
-          >
-            <div className={`sm:mr-2 text-2xl sm:text-xl`}>
-              <TbHomeShield />
-            </div>
-            <div className={`text-sm hidden sm:flex`}>Go to Cipherwill App</div>
-          </div>
+    <aside aria-label="Executor navigation" className="flex h-full w-16 flex-col border-r border-default bg-white p-2 dark:bg-[#121212] sm:w-60">
+      <div className="shrink-0 overflow-hidden px-1 pb-4">
+        <div className="hidden sm:block"><SidebarLogo /></div>
+        <Link href="/executor" aria-label="Shared wills" className="flex min-h-11 items-center justify-center rounded-xl sm:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+          <SymbolicLogo overrideTheme="light" size={28} className="dark:hidden" />
+          <SymbolicLogo overrideTheme="dark" size={28} className="hidden dark:block" />
         </Link>
+        <div className="hidden items-center gap-1.5 text-xs font-medium text-neutral-500 dark:text-neutral-400 sm:flex">
+          <TbShieldCheck size={15} className="text-sage" /> Executor workspace
+        </div>
       </div>
-      <SwitchThemeButton />
-    </div>
+      {accessId && (
+        <div className="mb-4 hidden rounded-xl border border-clay/20 bg-clay/10 p-3 sm:block">
+          <p className="mb-1 text-xs text-neutral-500 dark:text-neutral-400">Data of</p>
+          <div className="break-words text-sm font-semibold"><DonorName key={accessId} access_id={accessId} /></div>
+        </div>
+      )}
+      <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto customScrollbar">
+        {getExecutorMenu(pathname).map((item) => {
+          if ("divider" in item) {
+            return <div key={item.divider} className="mx-1 border-t border-default pt-4 pb-1"><span className="hidden px-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400 sm:block">{item.divider}</span></div>;
+          }
+          const active = item.path === pathname || (
+            item.path !== "/executor" && item.path !== "/executor/" + accessId && pathname.startsWith(item.path + "/")
+          );
+          return (
+            <Link
+              key={item.path}
+              href={item.path}
+              title={item.title}
+              aria-label={item.title}
+              aria-current={active ? "page" : undefined}
+              data-cy={"executor-sidebar-" + item.title}
+              className={"flex min-h-11 items-center justify-center gap-3 rounded-xl border-l-4 px-2 text-sm transition-colors sm:justify-start focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary " + (active ? "border-primary bg-primary-50 font-semibold text-primary dark:bg-darkCard dark:text-cream" : "border-transparent font-medium text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-darkCard")}
+            >
+              <span className="shrink-0 text-xl">{item.icon}</span>
+              <span className="hidden sm:block">{item.title}</span>
+            </Link>
+          );
+        })}
+      </nav>
+      <div className="mt-4 shrink-0 space-y-1 border-t border-default pt-3">
+        <Link href="/app" title="Go to Cipherwill App" aria-label="Go to Cipherwill App" className="flex min-h-11 items-center justify-center gap-3 rounded-xl px-3 text-sm font-medium hover:bg-neutral-100 dark:hover:bg-darkCard sm:justify-start focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+          <TbHomeShield size={20} className="shrink-0" />
+          <span className="hidden sm:block">Go to Cipherwill App</span>
+        </Link>
+        <SwitchThemeButton compactOnMobile />
+      </div>
+    </aside>
   );
 }

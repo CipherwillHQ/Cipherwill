@@ -1,3 +1,7 @@
+// Renders the shared theme control for dashboard sidebars.
+// Owns cycling between system, light, and dark appearances.
+// Does not persist themes directly or render navigation.
+
 import { useTheme } from "@/contexts/ThemeSelector";
 import { TbMoon, TbSun, TbDeviceLaptop } from "react-icons/tb";
 
@@ -7,7 +11,7 @@ const getNextTheme = (theme: string) => {
   return "system";
 };
 
-export default function SwitchThemeButton() {
+export default function SwitchThemeButton({ compactOnMobile = false }: { compactOnMobile?: boolean }) {
   const { current_theme, setCurrentTheme } = useTheme();
   const nextTheme = getNextTheme(current_theme);
 
@@ -28,16 +32,19 @@ export default function SwitchThemeButton() {
   return (
     <div
       data-cy="switch-theme-btn"
-      onClick={() => {
-        setCurrentTheme(nextTheme);
-      }}
       className="hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded-md w-full cursor-pointer"
     >
-      <button className="flex items-center p-2 rounded-md justify-start hover:bg-neutral-100 dark:hover:bg-neutral-700 w-full">
-        <div className={`mr-2 text-xl`}>
+      <button
+        type="button"
+        aria-label={label}
+        title={label}
+        onClick={() => setCurrentTheme(nextTheme)}
+        className={"flex min-h-11 items-center rounded-xl p-2 hover:bg-neutral-100 dark:hover:bg-neutral-700 w-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary " + (compactOnMobile ? "justify-center sm:justify-start" : "justify-start")}
+      >
+        <div className={compactOnMobile ? "text-xl sm:mr-2" : "mr-2 text-xl"}>
           {icon}
         </div>
-        <div className={`font-medium text-sm`}>
+        <div className={compactOnMobile ? "hidden font-medium text-sm sm:block" : "font-medium text-sm"}>
           {label}
         </div>
       </button>
