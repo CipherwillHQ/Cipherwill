@@ -1,5 +1,5 @@
 // Provides authentication actions and tracks successful authentication outcomes.
-// Owns Firebase calls, loading state, and conversion callback wiring.
+// Owns Firebase calls, backend email requests, loading state, and conversion callbacks.
 // Does not initialize profiles or choose post-login destinations.
 "use client";
 
@@ -12,13 +12,13 @@ import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
   getIdToken,
-  sendPasswordResetEmail,
   type UserCredential,
 } from "firebase/auth";
 import { usePostHog } from "posthog-js/react";
 import trackSignupConversion from "@/common/analytics/trackSignupConversion";
 import { authApp } from "./firebase";
 import { handle_firebase_error } from "./errors";
+import requestPasswordReset from "@/common/auth/requestPasswordReset";
 
 type LoginConversionFn = (method: string) => Promise<void>;
 
@@ -76,13 +76,7 @@ export function createAuthActions({
         return handle_firebase_error(error);
       }
     },
-    sendPasswordResetEmail: async (email: string) => {
-      try {
-        return await sendPasswordResetEmail(authApp, email);
-      } catch (error) {
-        return handle_firebase_error(error);
-      }
-    },
+    sendPasswordResetEmail: requestPasswordReset,
     googleLogin: async () => {
       if (!authApp) return;
       setIsGoogleLoading(true);

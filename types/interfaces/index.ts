@@ -2,6 +2,7 @@
 // Owns the shared import surface for component and data contracts.
 // Does not implement runtime behavior.
 export * from './graphql';
+export * from './authEmail';
 export * from './people';
 export * from './app';
 export * from './common';

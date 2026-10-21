@@ -1,3 +1,6 @@
+// What it does: Searches people and opens guest invitation or retry forms.
+// What it owns: Search state and choosing a person or invitation action.
+// What it does NOT do: Assume existing guests have received an invitation email.
 "use client";
 
 import { useLazyQuery } from "@apollo/client/react";
@@ -7,6 +10,7 @@ import SEARCH_PERSON from "../../../graphql/ops/app/people/queries/SEARCH_PERSON
 import validate_email from "../../../common/validators/validate_email";
 import BasicPopup from "../../BasicPopup";
 import InvitationBox from "./InvitationBox";
+import PersonSearchResults from "./PersonSearchResults";
 import { PersonRef } from "@/types/Will";
 import { SearchPersonData, SearchPersonVariables } from "../../../types/interfaces/people";
 import LoadingIndicator from "../../common/LoadingIndicator";
@@ -51,6 +55,7 @@ function SeachAndList({
   response: (response: PersonRef) => void;
 }) {
   const [invitationMode, setInvitationMode] = useState<null | string>(null);
+  const [invitationName, setInvitationName] = useState("");
   const [inputEmail, setInputEmail] = useState("");
   const [searchUser, { loading, error, data: peoples }] =
     useLazyQuery<SearchPersonData, SearchPersonVariables>(SEARCH_PERSON);
@@ -88,7 +93,8 @@ function SeachAndList({
   if (invitationMode) {
     return (
       <InvitationBox
-        inputEmail={inputEmail}
+        inputEmail={invitationMode}
+        inputName={invitationName}
         field={field}
         response={response}
         onClose={onClose}
@@ -140,36 +146,9 @@ function SeachAndList({
           </div>
         )}
 
-        {/* Person List */}
-        {!loading && valid_email && peoples && peoples.searchPerson.length > 0 && (
-          <div className="space-y-2 max-h-60 overflow-y-auto">
-            {peoples.searchPerson.map((person) => (
-              <div
-                key={person.id}
-                className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-colors border border-gray-200 dark:border-gray-600"
-                onClick={() => {
-                  response({
-                    person: person.id,
-                    field,
-                  });
-                  onClose();
-                }}
-                data-cy="person-item"
-              >
-                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-                  <FiUser className="text-blue-600 dark:text-blue-400" size={18} />
-                </div>
-                <div className="flex-1">
-                  <h3 data-cy="person-name" className="font-medium text-gray-900 dark:text-white">
-                    {person.first_name}
-                  </h3>
-                  <p data-cy="person-email" className="text-sm text-gray-600 dark:text-gray-400">
-                    {person.email}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+        {!loading && valid_email && peoples && (
+          <PersonSearchResults people={peoples.searchPerson} field={field} response={response} onClose={onClose}
+            onInvite={(person) => { setInvitationName(person.first_name || ""); setInvitationMode(person.email); }} />
         )}
 
         {/* Invite Option */}

@@ -15,6 +15,7 @@ const googleConversion = mock.fn<() => void | Promise<void>>();
 const setIsGoogleLoading = mock.fn();
 const createAccount = mock.fn(async () => credential);
 const handleError = mock.fn((error: unknown) => ({ error }));
+const firebasePasswordReset = mock.fn();
 const conversionError = new Error("Analytics unavailable");
 Object.defineProperty(globalThis, "window", {
   configurable: true, value: { GoogleConverted: googleConversion },
@@ -35,7 +36,7 @@ mock.module(pathToFileURL(require.resolve("firebase/auth")), { namedExports: {
   signInWithCustomToken: async () => credential,
   getAdditionalUserInfo: () => ({ isNewUser }),
   sendEmailVerification: mock.fn(),
-  sendPasswordResetEmail: mock.fn(),
+  sendPasswordResetEmail: firebasePasswordReset,
   getIdToken: mock.fn(),
 } });
 mock.module("./firebase.ts", { namedExports: { authApp: { signOut: mock.fn() } } });
@@ -130,4 +131,19 @@ test("a PostHog failure does not invalidate signup or block Google conversion", 
   assert.equal(await useAuthActions({ setIsGoogleLoading }).createUserWithEmailAndPassword("test@example.com", "password"), credential);
   assert.equal(handleError.mock.callCount(), 0);
   assert.equal(googleConversion.mock.callCount(), 1);
+});
+
+test("password-reset actions use the backend and preserve skipped outcomes", async () => {
+  const fetch = mock.method(globalThis, "fetch", async () => new Response(JSON.stringify({
+    data: { requestPasswordReset: { sent: false, reason: "Verify your email first" } },
+  })));
+  try {
+    const { createAuthActions } = await import("./useAuthActions");
+    const actions = createAuthActions({ setIsGoogleLoading, loginConversion: async () => {} });
+    assert.deepEqual(await actions.sendPasswordResetEmail("user@gmail.com"), { sent: false, reason: "Verify your email first" });
+    assert.equal(fetch.mock.callCount(), 1);
+    assert.equal(firebasePasswordReset.mock.callCount(), 0);
+  } finally {
+    fetch.mock.restore();
+  }
 });

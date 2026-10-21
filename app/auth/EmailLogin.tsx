@@ -1,7 +1,11 @@
+// What it does: Displays email sign-in and password-reset actions.
+// What it owns: Form state and honest feedback for accepted or skipped reset emails.
+// What it does NOT do: Decide whether the target email address is verified.
+
 import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
-import toast from "react-hot-toast";
+import PasswordResetForm from "./PasswordResetForm";
 import Popup from "reactjs-popup";
 
 export default function EmailLogin() {
@@ -86,41 +90,7 @@ export default function EmailLogin() {
           }
         >
           {/* @ts-ignore */}
-          {(close) => (
-            <div className="max-w-md bg-white px-4 pt-2 pb-6 rounded-sm flex flex-col gap-2">
-              <h2 className="text-xl py-2 font-bold text-gray-900 mb-2 w-[50vw]">
-                Reset password
-              </h2>
-              <label className="font-semibold text-black">Email</label>
-              <input
-                id="forgot-email"
-                defaultValue={email}
-                type="email"
-                className="p-2 border rounded-sm"
-                placeholder="Enter your email"
-              />
-              <div className="text-gray-600 my-4 font-medium">
-                You will receive an email with a link to reset your password.
-              </div>
-              <button
-                className="bg-primary hover:bg-primary-900 hover:cursor-pointer text-white p-2 rounded-sm font-semibold"
-                onClick={async () => {
-                  const email = (
-                    document.getElementById("forgot-email") as HTMLInputElement
-                  )?.value;
-                  if (email.length > 0 && email.includes("@")) {
-                    await sendPasswordResetEmail(email);
-                    await toast.success("Password reset email sent");
-                    close();
-                  } else {
-                    toast.error("Please enter a valid email");
-                  }
-                }}
-              >
-                Send password reset email
-              </button>
-            </div>
-          )}
+          {(close) => <PasswordResetForm email={email} onClose={close} sendPasswordResetEmail={sendPasswordResetEmail} />}
         </Popup>
 
         <button

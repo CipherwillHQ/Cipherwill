@@ -1,3 +1,7 @@
+// What it does: Requests a person invitation and its email outcome.
+// What it owns: Fields needed to distinguish sent, failed, duplicate, and skipped emails.
+// What it does NOT do: Assume guest creation means email delivery succeeded.
+
 import { gql } from "@apollo/client";
 
 const INVITE_USER = gql`
@@ -17,11 +21,13 @@ const INVITE_USER = gql`
         id
         email
         first_name
+        invitation_email { status reason }
       }
       ... on Guest {
         id
         email
         first_name
+        invitation_email { status reason }
       }
     }
   }
