@@ -1,0 +1,35 @@
+<!-- Illustrates asset recovery with a pale wallet, phrase card, and lock.
+     Owns the hardware wallet shapes and warm clay protection accent.
+     Does not contain real keys, seed phrases, or financial balances. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320" fill="none">
+  <rect width="480" height="320" fill="#F4F1EA"/>
+  <circle cx="240" cy="149" r="117" fill="#EAE5DA"/>
+  <circle cx="106" cy="153" r="11" fill="#7AA089" fill-opacity=".25"/>
+  <circle cx="369" cy="217" r="10" fill="#D4A390" fill-opacity=".3"/>
+  <ellipse cx="236" cy="275" rx="122" ry="13" fill="#2A363B" fill-opacity=".08"/>
+  <g transform="rotate(9 289 139)">
+    <rect x="222" y="47" width="134" height="186" rx="13" fill="#2A363B" fill-opacity=".08"/>
+    <rect x="216" y="41" width="134" height="186" rx="13" fill="#FBF9F1" stroke="#A8B0A9" stroke-width="2"/>
+    <rect x="232" y="58" width="33" height="28" rx="8" fill="#7AA089" fill-opacity=".25"/>
+    <path d="M279 65h49M279 76h32" stroke="#A8B0A9" stroke-width="4" stroke-linecap="round"/>
+    <g stroke="#A8B0A9" stroke-width="5" stroke-linecap="round">
+      <path d="M234 108h39M290 108h39"/><path d="M234 131h39M290 131h39"/>
+      <path d="M234 154h39M290 154h39"/><path d="M234 177h39M290 177h39"/>
+    </g>
+    <path d="M234 203h63" stroke="#D4A390" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <g transform="rotate(-10 186 169)">
+    <rect x="143" y="66" width="96" height="214" rx="22" fill="#2A363B" fill-opacity=".12"/>
+    <rect x="136" y="59" width="96" height="214" rx="22" fill="#A8B0A9" stroke="#2A363B" stroke-width="2.5"/>
+    <rect x="145" y="68" width="78" height="48" rx="14" fill="#FBF9F1"/>
+    <circle cx="184" cy="90" r="9" fill="#A8B0A9" stroke="#65716F" stroke-width="2"/>
+    <rect x="148" y="130" width="72" height="59" rx="8" fill="#65716F"/>
+    <path d="M164 150h38M164 162h27" stroke="#EAE5DA" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="167" cy="213" r="7" fill="#65716F"/>
+    <circle cx="201" cy="213" r="7" fill="#65716F"/>
+    <path d="M166 251h36" stroke="#65716F" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <circle cx="311" cy="232" r="42" fill="#E7C9B9" stroke="#FBF9F1" stroke-width="5"/>
+  <rect x="293" y="228" width="36" height="29" rx="6" fill="#FBF9F1" stroke="#65716F" stroke-width="2.5"/>
+  <path d="M300 228v-11a11 11 0 0 1 22 0v11M311 240v7" stroke="#65716F" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

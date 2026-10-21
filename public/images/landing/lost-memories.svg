@@ -1,0 +1,37 @@
+<!-- Illustrates personal memories with warm family photos and an inactive cloud.
+     Owns the photo frames, family silhouettes, and muted sage scenery.
+     Does not use real family photographs or depict a guaranteed deletion. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320" fill="none">
+  <rect width="480" height="320" fill="#F4F1EA"/>
+  <circle cx="240" cy="149" r="117" fill="#EAE5DA"/>
+  <circle cx="99" cy="168" r="12" fill="#D4A390" fill-opacity=".3"/>
+  <circle cx="369" cy="228" r="10" fill="#7AA089" fill-opacity=".3"/>
+  <ellipse cx="237" cy="275" rx="121" ry="13" fill="#2A363B" fill-opacity=".08"/>
+  <g transform="rotate(10 272 155)">
+    <rect x="197" y="62" width="157" height="196" rx="12" fill="#2A363B" fill-opacity=".08"/>
+    <rect x="191" y="56" width="157" height="196" rx="12" fill="#FBF9F1" stroke="#A8B0A9" stroke-width="2"/>
+    <rect x="203" y="68" width="133" height="137" rx="7" fill="#DCE3D8"/>
+    <circle cx="305" cy="98" r="16" fill="#E7C9B9"/>
+    <path d="m203 161 46-46 38 39 24-25 25 30v46H203Z" fill="#A8BAA9"/>
+    <path d="M216 224h75" stroke="#A8B0A9" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <g transform="rotate(-9 194 179)">
+    <rect x="116" y="85" width="167" height="195" rx="12" fill="#2A363B" fill-opacity=".1"/>
+    <rect x="110" y="79" width="167" height="195" rx="12" fill="#FBF9F1" stroke="#65716F" stroke-width="2.5"/>
+    <rect x="122" y="91" width="143" height="138" rx="7" fill="#E7C9B9"/>
+    <path d="M122 178c35-36 77-34 143-8v59H122Z" fill="#B6C5B3"/>
+    <path d="M144 227v-48a24 24 0 0 1 48 0v48" fill="#65716F"/>
+    <path d="M194 227v-46a23 23 0 0 1 46 0v46" fill="#91A493"/>
+    <circle cx="168" cy="139" r="18" fill="#65716F"/>
+    <circle cx="217" cy="140" r="18" fill="#91A493"/>
+    <path d="M172 227v-27a21 21 0 0 1 42 0v27" fill="#FBF9F1"/>
+    <circle cx="193" cy="180" r="15" fill="#FBF9F1"/>
+    <path d="M136 249h62" stroke="#A8B0A9" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(303 31)">
+    <path d="M15 17a25 25 0 0 1 48 9h3a19 19 0 0 1 0 38H15a22 22 0 0 1 0-44" fill="#FBF9F1" stroke="#A8B0A9" stroke-width="2"/>
+    <circle cx="31" cy="43" r="3" fill="#A8B0A9"/>
+    <circle cx="43" cy="43" r="3" fill="#A8B0A9"/>
+    <circle cx="55" cy="43" r="3" fill="#A8B0A9"/>
+  </g>
+</svg>

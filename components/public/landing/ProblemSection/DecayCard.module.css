@@ -1,0 +1,52 @@
+/* Adds gentle feedback to the digital legacy risk cards.
+   Owns hover accents, card elevation, and illustration and icon movement.
+   Does not hide content or animate on touch or with reduced motion enabled. */
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    border-color: #D4A390;
+  }
+
+  .card:hover .badge {
+    background-color: #F2E4DA;
+    border-color: #D4A390;
+  }
+
+  .card:hover .icon {
+    background-color: #E7C9B9;
+    color: #2A363B;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  :global(html:not(.cw-reduced-motion)) .card {
+    transition: transform 280ms cubic-bezier(0.25, 1, 0.5, 1),
+      box-shadow 280ms ease, border-color 240ms ease;
+  }
+
+  :global(html:not(.cw-reduced-motion)) .badge {
+    transition: background-color 240ms ease, border-color 240ms ease;
+  }
+
+  :global(html:not(.cw-reduced-motion)) .icon {
+    transition: transform 320ms cubic-bezier(0.25, 1, 0.5, 1),
+      background-color 240ms ease, color 240ms ease;
+  }
+
+  :global(html:not(.cw-reduced-motion)) .illustration {
+    transition: transform 480ms cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  :global(html:not(.cw-reduced-motion)) .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  :global(html:not(.cw-reduced-motion)) .card:hover .illustration {
+    transform: translateY(-2px) scale(1.04) rotate(-1deg);
+  }
+
+  :global(html:not(.cw-reduced-motion)) .card:hover .icon {
+    transform: scale(1.08) rotate(5deg);
+  }
+}
