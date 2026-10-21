@@ -1,12 +1,28 @@
 // Presents the shared will's categories as a dashboard card grid.
-// Owns category grouping, recipient descriptions, and navigation.
-// Does not claim that a category contains granted items.
+// Owns populated category grouping, query states, and navigation.
+// Does not load item contents or determine beneficiary permissions.
+
+"use client";
 
 import Link from "next/link";
 import { TbArrowUpRight } from "react-icons/tb";
-import { executorSegments } from "@/common/executor/segments";
+import useExecutorSegments from "@/common/executor/hooks/useExecutorSegments";
+import DataGridSkeleton from "@/components/app/data/DataGridSkeleton";
+import ExecutorState from "./ExecutorState";
 
 export default function ExecutorSegmentGrid({ accessId }: { accessId: string }) {
+  const { segments, loading, error, refetch } = useExecutorSegments(accessId);
+
+  if (error) {
+    return (
+      <ExecutorState error title="Unable to load shared sections" description="Please try again to see the information shared with you.">
+        <button type="button" onClick={() => void refetch()} className="min-h-11 rounded-xl border border-default px-5 text-sm font-medium hover:bg-primary-50 dark:hover:bg-darkAccent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">Try again</button>
+      </ExecutorState>
+    );
+  }
+  if (loading) return <div role="status" aria-label="Loading shared sections"><DataGridSkeleton /></div>;
+  if (!segments.length) return null;
+
   return (
     <section className="space-y-2">
       <h2 className="text-lg font-semibold">Explore shared information</h2>
@@ -14,7 +30,7 @@ export default function ExecutorSegmentGrid({ accessId }: { accessId: string }) 
         Choose a category to view the items shared with you.
       </p>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {executorSegments.map((segment) => {
+        {segments.map((segment) => {
           if ("divider" in segment) {
             return <h3 key={segment.divider} className="col-span-full pt-4 text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">{segment.divider}</h3>;
           }

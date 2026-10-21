@@ -1,9 +1,10 @@
 // Adapts the existing data categories to the executor workspace.
-// Owns recipient-facing descriptions and shared category lookup.
+// Owns recipient descriptions, category lookup, and populated group filtering.
 // Does not change available routes, plans, or donor preferences.
 
 import segments from "@/app/app/segments/segments";
-import type { Segment } from "@/types/Segments";
+import type { Divider, Segment } from "@/types/Segments";
+import type { MetamodelTypeCount } from "@/types/interfaces";
 
 const descriptions: Record<string, string> = {
   notes: "Personal notes, wishes, and important instructions.",
@@ -27,4 +28,25 @@ export function getExecutorSegment(slug: string): Segment {
   return executorSegments.find(
     (segment): segment is Segment => "slug" in segment && segment.slug === slug,
   )!;
+}
+
+export function getAvailableExecutorSegments(counts: MetamodelTypeCount[]): (Divider | Segment)[] {
+  const populatedTypes = new Set(counts.filter((item) => item.count > 0).map((item) => item.type));
+  const available: (Divider | Segment)[] = [];
+  let divider: Divider | undefined;
+
+  for (const segment of executorSegments) {
+    if ("divider" in segment) {
+      divider = segment;
+      continue;
+    }
+    if (!populatedTypes.has(segment.metamodel_type)) continue;
+    if (divider) {
+      available.push(divider);
+      divider = undefined;
+    }
+    available.push(segment);
+  }
+
+  return available;
 }

@@ -1,8 +1,13 @@
-// Defines presentation contracts for the executor workspace.
-// Owns shared navigation, status, and read-only data component props.
+// Defines query and presentation contracts for the executor workspace.
+// Owns segment count responses, navigation, status, and read-only component props.
 // Does not define access permissions or encryption behavior.
 
 import type { ReactNode } from "react";
+import type { MetamodelTypeCount } from "./metamodel";
+
+export interface GetGrantedMetamodelTypeCountsQuery {
+  getGrantedMetamodelTypeCounts: MetamodelTypeCount[];
+}
 
 export interface ExecutorMenuItem {
   title: string;

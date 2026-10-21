@@ -1,12 +1,13 @@
 // Renders the executor's responsive sidebar and workspace shortcuts.
-// Owns navigation grouping, donor context, and active route styling.
+// Owns populated navigation, donor context, and active route styling.
 // Does not fetch granted contents or change permissions.
 
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { TbHomeShield, TbShieldCheck } from "react-icons/tb";
+import { TbHomeShield, TbLoader2, TbReload, TbShieldCheck } from "react-icons/tb";
+import useExecutorSegments from "@/common/executor/hooks/useExecutorSegments";
 import SidebarLogo from "@/components/app/Sidebar/SidebarLogo";
 import SwitchThemeButton from "@/components/app/Sidebar/SwitchThemeButton";
 import SymbolicLogo from "@/components/public/logo/SymbolicLogo";
@@ -16,6 +17,7 @@ import DonorName from "./DonorName";
 export default function ExecutorSidebar() {
   const pathname = usePathname() ?? "/executor";
   const accessId = pathname.split("/")[2];
+  const { segments, loading, error, refetch } = useExecutorSegments(accessId);
 
   return (
     <aside aria-label="Executor navigation" className="flex h-full w-16 flex-col border-r border-default bg-white p-2 dark:bg-[#121212] sm:w-60">
@@ -36,7 +38,7 @@ export default function ExecutorSidebar() {
         </div>
       )}
       <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto customScrollbar">
-        {getExecutorMenu(pathname).map((item) => {
+        {getExecutorMenu(pathname, segments).map((item) => {
           if ("divider" in item) {
             return <div key={item.divider} className="mx-1 border-t border-default pt-4 pb-1"><span className="hidden px-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400 sm:block">{item.divider}</span></div>;
           }
@@ -58,6 +60,20 @@ export default function ExecutorSidebar() {
             </Link>
           );
         })}
+        {accessId && loading && (
+          <div role="status" aria-label="Loading shared sections" className="flex min-h-11 items-center justify-center gap-3 px-3 text-sm text-neutral-500 dark:text-neutral-400 sm:justify-start">
+            <TbLoader2 size={20} className="shrink-0 animate-spin" />
+            <span className="hidden sm:block">Loading sections…</span>
+          </div>
+        )}
+        {accessId && error && (
+          <div role="alert">
+            <button type="button" aria-label="Reload shared sections" title="Reload shared sections" onClick={() => void refetch()} className="flex min-h-11 w-full items-center justify-center gap-3 rounded-xl px-3 text-sm text-neutral-500 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-darkCard sm:justify-start focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+              <TbReload size={20} className="shrink-0" />
+              <span className="hidden sm:block">Unable to load sections</span>
+            </button>
+          </div>
+        )}
       </nav>
       <div className="mt-4 shrink-0 space-y-1 border-t border-default pt-3">
         <Link href="/app" title="Go to Cipherwill App" aria-label="Go to Cipherwill App" className="flex min-h-11 items-center justify-center gap-3 rounded-xl px-3 text-sm font-medium hover:bg-neutral-100 dark:hover:bg-darkCard sm:justify-start focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
