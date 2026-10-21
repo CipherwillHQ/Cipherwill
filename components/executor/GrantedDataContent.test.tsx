@@ -3,7 +3,7 @@
 // Does not open a browser or perform cryptographic operations.
 
 import assert from "node:assert/strict";
-import { mock, test } from "node:test";
+import { beforeEach, mock, test } from "node:test";
 import { pathToFileURL } from "node:url";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -12,10 +12,13 @@ import { executorFields, isExecutorFieldSensitive } from "../../common/executor/
 let values: unknown[] = [];
 let stateIndex = 0;
 let modelType = "PASSWORD";
+let modelMissing = false;
 let loading = false;
 let error: Error | undefined;
 let decryptionError: Error | undefined;
 let keyMissing = false;
+let isEmpty = false;
+let decryptionLoading = false;
 let decryptionArgs: { access_id: string; metamodel_id: string };
 const sanitize = mock.fn((value: string) => value.replace(/<script>.*?<\/script>/g, ""));
 
@@ -30,7 +33,7 @@ mock.module("react", { defaultExport: React, namedExports: {
 mock.module("@apollo/client/react", { namedExports: {
   useQuery: () => ({
     loading, error,
-    data: loading ? undefined : { getGrantedMetamodel: {
+    data: loading ? undefined : { getGrantedMetamodel: modelMissing ? null : {
       id: "item", type: modelType, metadata: '{"name":"Shared item"}',
       created_at: "1700000000000", updated_at: "1700000000000",
     } },
@@ -39,10 +42,62 @@ mock.module("@apollo/client/react", { namedExports: {
 mock.module("../../common/executor/hooks/useDecryptedPod.tsx", {
   defaultExport: (args: typeof decryptionArgs) => {
     decryptionArgs = args;
-    return { data: { getKeyByRefId: keyMissing ? null : {} }, error: decryptionError };
+    return { data: { getKeyByRefId: keyMissing ? null : {} }, error: decryptionError, isEmpty, loading: decryptionLoading };
   },
 });
 mock.module(pathToFileURL(require.resolve("../../common/security/sanitizeHtml.ts")), { defaultExport: sanitize });
+
+beforeEach(() => {
+  loading = false;
+  error = undefined;
+  decryptionError = undefined;
+  keyMissing = false;
+  isEmpty = false;
+  decryptionLoading = false;
+  modelMissing = false;
+});
+
+test("metamodel-only items keep their title and show no saved details", async () => {
+  const { default: GrantedDataContent } = await import("./GrantedDataContent");
+  isEmpty = true;
+  keyMissing = true;
+  for (const slug of ["device-locks", "notes"]) {
+    stateIndex = 0;
+    values = [null, null];
+    const markup = renderToStaticMarkup(<GrantedDataContent slug={slug} accessId="will" modelId="item" />);
+    assert.match(markup, /<h1[^>]*>Shared item<\/h1>/);
+    assert.match(markup, /No details saved/);
+    assert.match(markup, /Updated/);
+    assert.match(markup, /Created/);
+    assert.match(markup, /role="status"/);
+    assert.doesNotMatch(markup, /This item is unavailable|Decrypting shared details|role="alert"/);
+  }
+});
+
+test("details stay loading while checking whether content exists", async () => {
+  const { default: GrantedDataContent } = await import("./GrantedDataContent");
+  decryptionLoading = true;
+  keyMissing = true;
+  stateIndex = 0;
+  values = [null, null];
+  const markup = renderToStaticMarkup(<GrantedDataContent slug="device-locks" accessId="will" modelId="item" />);
+  assert.match(markup, /Decrypting shared details/);
+  assert.doesNotMatch(markup, /This item is unavailable|No details saved/);
+});
+
+test("missing or restricted metamodels remain unavailable even without content", async () => {
+  const { default: GrantedDataContent } = await import("./GrantedDataContent");
+  isEmpty = true;
+  for (const state of ["missing", "restricted"]) {
+    modelMissing = state === "missing";
+    error = state === "restricted" ? new Error("FORBIDDEN") : undefined;
+    stateIndex = 0;
+    values = [null, null];
+    const markup = renderToStaticMarkup(<GrantedDataContent slug="device-locks" accessId="will" modelId="item" />);
+    assert.match(markup, /This item is unavailable/);
+    assert.doesNotMatch(markup, /No details saved|Shared item/);
+  }
+});
 
 test("shared details use existing decryption and mask sensitive values", async () => {
   const { default: GrantedDataContent } = await import("./GrantedDataContent");

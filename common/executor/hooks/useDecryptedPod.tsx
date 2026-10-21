@@ -1,4 +1,9 @@
+// Loads shared content before looking up the keys needed to decrypt it.
+// Owns empty-pod detection, query states, and executor decryption.
+// Does not create items, save content, or change access permissions.
+
 import { useSession } from "@/contexts/SessionContext";
+import { isPodNotFoundError } from "@/contexts/PodHelper/helpers";
 import GET_BENEFICIARY_ENCRYPTION_KEY from "@/graphql/ops/app/executor/access/queries/GET_BENEFICIARY_ENCRYPTION_KEY";
 import GET_KEY_BY_REF_ID from "@/graphql/ops/app/key/Queries/GET_KEY_BY_REF_ID";
 import { useApolloClient, useQuery } from "@apollo/client/react";
@@ -15,8 +20,7 @@ import type {
   GetBeneficiaryEncryptionKeyVariables,
   GetPodQuery,
   GetPodVariables
-} from "@/types/interfaces/metamodel";
-import type { GraphQLErrorLike } from "@/types/interfaces/graphql";
+} from "@/types/interfaces";
 
 export default function useDecryptedPod({
   access_id,
@@ -31,9 +35,17 @@ export default function useDecryptedPod({
 }) {
   const { session } = useSession();
   const client = useApolloClient();
+
+  const { data: podData, loading: podLoading, error: podError } = useQuery<GetPodQuery, GetPodVariables>(GET_POD, {
+    fetchPolicy: "network-only",
+    variables: { ref_id: metamodel_id },
+  });
+  const isEmpty = isPodNotFoundError(podError);
+  const content = podData?.getPod?.content;
   
   const { data, loading, error } = useQuery<GetKeyByRefIdQuery, GetKeyByRefIdVariables>(GET_KEY_BY_REF_ID, {
     fetchPolicy: "network-only",
+    skip: podLoading || Boolean(podError) || !podData?.getPod,
     variables: {
       ref_id: metamodel_id,
       publicKey: session ? session.publicKey : "",
@@ -42,7 +54,7 @@ export default function useDecryptedPod({
 
   useEffect(() => {
     
-    const processData = async () => {
+    const processData = async (content: string) => {
       if (data && data.getKeyByRefId) {
         setKeyMetadata(data.getKeyByRefId);
         
@@ -70,27 +82,6 @@ export default function useDecryptedPod({
               beneficiaryEncryptionKeyResponse.getBeneficiaryEncryptionKey,
             current_session_private_key: session ? session.privateKey : null,
           });
-          let pod;
-          try {
-            pod = await client.query<GetPodQuery, GetPodVariables>({
-              query: GET_POD,
-              fetchPolicy: "network-only",
-              variables: {
-                ref_id: metamodel_id,
-              },
-            });
-          } catch (error) {
-            const errorCode = (error as GraphQLErrorLike)?.errors?.[0]?.extensions?.code;
-            if (errorCode === "POD_NOT_FOUND") {
-              return;
-            } else {
-              throw error;
-            }
-          }
-          
-          if (!pod) return;
-          
-          const content = pod.data.getPod.content;
           let final_content;
           try {
             final_content = JSON.parse(
@@ -114,10 +105,10 @@ export default function useDecryptedPod({
       }
     };
 
-    if (data && !loading && !error) {
-      processData();
+    if (content && data && !loading && !error && !podError) {
+      void processData(content);
     }
-  }, [data, loading, error]);
+  }, [content, data, loading, error, podError, client, access_id, session, setData, setKeyMetadata]);
 
-  return { data, loading, error };
+  return { data, loading: podLoading || loading, error: (isEmpty ? undefined : podError) || error, isEmpty };
 }

@@ -21,7 +21,7 @@ import ExecutorState from "./ExecutorState";
 export default function GrantedDataContent({ slug, accessId, modelId }: GrantedDataContentProps) {
   const [decryptedValue, setDecryptedValue] = useState<Record<string, string | string[] | undefined> | string | null>(null);
   const [keyMetadata, setKeyMetadata] = useState<Pick<GrantedMetamodel, "created_at" | "updated_at"> | null>(null);
-  const { data: keyData, error: decryptionError } = useDecryptedPod({
+  const { data: keyData, loading: decryptionLoading, error: decryptionError, isEmpty } = useDecryptedPod({
     access_id: accessId,
     metamodel_id: modelId,
     setData: setDecryptedValue,
@@ -33,7 +33,7 @@ export default function GrantedDataContent({ slug, accessId, modelId }: GrantedD
   );
   const model = data?.getGrantedMetamodel;
 
-  if (error || decryptionError || keyData?.getKeyByRefId === null || (!loading && !model)) {
+  if (error || decryptionError || (!decryptionLoading && !isEmpty && keyData?.getKeyByRefId === null) || (!loading && !model)) {
     return <ExecutorState error title="This item is unavailable" description="The shared details could not be opened. You can choose another item from the sidebar." />;
   }
   if (!model) return <div role="status" aria-label="Loading shared details"><PodDetailsSkeleton /></div>;
@@ -44,7 +44,9 @@ export default function GrantedDataContent({ slug, accessId, modelId }: GrantedD
 
   return (
     <ExecutorDetailsLayout title={metadata.title || metadata.name || "Untitled"} subtitle={segment.title} createdAt={keyMetadata?.created_at ?? model.created_at} updatedAt={keyMetadata?.updated_at ?? model.updated_at}>
-      {decryptedValue === null ? (
+      {isEmpty ? (
+        <ExecutorState title="No details saved" description="This item was created without any saved details." />
+      ) : decryptedValue === null ? (
         <div role="status" aria-label="Decrypting shared details"><PodDetailsSkeleton /></div>
       ) : slug === "notes" ? (
         <article className="select-text rounded-2xl border border-default bg-secondary p-6 leading-relaxed">
