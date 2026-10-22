@@ -46,3 +46,6 @@ next-env.d.ts
 
 # sitemaps
 /public/sitemap*.xml
+
+# cipherwill internal drafts & tracking
+/.cipherwill/
