@@ -1,3 +1,7 @@
+// Selects factors that cover the largest text-only backup key set.
+// Owns backup count requests and valid maximum-count public keys.
+// Does not retrieve keys or count storage files.
+
 import { ApolloClient } from "@apollo/client";
 import GET_MY_KEY_COUNT from "../../graphql/ops/app/key/Queries/GET_MY_KEY_COUNT";
 import { GetMyKeyCountQuery } from "../../types/interfaces/metamodel";
@@ -13,9 +17,10 @@ export default async function getMyKeyCount(
   const { data } = await client.query<GetMyKeyCountQuery>({
     fetchPolicy: "network-only",
     query: GET_MY_KEY_COUNT,
+    variables: { exclude_files: true },
   });
   let maxKeyCount = 0;
-  let maxPublicKeys: string[] = ["null"];
+  let maxPublicKeys: string[] = [];
   if (!data || !data.getMyKeyCount || data.getMyKeyCount.length === 0) {
     return {
       count: maxKeyCount,

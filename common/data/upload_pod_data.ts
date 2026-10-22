@@ -1,3 +1,7 @@
+// Uploads encrypted pods and stages keys for owners and allowed beneficiaries.
+// Owns upload orchestration and awaits the shared key commit loop.
+// Does not determine restore eligibility or parse backup archives.
+
 import { ApolloClient } from "@apollo/client";
 import { DataItem, EncryptionKeys, Key } from "./types";
 import generate_encryption_keys from "./generate_encryption_keys";
@@ -7,12 +11,11 @@ import encrypt_and_upload_pod from "./encrypt_and_upload_pod";
 import logger from "../debug/logger";
 import GET_METAMODEL from "@/graphql/ops/app/metamodel/queries/GET_METAMODEL";
 import UPLOAD_SESSION_KEYS from "@/graphql/ops/app/pod/mutations/UPLOAD_SESSION_KEYS";
-import COMMIT_UPLOAD_SESSION from "@/graphql/ops/app/pod/mutations/COMMIT_UPLOAD_SESSION";
+import { commitSessionUntilCompleted } from "./commit_upload_session";
 import { GetMetamodelQuery, GetMetamodelVariables } from "@/types";
 
 const MAX_KEYS_PER_REQUEST = 1000;
 const MAX_KEY_PAYLOAD_SIZE = 500000; // 500kb per request payload
-const MAX_COMMIT_ATTEMPTS = 30;
 
 function split_keys_for_upload(keys: Key[]): Key[][] {
   const chunks: Key[][] = [];
@@ -74,44 +77,16 @@ async function upload_session_keys({
   }
 }
 
-async function commit_session_until_completed({
-  client,
-  session_id,
-}: {
-  client: ApolloClient;
-  session_id: string;
-}) {
-  for (let attempt = 0; attempt < MAX_COMMIT_ATTEMPTS; attempt += 1) {
-    const res = await client.mutate({
-      mutation: COMMIT_UPLOAD_SESSION,
-      variables: {
-        session_id,
-      },
-    });
-    const status = (res.data as any)?.commitUploadSession?.status;
-    if (status === "COMPLETED") {
-      return;
-    }
-    if (status !== "KEYS_UPLOADED") {
-      throw new Error(
-        `Unexpected upload session status ${String(status)} for ${session_id}`
-      );
-    }
-  }
-
-  throw new Error(
-    `Commit did not complete after ${MAX_COMMIT_ATTEMPTS} attempts for session ${session_id}`
-  );
-}
-
 export default async function upload_pod_data({
   data_items,
   client,
   metamodel_id,
+  require_missing_pod = false,
 }: {
   data_items: DataItem[];
   client: ApolloClient;
   metamodel_id: string;
+  require_missing_pod?: boolean;
 }) {
   logger.info(`Uploading ${data_items.length} data items`);
   // generate random key for each data item
@@ -123,6 +98,7 @@ export default async function upload_pod_data({
     encryption_keys,
     data_items,
     client,
+    require_missing_pod,
   });
 
   // create empty key cluster
@@ -173,7 +149,7 @@ export default async function upload_pod_data({
       session_id: session.session_id,
       keys: keys_for_session,
     });
-    await commit_session_until_completed({
+    await commitSessionUntilCompleted({
       client,
       session_id: session.session_id,
     });

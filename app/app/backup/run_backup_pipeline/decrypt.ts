@@ -1,3 +1,7 @@
+// Decrypts text records and preserves their beneficiary exclusions.
+// Owns export contents and checks the expected text-item count.
+// Does not decrypt or export storage files.
+
 import CryptoJS from "crypto-js";
 import getPod from "../../../../factory/pod/getPod";
 import decrypt from "../../../../crypto/e0/decrypt";
@@ -21,6 +25,10 @@ export async function decryptBackupData(
   const backupData: BackupDataItem[] = [];
 
   for await (const metamodel of models) {
+    if (metamodel.type === "FILE") {
+      continue;
+    }
+
     let encryptedData = await getPod(metamodel.id, client);
     if (encryptedData === null || encryptedData === undefined) {
       encryptedData = "";
@@ -62,6 +70,7 @@ export async function decryptBackupData(
         id: metamodel.id,
         type: metamodel.type,
         metadata: metamodel.metadata,
+        ignored_beneficiaries: metamodel.ignored_beneficiaries || [],
         data: decryptedData,
       });
     } catch (error) {

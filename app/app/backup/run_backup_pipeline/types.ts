@@ -1,3 +1,7 @@
+// Defines contracts shared by the backup pipeline steps.
+// Owns collected metadata, exported exclusions, and progress inputs.
+// Does not fetch, decrypt, or package account data.
+
 import { ApolloClient } from "@apollo/client";
 import { POSSIBLE_STATUS } from "../types";
 
@@ -33,12 +37,14 @@ export type BackupModel = {
   id: string;
   type: string;
   metadata: string;
+  ignored_beneficiaries?: string[];
 };
 
 export type BackupDataItem = {
   id: string;
   type: string;
   metadata: string;
+  ignored_beneficiaries?: string[];
   data: any;
 };
 

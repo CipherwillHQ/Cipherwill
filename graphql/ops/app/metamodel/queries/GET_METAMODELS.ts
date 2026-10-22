@@ -1,3 +1,7 @@
+// Defines paginated metadata queries for owner records.
+// Owns item metadata and beneficiary exclusion fields.
+// Does not retrieve or decrypt pod contents.
+
 import { gql } from "@apollo/client";
 
 const GET_METAMODELS = gql`
@@ -12,6 +16,7 @@ const GET_METAMODELS = gql`
         type
         metadata
         folder_id
+        ignored_beneficiaries
         created_at
         updated_at
       }

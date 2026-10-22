@@ -1,3 +1,7 @@
+// Adapts supported backup records to metadata and upload payloads.
+// Owns legacy note wrapping and per-record version selection.
+// Does not create metadata or encrypt restored contents.
+
 import {
   BackupItem,
   BackupVersion,
@@ -63,11 +67,6 @@ const legacyNoteRestoreAdapter001: RestoreAdapter = {
 const noteRestoreAdapters: Record<BackupVersion, RestoreAdapter> = {
   "0.0.1": {
     ...genericRestoreAdapters["0.0.1"],
-    getUploadData: (item) =>
-      JSON.stringify({
-        type: "note",
-        data: item.data,
-      }),
   },
   "0.0.2": {
     ...genericRestoreAdapters["0.0.2"],

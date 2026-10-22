@@ -1,9 +1,14 @@
-import toast from "react-hot-toast";
+// Restores missing text items from a local backup.
+// Owns exclusion persistence, upload failures, and safe retry decisions.
+// Does not overwrite existing saved content or restore storage files.
+
 import GET_METAMODEL from "../../../../graphql/ops/app/metamodel/queries/GET_METAMODEL";
 import CREATE_METAMODEL from "../../../../graphql/ops/app/metamodel/mutations/CREATE_METAMODEL";
 import logger from "../../../../common/debug/logger";
 import { sleep } from "../../../../common/time/sleep";
 import upload_pod_data from "@/common/data/upload_pod_data";
+import { isPodReadable } from "@/common/data/is_pod_readable";
+import type { GetMetamodelQuery } from "@/types/interfaces";
 import type { GraphQLErrorLike } from "@/types/interfaces/graphql";
 import { resolveMetamodelAdapter, resolveRestoreAdapter } from "./adapters";
 import { RestoreStepError } from "./errors";
@@ -21,6 +26,9 @@ export async function runRestoreLoop(
   });
 
   for (const item of payload.data) {
+    if (item.type === "FILE") {
+      continue;
+    }
     const dataAdapter = resolveRestoreAdapter({
       item,
     });
@@ -34,15 +42,16 @@ export async function runRestoreLoop(
     );
     await sleep(800);
 
+    let metamodel: GetMetamodelQuery["getMetamodel"] | undefined;
     try {
-      await client.query({
+      const response = await client.query<GetMetamodelQuery>({
         query: GET_METAMODEL,
         fetchPolicy: "network-only",
         variables: {
           id: item.id,
         },
       });
-      continue;
+      metamodel = response.data?.getMetamodel;
     } catch (error) {
       const errorCode = (error as GraphQLErrorLike)?.errors?.[0]?.extensions?.code;
       if (errorCode !== "MODEL_NOT_FOUND") {
@@ -51,14 +60,26 @@ export async function runRestoreLoop(
     }
 
     try {
-      const response = await client.mutate({
-        mutation: CREATE_METAMODEL,
-        variables: {
-          id: item.id,
-          type: item.type,
-          metadata: metamodelAdapter.getMetadata(item),
-        },
-      });
+      if (metamodel && await isPodReadable({ id: item.id, client, session })) {
+        continue;
+      }
+
+      const ignoredBeneficiaries = [...new Set([
+        ...(metamodel?.ignored_beneficiaries || []),
+        ...(item.ignored_beneficiaries || []),
+      ])];
+      if (!metamodel || ignoredBeneficiaries.length !== (metamodel.ignored_beneficiaries || []).length) {
+        await client.mutate({
+          mutation: CREATE_METAMODEL,
+          variables: {
+            id: item.id,
+            type: metamodel?.type || item.type,
+            metadata: metamodel?.metadata || metamodelAdapter.getMetadata(item),
+            ignored_beneficiaries: item.ignored_beneficiaries || [],
+            restore: true,
+          },
+        });
+      }
 
       if (dataAdapter.shouldUploadData && !dataAdapter.shouldUploadData(item)) {
         logger.info("Skipping uploading data for pod", item.id);
@@ -75,10 +96,11 @@ export async function runRestoreLoop(
           },
         ],
         client,
-        metamodel_id: (response.data as any).createMetamodel.id,
+        metamodel_id: item.id,
+        require_missing_pod: true,
       });
     } catch (error) {
-      toast.error(`Error while uploading data: ${error}`);
+      throw new RestoreStepError("restore", error instanceof Error ? error.message : "Error while restoring backup", error);
     }
   }
 }

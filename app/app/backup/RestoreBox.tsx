@@ -1,3 +1,7 @@
+// Lets users select and restore a local backup archive.
+// Owns restore status, retry selection, and active-run controls.
+// Does not parse archives or upload records directly.
+
 import { useApolloClient } from "@apollo/client/react";
 import { useSession } from "../../../contexts/SessionContext";
 import { useState } from "react";
@@ -9,6 +13,7 @@ export default function RestoreBox() {
   const { session } = useSession();
   const [backupFile, setBackupFile] = useState<File | null>(null);
   const [status, setStatus] = useState("Not started");
+  const [isRestoring, setIsRestoring] = useState(false);
 
   const handleFileSelected = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -17,6 +22,7 @@ export default function RestoreBox() {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
     setBackupFile(files[0]);
+    setStatus("Not started");
   };
 
   return (
@@ -30,21 +36,28 @@ export default function RestoreBox() {
       <input
         onChange={handleFileSelected}
         type="file"
+        disabled={isRestoring}
         data-cy="restore-file-input"
       />
-      {backupFile !== null && status === "Not started" && (
+      {backupFile !== null && !isRestoring && status !== "Backup restored" && (
         <SimpleButton
           className="my-2"
+          disabled={isRestoring}
           onClick={async () => {
-            await restore_backup({
-              backupFile,
-              setStatus,
-              client,
-              session,
-            });
+            setIsRestoring(true);
+            try {
+              await restore_backup({
+                backupFile,
+                setStatus,
+                client,
+                session,
+              });
+            } finally {
+              setIsRestoring(false);
+            }
           }}
         >
-          Start restore
+          {status === "Not started" ? "Start restore" : "Retry restore"}
         </SimpleButton>
       )}
       {status !== "Not started" && (

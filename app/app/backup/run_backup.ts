@@ -1,3 +1,7 @@
+// Runs the local backup pipeline and reports failures from every step.
+// Owns validation, collection, packaging, and completion ordering.
+// Does not restore records or include storage files.
+
 import { collectBackupData } from "./run_backup_pipeline/collect";
 import { decryptBackupData } from "./run_backup_pipeline/decrypt";
 import { finalizeBackup } from "./run_backup_pipeline/finalize";
@@ -25,12 +29,12 @@ export default async function run_backup({
     close,
   };
 
-  const validation = await validateBackupInput(input);
-  if (validation === null) {
-    return;
-  }
-
   try {
+    const validation = await validateBackupInput(input);
+    if (validation === null) {
+      return;
+    }
+
     const collected = await collectBackupData(input, validation);
     const decrypted = await decryptBackupData(input, validation, collected);
     await packageBackupData(input, decrypted);

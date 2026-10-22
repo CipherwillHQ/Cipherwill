@@ -1,3 +1,7 @@
+// Defines supported backup formats and restore step contracts.
+// Owns item contents, beneficiary exclusions, and adapter inputs.
+// Does not validate files or change account data.
+
 import { ApolloClient } from "@apollo/client";
 
 export type BackupVersion = "0.0.1" | "0.0.2";
@@ -16,6 +20,7 @@ export type BackupItem = {
   type: string;
   title?: string;
   metadata?: string;
+  ignored_beneficiaries?: string[];
   data?: any;
 };
 

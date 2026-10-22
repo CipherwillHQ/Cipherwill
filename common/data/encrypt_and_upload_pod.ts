@@ -1,3 +1,7 @@
+// Encrypts upload contents and stages them in owner upload sessions.
+// Owns forwarding the conditional restore guard and uploading ciphertext.
+// Does not generate recipient keys or commit sessions.
+
 import { ApolloClient } from "@apollo/client";
 import { DataItem, EncryptionKeys } from "./types";
 import AES from "crypto-js/aes";
@@ -26,7 +30,8 @@ async function create_upload_session(
   client: ApolloClient,
   data_model_version: string,
   ref_id: string,
-  required_space: number
+  required_space: number,
+  require_missing_pod: boolean
 ): Promise<UploadSessionResponse> {
   const res = await client.mutate({
     mutation: CREATE_UPLOAD_POD_SESSION,
@@ -34,6 +39,7 @@ async function create_upload_session(
       data_model_version,
       ref_id,
       required_space,
+      require_missing_pod,
     },
   });
   return (res.data as any).createUploadPodSession;
@@ -128,10 +134,12 @@ export default async function encrypt_and_upload_pod({
   encryption_keys,
   data_items,
   client,
+  require_missing_pod = false,
 }: {
   encryption_keys: EncryptionKeys;
   data_items: DataItem[];
   client: ApolloClient;
+  require_missing_pod?: boolean;
 }): Promise<PreparedPodUploadSession[]> {
   const upload_sessions: PreparedPodUploadSession[] = [];
   for await (const item of data_items) {
@@ -145,7 +153,8 @@ export default async function encrypt_and_upload_pod({
         client,
         item.data_model_version,
         item.ref_id,
-        encrypted_file.size
+        encrypted_file.size,
+        require_missing_pod
       );
 
       if (upload_session.type === "TEXT_POD") {

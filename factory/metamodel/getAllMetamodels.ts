@@ -1,3 +1,7 @@
+// Collects metadata pages for the selected item type.
+// Owns pagination and handles accounts with no root items.
+// Does not fetch encrypted pods or traverse storage folders.
+
 import { ApolloClient } from "@apollo/client";
 import logger from "../../common/debug/logger";
 import GET_METAMODELS from "../../graphql/ops/app/metamodel/queries/GET_METAMODELS";
@@ -36,7 +40,7 @@ export default async function getAllMetamodels({
     has_more = res.data.getMetamodels.has_more;
     cursor =
       res.data.getMetamodels.models[res.data.getMetamodels.models.length - 1]
-        .id;
+        ?.id;
     logger.info("Downloaded metamodels", res.data.getMetamodels.models);
     for await (const item of res.data.getMetamodels.models) {
       metamodels.push(item);

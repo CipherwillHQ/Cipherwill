@@ -1,3 +1,7 @@
+// Packages decrypted backup records into a downloadable ZIP.
+// Owns ZIP generation and awaits the download handoff.
+// Does not mark backups complete or restore data.
+
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { sleep } from "../../../../common/time/sleep";
@@ -25,7 +29,6 @@ export async function packageBackupData(
     )
   );
 
-  zip.generateAsync({ type: "blob" }).then(function (content) {
-    saveAs(content, "backup.zip");
-  });
+  const content = await zip.generateAsync({ type: "blob" });
+  saveAs(content, "backup.zip");
 }
