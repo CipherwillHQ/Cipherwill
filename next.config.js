@@ -6,6 +6,7 @@
 
 const { version } = require("./package.json");
 const path = require('path')
+const upgradeHeaders = require("./common/billing/upgradeHeaders");
 
 const siteCacheHeaders = [
   {
@@ -100,6 +101,7 @@ const nextConfig = {
           },
         ],
       },
+      upgradeHeaders,
     ];
   },
   env: {

@@ -1,3 +1,6 @@
+// Generates discovery files for public marketing pages.
+// Owns sitemap exclusions for private and unlisted routes, including upgrades.
+// Does not set page-level robots metadata or require authentication.
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
   siteUrl: "https://www.cipherwill.com",
@@ -7,6 +10,7 @@ module.exports = {
   ],
   exclude: [
     "/manifest.webmanifest",
+    "/upgrade",
     "/i",
     "/auth/*",
     "/executor",

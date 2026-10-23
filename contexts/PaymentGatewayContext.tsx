@@ -1,3 +1,6 @@
+// Provides Paddle to authenticated billing screens.
+// Owns initialization with the current account's Paddle customer details.
+// Does not open checkouts or serve the public upgrade page.
 "use client";
 import {
   ReactNode,
@@ -9,13 +12,15 @@ import {
 import { useAuth } from "./AuthContext";
 import { initializePaddle, Paddle } from "@paddle/paddle-js";
 import logger from "@/common/debug/logger";
-import { BUILD_ENV } from "@/common/constant";
+import {
+  PADDLE_ENVIRONMENT as ENVIROMENT,
+  PADDLE_TOKEN,
+  PADDLE_YEARLY_PRICE_ID,
+  PADDLE_MONTHLY_PRICE_ID,
+} from "@/common/billing/paddleConfig";
 import { ComponentProps } from "@/types/interfaces";
 
-const ENVIROMENT = BUILD_ENV === "production" ? "production" : "sandbox";
-const PADDLE_TOKEN = process.env.NEXT_PUBLIC_PADDLE_TOKEN ?? "";
-export const PADDLE_YEARLY_PRICE_ID = process.env.NEXT_PUBLIC_PADDLE_YEARLY_PRICE_ID ?? "no-id-found";
-export const PADDLE_MONTHLY_PRICE_ID = process.env.NEXT_PUBLIC_PADDLE_MONTHLY_PRICE_ID ?? "no-id-found";
+export { PADDLE_YEARLY_PRICE_ID, PADDLE_MONTHLY_PRICE_ID };
 
 
 const PaymentGatewayContext = createContext<{
