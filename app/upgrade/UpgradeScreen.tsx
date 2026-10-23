@@ -79,7 +79,7 @@ export default function UpgradeScreen({ email, userId }: UpgradeScreenProps) {
             >
               {checkout.loading ? "Preparing checkout…" : checkout.checkoutOpen ? "Checkout open…" : "Upgrade to Premium →"}
             </SimpleButton>
-            <p className="mt-3 text-center text-xs text-neutral-500">Renews annually. Cancel anytime. Taxes shown at checkout.</p>
+            <p className="mt-3 text-center text-xs text-neutral-500">Renews annually. Cancel anytime. Taxes included.</p>
             <div className="mt-5 flex items-center justify-center gap-2 text-xs text-neutral-500">
               <TbLock size={16} aria-hidden="true" /> Secure checkout by Paddle
             </div>
