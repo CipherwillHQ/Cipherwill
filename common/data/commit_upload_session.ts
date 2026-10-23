@@ -7,12 +7,14 @@ import type { UploadSessionCommit } from "@/types/interfaces";
 
 const MAX_COMMIT_ATTEMPTS = 30;
 
-export async function commitSessionUntilCompleted({ client, session_id }: UploadSessionCommit) {
+export async function commitSessionUntilCompleted({ client, session_id, signal }: UploadSessionCommit) {
   for (let attempt = 0; attempt < MAX_COMMIT_ATTEMPTS; attempt += 1) {
+    signal?.throwIfAborted();
     const res = await client.mutate({
       mutation: COMMIT_UPLOAD_SESSION,
       variables: { session_id },
     });
+    signal?.throwIfAborted();
     const status = (res.data as any)?.commitUploadSession?.status;
     if (status === "COMPLETED") {
       return;

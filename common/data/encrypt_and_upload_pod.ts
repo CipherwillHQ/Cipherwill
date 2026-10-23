@@ -4,8 +4,7 @@
 
 import { ApolloClient } from "@apollo/client";
 import { DataItem, EncryptionKeys } from "./types";
-import AES from "crypto-js/aes";
-import crypto from "crypto";
+import { createEncryptedPodFile } from "./createEncryptedPodFile";
 import logger from "../debug/logger";
 import toast from "react-hot-toast";
 import CREATE_UPLOAD_POD_SESSION from "@/graphql/ops/app/pod/mutations/CREATE_UPLOAD_POD_SESSION";
@@ -89,65 +88,28 @@ async function upload_via_presigned_url(
   }
 }
 
-async function create_encrypted_file({
-  encryption_keys,
-  item,
-}: {
-  encryption_keys: EncryptionKeys;
-  item: any;
-}): Promise<Blob> {
-  const encryption_key = encryption_keys[item.ref_id];
-  if (!encryption_key) {
-    const error = new Error(`Encryption key not found for ref_id ${item.ref_id}`);
-    logger.error(`Encrpytion key not found for data item`, error);
-    toast.error("Encrpytion key not found for data item");
-    throw error;
-  }
-  let encrypted_file;
-  if (typeof item.data === "string") {
-    const file_data = AES.encrypt(item.data, encryption_key.key).toString();
-    encrypted_file = new Blob([file_data], {
-      type: "text/plain",
-    });
-  } else {
-    const cipher = crypto.createCipheriv(
-      "aes-256-cbc",
-      encryption_key.key.slice(16),
-      encryption_key.key.slice(0, 16)
-    );
-    const encrypted = Buffer.concat([
-      cipher.update(
-        new Uint8Array(
-          await item.data.arrayBuffer() // binary
-        ) // 8 bit unsigned integer
-      ),
-      cipher.final(),
-    ]);
-    encrypted_file = new Blob([encrypted], {
-      type: "data/encrypted",
-    });
-  }
-  return encrypted_file;
-}
-
 export default async function encrypt_and_upload_pod({
   encryption_keys,
   data_items,
   client,
   require_missing_pod = false,
+  signal,
 }: {
   encryption_keys: EncryptionKeys;
   data_items: DataItem[];
   client: ApolloClient;
   require_missing_pod?: boolean;
+  signal?: AbortSignal;
 }): Promise<PreparedPodUploadSession[]> {
   const upload_sessions: PreparedPodUploadSession[] = [];
   for await (const item of data_items) {
+    signal?.throwIfAborted();
     // encrypt data with random key
-    const encrypted_file = await create_encrypted_file({
+    const encrypted_file = await createEncryptedPodFile({
       encryption_keys,
       item,
     });
+    signal?.throwIfAborted();
     try {
       const upload_session = await create_upload_session(
         client,
@@ -157,6 +119,7 @@ export default async function encrypt_and_upload_pod({
         require_missing_pod
       );
 
+      signal?.throwIfAborted();
       if (upload_session.type === "TEXT_POD") {
         await upload_text_pod(client, upload_session.id, encrypted_file);
         logger.info(`Encrypted text pod uploaded for ${item.ref_id}`);
@@ -175,6 +138,7 @@ export default async function encrypt_and_upload_pod({
         );
       }
 
+      signal?.throwIfAborted();
       upload_sessions.push({
         ref_id: item.ref_id,
         session_id: upload_session.id,

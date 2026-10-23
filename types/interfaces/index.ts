@@ -16,4 +16,9 @@ export * from './persona';
 export * from './blog';
 export * from './landing';
 export * from './executor';
+export * from './guidedActions';
+export * from './guidanceRegistry';
+export * from './guidanceAssets';
+export * from './guidanceOverview';
+export * from './guidanceChoices';
 

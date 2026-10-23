@@ -15,6 +15,7 @@ posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
   session_recording: {
     maskAllInputs: true,
     maskTextSelector: "*",
+    blockSelector: ".cw-private-guidance",
   },
   mask_all_element_attributes: true,
   mask_all_text: true,

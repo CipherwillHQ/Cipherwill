@@ -41,16 +41,18 @@ for (const flagState of [true, false, undefined]) {
     );
 
     if (flagState === true) {
-      assert.deepEqual(navigationPaths.slice(0, 3), ["/app", "/app/chat", "/app/segments"]);
+      assert.deepEqual(navigationPaths.slice(0, 4), ["/app", "/app/guide", "/app/chat", "/app/segments"]);
       assert.match(markup, /href="\/app\/chat"/);
       assert.match(markup, />Chat<\/div>/);
       assert.match(markup, /<a[^>]*data-cy="\/app\/chat-nav-link"[^>]*><div data-sidebar-active="true"/);
     } else {
-      assert.deepEqual(navigationPaths.slice(0, 2), ["/app", "/app/segments"]);
+      assert.deepEqual(navigationPaths.slice(0, 3), ["/app", "/app/guide", "/app/segments"]);
       assert.equal(navigationPaths.includes("/app/chat"), false);
       assert.doesNotMatch(markup, /href="\/app\/chat"/);
       assert.doesNotMatch(markup, />Chat<\/div>/);
     }
+    assert.match(markup, /href="\/app\/guide"/);
+    assert.match(markup, />Guide<\/div>/);
     assert.deepEqual(featureFlag.mock.calls[0]?.arguments, ["chat-feature"]);
   });
 }

@@ -1,3 +1,6 @@
+// Renders question controls and catalog-defined confirmation labels.
+// Owns submit, input-skip, and continue button presentation.
+// Does not advance objectives or save data.
 import GuidedButton from "./GuidedButton";
 import type { ObjectiveProcessResult } from "../core/types";
 
@@ -27,12 +30,12 @@ export default function ActionControls({
     <div className="flex gap-4 items-center justify-center flex-wrap mt-2">
       {isSkippable && (
         <GuidedButton variant="secondary" onClick={handleSkip} disabled={loading}>
-          Skip
+          Leave blank
         </GuidedButton>
       )}
       {!hasInput ? (
         <GuidedButton onClick={handleContinue} disabled={loading}>
-          Continue
+          {stepResult.continueLabel ?? "Continue"}
         </GuidedButton>
       ) : null}
       {hasInput && !isBooleanInput ? (

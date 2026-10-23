@@ -1,3 +1,6 @@
+// Displays a question or local review with its input control.
+// Owns plain-text content layout and preserves review line breaks.
+// Does not select steps or send answers to the server.
 import StepInputField from "./StepInputField";
 import type { ObjectiveProcessResult } from "../core/types";
 
@@ -26,7 +29,7 @@ export default function ActionContent({
         {stepResult.title || "Guided Action"}
       </h2>
       {stepResult.subtext ? (
-        <p className="max-w-2xl text-base md:text-xl text-black/70 dark:text-white/70 leading-relaxed">
+        <p className="max-w-2xl whitespace-pre-wrap text-base md:text-xl text-black/70 dark:text-white/70 leading-relaxed">
           {stepResult.subtext}
         </p>
       ) : null}

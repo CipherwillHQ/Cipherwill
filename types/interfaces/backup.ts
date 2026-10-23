@@ -11,6 +11,7 @@ export interface RestoreItemCheck {
 }
 
 export interface UploadSessionCommit {
+  signal?: AbortSignal;
   client: ApolloClient;
   session_id: string;
 }

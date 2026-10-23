@@ -1,5 +1,8 @@
+// Wraps app pages in authenticated account and encryption-session providers.
+// Owns shared app metadata and delegates route-specific layout to AppPageShell.
+// Does not render guided objectives or load overview metrics.
 import { Metadata } from "next";
-import Sidebar from "../../components/app/Sidebar";
+import AppPageShell from "@/components/app/common/AppPageShell";
 import { AuthRedirectProvider } from "../../contexts/AuthRedirect";
 import { SessionProvider } from "../../contexts/SessionContext";
 import { FULL_HOSTNAME } from "@/common/constant";
@@ -37,19 +40,7 @@ export default function AppLayout({ children }) {
                 <SessionProvider>
                   <PaymentGatewayProvider>
                     <OnboardingGuard>
-                      <div className="flex flex-col sm:flex-row sm:items-center overflow-hidden w-screen cw-vh-screen cw-app-safe-area">
-                        <div className="flex sm:h-full bg-white dark:bg-darkCanvas">
-                          <Sidebar />
-                        </div>
-                        <div className="flex flex-col h-full w-full bg-dashboardCream dark:bg-darkCanvas">
-                          {/* <div className="bg-red-400 p-4">Top Bar</div> */}
-                          <div className="flex flex-col pb-40 flex-1 h-full overflow-y-auto customScrollbar">
-                            <div className="cw-content-width-wrapper w-full">
-                              {children}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      <AppPageShell>{children}</AppPageShell>
                     </OnboardingGuard>
                   </PaymentGatewayProvider>
                 </SessionProvider>

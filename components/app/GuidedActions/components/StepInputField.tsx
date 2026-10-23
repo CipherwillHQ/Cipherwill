@@ -1,3 +1,6 @@
+// Renders catalog-declared inputs, including masked credential fields.
+// Owns input presentation and forwards original values to browser validation.
+// Does not normalize secrets or save answers.
 import GuidedButton from "./GuidedButton";
 import type { ObjectiveInputSpec } from "../core/types";
 
@@ -26,14 +29,14 @@ export default function StepInputField({
     return (
       <div className="flex flex-wrap justify-center gap-3">
         <GuidedButton onClick={() => onSubmitBoolean(true)} disabled={loading}>
-          Yes
+          {inputSpec?.trueLabel ?? "Yes"}
         </GuidedButton>
         <GuidedButton
           variant="secondary"
           onClick={() => onSubmitBoolean(false)}
           disabled={loading}
         >
-          No
+          {inputSpec?.falseLabel ?? "No"}
         </GuidedButton>
       </div>
     );
@@ -42,7 +45,9 @@ export default function StepInputField({
   if (inputType === "email" || inputType === "single_line_text") {
     return (
       <input
-        type={inputType === "email" ? "email" : "text"}
+        type={inputSpec?.sensitive ? "password" : inputType === "email" ? "email" : "text"}
+        autoComplete={inputSpec?.sensitive ? "new-password" : undefined}
+        spellCheck={inputSpec?.sensitive ? false : undefined}
         value={inputValue}
         onChange={(event) => onChange(event.target.value)}
         onKeyDown={(event) => {
@@ -54,6 +59,7 @@ export default function StepInputField({
         placeholder={inputSpec?.placeholder ?? "Enter value"}
         minLength={inputSpec?.minLength ?? undefined}
         maxLength={inputSpec?.maxLength ?? undefined}
+        disabled={loading}
         className={INPUT_CLASS_NAME}
       />
     );

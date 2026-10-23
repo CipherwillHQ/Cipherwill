@@ -49,10 +49,12 @@ async function upload_session_keys({
   client,
   session_id,
   keys,
+  signal,
 }: {
   client: ApolloClient;
   session_id: string;
   keys: Key[];
+  signal?: AbortSignal;
 }) {
   if (keys.length === 0) {
     throw new Error(`No keys generated for upload session ${session_id}`);
@@ -64,6 +66,7 @@ async function upload_session_keys({
   );
 
   for await (const chunk of chunks) {
+    signal?.throwIfAborted();
     const res = await client.mutate({
       mutation: UPLOAD_SESSION_KEYS,
       variables: {
@@ -82,31 +85,38 @@ export default async function upload_pod_data({
   client,
   metamodel_id,
   require_missing_pod = false,
+  signal,
 }: {
   data_items: DataItem[];
   client: ApolloClient;
   metamodel_id: string;
   require_missing_pod?: boolean;
+  signal?: AbortSignal;
 }) {
+  signal?.throwIfAborted();
   logger.info(`Uploading ${data_items.length} data items`);
   // generate random key for each data item
   let encryption_keys: EncryptionKeys = await generate_encryption_keys({
     data_items,
   });
 
+  signal?.throwIfAborted();
   const upload_sessions = await encrypt_and_upload_pod({
     encryption_keys,
     data_items,
     client,
     require_missing_pod,
+    signal,
   });
 
+  signal?.throwIfAborted();
   // create empty key cluster
   let key_cluster: Key[] = [];
 
   // create keys for own factors
-  await generate_keys_for_own_factors({ key_cluster, encryption_keys, client });
+  await generate_keys_for_own_factors({ key_cluster, encryption_keys, client, signal });
 
+  signal?.throwIfAborted();
   // TODO: add support for shared access factors
 
   // get ignored beneficiaries from metamoodel query
@@ -121,6 +131,7 @@ export default async function upload_pod_data({
       id: metamodel_id,
     },
   });
+  signal?.throwIfAborted();
   if (!metamodel || !metamodel.data) {
     throw new Error("Metamodel not found");
   }
@@ -133,8 +144,10 @@ export default async function upload_pod_data({
     encryption_keys,
     client,
     ignored_beneficiaries,
+    signal,
   });
 
+  signal?.throwIfAborted();
   const keys_by_ref_id = new Map<string, Key[]>();
   for (const key_item of key_cluster) {
     const keys_for_ref = keys_by_ref_id.get(key_item.ref_id) || [];
@@ -143,15 +156,18 @@ export default async function upload_pod_data({
   }
 
   for await (const session of upload_sessions) {
+    signal?.throwIfAborted();
     const keys_for_session = keys_by_ref_id.get(session.ref_id) || [];
     await upload_session_keys({
       client,
       session_id: session.session_id,
       keys: keys_for_session,
+      signal,
     });
     await commitSessionUntilCompleted({
       client,
       session_id: session.session_id,
+      signal,
     });
   }
 }

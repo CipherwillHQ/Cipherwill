@@ -1,12 +1,12 @@
+// Displays objective progress and completion status within each guide slide.
+// Owns inline footer layout that scrolls safely with tall slide content.
+// Does not advance steps or position overlays over the account page.
 import ProgressDots from "./ProgressDots";
 import type { ObjectiveInProgress } from "../core/types";
 
 export function ProgressFooter({ current }: { current: ObjectiveInProgress }) {
   return (
-    <div
-      className="fixed left-1/2 z-10 -translate-x-1/2"
-      style={{ bottom: "calc(var(--cw-safe-bottom) + 1rem)" }}
-    >
+    <div>
       <ProgressDots
         total={current.result.stepsTotal ?? null}
         completed={current.result.stepsCompleted ?? null}
@@ -19,8 +19,7 @@ export function ProgressFooter({ current }: { current: ObjectiveInProgress }) {
 export function TimedCountdownFooter({ countdownSeconds }: { countdownSeconds: number }) {
   return (
     <p
-      className="fixed left-1/2 z-10 -translate-x-1/2 text-xs md:text-sm text-black/60 dark:text-white/60"
-      style={{ bottom: "calc(var(--cw-safe-bottom) + 2.5rem)" }}
+      className="text-xs md:text-sm text-black/60 dark:text-white/60"
     >
       Continuing in{" "}
       {Math.max(1, countdownSeconds)}s...
@@ -35,8 +34,7 @@ export function PostActionFooter({
 }) {
   return (
     <div
-      className="fixed left-1/2 z-10 -translate-x-1/2 w-[min(90vw,40rem)] rounded-xl border border-default bg-secondary px-4 py-3 text-center shadow-sm"
-      style={{ bottom: "calc(var(--cw-safe-bottom) + 2.5rem)" }}
+      className="w-full max-w-xl rounded-xl border border-default bg-secondary px-4 py-3 text-center shadow-sm"
     >
       <p className="text-sm md:text-base font-medium">{postActionStatus.title}</p>
       {postActionStatus.subtext ? (

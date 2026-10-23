@@ -1,108 +1,49 @@
-import { ApolloClient } from "@apollo/client";
+// Migrates beneficiary access after a confirmed final server save.
+// Owns key-session checks and browser migration error propagation.
+// Does not create beneficiaries or hide failed migrations from guidance.
+import type { ApolloClient } from "@apollo/client";
 import toast from "react-hot-toast";
-import logger from "@/common/debug/logger";
 import perform_migrate_in from "@/common/factor/perform_migrate_in";
-import GET_MY_KEY_COUNT from "../../../../graphql/ops/app/key/Queries/GET_MY_KEY_COUNT";
-import GET_SMARTWILL_BENEFICIARY from "../../../../graphql/ops/app/smartwill/queries/GET_SMARTWILL_BENEFICIARY";
-import GET_BENEFICIARY_KEY_COUNT from "../../../../graphql/ops/auth/queries/GET_BENEFICIARY_KEY_COUNT";
-import type { ObjectiveActionSpec } from "./types";
+import GET_MY_KEY_COUNT from "@/graphql/ops/app/key/Queries/GET_MY_KEY_COUNT";
+import GET_SMARTWILL_BENEFICIARY from "@/graphql/ops/app/smartwill/queries/GET_SMARTWILL_BENEFICIARY";
+import GET_BENEFICIARY_KEY_COUNT from "@/graphql/ops/auth/queries/GET_BENEFICIARY_KEY_COUNT";
+import type { GuidanceSession } from "@/types/interfaces";
 
-type SessionLike = {
-  publicKey?: string | null;
-  privateKey?: string | null;
-} | null;
-
-export type ObjectiveActionExecutionContext = {
-  client: ApolloClient;
-  session: SessionLike;
-};
-
-async function runBeneficiaryMigrationAction(
-  action: ObjectiveActionSpec,
-  ctx: ObjectiveActionExecutionContext,
-) {
-  const beneficiaryPersonId =
-    typeof action.payload?.beneficiaryPersonId === "string"
-      ? action.payload.beneficiaryPersonId
-      : null;
-
-  if (!beneficiaryPersonId) {
-    logger.warn("Skipping migrate_beneficiary_data action without beneficiaryPersonId");
-    return;
-  }
-
-  const keyCountResult = await ctx.client.query({
-    query: GET_MY_KEY_COUNT,
-    fetchPolicy: "network-only",
+export async function migrateGuidedBeneficiary(personId: string, ctx: { client: ApolloClient; session: GuidanceSession | null }, signal?: AbortSignal) {
+  signal?.throwIfAborted();
+  const counts = await ctx.client.query<{ getMyKeyCount: Array<{ count: number; publicKey: string }> }>({
+    query: GET_MY_KEY_COUNT, fetchPolicy: "network-only",
   });
-
+  signal?.throwIfAborted();
   let maxCount = 0;
   let maxPublicKey = "null";
-  const counts = (keyCountResult.data as any)?.getMyKeyCount ?? [];
-  for (const keyItem of counts) {
-    if (keyItem.count > maxCount) {
-      maxCount = keyItem.count;
-      maxPublicKey = keyItem.publicKey;
+  for (const item of counts.data?.getMyKeyCount ?? []) {
+    if (item.count > maxCount || (maxCount > 0 && item.count === maxCount && item.publicKey === ctx.session?.publicKey)) {
+      maxCount = item.count;
+      maxPublicKey = item.publicKey;
     }
   }
-
-  if (maxPublicKey !== "null" && ctx.session?.publicKey !== maxPublicKey) {
-    toast.error(
-      "Beneficiary added. Switch session to key " +
-        maxPublicKey.slice(-8) +
-        " and click migrate.",
-    );
-    return;
+  if (maxPublicKey !== "null" && (ctx.session?.publicKey !== maxPublicKey || !ctx.session.privateKey)) {
+    toast.error(`Beneficiary added. Switch session to key ${maxPublicKey.slice(-8)} and click migrate.`);
+    throw new Error("Migration requires a different encryption session");
   }
-
-  const beneficiariesResult = await ctx.client.query({
-    query: GET_SMARTWILL_BENEFICIARY,
-    fetchPolicy: "network-only",
+  const beneficiaries = await ctx.client.query<{ getSmartWillBeneficiaries: Array<{ id: string; person_id: string }> }>({
+    query: GET_SMARTWILL_BENEFICIARY, fetchPolicy: "network-only",
   });
-  const beneficiaries =
-    ((beneficiariesResult.data as any)?.getSmartWillBeneficiaries as any[]) || [];
-  const targetBeneficiary = beneficiaries.find(
-    (item: any) => item.person_id === beneficiaryPersonId,
-  );
-
-  if (!targetBeneficiary?.id) {
-    toast.error(
-      "Beneficiary was added, but migration could not identify the target. Use Click to Migrate.",
-    );
-    return;
+  signal?.throwIfAborted();
+  const target = beneficiaries.data?.getSmartWillBeneficiaries.find(item => item.person_id === personId);
+  if (!target) throw new Error("Migration target unavailable");
+  if (maxCount === 0) return;
+  await perform_migrate_in(maxPublicKey, ctx.client, "beneficiary-migration", ctx.session?.privateKey ?? null, target.id, signal);
+  signal?.throwIfAborted();
+  const result = await ctx.client.query<{ getBeneficiaryKeyCount: Array<{
+    beneficiary_id: string; factor_wise_count: Array<{ publicKey: string; count: number }>;
+  }> }>({ query: GET_BENEFICIARY_KEY_COUNT, fetchPolicy: "network-only" });
+  signal?.throwIfAborted();
+  const migrated = result.data?.getBeneficiaryKeyCount.find(item => item.beneficiary_id === target.id);
+  const encryptedFactors = migrated?.factor_wise_count.filter(factor => factor.publicKey !== "null") ?? [];
+  const targets = encryptedFactors.length > 0 ? encryptedFactors : migrated?.factor_wise_count ?? [];
+  if (targets.length === 0 || targets.some(factor => factor.count < maxCount)) {
+    throw new Error("Beneficiary keys are not fully synced");
   }
-
-  toast.success(
-    `Migration Started from -> ${
-      maxPublicKey === "null" ? "Unencrypted vault" : maxPublicKey
-    }`,
-  );
-  await perform_migrate_in(
-    maxPublicKey,
-    ctx.client,
-    "dosent-matter-its-a-beneficiary-id-migration",
-    ctx.session ? (ctx.session.privateKey ?? null) : null,
-    targetBeneficiary.id,
-  );
-  await ctx.client.query({
-    query: GET_BENEFICIARY_KEY_COUNT,
-    fetchPolicy: "network-only",
-  });
-  toast.success(
-    `Migration Completed from -> ${
-      maxPublicKey === "null" ? "Unencrypted vault" : maxPublicKey
-    }`,
-  );
-}
-
-export async function executeObjectiveAction(
-  action: ObjectiveActionSpec,
-  ctx: ObjectiveActionExecutionContext,
-) {
-  if (action.type === "migrate_beneficiary_data") {
-    await runBeneficiaryMigrationAction(action, ctx);
-    return;
-  }
-
-  logger.warn(`No objective action handler registered for action type: ${action.type}`);
 }

@@ -1,184 +1,71 @@
+// Presents the overview and guided setup throughout the /app/guide content area.
+// Owns overview/objective transitions and privacy-safe completion analytics.
+// Does not store plaintext drafts or decide questions on the server.
 "use client";
-
-import { useState, useEffect, useCallback, useRef } from "react";
-import { useApolloClient } from "@apollo/client/react";
-import { AnimatePresence } from "framer-motion";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { usePostHog } from "posthog-js/react";
+import { useAuth } from "@/contexts/AuthContext";
 import { useSession } from "@/contexts/SessionContext";
+import MobileFloatingMenu from "@/components/app/Sidebar/MobileFloatingMenu";
 import GuidePanel from "./components/GuidePanel";
-import ObjectiveLaunchCard from "./components/ObjectiveLaunchCard";
+import GuideOverviewSlide from "./components/GuideOverviewSlide";
 import useObjectiveEngine from "./hooks/useObjectiveEngine";
-import useGuidedActionRunner from "./hooks/useGuidedActionRunner";
-import useGuidedStepAutoActions from "./hooks/useGuidedStepAutoActions";
 import useGuidedTimedDisplay from "./hooks/useGuidedTimedDisplay";
-import useBodyOverflowLock from "./hooks/useBodyOverflowLock";
 
 export default function GuidedActions() {
-  const [showGuidedActions, setShowGuidedActions] = useState(false);
-  const [pendingCloseAction, setPendingCloseAction] = useState<
-    "reload" | "reinitialize" | null
-  >(null);
-  const [postActionStatus, setPostActionStatus] = useState<{
-    title: string;
-    subtext: string | null;
-  } | null>(null);
-  const completedObjectiveInSessionRef = useRef(false);
-  const trackedCompletedObjectiveIdsRef = useRef(new Set<string>());
-  const hasShownCurrentInOpenSessionRef = useRef(false);
-  const client = useApolloClient();
-  const posthog = usePostHog();
+  const { user } = useAuth();
   const { session } = useSession();
-  const { clearHandledActions, runStepAction } = useGuidedActionRunner({
-    client,
-    session,
-  });
-  const {
-    current,
-    loading,
-    error,
-    hasObjective,
-    initialize,
-    reset,
-    continueCurrentStep,
-    submitCurrentStep,
-  } = useObjectiveEngine();
+  const identity = `${user?.uid ?? user?.id ?? user?.email ?? ""}:${session?.publicKey ?? "null"}`;
+  return <GuidedActionsView key={identity} />;
+}
 
-  const handleCloseGuidedActions = useCallback(() => {
-    if (!showGuidedActions) {
-      return;
-    }
-    const shouldReload = completedObjectiveInSessionRef.current;
-    posthog.capture("assistant_closed", {
-      source: "guided_actions",
-      completed_objective_in_session: shouldReload,
-    });
-    setShowGuidedActions(false);
-    setPostActionStatus(null);
-    setPendingCloseAction(shouldReload ? "reload" : "reinitialize");
-  }, [posthog, showGuidedActions]);
+function GuidedActionsView() {
+  const [active, setActive] = useState(false);
+  const completedInSession = useRef(false);
+  const trackedObjectives = useRef(new Set<string>());
+  const posthog = usePostHog();
+  const { current, started, deferred, loading, error, postActionStatus, engine } = useObjectiveEngine();
 
-  const handlePanelExitComplete = useCallback(async () => {
-    if (!pendingCloseAction) {
-      return;
-    }
-
-    clearHandledActions();
-    completedObjectiveInSessionRef.current = false;
-    hasShownCurrentInOpenSessionRef.current = false;
-    reset();
-
-    if (pendingCloseAction === "reload") {
-      window.location.reload();
-      return;
-    }
-
-    await initialize({ ignorePersisted: true });
-    setPendingCloseAction(null);
-  }, [clearHandledActions, initialize, pendingCloseAction, reset]);
-
-  const handleOpenGuidedActions = useCallback(async () => {
-    hasShownCurrentInOpenSessionRef.current = false;
-    posthog.capture("assistant_opened", {
-      source: "guided_actions",
-    });
-    setShowGuidedActions(true);
-    setPostActionStatus(null);
-    clearHandledActions();
-    completedObjectiveInSessionRef.current = false;
-    setPendingCloseAction(null);
-    await initialize({ ignorePersisted: true });
-  }, [clearHandledActions, initialize, posthog]);
-
-  const handleContinue = useCallback(async () => {
-    const shouldCloseAfterAdvance = current?.result.closePanelAfterDisplay === true;
-    const resolution = await continueCurrentStep();
-    if (!shouldCloseAfterAdvance || resolution?.kind !== "none") {
-      return;
-    }
-    await handleCloseGuidedActions();
-  }, [current, continueCurrentStep, handleCloseGuidedActions]);
+  const returnToOverview = useCallback(() => {
+    posthog.capture("assistant_closed", { source: "guided_actions", completed_objective_in_session: completedInSession.current });
+    setActive(false);
+  }, [posthog]);
+  const start = useCallback(() => {
+    posthog.capture("assistant_opened", { source: "guided_actions" });
+    setActive(true);
+    if (error) void engine.retry();
+    else void engine.prepareContext();
+  }, [posthog, engine, error]);
+  const advance = useCallback(() => engine.continue(), [engine]);
+  const retry = useCallback(() => engine.retry(), [engine]);
+  const defer = useCallback(() => engine.defer(), [engine]);
+  const startObjective = useCallback(() => engine.start(), [engine]);
+  const resume = useCallback(async (id: string) => {
+    await engine.resume(id);
+    setActive(true);
+  }, [engine]);
 
   useEffect(() => {
-    if (!showGuidedActions || !current) {
-      return;
-    }
-    hasShownCurrentInOpenSessionRef.current = true;
-    if (current.result.action === "complete") {
-      completedObjectiveInSessionRef.current = true;
-      if (!trackedCompletedObjectiveIdsRef.current.has(current.objectiveId)) {
-        trackedCompletedObjectiveIdsRef.current.add(current.objectiveId);
-        posthog.capture("objective_completed", {
-          source: "guided_actions",
-          objective_id: current.objectiveId,
-          objective_title: current.result.objectiveTitle,
-        });
-      }
-    }
-  }, [showGuidedActions, current, posthog]);
-
-  useGuidedTimedDisplay({
-    showGuidedActions,
-    current,
-    runStepAction,
-    onContinue: handleContinue,
-    onPostActionStatusChange: setPostActionStatus,
-  });
-
+    if (!active || !current) return;
+    if (current.result.action !== "complete" || !current.result.displayForMs) return;
+    completedInSession.current = true;
+    if (trackedObjectives.current.has(current.objectiveId)) return;
+    trackedObjectives.current.add(current.objectiveId);
+    posthog.capture("objective_completed", { source: "guided_actions", objective_id: current.objectiveId });
+  }, [current, active, posthog]);
   useEffect(() => {
-    if (!showGuidedActions) {
-      return;
-    }
-    if (loading || error || current) {
-      return;
-    }
-    if (!hasShownCurrentInOpenSessionRef.current) {
-      return;
-    }
-    const closeTimer = window.setTimeout(() => {
-      handleCloseGuidedActions();
-    }, 0);
+    if (!active || current || loading || error) return;
+    const timer = window.setTimeout(returnToOverview, 0);
+    return () => window.clearTimeout(timer);
+  }, [active, current, loading, error, returnToOverview]);
 
-    return () => {
-      window.clearTimeout(closeTimer);
-    };
-  }, [showGuidedActions, loading, error, current, handleCloseGuidedActions]);
+  useGuidedTimedDisplay(active, current, error, advance);
 
-  useGuidedStepAutoActions({
-    showGuidedActions,
-    current,
-    runStepAction,
-  });
-
-  useBodyOverflowLock(showGuidedActions);
-
-  if (!hasObjective && !showGuidedActions && !pendingCloseAction) {
-    return null;
-  }
-
-  return (
-    <>
-      {current ? (
-        <ObjectiveLaunchCard
-          current={current}
-          loading={loading}
-          error={error}
-          onOpen={handleOpenGuidedActions}
-        />
-      ) : null}
-      <AnimatePresence onExitComplete={handlePanelExitComplete}>
-        {showGuidedActions && (
-          <GuidePanel
-            current={current}
-            loading={loading}
-            error={error}
-            postActionStatus={postActionStatus}
-            onClose={handleCloseGuidedActions}
-            onRetry={initialize}
-            onContinue={handleContinue}
-            onSubmit={submitCurrentStep}
-          />
-        )}
-      </AnimatePresence>
-    </>
-  );
+  return <main className="cw-private-guidance ph-no-capture sentry-block relative flex min-h-full w-full flex-1 flex-col bg-dashboardCream dark:bg-darkCanvas">
+    <div className="absolute left-5 top-5 z-10 sm:hidden"><MobileFloatingMenu /></div>
+    {active ? <GuidePanel current={current} started={started} loading={loading} error={error} postActionStatus={postActionStatus}
+      onClose={returnToOverview} onRetry={retry} onContinue={advance} onStart={startObjective} onDefer={defer} onSubmit={(value) => engine.submit(value)} />
+      : <GuideOverviewSlide onStart={start} setupLoading={loading} setupAvailable={Boolean(current)} setupError={Boolean(error)}
+        deferred={deferred} onResume={resume} />}
+  </main>;
 }

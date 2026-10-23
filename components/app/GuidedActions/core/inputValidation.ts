@@ -1,4 +1,9 @@
-import type { ObjectiveInputSpec } from "./types";
+// Checks local input constraints before a conversation transition.
+// Owns immediate field validation for browser questions.
+// Does not replace server validation at the final-save boundary.
+import type { ObjectiveInputSpec } from "@/types/interfaces";
+import { isGuidanceDateValid } from "./dateValidation";
+import { prepareGuidanceInput } from "./inputValue";
 
 export function isInputValid(
   inputSpec: ObjectiveInputSpec | null,
@@ -8,7 +13,7 @@ export function isInputValid(
     return true;
   }
 
-  const normalized = value.trim();
+  const normalized = prepareGuidanceInput(inputSpec, value);
   if (!normalized.length) {
     return false;
   }
@@ -23,29 +28,10 @@ export function isInputValid(
   }
 
   if (inputSpec.type === "date") {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(normalized)) {
-      return false;
-    }
-    const date = new Date(`${normalized}T00:00:00.000Z`);
-    if (Number.isNaN(date.getTime())) {
-      return false;
-    }
-
-    const [year, month, day] = normalized.split("-").map((x) => parseInt(x, 10));
-    if (
-      date.getUTCFullYear() !== year ||
-      date.getUTCMonth() + 1 !== month ||
-      date.getUTCDate() !== day
-    ) {
-      return false;
-    }
-
-    if (date.getTime() > Date.now()) {
-      return false;
-    }
-
-    return year >= 1900;
+    return isGuidanceDateValid(normalized, inputSpec.minDate, inputSpec.maxDate);
   }
+
+  if (inputSpec.pattern && !new RegExp(inputSpec.pattern).test(normalized)) return false;
 
   if (typeof inputSpec.minLength === "number" && normalized.length < inputSpec.minLength) {
     return false;

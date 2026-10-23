@@ -1,3 +1,6 @@
+// Presents loading, error, intro, and step views within the guide panel.
+// Owns animated presentation of objective introductions and questions.
+// Does not run branching rules or persist guidance state.
 import { motion } from "framer-motion";
 import { type ReactNode } from "react";
 import ActionContent from "./ActionContent";
@@ -69,7 +72,7 @@ export function EmptyState({
   return (
     <AnimatedStatePane stateKey={stateKey} className="flex flex-col items-center gap-3">
       <p className="text-xl md:text-2xl">No guided actions available right now.</p>
-      <GuidedButton onClick={onClose}>Done</GuidedButton>
+      <GuidedButton onClick={onClose}>Back to overview</GuidedButton>
     </AnimatedStatePane>
   );
 }
@@ -78,10 +81,14 @@ export function IntroState({
   stateKey,
   current,
   onStart,
+  onSkip,
+  loading,
 }: {
   stateKey: string;
   current: ObjectiveInProgress;
   onStart: () => void;
+  onSkip: () => void;
+  loading: boolean;
 }) {
   return (
     <AnimatedStatePane stateKey={stateKey} className="w-full flex flex-col items-center gap-4">
@@ -92,8 +99,9 @@ export function IntroState({
         <p className="text-base md:text-xl text-black/70 dark:text-white/70 leading-relaxed max-w-3xl mx-auto">
           {current.result.objectiveDescription ?? "Let's complete this objective step by step."}
         </p>
-        <div className="pt-1 flex justify-center">
-          <GuidedButton onClick={onStart}>Start</GuidedButton>
+        <div className="pt-1 flex justify-center gap-3">
+          <GuidedButton onClick={onStart} disabled={loading}>Start</GuidedButton>
+          {current.result.skippable && <GuidedButton variant="secondary" onClick={onSkip} disabled={loading}>Skip</GuidedButton>}
         </div>
       </div>
     </AnimatedStatePane>

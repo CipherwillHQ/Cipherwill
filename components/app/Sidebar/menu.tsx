@@ -29,6 +29,14 @@ const menu: (Divider | Segment)[] = [
     path: "/app",
   },
   {
+    icon: <TbTableSpark />,
+    title: "Guide",
+    description: "Account overview and guided setup",
+    plan_required: "free",
+    preference_key: null,
+    path: "/app/guide",
+  },
+  {
     icon: <TbMessageCircle />,
     title: "Chat",
     description: "Chat with Cipherwill",

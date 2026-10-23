@@ -1,3 +1,6 @@
+// Uploads bounded batches of wrapped keys with optional session cancellation.
+// Owns payload limits and checks before each network write.
+// Does not encrypt keys or choose migration recipients.
 import { ApolloClient } from "@apollo/client";
 import logger from "../debug/logger";
 import UPSERT_KEYS from "../../graphql/ops/app/key/Mutations/UPSERT_KEYS";
@@ -6,21 +9,26 @@ import { Key } from "./types";
 export default async function recurring_upload({
   client,
   key_cluster,
+  signal,
 }: {
   client: ApolloClient;
   key_cluster: Key[];
+  signal?: AbortSignal;
 }) {
+  signal?.throwIfAborted();
   logger.info(`Starting recurring upload of ${key_cluster.length} items`);
   const MAX_SIZE = 500000; // 500 kb per request payload
   let size = 0;
   let current_stack: Key[] = [];
   for await (const item of key_cluster) {
+    signal?.throwIfAborted();
     size += item.key.length;
     current_stack.push(item);
     if (size >= MAX_SIZE || current_stack.length >= 100) {
       logger.info(
         `Step data upload ${size / 1024} kB and ${current_stack.length} items`
       );
+      signal?.throwIfAborted();
       await client.mutate({
         mutation: UPSERT_KEYS,
         variables: {
@@ -36,6 +44,7 @@ export default async function recurring_upload({
     logger.info(
       `Step data upload ${size / 1024} kB and ${current_stack.length} items`
     );
+    signal?.throwIfAborted();
     await client.mutate({
       mutation: UPSERT_KEYS,
       variables: {
