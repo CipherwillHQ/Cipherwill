@@ -12,6 +12,7 @@ export function isInputValid(
   if (!inputSpec || inputSpec.type === "boolean") {
     return true;
   }
+  if (inputSpec.type === "file") return false;
 
   const normalized = prepareGuidanceInput(inputSpec, value);
   if (!normalized.length) {

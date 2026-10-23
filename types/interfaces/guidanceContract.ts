@@ -2,7 +2,7 @@
 // Defines the browser/server guidance protocol in one maintained source.
 // Owns serializable rules, capability versioning, and encrypted asset mappings.
 // Does not register objectives or import browser/server implementations.
-export const GUIDANCE_PROTOCOL_VERSION = 2;
+export const GUIDANCE_PROTOCOL_VERSION = 3;
 export type GuidanceCondition =
   | { path: string; operator: "present" | "missing" | "equals" | "gt" | "gte" | "lt" | "lte" | "includes"; value?: unknown }
   | { all: GuidanceCondition[] } | { any: GuidanceCondition[] } | { not: GuidanceCondition };
@@ -13,7 +13,7 @@ export interface GuidanceOperation {
   completionExports?: string[];
 }
 export interface GuidanceInput {
-  type: "email" | "single_line_text" | "multi_line_text" | "date" | "number" | "boolean" | "choices";
+  type: "email" | "single_line_text" | "multi_line_text" | "date" | "number" | "boolean" | "choices" | "file";
   key: string; placeholder?: string | null; minLength?: number | null; maxLength?: number | null;
   min?: number | null; max?: number | null; choices?: unknown[] | null; skippable?: boolean | null;
   minDate?: string; maxDate?: string; pattern?: string; sensitive?: boolean;
@@ -26,7 +26,7 @@ export interface GuidanceQuestion {
 export interface GuidanceAssetSchema {
   type: string; podType: string; version: string;
   metadata: Record<string, string>;
-  fields: Record<string, { answer: string; format?: "plain_text_html" }>;
+  fields: Record<string, { answer: string; format?: "plain_text_html" | "word_list" }>;
   inputs: GuidanceInput[];
 }
 export interface GuidanceDefinition {

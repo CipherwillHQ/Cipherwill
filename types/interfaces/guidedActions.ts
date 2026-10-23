@@ -5,7 +5,7 @@ import type { GuidanceDefinition, GuidanceRecovery, GuidanceInput, GuidanceCompl
 import type { GuidanceDeferral, DeferredGuidanceItem } from "./guidanceChoices";
 export type GuidedObjectiveId = string;
 export type ObjectiveState = Record<string, unknown>;
-export type ObjectiveInputType = "email" | "single_line_text" | "multi_line_text" | "date" | "number" | "boolean" | "choices";
+export type ObjectiveInputType = GuidanceInput["type"];
 export type ObjectiveStatus = "already_complete" | "in_progress" | "complete";
 
 export interface ObjectiveActionSpec {

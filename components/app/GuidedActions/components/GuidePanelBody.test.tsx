@@ -9,6 +9,7 @@ import GuidePanelBody from "./GuidePanelBody";
 import { buildLocalStep } from "../core/stepResult";
 import { createFlowState } from "../core/flowRules";
 import { firstAssetFixture } from "../core/fixtures/firstAsset";
+import { firstFileFixture } from "../core/fixtures/firstSegmentAssets";
 
 const current = buildLocalStep(firstAssetFixture(0), createFlowState(), {
   account: { firstName: null, lastName: null, birthDate: null, beneficiaryCount: 0 },
@@ -38,4 +39,12 @@ test("active questions, optional fields, and completion displays never offer obj
   const done = renderToStaticMarkup(<GuidePanelBody props={{ ...props, current: completed }}
     state={{ ...state, current: completed, viewState: "timed" }} />);
   assert.doesNotMatch(done, />Skip<|>Start<|suggest this again/);
+});
+
+test("file questions render a picker and advance through selection instead of a text submit", () => {
+  const file = { ...current, result: { ...current.result, input: firstFileFixture.steps[0].input! } };
+  const html = renderToStaticMarkup(<GuidePanelBody props={{ ...props, current: file, started: true }}
+    state={{ ...state, current: file, viewState: "step" }} />);
+  assert.match(html, /type="file"/);
+  assert.doesNotMatch(html, />Submit</);
 });

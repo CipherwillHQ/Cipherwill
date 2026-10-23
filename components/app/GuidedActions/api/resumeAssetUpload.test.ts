@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import type { ApolloClient } from "@apollo/client";
 import { resumeGuidedAssetUpload } from "./resumeAssetUpload";
 
-function setup(status: string | null, podCommitted = false, content: string | null = "ciphertext") {
+function setup(status: string | null, podCommitted = false, content: string | null = "ciphertext", type = "TEXT_POD", size = "100") {
   const calls: string[] = [];
   let commits = 0;
   const client = {
@@ -15,8 +15,8 @@ function setup(status: string | null, podCommitted = false, content: string | nu
       const name = query.definitions[0].name.value;
       calls.push(name);
       return name === "GET_UPLOAD_POD_SESSION" ? { data: { getUploadPodSession: status
-        ? { id: "upload-1", status, pod_committed: podCommitted } : null } }
-        : { data: { getPod: { content } } };
+        ? { id: "upload-1", status, type, pod_committed: podCommitted } : null } }
+        : { data: { getPod: { content, size } } };
     },
     mutate: async ({ variables }: any) => {
       assert.deepEqual(variables, { session_id: "upload-1" });
@@ -57,4 +57,12 @@ test("locking during the session read prevents a follow-up commit or ciphertext 
     return { data: { getUploadPodSession: { id: "upload-1", status: "KEYS_UPLOADED", pod_committed: true } } };
   } } as unknown as ApolloClient;
   await assert.rejects(resumeGuidedAssetUpload(client, "guided_item", controller.signal), { name: "AbortError" });
+});
+
+test("file retries confirm committed storage without expecting inline ciphertext", async () => {
+  for (const status of ["COMPLETED", "KEYS_UPLOADED"]) {
+    const { client } = setup(status, true, null, "STORAGE_POD");
+    assert.equal(await resumeGuidedAssetUpload(client, "guided_file"), true);
+  }
+  await assert.rejects(resumeGuidedAssetUpload(setup("COMPLETED", true, null, "STORAGE_POD", "0").client, "guided_file"), /unavailable/);
 });

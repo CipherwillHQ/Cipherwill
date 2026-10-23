@@ -22,6 +22,9 @@ export async function resumeGuidedAssetUpload(client: ApolloClient, itemId: stri
   }
   const pod = await client.query<GetPodQuery>({ query: GET_POD, variables: { ref_id: itemId }, fetchPolicy: "no-cache" });
   signal?.throwIfAborted();
-  if (!pod.data?.getPod?.content) throw new Error("Saved encrypted content unavailable");
+  const saved = pod.data?.getPod;
+  if (session.type === "STORAGE_POD" ? !(Number(saved?.size) > 0) : !saved?.content) {
+    throw new Error("Saved encrypted content unavailable");
+  }
   return true;
 }

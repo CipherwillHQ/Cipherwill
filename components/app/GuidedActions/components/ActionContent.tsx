@@ -39,6 +39,7 @@ export default function ActionContent({
         onChange={setInputValue}
         onSubmitBoolean={(value) => submitValue(value)}
         onSubmitText={submitTextValue}
+        onSubmitFile={submitValue}
         loading={loading}
       />
     </div>

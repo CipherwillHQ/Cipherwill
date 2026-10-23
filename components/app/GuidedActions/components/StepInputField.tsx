@@ -13,6 +13,7 @@ export default function StepInputField({
   onChange,
   onSubmitBoolean,
   onSubmitText,
+  onSubmitFile,
   loading,
 }: {
   inputSpec: ObjectiveInputSpec | null;
@@ -20,10 +21,19 @@ export default function StepInputField({
   onChange: (value: string) => void;
   onSubmitBoolean: (value: boolean) => void;
   onSubmitText: () => void;
+  onSubmitFile: (file: File) => void;
   loading: boolean;
 }) {
   const inputType = inputSpec?.type ?? null;
   const choiceOptions = (inputSpec?.choices ?? []).map((choice) => String(choice));
+
+  if (inputType === "file") {
+    return <input type="file" aria-label="Choose file" disabled={loading} className={INPUT_CLASS_NAME}
+      onChange={(event) => {
+        const file = event.target.files?.[0];
+        if (file) onSubmitFile(file);
+      }} />;
+  }
 
   if (inputType === "boolean") {
     return (

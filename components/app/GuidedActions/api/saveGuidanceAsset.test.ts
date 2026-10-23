@@ -4,11 +4,13 @@
 import test, { beforeEach, mock } from "node:test";
 import assert from "node:assert/strict";
 import CryptoJS from "crypto-js";
+import { createDecipheriv } from "node:crypto";
 import type { ApolloClient } from "@apollo/client";
 import { pathToFileURL } from "node:url";
 import { testAssetSchemas } from "../core/fixtures/assetSchemas";
+import { segmentAssetCases } from "../core/fixtures/firstSegmentAssets";
 
-const encryptionKey = "browser-only-key";
+const encryptionKey = "0123456789abcdef0123456789abcdef0123456789abcdef";
 const ownKeys = mock.fn(async ({ key_cluster, encryption_keys }: any) => {
   for (const ref_id of Object.keys(encryption_keys)) key_cluster.push({ ref_id, publicKey: "owner-factor", beneficiary_id: "null", key: "wrapped-owner-key" });
 });
@@ -24,7 +26,7 @@ mock.module(pathToFileURL(require.resolve("react-hot-toast")), { defaultExport: 
 
 beforeEach(() => { ownKeys.mock.resetCalls(); beneficiaryKeys.mock.resetCalls(); });
 
-function setup() {
+function setup(type = "TEXT_POD") {
   const requests: Array<{ name: string; variables: any }> = [];
   const files: string[] = [];
   let status: string | null = null;
@@ -36,15 +38,16 @@ function setup() {
       const name = query.definitions[0].name.value;
       requests.push({ name, variables });
       if (name === "GET_UPLOAD_POD_SESSION") return { data: { getUploadPodSession: status
-        ? { id: "upload-1", status, type: "TEXT_POD", pod_committed: status === "COMPLETED" } : null } };
-      if (name === "GET_POD") return { data: { getPod: { content: files.at(-1) } } };
+        ? { id: "upload-1", status, type, pod_committed: status === "COMPLETED" } : null } };
+      if (name === "GET_POD") return { data: { getPod: { content: files.at(-1), size: "100" } } };
       return { data: { getMetamodel: { ignored_beneficiaries: [] } } };
     },
     mutate: async ({ mutation, variables }: any) => {
       const name = mutation.definitions[0].name.value;
       requests.push({ name, variables });
       if (name === "CREATE_METAMODEL") return { data: { createMetamodel: { id: variables.id } } };
-      if (name === "createUploadPodSession") { status = "CREATED"; return { data: { createUploadPodSession: { id: "upload-1", type: "TEXT_POD" } } }; }
+      if (name === "createUploadPodSession") { status = "CREATED"; return { data: { createUploadPodSession: { id: "upload-1", type,
+        presigned_upload_url: type === "STORAGE_POD" ? "https://storage.invalid/upload" : null } } }; }
       if (name === "uploadSessionPod") { files.push(await variables.file.text()); status = "PODS_UPLOADED"; return { data: { uploadSessionPod: { id: "upload-1" } } }; }
       if (name === "uploadSessionKeys") { status = "KEYS_UPLOADED"; return { data: { uploadSessionKeys: { id: "upload-1" } } }; }
       assert.equal(name, "commitUploadSession");
@@ -120,4 +123,50 @@ test("locking after upload-session creation prevents ciphertext, keys, and commi
   assert.equal(base.files.length, 0);
   assert.equal(ownKeys.mock.callCount(), 0);
   assert.equal(base.requests.some(request => request.name === "uploadSessionKeys" || request.name === "commitUploadSession"), false);
+});
+
+test("all five new record categories encrypt the existing vault payload and keep secrets out of metadata", async () => {
+  const { saveGuidanceAsset } = await import("./saveGuidanceAsset");
+  for (const item of segmentAssetCases) {
+    const { client, files, requests } = setup();
+    await saveGuidanceAsset(client, null, { itemId: "guided_record", schema: testAssetSchemas[item.type], ...item.answers });
+    const pod = JSON.parse(CryptoJS.AES.decrypt(files[0], encryptionKey).toString(CryptoJS.enc.Utf8));
+    assert.equal(pod.version, "0.0.1");
+    assert.deepEqual(pod.data, item.data);
+    const metadata = requests.find(request => request.name === "CREATE_METAMODEL")!.variables.metadata;
+    for (const input of testAssetSchemas[item.type].inputs.filter(input => input.sensitive)) {
+      assert.equal(metadata.includes(item.answers[input.key]), false);
+      assert.equal(JSON.stringify(requests).includes(item.answers[input.key]), false);
+    }
+    assert.equal(JSON.stringify(requests).includes(encryptionKey), false);
+  }
+});
+
+test("guided files upload encrypted binary data and retry a lost commit without another upload", async () => {
+  const { saveGuidanceFile } = await import("./saveGuidanceFile");
+  const base = setup("STORAGE_POD");
+  const file = new File(["private binary contents"], "instructions.pdf", { type: "application/pdf" });
+  const args = { itemId: "guided_file", file: { name: file.name, file } };
+  const uploads: Buffer[] = [];
+  const fetchMock = mock.method(globalThis, "fetch", async (_url, request) => {
+    uploads.push(Buffer.from(await (request!.body as Blob).arrayBuffer()));
+    return new Response(null, { status: 200 });
+  });
+  try {
+    base.loseNextCommitResponse();
+    await assert.rejects(saveGuidanceFile(base.client, null, args), /Lost response/);
+    assert.deepEqual(await saveGuidanceFile(base.client, null, args), { itemId: "guided_file" });
+    assert.equal(uploads.length, 1);
+    assert.equal(base.requests.filter(request => request.name === "CREATE_METAMODEL").length, 1);
+    const decipher = createDecipheriv("aes-256-cbc", encryptionKey.slice(16), encryptionKey.slice(0, 16));
+    assert.equal(Buffer.concat([decipher.update(uploads[0]), decipher.final()]).toString(), "private binary contents");
+    assert.equal(uploads[0].includes(Buffer.from("private binary contents")), false);
+    assert.deepEqual(JSON.parse(base.requests.find(request => request.name === "CREATE_METAMODEL")!.variables.metadata),
+      { title: "instructions.pdf", type: "application/pdf", file_ext: "pdf" });
+    assert.equal(base.requests.some(request => request.name === "uploadSessionPod"), false);
+    assert.equal(JSON.stringify(base.requests).includes("private binary contents"), false);
+    assert.equal(ownKeys.mock.callCount(), 1);
+    assert.equal(beneficiaryKeys.mock.callCount(), 1);
+    await assert.rejects(saveGuidanceFile(base.client, null, { itemId: "guided_fake", file: { file: "fake" } }), /choose a file/);
+  } finally { fetchMock.mock.restore(); }
 });

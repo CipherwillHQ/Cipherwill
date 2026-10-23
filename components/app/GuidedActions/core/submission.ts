@@ -1,13 +1,15 @@
 // Validates local submissions and strips drafts down to save-command fields.
 // Owns answer normalization and the outbound data allowlist.
 // Does not include decrypted asset context or server-derived person objects.
-import type { GuidanceAnswers, GuidanceDefinition, GuidanceScope, ObjectiveInputSpec } from "@/types/interfaces";
+import type { GuidanceAnswers, GuidanceDefinition, GuidanceFileAnswer, GuidanceScope, ObjectiveInputSpec } from "@/types/interfaces";
 import { isInputValid } from "./inputValidation";
 import { prepareGuidanceInput } from "./inputValue";
 import { resolveGuidanceValues } from "./ruleEvaluation";
+import { normalizeGuidanceFile } from "./fileAnswer";
 
-export function normalizeAnswer(input: ObjectiveInputSpec, value: unknown): string | number | boolean | null {
+export function normalizeAnswer(input: ObjectiveInputSpec, value: unknown): string | number | boolean | GuidanceFileAnswer | null {
   if (value === null && input.skippable) return null;
+  if (input.type === "file") return normalizeGuidanceFile(value);
   if (input.type === "boolean") {
     if (typeof value !== "boolean") throw new Error("Please choose Yes or No.");
     return value;

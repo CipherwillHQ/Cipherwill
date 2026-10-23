@@ -7,6 +7,7 @@ import SEARCH_PERSON from "@/graphql/ops/app/people/queries/SEARCH_PERSON";
 import { loadGuidanceAssets } from "./loadGuidanceAssets";
 import { migrateGuidedBeneficiary } from "../core/objectiveActionRunner";
 import { saveGuidanceAsset } from "./saveGuidanceAsset";
+import { saveGuidanceFile } from "./saveGuidanceFile";
 import { GET_GUIDED_ASSET_COUNTS } from "./completionQueries";
 import { supportsGuidanceDefinition } from "../core/guidanceCapabilities";
 import type { GuidanceDefinition } from "@/types/interfaces";
@@ -15,6 +16,7 @@ export function createOperationHandlers(client: ApolloClient, session: GuidanceS
   const operations: Record<string, (args: Record<string, unknown>, signal?: AbortSignal) => Promise<unknown>> = {
     create_item_id: async () => `guided_${crypto.randomUUID()}`,
     save_encrypted_asset: (args, signal) => saveGuidanceAsset(client, session, args, signal),
+    save_encrypted_file: (args, signal) => saveGuidanceFile(client, session, args, signal),
     lookup_person: async ({ email }) => {
       const response = await client.query<{ searchPerson: GuidancePerson[] }>({
         query: SEARCH_PERSON, variables: { email }, fetchPolicy: "no-cache",

@@ -7,3 +7,14 @@ export interface GuidedAssetInput {
   metadata: Record<string, string>;
   pod: { type: string; version: string; data: Record<string, unknown> };
 }
+export interface GuidanceFileAnswer {
+  name: string;
+  file: File;
+}
+export interface GuidancePodUpload {
+  itemId: string;
+  type: string;
+  metadata: Record<string, string>;
+  version: string;
+  data: string | File;
+}

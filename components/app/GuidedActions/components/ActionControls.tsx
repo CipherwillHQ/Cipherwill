@@ -38,7 +38,7 @@ export default function ActionControls({
           {stepResult.continueLabel ?? "Continue"}
         </GuidedButton>
       ) : null}
-      {hasInput && !isBooleanInput ? (
+      {hasInput && !isBooleanInput && inputSpec?.type !== "file" ? (
         <GuidedButton onClick={handleSubmit} disabled={loading || !isInputValid}>
           Submit
         </GuidedButton>
