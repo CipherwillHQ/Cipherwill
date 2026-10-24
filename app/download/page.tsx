@@ -1,3 +1,5 @@
+// Presents Cipherwill downloads and platform availability.
+// Owns download metadata and installation guidance, not the install prompt behavior.
 import { FULL_HOSTNAME } from "@/common/constant";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
@@ -6,7 +8,7 @@ import Link from "next/link";
 
 const title = "Cipherwill downloads";
 const description =
-  "Learn how to easily add Cipherwill as an app on iOS, Android, Windows, and Mac. Also, some extra content that might be useful.";
+  "Download Cipherwill for Android or install it from your browser on iOS, Android, Windows, and Mac.";
 
 export const metadata = {
   title,
@@ -36,7 +38,23 @@ export default function Download() {
 
         <div className="mt-8 p-2 w-full max-w-xl mx-auto ">
           <h2 className="font-bold text-xl pt-4">On Mobile Devices</h2>
-          <p className="text-lg pt-1 pb-4">IOS & Android</p>
+          <div className="mt-4 grid gap-6 sm:grid-cols-2">
+            <div>
+              <h3 className="text-lg pb-4">Android</h3>
+              <Link
+                href="https://play.google.com/store/apps/details?id=com.cipherwill.app"
+                className="inline-flex min-h-11 items-center justify-center rounded-xl bg-primary px-6 py-3 text-base font-semibold text-white transition-all duration-200 hover:bg-primary-700 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              >
+                Get it on Google Play
+              </Link>
+            </div>
+            <div>
+              <h3 className="text-lg pb-4">iOS</h3>
+              <p className="text-base text-neutral-500">Coming soon</p>
+            </div>
+          </div>
+          <h3 className="font-bold text-lg mt-8">Install from your browser</h3>
+          <p className="text-lg pt-1 pb-4">iOS & Android</p>
           <ol className="text-start">
             <li>
               1. Click on options menu in the top right corner of the screen.
