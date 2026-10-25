@@ -12,6 +12,12 @@ small wrapping pills linking Score to `/app/score`, Data records to `/app/segmen
 `/app/beneficiaries`, and Security factors to `/app/factors`. There is no category pill, page top bar, or footer tagline.
 The Security factors pill shows **In sync** or **Needs sync** using the dashboard's key-count comparison;
 clicking it opens the existing factors page for migration, factor management, and unencrypted-key cleanup.
+**Shared wills** and **Granted access** pills appear only when their respective permission lists have records.
+They expand inline like Data records; only one of these three pills can be expanded at a time.
+Shared wills show names, deadlines, and links into `/executor/[access_id]`; ended periods remain visible without an active link.
+Granted access shows names, deadlines, and a confirmed Revoke action. Successful revocation refreshes the list and count,
+removing the pill when the final permission is gone. Returned grants remain visible after their scheduled deadline.
+Permission queries load independently of the overview and expose retry controls on failure. Names load in one batch per expanded list.
 The overview query returns score/count data, factor key counts, the greeting first name, and email verification status, and runs fresh each time the overview is mounted.
 Unverified accounts show an email verification banner above **Continue Cipherwill Setup**. `BannerArea` stacks
 independent notice components and collapses when empty, so more banners can be added in the same space.

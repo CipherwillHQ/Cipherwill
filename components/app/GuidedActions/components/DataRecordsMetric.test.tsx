@@ -6,10 +6,10 @@ import assert from "node:assert/strict";
 import React from "react";
 import { pathToFileURL } from "node:url";
 import { renderToStaticMarkup } from "react-dom/server";
+import type { OverviewExpandedMetric } from "@/types/interfaces";
 
-let open = false;
+let expanded: OverviewExpandedMetric = null;
 mock.module("react", { defaultExport: React, namedExports: { ...React,
-  useState: () => [open, (value: boolean) => { open = value; }],
   useEffect: () => {}, useCallback: (callback: unknown) => callback,
   useRef: () => ({ current: null }), useId: () => "record-breakdown",
 } });
@@ -22,22 +22,38 @@ mock.module(pathToFileURL(require.resolve("framer-motion")), { namedExports: {
   },
 } });
 mock.module("./DataRecordsBreakdown.module.css", { defaultExport: { panel: "panel" } });
-beforeEach(() => { open = false; });
+beforeEach(() => { expanded = null; });
 const props = { count: 5, typeCounts: [{ type: "NOTE", count: 2 }, { type: "PASSWORD", count: 3 }, { type: "FILE", count: 0 }] };
+async function renderMetric() {
+  const { default: Metric } = await import("./DataRecordsMetric");
+  const { default: Expandable } = await import("./ExpandableOverviewMetric");
+  return Expandable(Metric({ ...props, expanded, onExpand: metric => { expanded = metric; } }).props);
+}
 
 test("click expands the pill inline and clicking it again collapses it", async () => {
-  const { default: Metric } = await import("./DataRecordsMetric");
-  const initial = Metric(props);
+  const initial = await renderMetric();
   assert.doesNotMatch(renderToStaticMarkup(initial), /Data breakdown|See all segments/);
   initial.props.children[1].props.onClick();
-  const opened = Metric(props);
+  const opened = await renderMetric();
   assert.equal(opened.props.layout, true);
   assert.equal(opened.props.style.width, 256);
   assert.match(renderToStaticMarkup(opened), /data-expanded="true"[\s\S]*Data breakdown/);
   assert.match(renderToStaticMarkup(opened), /aria-controls="record-breakdown" aria-expanded="true"/);
   assert.doesNotMatch(renderToStaticMarkup(opened), /role="dialog"|position:fixed|visibility:hidden/);
   opened.props.children[1].props.onClick();
-  assert.doesNotMatch(renderToStaticMarkup(Metric(props)), /Data breakdown/);
+  assert.doesNotMatch(renderToStaticMarkup(await renderMetric()), /Data breakdown/);
+});
+
+test("opening another overview pill collapses the record breakdown", async () => {
+  const record = await renderMetric();
+  record.props.children[1].props.onClick();
+  assert.match(renderToStaticMarkup(await renderMetric()), /Data breakdown/);
+  const { default: Expandable } = await import("./ExpandableOverviewMetric");
+  const shared = Expandable({ metric: "shared", label: "Shared wills", count: 1, width: 320,
+    expanded, onExpand: metric => { expanded = metric; }, children: <p>Shared will details</p> });
+  shared.props.children[1].props.onClick();
+  assert.equal(expanded, "shared");
+  assert.doesNotMatch(renderToStaticMarkup(await renderMetric()), /Data breakdown/);
 });
 
 test("breakdown preserves counts, omits empty types, and links to all segments", async () => {

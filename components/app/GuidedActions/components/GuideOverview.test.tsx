@@ -7,6 +7,11 @@ import { renderToStaticMarkup } from "react-dom/server";
 import type { GuidanceOverviewProps } from "@/types/interfaces";
 import { buildGuidanceOverview } from "../core/accountOverview";
 mock.module("./DataRecordsBreakdown.module.css", { defaultExport: { panel: "panel" } });
+mock.module("../hooks/useGuidanceAccess.ts", { defaultExport: () => ({
+  shared: { data: { getAllBeneficiaryAccess: [] }, loading: false },
+  granted: { data: { getAllGrantedBeneficiaries: [] }, loading: false },
+  onRevoke: async () => {}, revokingId: null, revokeError: null,
+}) });
 
 const props: GuidanceOverviewProps = {
   overview: buildGuidanceOverview({ getUserScore: '{"base":300,"firstName":100}',

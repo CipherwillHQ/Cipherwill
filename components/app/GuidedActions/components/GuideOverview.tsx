@@ -1,7 +1,8 @@
 // Presents the account overview as the guide's opening and return slide.
 // Owns a centered account summary, reusable banner area, and setup button.
 // Does not select objectives or expose saved asset contents.
-import type { GuidanceOverviewProps } from "@/types/interfaces";
+import type { GuidanceOverviewProps, OverviewExpandedMetric } from "@/types/interfaces";
+import { useState } from "react";
 import GuidedButton from "./GuidedButton";
 import OverviewMetric from "./OverviewMetric";
 import DeferredGuidance from "./DeferredGuidance";
@@ -9,9 +10,11 @@ import BannerArea from "@/components/app/common/BannerArea";
 import EmailVerificationBanner from "./EmailVerificationBanner";
 import DataRecordsMetric from "./DataRecordsMetric";
 import FactorSyncMetric from "./FactorSyncMetric";
+import AccessMetrics from "./AccessMetrics";
 import { LayoutGroup, motion, MotionConfig } from "framer-motion";
 
 export default function GuideOverview(props: GuidanceOverviewProps) {
+  const [expanded, onExpand] = useState<OverviewExpandedMetric>(null);
   const { overview, loading, error, onRetry, onStart, setupLoading, setupAvailable, setupError } = props;
   if (loading) return <div className="flex flex-1 items-center justify-center p-10" role="status">Preparing your account overview…</div>;
   if (error || !overview) return <div className="flex flex-1 flex-col items-center justify-center gap-4 p-10 text-center">
@@ -28,9 +31,10 @@ export default function GuideOverview(props: GuidanceOverviewProps) {
         </motion.p>
         <motion.nav layout="position" aria-label="Account status" className="flex max-w-2xl flex-wrap justify-center gap-2 items-end">
           <motion.div layout="position"><OverviewMetric count={overview.score} label="Score" suffix="/ 950" href="/app/score" /></motion.div>
-          <DataRecordsMetric count={overview.itemCount} typeCounts={overview.typeCounts} />
+          <DataRecordsMetric count={overview.itemCount} typeCounts={overview.typeCounts} expanded={expanded} onExpand={onExpand} />
           <motion.div layout="position"><OverviewMetric count={overview.beneficiaryCount} label="Beneficiaries" href="/app/beneficiaries" /></motion.div>
           <motion.div layout="position"><FactorSyncMetric factorCount={overview.factorCount} factorsInSync={overview.factorsInSync} /></motion.div>
+          <AccessMetrics expanded={expanded} onExpand={onExpand} />
           {props.deferred.length > 0 && <motion.div layout="position"><DeferredGuidance deferred={props.deferred} onResume={props.onResume} loading={setupLoading} /></motion.div>}
         </motion.nav>
         {!overview.emailVerified && <motion.div layout="position" className="w-full max-w-2xl"><BannerArea>
