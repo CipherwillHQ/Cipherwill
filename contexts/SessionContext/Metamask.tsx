@@ -1,13 +1,13 @@
+// Unlocks existing v1 and v2 wallet factors using their stored nonce version.
+// Owns wallet signing and public-key matching before starting a session.
+// Does not migrate factors or send signatures or private keys to the API.
 "use client";
-import { ec as EC } from "elliptic";
 import { useState } from "react";
 import { useSDK } from "@metamask/sdk-react";
 import SimpleButton from "@/components/common/SimpleButton";
-import crypto from "crypto";
+import { deriveMetamaskFactor, getMetamaskSigningMessage } from "@/common/factor/metamaskFactor";
 import toast from "react-hot-toast";
 import getShortKey from "@/factory/publicKey/getShortKey";
-
-const ec = new EC("secp256k1");
 
 export default function Metamask({
   set_session_token,
@@ -43,28 +43,19 @@ export default function Metamask({
           <SimpleButton
             className="w-full"
             onClick={async () => {
-              const nonce = method.nonce;
-
-              const signResult = await sdk?.connectAndSign({
-                msg: `Cipherwill Factor: ${nonce}` ,
-              });
-              let signature_as_secret = (signResult as string).substring(
-                (signResult as string).length - 8
-              ); // last 8 characters of the signature as secret
-
-              let secret = crypto
-                .createHash("sha256")
-                .update(`${signature_as_secret}:${nonce}`)
-                .digest("hex");
-              const keyPair = ec.keyFromPrivate(secret);
-              const publicKey = keyPair.getPublic("hex");
-              if (publicKey === method.publicKey) {
-                set_session_token({
-                  publicKey: publicKey,
-                  privateKey: keyPair.getPrivate("hex"),
+              try {
+                const nonce = method.nonce;
+                const signResult = await sdk?.connectAndSign({
+                  msg: getMetamaskSigningMessage(nonce),
                 });
-              } else {
-                toast.error("Invalid wallet");
+                const factor = deriveMetamaskFactor(signResult, nonce);
+                if (factor.publicKey === method.publicKey) {
+                  set_session_token(factor);
+                } else {
+                  toast.error("Invalid wallet");
+                }
+              } catch {
+                toast.error("Unable to unlock this wallet factor. Please update Cipherwill and try again.");
               }
             }}
           >

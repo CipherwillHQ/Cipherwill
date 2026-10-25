@@ -1,16 +1,16 @@
+// Creates v2 wallet factors using the shared client-side derivation.
+// Owns wallet connection and factor creation through the existing API.
+// Does not upgrade or remove existing v1 factors.
 "use client";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import crypto from "crypto";
-import { ec as EC } from "elliptic";
+import { createMetamaskNonce, deriveMetamaskFactor, getMetamaskSigningMessage } from "@/common/factor/metamaskFactor";
 import { useApolloClient, useMutation } from "@apollo/client/react";
 import CREATE_FACTOR from "../../../../graphql/ops/auth/mutations/CREATE_FACTOR";
 import { useSession } from "../../../../contexts/SessionContext";
 import continuousFactorIn from "./continuousFactorIn";
 import SimpleButton from "@/components/common/SimpleButton";
 import { MetaMaskProvider, useSDK } from "@metamask/sdk-react";
-
-const ec = new EC("secp256k1");
 
 export default function AddMetamask({ continuous }) {
   return (
@@ -64,33 +64,27 @@ function ConnectSignAndAdd({ continuous }) {
         <SimpleButton
           onClick={async () => {
             if (isMigrating || loading) return;
-            const nonce = Math.floor(Math.random() * 1000000).toString();
+            try {
+              const nonce = createMetamaskNonce();
+              const signResult = await sdk?.connectAndSign({
+                msg: getMetamaskSigningMessage(nonce),
+              });
+              const { publicKey } = deriveMetamaskFactor(signResult, nonce);
 
-            const signResult = await sdk?.connectAndSign({
-              msg: `Cipherwill Factor: ${nonce}` ,
-            });
-            let signature_as_secret = (signResult as string).substring(
-              (signResult as string).length - 8
-            ); // last 8 characters of the signature as secret
-
-            let secret = crypto
-              .createHash("sha256")
-              .update(`${signature_as_secret}:${nonce}`)
-              .digest("hex");
-            const keyPair = ec.keyFromPrivate(secret);
-            const publicKey = keyPair.getPublic("hex");
-
-            await createFactor({
-              variables: {
-                name: `Metamask ${account.substring(
-                  0,
-                  4
-                )}******${account.substring(account.length - 6)}`,
-                type: "metamask",
-                publicKey,
-                nonce,
-              },
-            });
+              await createFactor({
+                variables: {
+                  name: `Metamask ${account.substring(
+                    0,
+                    4
+                  )}******${account.substring(account.length - 6)}`,
+                  type: "metamask",
+                  publicKey,
+                  nonce,
+                },
+              });
+            } catch {
+              toast.error("Unable to add your wallet factor. Please try again.");
+            }
           }}
         >
           {isMigrating ? (
