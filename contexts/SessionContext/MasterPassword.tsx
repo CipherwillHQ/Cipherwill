@@ -1,12 +1,12 @@
+// Unlocks existing v1 and v2 master-password factors using their stored nonce.
+// Owns password entry and public-key matching before starting a session.
+// Does not migrate factors or send passwords or private keys to the API.
 "use client";
-import crypto from "crypto";
 import toast from "react-hot-toast";
-import { ec as EC } from "elliptic";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { deriveMasterPasswordFactor } from "@/common/factor/masterPasswordFactor";
 import BasicPopup from "../../components/BasicPopup";
 import getShortKey from "../../factory/publicKey/getShortKey";
-
-const ec = new EC("secp256k1");
 
 export default function MasterPassword({
   set_session_token,
@@ -17,8 +17,11 @@ export default function MasterPassword({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [seed, setSeed] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submitting = useRef(false);
 
-  function handleSubmit(nonce: string) {
+  async function handleSubmit(nonce: string) {
+    if (submitting.current) return;
     if (!nonce) {
       toast.error("Invalid nonce");
       return;
@@ -27,19 +30,20 @@ export default function MasterPassword({
       toast.error("Please enter a password");
       return;
     }
-    let secret = crypto
-      .createHash("sha256")
-      .update(`${seed}:${nonce}`)
-      .digest("hex");
-    const keyPair = ec.keyFromPrivate(secret);
-    const publicKey = keyPair.getPublic("hex");
-    if (publicKey === method.publicKey) {
-      set_session_token({
-        publicKey: publicKey,
-        privateKey: keyPair.getPrivate("hex"),
-      });
-    } else {
-      toast.error("Invalid password");
+    submitting.current = true;
+    setIsSubmitting(true);
+    try {
+      const factor = await deriveMasterPasswordFactor(seed, nonce);
+      if (factor.publicKey === method.publicKey) {
+        set_session_token(factor);
+      } else {
+        toast.error("Invalid password");
+      }
+    } catch {
+      toast.error("Unable to unlock this password factor. Please update Cipherwill and try again.");
+    } finally {
+      submitting.current = false;
+      setIsSubmitting(false);
     }
   }
 
@@ -61,6 +65,7 @@ export default function MasterPassword({
       <BasicPopup
         open={isOpen}
         setOpen={(_e) => {
+          if (submitting.current) return;
           setIsOpen(false);
         }}
       >
@@ -76,20 +81,22 @@ export default function MasterPassword({
           placeholder="Master Password"
           className="border p-2 w-full bg-white dark:bg-neutral-800"
           value={seed}
+          disabled={isSubmitting}
           onChange={(e) => setSeed(e.target.value)}
           autoFocus
-          onKeyDown={(e) => {
+          onKeyDown={async (e) => {
             if (e.key === "Enter") {
-              handleSubmit(method.nonce);
+              await handleSubmit(method.nonce);
             }
           }}
         />
         <button
         data-cy="master-password-submit"
           className="bg-blue-500 text-white p-2 rounded-sm mt-2 w-full"
+          disabled={isSubmitting}
           onClick={() => handleSubmit(method.nonce)}
         >
-          Submit
+          {isSubmitting ? "Unlocking..." : "Submit"}
         </button>
        </div>
       </BasicPopup>

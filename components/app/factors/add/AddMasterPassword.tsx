@@ -1,21 +1,26 @@
+// Creates v2 master-password factors using the shared client-side derivation.
+// Owns new-password validation and creation through the existing factor API.
+// Does not upgrade or remove existing v1 factors.
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import toast from "react-hot-toast";
-import crypto from "crypto";
-import { ec as EC } from "elliptic";
+import {
+  createMasterPasswordNonce, deriveMasterPasswordFactor,
+  isValidNewMasterPassword, MASTER_PASSWORD_REQUIREMENTS,
+} from "@/common/factor/masterPasswordFactor";
 import { useApolloClient, useMutation } from "@apollo/client/react";
 import CREATE_FACTOR from "../../../../graphql/ops/auth/mutations/CREATE_FACTOR";
 import { useSession } from "../../../../contexts/SessionContext";
 import continuousFactorIn from "./continuousFactorIn";
 import SimpleButton from "@/components/common/SimpleButton";
 
-const ec = new EC("secp256k1");
-
 export default function AddMasterPassword({ continuous }) {
   const { session } = useSession();
   const [isMigrating, setIsMigrating] = useState(false);
   const [name, setName] = useState("Master password");
   const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submitting = useRef(false);
   const client = useApolloClient();
 
   const [createFactor, { loading }] = useMutation(CREATE_FACTOR, {
@@ -49,27 +54,31 @@ export default function AddMasterPassword({ continuous }) {
         className="border p-2 rounded-sm bg-white dark:bg-neutral-800"
         placeholder="Enter Master Password"
         value={password}
+        disabled={isSubmitting || isMigrating || loading}
         onChange={(e) => {
           setPassword(e.target.value);
         }}
       />
+      <p className="text-sm">{MASTER_PASSWORD_REQUIREMENTS}</p>
       <SimpleButton
         className="flex items-center justify-center gap-2"
+        disabled={isSubmitting || isMigrating || loading}
         // data-cy="meta-password-submit-button"
         onClick={async () => {
-          if (isMigrating || loading) return;
+          if (submitting.current || isMigrating || loading) return;
           if (name.length < 1) {
             toast.error("You must enter a name for this factor");
             return;
           }
-          if (password && password.length > 3) {
-            const nonce = Math.floor(Math.random() * 1000000).toString();
-            let secret = crypto
-              .createHash("sha256")
-              .update(`${password}:${nonce}`)
-              .digest("hex");
-            const keyPair = ec.keyFromPrivate(secret);
-            const publicKey = keyPair.getPublic("hex");
+          if (!isValidNewMasterPassword(password)) {
+            toast.error(MASTER_PASSWORD_REQUIREMENTS);
+            return;
+          }
+          submitting.current = true;
+          setIsSubmitting(true);
+          try {
+            const nonce = createMasterPasswordNonce();
+            const { publicKey } = await deriveMasterPasswordFactor(password, nonce);
 
             await createFactor({
               variables: {
@@ -79,12 +88,15 @@ export default function AddMasterPassword({ continuous }) {
                 nonce,
               },
             });
-          } else {
-            toast.error("Password must be at least 4 characters");
+          } catch {
+            toast.error("Unable to add your master password. Please update Cipherwill and try again.");
+          } finally {
+            submitting.current = false;
+            setIsSubmitting(false);
           }
         }}
       >
-        {(loading || isMigrating) && (
+        {(isSubmitting || loading || isMigrating) && (
           <div className="w-4 h-4 border-2 border-dashed rounded-full animate-spin mr-2" />
         )}
         Add
