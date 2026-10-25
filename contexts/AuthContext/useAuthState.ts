@@ -20,7 +20,7 @@ export function useAuthState() {
       if (!active) return;
       unsubscribe = authApp.onIdTokenChanged(async (currentUser) => {
         if (currentUser && currentUser.email) {
-          setUser({ uid: currentUser.uid, email: currentUser.email });
+          setUser({ uid: currentUser.uid, email: currentUser.email, emailVerified: currentUser.emailVerified });
         } else {
           setUser(null);
         }

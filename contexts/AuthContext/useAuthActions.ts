@@ -1,6 +1,9 @@
 // Provides authentication actions and tracks successful authentication outcomes.
 // Owns Firebase calls, backend email requests, loading state, and conversion callbacks.
 // Does not initialize profiles or choose post-login destinations.
+// Provides login actions and authentication token refresh.
+// Reloads current verification state when a fresh token is requested.
+// Does not authorize executor data or create application accounts.
 "use client";
 
 import { useCallback, useMemo } from "react";
@@ -117,6 +120,7 @@ export function createAuthActions({
     },
     getIdToken: async (force = false) => {
       if (!authApp || !authApp.currentUser) return;
+      if (force) await authApp.currentUser.reload();
       return await getIdToken(authApp.currentUser, force);
     },
   };

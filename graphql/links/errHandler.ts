@@ -1,3 +1,6 @@
+// Handles GraphQL feedback and redirects requests that require email verification.
+// Owns the shared error response for pending invitations and executor access.
+// Does not change authentication or grant permissions.
 import { ErrorLink } from "@apollo/client/link/error";
 import { CombinedGraphQLErrors } from "@apollo/client/errors";
 import logger from "../../common/debug/logger";
@@ -15,6 +18,10 @@ const ErrorsToHide = [
 
 const errHandler = new ErrorLink(({ error, operation, forward }) => {
   if (CombinedGraphQLErrors.is(error)) {
+    if (typeof window !== "undefined" && window.location.pathname !== "/auth/verify-email"
+      && error.errors.some(item => item.extensions?.code === "EMAIL_NOT_VERIFIED")) {
+      window.location.replace("/auth/verify-email?redirect=" + encodeURIComponent(window.location.pathname));
+    }
     if (error.errors.length > 0) {
       error.errors.forEach((gqlError) => {
         if (

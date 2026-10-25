@@ -1,3 +1,6 @@
+// Sends email verification and confirms completion before continuing.
+// Preserves the requested executor destination after verification.
+// Does not grant backend access or claim beneficiary identities.
 "use client";
 import { useEffect, useState } from "react";
 import { IoMailOutline } from "react-icons/io5";
@@ -8,7 +11,6 @@ import { RedirectType, redirect } from "next/navigation";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
 import ME from "../../../graphql/ops/auth/queries/ME";
 import SEND_EMAIL_VERIFICATION from "../../../graphql/ops/auth/mutations/SEND_EMAIL_VERIFICATION";
-import { sleep } from "../../../common/time/sleep";
 import Link from "next/link";
 import type { MeQuery } from "@/types/interfaces/metamodel";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
@@ -28,12 +30,14 @@ export default function VerifyEmail() {
   // Handle user data when loaded
   useEffect(() => {
     if (userData?.me?.email_verified) {
-      window.location.href = "/app";
+      const destination = new URLSearchParams(window.location.search).get("redirect");
+      window.location.href = destination === "/executor" || destination?.startsWith("/executor/")
+        ? destination : "/app";
     }
   }, [userData]);
 
   useEffect(() => {
-    if (user) {
+    if (user?.emailVerified) {
       fetchUser();
     }
   }, [user, fetchUser]);
@@ -143,11 +147,17 @@ export default function VerifyEmail() {
                   onClick={async () => {
                     if (validatingEmail) return;
                     setValidatingEmail(true);
+                    setError(null);
                     toast.success("Checking verification status...");
-                    await getIdToken(true);
-                    await sleep(1000);
-                    await fetchUser();
-                    setValidatingEmail(false);
+                    try {
+                      await getIdToken(true);
+                      const result = await fetchUser();
+                      if (!result.data?.me?.email_verified) setError("Your email isn't verified yet. Open the link in your inbox, then try again.");
+                    } catch (cause) {
+                      setError(cause instanceof Error ? cause.message : "Unable to check verification. Please try again.");
+                    } finally {
+                      setValidatingEmail(false);
+                    }
                   }}
                 >
                   {validatingEmail ? "Checking status..." : "I have verified my email"}

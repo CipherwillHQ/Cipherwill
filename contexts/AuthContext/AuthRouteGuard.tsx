@@ -1,3 +1,6 @@
+// Guards private routes and requires email verification for executor pages.
+// Owns redirects before executor providers and content mount.
+// Does not replace backend authorization.
 "use client";
 
 import { ReactNode, useEffect } from "react";
@@ -18,16 +21,21 @@ export function AuthRouteGuard({
   children?: ReactNode;
 }) {
   const router = useRouter();
+  const needsExecutorVerification = (pathname === "/executor" || pathname?.startsWith("/executor/"))
+    && user?.emailVerified !== true;
 
   useEffect(() => {
     if (isPrivateRoute && !isLoading && !user) {
       router.replace("/auth?redirect=" + pathname);
+    } else if (isPrivateRoute && !isLoading && user && needsExecutorVerification) {
+      router.replace("/auth/verify-email?redirect=" + encodeURIComponent(pathname || "/executor"));
     }
-  }, [isLoading, isPrivateRoute, pathname, router, user]);
+  }, [isLoading, isPrivateRoute, pathname, router, user, needsExecutorVerification]);
 
   if (!isPrivateRoute) return <>{children}</>;
   if (isLoading) return null;
   if (!user) return null;
+  if (needsExecutorVerification) return null;
 
   return <>{children}</>;
 }

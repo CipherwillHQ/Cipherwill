@@ -1,5 +1,5 @@
 // What it does: Verifies signup conversion against actual authentication outcomes.
-// What it owns: New versus returning users, fallback signup, and conversion failures.
+// What it owns: Signup outcomes, conversion failures, and verification token refresh.
 // What it does NOT do: Open a browser or call Firebase, PostHog, or Google services.
 
 import assert from "node:assert/strict";
@@ -18,6 +18,9 @@ const createAccount = mock.fn(async () => credential);
 const handleError = mock.fn((error: unknown) => ({ error }));
 const firebasePasswordReset = mock.fn();
 const signOut = mock.fn();
+const refreshCalls: string[] = [];
+const providerUser = { reload: async () => { refreshCalls.push("reload"); } };
+const providerGetIdToken = mock.fn(async () => { refreshCalls.push("token"); return "fresh-token"; });
 const conversionError = new Error("Analytics unavailable");
 Object.defineProperty(globalThis, "window", {
   configurable: true, value: { GoogleConverted: googleConversion },
@@ -39,9 +42,9 @@ mock.module(pathToFileURL(require.resolve("firebase/auth")), { namedExports: {
   getAdditionalUserInfo: () => ({ isNewUser }),
   sendEmailVerification: mock.fn(),
   sendPasswordResetEmail: firebasePasswordReset,
-  getIdToken: mock.fn(),
+  getIdToken: providerGetIdToken,
 } });
-mock.module("./firebase.ts", { namedExports: { authApp: { signOut } } });
+mock.module("./firebase.ts", { namedExports: { authApp: { signOut, currentUser: providerUser } } });
 mock.module("./errors.ts", { namedExports: { handle_firebase_error: handleError } });
 mock.module(pathToFileURL(require.resolve("posthog-js/react")), { namedExports: {
   usePostHog: () => ({ capture, reset: mock.fn() }),
@@ -56,6 +59,8 @@ beforeEach(() => {
   createAccount.mock.resetCalls();
   handleError.mock.resetCalls();
   signOut.mock.resetCalls();
+  refreshCalls.length = 0;
+  providerGetIdToken.mock.resetCalls();
 });
 
 test("a new email registration records one signup and retains its credential", async () => {
@@ -64,6 +69,14 @@ test("a new email registration records one signup and retains its credential", a
   assert.equal(await actions.createUserWithEmailAndPassword("test@example.com", "password"), credential);
   assert.deepEqual(capture.mock.calls.map(call => call.arguments[0]), ["signup"]);
   assert.equal(googleConversion.mock.callCount(), 1);
+});
+
+test("forced token refresh reloads verification before requesting a new token", async () => {
+  const { createAuthActions } = await import("./useAuthActions");
+  const actions = createAuthActions({ setIsGoogleLoading, loginConversion: async () => {} });
+  assert.equal(await actions.getIdToken(true), "fresh-token");
+  assert.deepEqual(refreshCalls, ["reload", "token"]);
+  assert.deepEqual(providerGetIdToken.mock.calls[0].arguments, [providerUser, true]);
 });
 
 test("Google signup is counted once; a later login for the same account is not", async () => {
