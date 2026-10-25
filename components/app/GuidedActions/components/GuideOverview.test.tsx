@@ -1,17 +1,19 @@
 // Verifies compact overview rendering, including loading and failed account states.
 // Owns metric navigation links and setup controls without extra page chrome.
 // Does not open a browser or run guided save commands.
-import test, { mock } from "node:test";
+import test, { beforeEach, mock } from "node:test";
 import assert from "node:assert/strict";
 import { renderToStaticMarkup } from "react-dom/server";
-import type { GuidanceOverviewProps } from "@/types/interfaces";
+import type { AccessDetails, GuidanceOverviewProps } from "@/types/interfaces";
 import { buildGuidanceOverview } from "../core/accountOverview";
 mock.module("./DataRecordsBreakdown.module.css", { defaultExport: { panel: "panel" } });
+let shared: AccessDetails[] = [], granted: AccessDetails[] = [];
 mock.module("../hooks/useGuidanceAccess.ts", { defaultExport: () => ({
-  shared: { data: { getAllBeneficiaryAccess: [] }, loading: false },
-  granted: { data: { getAllGrantedBeneficiaries: [] }, loading: false },
+  shared: { data: { getAllBeneficiaryAccess: shared }, loading: false },
+  granted: { data: { getAllGrantedBeneficiaries: granted }, loading: false },
   onRevoke: async () => {}, revokingId: null, revokeError: null,
 }) });
+beforeEach(() => { shared = []; granted = []; });
 
 const props: GuidanceOverviewProps = {
   overview: buildGuidanceOverview({ getUserScore: '{"base":300,"firstName":100}',
@@ -53,6 +55,23 @@ test("opening slide links three metrics and opens data records through a menu bu
   assert.doesNotMatch(html, /<script>|<header|<footer|rounded-2xl|rounded-3xl|text-2xl|grid-cols|Go at your own pace/);
 });
 
+test("available access controls come before the regular status metrics", async () => {
+  const { default: Overview } = await import("./GuideOverview");
+  const access: AccessDetails = { id: "access-1", user: "person-1", beneficiary_id: "relation-1",
+    created_at: "1", expire_at: String(Date.UTC(2099, 0, 1)) };
+  for (const permissions of [[[access], [access]], [[access], []], [[], [access]]]) {
+    [shared, granted] = permissions;
+    const html = renderToStaticMarkup(<Overview {...props} />);
+    const nav = html.match(/<nav[^>]*aria-label="Account status"[^>]*>[\s\S]*?<\/nav>/)?.[0];
+    assert.ok(nav);
+    for (const label of [shared.length ? "Shared wills" : "", granted.length ? "Granted access" : ""].filter(Boolean)) {
+      assert.ok(nav.indexOf(label) < nav.indexOf("Score"));
+    }
+    if (shared.length && granted.length) assert.ok(nav.indexOf("Shared wills") < nav.indexOf("Granted access"));
+    assert.match(nav, /Score[\s\S]*Data records[\s\S]*Beneficiaries[\s\S]*Security factors/);
+  }
+});
+
 test("factor sync status remains a link to the existing factors page in both states", async () => {
   const { default: Overview } = await import("./GuideOverview");
   for (const factorsInSync of [true, false]) {
@@ -62,6 +81,17 @@ test("factor sync status remains a link to the existing factors page in both sta
     assert.match(factorLink, /Security factors/);
     assert.match(factorLink, factorsInSync ? /In sync/ : /Needs sync/);
     assert.doesNotMatch(factorLink, /<button|aria-expanded|aria-haspopup/);
+  }
+});
+
+test("zero security factors keep the count and link without a sync status", async () => {
+  const { default: Overview } = await import("./GuideOverview");
+  for (const factorsInSync of [true, false]) {
+    const html = renderToStaticMarkup(<Overview {...props} overview={{ ...props.overview!, factorCount: 0, factorsInSync }} />);
+    const factorLink = html.match(/<a[^>]*href="\/app\/factors"[^>]*>[\s\S]*?<\/a>/)?.[0];
+    assert.ok(factorLink);
+    assert.match(factorLink, /Security factors[\s\S]*>0<\/span>/);
+    assert.doesNotMatch(factorLink, /In sync|Needs sync|<svg/);
   }
 });
 

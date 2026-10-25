@@ -33,6 +33,7 @@ async function renderMetric() {
 test("click expands the pill inline and clicking it again collapses it", async () => {
   const initial = await renderMetric();
   assert.doesNotMatch(renderToStaticMarkup(initial), /Data breakdown|See all segments/);
+  assert.doesNotMatch(renderToStaticMarkup(initial), /data-priority="critical"|Important:|text-error|dark:text-red-300/);
   initial.props.children[1].props.onClick();
   const opened = await renderMetric();
   assert.equal(opened.props.layout, true);

@@ -12,9 +12,9 @@ export default function FactorSyncMetric({ factorCount, factorsInSync }:
   return <Link href="/app/factors" className={OVERVIEW_PILL_CLASS}>
     <span className="text-black/60 dark:text-white/60">Security factors</span>
     <span className="font-medium tabular-nums">{factorCount.toLocaleString()}</span>
-    <span className="inline-flex items-center gap-1 text-black/60 dark:text-white/60">
+    {factorCount > 0 && <span className="inline-flex items-center gap-1 text-black/60 dark:text-white/60">
       <StatusIcon aria-hidden="true" className={factorsInSync ? "text-sage" : "text-warning"} size={14} />
       {factorsInSync ? "In sync" : "Needs sync"}
-    </span>
+    </span>}
   </Link>;
 }

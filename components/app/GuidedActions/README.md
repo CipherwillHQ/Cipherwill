@@ -10,9 +10,11 @@ data-record counts, and beneficiary/factor counts.
 The opening slide uses the same centered heading, text, and button styles as objective slides, with
 small wrapping pills linking Score to `/app/score`, Data records to `/app/segments`, Beneficiaries to
 `/app/beneficiaries`, and Security factors to `/app/factors`. There is no category pill, page top bar, or footer tagline.
-The Security factors pill shows **In sync** or **Needs sync** using the dashboard's key-count comparison;
-clicking it opens the existing factors page for migration, factor management, and unencrypted-key cleanup.
+The Security factors pill shows **In sync** or **Needs sync** using the dashboard's key-count comparison when factors exist.
+Zero factors show only the label and count, with no sync text or icon.
+Clicking it opens the existing factors page for migration, factor management, and unencrypted-key cleanup.
 **Shared wills** and **Granted access** pills appear only when their respective permission lists have records.
+They appear before the regular metrics, with an alert icon and red-accented surface in both themes to signal their importance.
 They expand inline like Data records; only one of these three pills can be expanded at a time.
 Shared wills show names, deadlines, and links into `/executor/[access_id]`; ended periods remain visible without an active link.
 Granted access shows names, deadlines, and a confirmed Revoke action. Successful revocation refreshes the list and count,

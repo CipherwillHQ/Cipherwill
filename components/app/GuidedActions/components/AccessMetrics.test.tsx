@@ -49,6 +49,22 @@ test("each direction appears only when it has permissions", async () => {
   assert.match(renderToStaticMarkup(<Metrics {...props} />), /Shared wills \(1\)[\s\S]*Granted access \(1\)/);
   assert.equal(people.mock.callCount(), 0);
 });
+test("both access pills communicate importance when collapsed or expanded", async () => {
+  const { default: Metrics } = await import("./AccessMetrics");
+  for (const kind of ["shared", "granted"] as const) {
+    shared = kind === "shared" ? [access] : []; granted = kind === "granted" ? [access] : [];
+    for (const expanded of [null, kind]) {
+      const html = renderToStaticMarkup(<Metrics {...props} expanded={expanded} />);
+      const trigger = html.match(/<button[^>]*aria-expanded[^>]*>[\s\S]*?<\/button>/)?.[0];
+      assert.ok(trigger);
+      assert.match(html, /data-priority="critical"/);
+      assert.match(trigger, /aria-label="Important: (Shared wills|Granted access) \(1\)"/);
+      assert.match(trigger, /text-error dark:text-red-300/);
+      assert.equal((trigger.match(/<svg /g) ?? []).length, 2);
+    }
+  }
+});
+
 test("opening shared wills batches names and links by access ID", async () => {
   const { default: Metrics } = await import("./AccessMetrics");
   shared = [access, { ...access, id: "access-2", user: "person-2" }];

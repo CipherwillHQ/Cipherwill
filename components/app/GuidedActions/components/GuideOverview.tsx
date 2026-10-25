@@ -30,11 +30,11 @@ export default function GuideOverview(props: GuidanceOverviewProps) {
           {" "}Continue your setup, one step at a time.
         </motion.p>
         <motion.nav layout="position" aria-label="Account status" className="flex max-w-2xl flex-wrap justify-center gap-2 items-end">
+          <AccessMetrics expanded={expanded} onExpand={onExpand} />
           <motion.div layout="position"><OverviewMetric count={overview.score} label="Score" suffix="/ 950" href="/app/score" /></motion.div>
           <DataRecordsMetric count={overview.itemCount} typeCounts={overview.typeCounts} expanded={expanded} onExpand={onExpand} />
           <motion.div layout="position"><OverviewMetric count={overview.beneficiaryCount} label="Beneficiaries" href="/app/beneficiaries" /></motion.div>
           <motion.div layout="position"><FactorSyncMetric factorCount={overview.factorCount} factorsInSync={overview.factorsInSync} /></motion.div>
-          <AccessMetrics expanded={expanded} onExpand={onExpand} />
           {props.deferred.length > 0 && <motion.div layout="position"><DeferredGuidance deferred={props.deferred} onResume={props.onResume} loading={setupLoading} /></motion.div>}
         </motion.nav>
         {!overview.emailVerified && <motion.div layout="position" className="w-full max-w-2xl"><BannerArea>

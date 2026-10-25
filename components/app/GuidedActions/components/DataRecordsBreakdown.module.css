@@ -1,8 +1,10 @@
 /* Styles the pill as it expands within the account-status layout.
-   Owns the shared surface and a light shadow on the expanded state.
+   Owns shared surfaces, access-priority accents, and expanded-state shadows.
    Does not position a popup or animate neighboring controls. */
 .panel { transition: background-color 180ms ease, box-shadow 280ms ease; }
 .panel[data-expanded="true"] { background: #f8f8f6; box-shadow: 0 4px 14px rgb(0 0 0 / 8%); }
 :global(.dark) .panel[data-expanded="true"] { background: #1f1f1e; box-shadow: 0 4px 14px rgb(0 0 0 / 18%); }
+.panel[data-priority="critical"] { border-color: rgb(192 57 43 / 40%); background: #fff2ef; }
+:global(.dark) .panel[data-priority="critical"] { border-color: rgb(252 165 165 / 45%); background: #342220; }
 :global(html.cw-reduced-motion) .panel { transform: none !important; }
 @media (prefers-reduced-motion: reduce) { .panel { transition: none; } }
