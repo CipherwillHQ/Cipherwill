@@ -1,23 +1,25 @@
 // Verifies compact overview rendering, including loading and failed account states.
 // Owns metric navigation links and setup controls without extra page chrome.
 // Does not open a browser or run guided save commands.
-import test from "node:test";
+import test, { mock } from "node:test";
 import assert from "node:assert/strict";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { GuidanceOverviewProps } from "@/types/interfaces";
 import { buildGuidanceOverview } from "../core/accountOverview";
+mock.module("./DataRecordsBreakdown.module.css", { defaultExport: { panel: "panel" } });
 
 const props: GuidanceOverviewProps = {
   overview: buildGuidanceOverview({ getUserScore: '{"base":300,"firstName":100}',
-    me: { first_name: "Asha <script>"},
+    me: { first_name: "Asha <script>", email_verified: true },
     getMetamodelTypeCounts: [{ type: "NOTE", count: 3 }], getSmartWillBeneficiaries: [{ id: "person-1" }],
     getFactors: [{ id: "factor-1" }, { id: "factor-2" }], }),
   loading: false, error: false, onRetry: () => {}, onStart: () => {},
+  onVerifyEmail: () => {},
   setupLoading: false, setupAvailable: true, setupError: false,
   deferred: [], onResume: () => {},
 };
 
-test("opening slide links four metric pills to their pages and omits data categories", async () => {
+test("opening slide links three metrics and opens data records through a menu button", async () => {
   const { default: Overview } = await import("./GuideOverview");
   const html = renderToStaticMarkup(<Overview {...props} />);
   assert.match(html, />400<\/span>/);
@@ -26,20 +28,42 @@ test("opening slide links four metric pills to their pages and omits data catego
   assert.match(html, /Data records/);
   assert.match(html, /Beneficiaries/);
   assert.match(html, /Security factors/);
-  for (const [href, label] of [["/app/score", "Score"], ["/app/segments", "Data records"],
+  for (const [href, label] of [["/app/score", "Score"],
     ["/app/beneficiaries", "Beneficiaries"], ["/app/factors", "Security factors"]]) {
     assert.match(html, new RegExp(`<a[^>]*href="${href}"[^>]*><span[^>]*>${label}</span>`));
   }
   assert.match(html, /Your Cipherwill Status/);
   assert.doesNotMatch(html, /Data categor|Your Cipherwill overview|Storage used|2.0 KB|Profile details/);
-  assert.equal((html.match(/<a /g) ?? []).length, 4);
+  assert.equal((html.match(/<a /g) ?? []).length, 3);
+  assert.match(html, /<button[^>]*aria-label="Data records \(3\)"[^>]*aria-controls="[^"]+"[^>]*aria-expanded="false"/);
+  assert.doesNotMatch(html, /Data breakdown|See all segments/);
   assert.equal((html.match(/rounded-full/g) ?? []).length, 4);
   assert.match(html, /flex max-w-2xl flex-wrap justify-center gap-2/);
   assert.match(html, /text-3xl md:text-5xl font-semibold leading-tight/);
   assert.match(html, /items-center justify-center text-center/);
   assert.match(html, /Continue Cipherwill Setup/);
   assert.match(html, /Asha &lt;script&gt;/);
-  assert.doesNotMatch(html, /<script>|<svg|<header|<footer|rounded-2xl|rounded-3xl|text-2xl|grid-cols|Go at your own pace/);
+  assert.doesNotMatch(html, /<script>|<header|<footer|rounded-2xl|rounded-3xl|text-2xl|grid-cols|Go at your own pace/);
+});
+
+test("unverified accounts show a verification banner above independent setup controls", async () => {
+  const { default: Overview } = await import("./GuideOverview");
+  for (const setupLoading of [false, true]) {
+    const html = renderToStaticMarkup(<Overview {...props} overview={{ ...props.overview!, emailVerified: false }}
+      setupLoading={setupLoading} setupAvailable setupError={false} />);
+    assert.match(html, />Verify your email<\/span>/);
+    assert.match(html, /<aside aria-label="Account notices"[\s\S]*Email verification needed[\s\S]*<\/aside>[\s\S]*(Continue Cipherwill Setup|Preparing setup)/);
+    assert.match(html, setupLoading ? /disabled=""[^>]*>Preparing setup/ : /Continue Cipherwill Setup/);
+    assert.doesNotMatch(html, /Continue to retry/);
+    assert.match(html, /Data records/);
+  }
+});
+
+test("verified accounts collapse the banner area while retaining setup", async () => {
+  const { default: Overview } = await import("./GuideOverview");
+  const html = renderToStaticMarkup(<Overview {...props} />);
+  assert.doesNotMatch(html, /Account notices|Email verification needed|Verify your email/);
+  assert.match(html, /Continue Cipherwill Setup/);
 });
 
 test("paused objectives remain resumable when no other setup steps are available", async () => {

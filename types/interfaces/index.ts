@@ -22,4 +22,6 @@ export * from './guidanceRegistry';
 export * from './guidanceAssets';
 export * from './guidanceOverview';
 export * from './guidanceChoices';
+export * from './emailVerification';
+export * from './bannerArea';
 

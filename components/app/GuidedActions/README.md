@@ -10,7 +10,14 @@ data-record counts, and beneficiary/factor counts.
 The opening slide uses the same centered heading, text, and button styles as objective slides, with
 small wrapping pills linking Score to `/app/score`, Data records to `/app/segments`, Beneficiaries to
 `/app/beneficiaries`, and Security factors to `/app/factors`. There is no category pill, page top bar, or footer tagline.
-The overview query returns only score/count data and the greeting first name, and runs fresh each time the overview is mounted.
+The overview query returns score/count data, the greeting first name, and email verification status, and runs fresh each time the overview is mounted.
+Unverified accounts show an email verification banner above **Continue Cipherwill Setup**. `BannerArea` stacks
+independent notice components and collapses when empty, so more banners can be added in the same space.
+Continue Setup and deferred-task Resume open objectives independently of verification. Only **Verify your email** opens
+**Send verification email**, then **I've verified it** after accepted delivery. Confirmation reloads Firebase, forces a fresh
+ID token, and reads `ME` from the network. Still-unverified accounts remain on the confirmation slide with retry feedback;
+verified accounts refresh the overview and remove the banner. Back to overview preserves the sent slide while mounted.
+Sending and checking disable verification controls.
 The guide fills the available page content area inside the shared app layout. The desktop sidebar stays
 visible and a small corner button opens the mobile app menu. This route uses the content area's full width
 and height without the reading-width restriction or extra bottom padding used by ordinary pages.

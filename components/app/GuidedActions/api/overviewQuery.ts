@@ -6,7 +6,7 @@ import { gql } from "@apollo/client";
 export const GET_GUIDANCE_OVERVIEW = gql`
   query GET_GUIDANCE_OVERVIEW {
     getUserScore
-    me { first_name }
+    me { first_name email_verified }
     getMetamodelTypeCounts { type count }
     getSmartWillBeneficiaries { id }
     getFactors { id }

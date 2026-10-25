@@ -9,8 +9,10 @@ export function buildGuidanceOverview(data: GuidanceOverviewData): GuidanceOverv
   if (values.some(value => typeof value !== "number" || !Number.isFinite(value))) throw new Error("Invalid score");
   return {
     firstName: data.me.first_name?.trim() || null,
+    emailVerified: data.me.email_verified === true,
     score: (values as number[]).reduce((total, value) => total + value, 0),
     itemCount: data.getMetamodelTypeCounts.reduce((total, item) => total + item.count, 0),
+    typeCounts: data.getMetamodelTypeCounts,
     beneficiaryCount: data.getSmartWillBeneficiaries.length, factorCount: data.getFactors.length,
   };
 }
