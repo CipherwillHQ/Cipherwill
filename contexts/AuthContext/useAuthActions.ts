@@ -19,6 +19,7 @@ import trackSignupConversion from "@/common/analytics/trackSignupConversion";
 import { authApp } from "./firebase";
 import { handle_firebase_error } from "./errors";
 import requestPasswordReset from "@/common/auth/requestPasswordReset";
+import { requestMobileAuth } from "@/common/auth/mobileAuthBridge";
 
 type LoginConversionFn = (method: string) => Promise<void>;
 
@@ -112,6 +113,7 @@ export function createAuthActions({
     logout: async () => {
       onLogout?.();
       await authApp?.signOut();
+      await requestMobileAuth("logout");
     },
     getIdToken: async (force = false) => {
       if (!authApp || !authApp.currentUser) return;

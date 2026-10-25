@@ -1,3 +1,6 @@
+// Initializes Firebase authentication for browsers and the native WebView.
+// Owns the Firebase project configuration.
+// Does not render authentication screens or pass tokens through URLs.
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 

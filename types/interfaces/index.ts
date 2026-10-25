@@ -4,6 +4,7 @@
 export * from './graphql';
 export * from './backup';
 export * from './authEmail';
+export * from './mobileAuth';
 export * from './upgrade';
 export * from './people';
 export * from './app';

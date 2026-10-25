@@ -6,6 +6,7 @@ import assert from "node:assert/strict";
 import { beforeEach, mock, test } from "node:test";
 import { pathToFileURL } from "node:url";
 import type { UserCredential } from "firebase/auth";
+import type { MobileAuthWindow } from "@/types/interfaces";
 
 const credential = { user: { uid: "firebase_user", email: "test@example.com" } } as UserCredential;
 let isNewUser = true;
@@ -16,6 +17,7 @@ const setIsGoogleLoading = mock.fn();
 const createAccount = mock.fn(async () => credential);
 const handleError = mock.fn((error: unknown) => ({ error }));
 const firebasePasswordReset = mock.fn();
+const signOut = mock.fn();
 const conversionError = new Error("Analytics unavailable");
 Object.defineProperty(globalThis, "window", {
   configurable: true, value: { GoogleConverted: googleConversion },
@@ -39,7 +41,7 @@ mock.module(pathToFileURL(require.resolve("firebase/auth")), { namedExports: {
   sendPasswordResetEmail: firebasePasswordReset,
   getIdToken: mock.fn(),
 } });
-mock.module("./firebase.ts", { namedExports: { authApp: { signOut: mock.fn() } } });
+mock.module("./firebase.ts", { namedExports: { authApp: { signOut } } });
 mock.module("./errors.ts", { namedExports: { handle_firebase_error: handleError } });
 mock.module(pathToFileURL(require.resolve("posthog-js/react")), { namedExports: {
   usePostHog: () => ({ capture, reset: mock.fn() }),
@@ -53,6 +55,7 @@ beforeEach(() => {
   googleConversion.mock.resetCalls();
   createAccount.mock.resetCalls();
   handleError.mock.resetCalls();
+  signOut.mock.resetCalls();
 });
 
 test("a new email registration records one signup and retains its credential", async () => {
@@ -145,5 +148,25 @@ test("password-reset actions use the backend and preserve skipped outcomes", asy
     assert.equal(firebasePasswordReset.mock.callCount(), 0);
   } finally {
     fetch.mock.restore();
+  }
+});
+
+test("logout clears Firebase and asks the native wrapper to sign out", async () => {
+  const target = window as MobileAuthWindow;
+  const messages: string[] = [];
+  target.CipherwillAuth = { postMessage(message) {
+    const request = JSON.parse(message);
+    messages.push(request.type);
+    target.CipherwillAuthResponse?.(request.id, null);
+  } };
+  try {
+    const { createAuthActions } = await import("./useAuthActions");
+    const actions = createAuthActions({ setIsGoogleLoading, loginConversion: async () => {} });
+    await actions.logout();
+    assert.equal(signOut.mock.callCount(), 1);
+    assert.deepEqual(messages, ["logout"]);
+  } finally {
+    delete target.CipherwillAuth;
+    delete target.CipherwillAuthResponse;
   }
 });
