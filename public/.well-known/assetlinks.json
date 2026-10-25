@@ -1,0 +1,16 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.cipherwill.app",
+      "sha256_cert_fingerprints": [
+        "0E:B5:0E:F2:44:3C:9C:5B:C6:82:E8:24:5F:F0:0B:F9:82:10:81:00:93:B6:22:30:78:BE:AD:D2:BC:93:EF:A0",
+        "10:86:FF:34:C1:76:46:DC:73:22:31:04:4D:B5:BD:18:DE:75:78:1B:19:72:7F:98:CD:03:46:6A:CA:9E:31:20"
+      ]
+    }
+  }
+]

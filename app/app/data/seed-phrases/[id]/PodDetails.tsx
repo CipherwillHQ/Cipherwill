@@ -1,5 +1,9 @@
 // Seed Phrases PodDetails: form fields for seed phrase / recovery phrase data.
+// Displays a seed phrase and provides copy/edit controls.
+// Owns copying through the native clipboard or browser clipboard.
+// Does not retain clipboard history or create encryption keys.
 "use client";
+import { copyText } from "@/common/mobile/copyText";
 import { useState } from "react";
 import {
   SEED_PHRASE_TYPE,
@@ -66,9 +70,13 @@ export default function PodDetails({ id }) {
               Remove all words
             </SimpleButton>
             <SimpleButton
-              onClick={() => {
-                navigator.clipboard.writeText((data.phrase ?? []).join(" "));
-                toast.success("Seed phrase copied to clipboard");
+              onClick={async () => {
+                try {
+                  await copyText((data.phrase ?? []).join(" "));
+                  toast.success("Seed phrase copied to clipboard");
+                } catch {
+                  toast.error("Unable to copy. Please try again.");
+                }
               }}
             >
               Copy Seed Phrase

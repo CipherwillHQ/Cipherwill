@@ -1,3 +1,6 @@
+// Edits and autosaves notes in the web client.
+// Owns pending saves and the native-background save handoff.
+// Does not persist decrypted drafts in native storage.
 "use client";
 /**
  * app/app/data/notes/[id]/PodDetails.tsx
@@ -11,7 +14,10 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Placeholder from "@tiptap/extension-placeholder";
+import NoteEditorStyles from "./NoteEditorStyles";
+import NoteLoading from "./NoteLoading";
 import sanitizeHtml from "@/common/security/sanitizeHtml";
+import { useMobileNoteBackgroundSave } from "@/common/mobile/useMobileNoteBackgroundSave";
 
 const NOTE_SAMPLE: NOTE_TYPE = {
   content: "Sample Note",
@@ -113,6 +119,7 @@ export default function PodDetails({
     [id, savePod, setSaveStatus],
   );
 
+  useMobileNoteBackgroundSave(newValue, initialValue, saveContent);
   // Sync refs with state values for the unmount hook
   useEffect(() => {
     latestNewValueRef.current = newValue;
@@ -157,34 +164,7 @@ export default function PodDetails({
     };
   }, [saveContent]);
 
-  if (loading) {
-    return (
-      <div className="w-full h-full flex flex-col p-6 sm:p-8 animate-pulse space-y-6 bg-secondary">
-        {/* Skeletal Header */}
-        <div className="h-8 bg-neutral-200 dark:bg-neutral-800 rounded-md w-1/3" />
-        
-        {/* Skeletal Body Lines */}
-        <div className="space-y-3 pt-4">
-          <div className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded-md w-3/4" />
-          <div className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded-md w-5/6" />
-          <div className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded-md w-2/3" />
-          <div className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded-md w-1/2" />
-        </div>
-        
-        <div className="space-y-3 pt-6">
-          <div className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded-md w-5/6" />
-          <div className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded-md w-4/5" />
-          <div className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded-md w-3/4" />
-        </div>
-
-        {/* Center engaging indicator */}
-        <div className="flex-1 flex flex-col items-center justify-center pt-10">
-          <div className="w-10 h-10 border-2 border-primary-100 border-t-primary rounded-full animate-spin mb-3" />
-          <p className="text-xs text-neutral-400 font-semibold tracking-wide uppercase">loading note...</p>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <NoteLoading />;
 
   if (error) {
     return (
@@ -196,74 +176,7 @@ export default function PodDetails({
 
   return (
     <div className="w-full h-full flex flex-col">
-      <style>{`
-        .ProseMirror:focus {
-          outline: none;
-        }
-        .ProseMirror {
-          min-height: calc(100vh - 160px);
-          font-family: var(--font-gilroy), sans-serif;
-          font-size: 1rem;
-        }
-        .ProseMirror p {
-          margin-bottom: 0.5rem;
-        }
-        .ProseMirror h1 {
-          font-size: 1.875rem;
-          font-weight: 700;
-          margin-top: 2rem;
-          margin-bottom: 0.75rem;
-        }
-        .ProseMirror h2 {
-          font-size: 1.5rem;
-          font-weight: 600;
-          margin-top: 1.75rem;
-          margin-bottom: 0.75rem;
-        }
-        .ProseMirror h3 {
-          font-size: 1.25rem;
-          font-weight: 600;
-          margin-top: 1.5rem;
-          margin-bottom: 0.5rem;
-        }
-        .ProseMirror ul {
-          list-style-type: disc;
-          padding-left: 1.5rem;
-          margin-bottom: 1rem;
-        }
-        .ProseMirror ol {
-          list-style-type: decimal;
-          padding-left: 1.5rem;
-          margin-bottom: 1rem;
-        }
-        .ProseMirror li {
-          margin-bottom: 0.25rem;
-        }
-        .ProseMirror strong {
-          font-weight: 700;
-        }
-        .ProseMirror em {
-          font-style: italic;
-        }
-        .ProseMirror blockquote {
-          border-left: 4px solid #003ecb;
-          padding-left: 1rem;
-          font-style: italic;
-          margin-bottom: 1rem;
-          color: #6b7280;
-        }
-        .ProseMirror pre {
-          background-color: #f3f4f6;
-          padding: 1rem;
-          border-radius: 0.375rem;
-          font-family: monospace;
-          margin-bottom: 1rem;
-          overflow-x: auto;
-        }
-        .dark .ProseMirror pre {
-          background-color: #111827;
-        }
-      `}</style>
+      <NoteEditorStyles />
       <div className="w-full flex-1 flex flex-col p-4 sm:p-6 md:p-8">
         <EditorContent
           editor={editor}

@@ -1,3 +1,6 @@
+// Unlocks an existing vault factor through the browser WebAuthn API.
+// Owns passkey key derivation and mobile-only failure guidance.
+// Does not create credentials or transfer encryption keys to native code.
 "use client";
 import { ec as EC } from "elliptic";
 import SimpleButton from "@/components/common/SimpleButton";
@@ -7,6 +10,7 @@ import toast from "react-hot-toast";
 import logger from "@/common/debug/logger";
 import extractDomainName from "@/common/string/extractDomainName";
 import mergeUint8Arrays from "@/common/string/mergeUint8Arrays";
+import { getMobileAuthBridge } from "@/common/auth/mobileAuthBridge";
 
 const ec = new EC("secp256k1");
 
@@ -70,6 +74,9 @@ export default function Passkey({
                   } else {
                     toast.error("Invalid Passkey");
                   }
+                }).catch((error) => {
+                  if (!getMobileAuthBridge()) throw error;
+                  toast.error("Unable to use this passkey on your device. Try another factor or sign in on desktop.");
                 });
             } else {
               toast.error("Browser does not support Passkey authentication");

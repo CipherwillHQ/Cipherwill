@@ -1,3 +1,6 @@
+// Displays billing details, upgrade controls and invoices.
+// Owns the subscription and invoice tabs for browser and mobile clients.
+// Does not process payments or generate invoice files.
 "use client";
 import { useState } from "react";
 import ActiveSubscription from "./ActiveSubscription";

@@ -1,3 +1,6 @@
+// Displays a note and tracks pending saves for browser and native navigation.
+// Owns the note route and unsaved-edit status.
+// Does not persist plaintext drafts or perform encryption.
 "use client";
 /**
  * app/app/data/notes/[id]/page.tsx
@@ -10,12 +13,14 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import DataHeader from "@/components/app/data/DataHeader";
 import NotesLayout from "../NotesLayout";
+import { useMobileUnsavedChanges } from "@/common/mobile/useMobileUnsavedChanges";
 
 export default function NoteViewer() {
   const params = useParams();
   const [saveStatus, setSaveStatus] = useState<
     "SAVED" | "NOT_SAVED" | "ERROR" | "LOADING"
   >("SAVED");
+  useMobileUnsavedChanges(saveStatus !== "SAVED");
 
   const id = params?.id as string;
 

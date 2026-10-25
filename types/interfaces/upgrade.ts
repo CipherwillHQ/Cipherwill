@@ -14,6 +14,10 @@ export interface UpgradeScreenProps {
   userId: string;
 }
 
+export interface SubscriptionUpgradeProps {
+  onUpgrade: () => void;
+}
+
 export interface UpgradeWebViewMessage {
   type: "cipherwill.upgrade";
   status: "success" | "error";
