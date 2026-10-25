@@ -1,5 +1,5 @@
-// Verifies unsupported native factors cannot prevent using a supported factor.
-// Owns wallet/passkey notices and unchanged ordinary browser choices.
+// Verifies mobile factor selection uses device capabilities rather than a gate.
+// Owns wallet/password availability, passkey guidance and account reset access.
 // Does not unlock vaults or launch credential providers.
 import assert from "node:assert/strict";
 import { after, before, mock, test } from "node:test";
@@ -30,12 +30,13 @@ let Selection: typeof import("./SessionFactorSelection").default;
 before(async () => { Selection = (await import("./SessionFactorSelection")).default; });
 const methods = [{ id: "password", type: "master-password" }, { id: "wallet", type: "metamask" }, { id: "passkey", type: "passkey" }];
 function renderSelection() { return renderToStaticMarkup(<Selection user={{ email: "test@example.test" }} logout={() => {}} methods={methods} set_session_token={() => {}} />); }
-test("unsupported native wallet/passkey factors give desktop guidance while password remains usable", () => {
+test("mobile supports password, wallet and reset while explaining unavailable passkeys", () => {
   const html = renderSelection();
   assert.match(html, /Master password unlock/);
-  assert.match(html, /use your wallet factor/);
-  assert.match(html, /unlock with this passkey/);
-  assert.doesNotMatch(html, /Wallet unlock|Passkey unlock|<button>Reset factors/);
+  assert.match(html, /Wallet unlock/);
+  assert.match(html, /Reset factors/);
+  assert.match(html, /does not support passkeys/);
+  assert.doesNotMatch(html, /Passkey unlock|Please sign in on desktop/);
 });
 test("supported Android passkeys retain the web unlock action", () => {
   passkeys = true;

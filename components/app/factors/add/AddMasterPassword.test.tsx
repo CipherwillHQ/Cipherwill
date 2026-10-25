@@ -2,7 +2,7 @@
 // Owns password policy, v2 metadata, secret isolation, and submission failures.
 // Does not open a browser, contact services, or migrate existing factors.
 import assert from "node:assert/strict";
-import { before, beforeEach, mock, test } from "node:test";
+import { after, before, beforeEach, mock, test } from "node:test";
 import { pathToFileURL } from "node:url";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -12,6 +12,12 @@ let password = "Abcdef1!";
 let click: () => Promise<void>;
 const createFactor = mock.fn(async (_request: { variables: Record<string, string> }) => ({}));
 const error = mock.fn();
+const originalWindow = Object.getOwnPropertyDescriptor(globalThis, "window");
+Object.defineProperty(globalThis, "window", { configurable: true, value: { location: { reload: mock.fn() } } });
+after(() => {
+  if (originalWindow) Object.defineProperty(globalThis, "window", originalWindow);
+  else Reflect.deleteProperty(globalThis, "window");
+});
 mock.module("react", { defaultExport: React, namedExports: {
   ...React, useState: (initial: unknown) => [initial === "" ? password : initial, () => {}],
 } });
@@ -24,7 +30,7 @@ mock.module("../../../common/SimpleButton.tsx", { defaultExport: (props: { onCli
   click = props.onClick;
   return <button>{props.children}</button>;
 } });
-mock.module(pathToFileURL(require.resolve("react-hot-toast")), { defaultExport: { error } });
+mock.module(pathToFileURL(require.resolve("react-hot-toast")), { defaultExport: { error, success: mock.fn() } });
 let AddMasterPassword: typeof import("./AddMasterPassword").default;
 before(async () => { AddMasterPassword = (await import("./AddMasterPassword")).default; });
 beforeEach(() => {

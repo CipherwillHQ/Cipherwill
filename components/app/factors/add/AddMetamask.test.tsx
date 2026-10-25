@@ -15,7 +15,7 @@ const error = mock.fn();
 let click: () => Promise<void>;
 const originalWindow = Object.getOwnPropertyDescriptor(globalThis, "window");
 Object.defineProperty(globalThis, "window", { configurable: true, value: {
-  location: { href: "https://cipherwill.com/app" },
+  location: { href: "https://cipherwill.com/app", reload: mock.fn() },
 } });
 after(() => {
   if (originalWindow) Object.defineProperty(globalThis, "window", originalWindow);
@@ -38,7 +38,7 @@ mock.module("../../../common/SimpleButton.tsx", { defaultExport: (props: { onCli
   click = props.onClick;
   return <button>{props.children}</button>;
 } });
-mock.module(pathToFileURL(require.resolve("react-hot-toast")), { defaultExport: { error } });
+mock.module(pathToFileURL(require.resolve("react-hot-toast")), { defaultExport: { error, success: mock.fn() } });
 let AddMetamask: typeof import("./AddMetamask").default;
 before(async () => { AddMetamask = (await import("./AddMetamask")).default; });
 beforeEach(() => {

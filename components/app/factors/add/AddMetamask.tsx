@@ -2,7 +2,7 @@
 // Owns wallet connection and factor creation through the existing API.
 // Does not upgrade or remove existing v1 factors.
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { createMetamaskNonce, deriveMetamaskFactor, getMetamaskSigningMessage } from "@/common/factor/metamaskFactor";
 import { useApolloClient, useMutation } from "@apollo/client/react";
@@ -10,20 +10,15 @@ import CREATE_FACTOR from "../../../../graphql/ops/auth/mutations/CREATE_FACTOR"
 import { useSession } from "../../../../contexts/SessionContext";
 import continuousFactorIn from "./continuousFactorIn";
 import SimpleButton from "@/components/common/SimpleButton";
-import { MetaMaskProvider, useSDK } from "@metamask/sdk-react";
+import { useSDK } from "@metamask/sdk-react";
+import WalletProvider from "../WalletProvider";
+import { requestWallet } from "@/common/factor/walletSdk";
 
 export default function AddMetamask({ continuous }) {
   return (
-    <MetaMaskProvider
-      sdkOptions={{
-        dappMetadata: {
-          name: "Cipherwill",
-          url: window.location.href,
-        },
-      }}
-    >
+    <WalletProvider>
       <ConnectSignAndAdd continuous={continuous} />
-    </MetaMaskProvider>
+    </WalletProvider>
   );
 }
 
@@ -32,27 +27,23 @@ function ConnectSignAndAdd({ continuous }) {
   const { sdk } = useSDK();
   const { session } = useSession();
   const [isMigrating, setIsMigrating] = useState(false);
+  const [isRequesting, setIsRequesting] = useState(false);
+  const requesting = useRef(false);
   const client = useApolloClient();
 
-  const [createFactor, { loading }] = useMutation(CREATE_FACTOR, {
-    onCompleted: async (data, clientOptions) => {
-      if (continuous) {
-        setIsMigrating(true);
-        await continuousFactorIn(data, client, session);
-        setIsMigrating(false);
-      } else {
-        toast.success("You need to perform factor migration yourself");
-        window.location.reload();
-      }
-    },
-  });
+  const [createFactor, { loading }] = useMutation(CREATE_FACTOR);
   const connect = async () => {
+    if (requesting.current) return;
+    requesting.current = true;
+    setIsRequesting(true);
     try {
-      const accounts = await sdk?.connect();
+      const accounts = await requestWallet(sdk, () => sdk!.connect());
       setAccount(accounts?.[0]);
     } catch (err) {
-      toast.error("Failed to connect to Metamask");
-      console.warn("failed to connect..", err);
+      toast.error(err instanceof Error ? err.message : "Failed to connect to MetaMask");
+    } finally {
+      requesting.current = false;
+      setIsRequesting(false);
     }
   };
 
@@ -62,16 +53,19 @@ function ConnectSignAndAdd({ continuous }) {
 
       {account ? (
         <SimpleButton
+          disabled={isRequesting || isMigrating || loading}
           onClick={async () => {
-            if (isMigrating || loading) return;
+            if (requesting.current || isMigrating || loading) return;
+            requesting.current = true;
+            setIsRequesting(true);
             try {
               const nonce = createMetamaskNonce();
-              const signResult = await sdk?.connectAndSign({
+              const signResult = await requestWallet(sdk, () => sdk!.connectAndSign({
                 msg: getMetamaskSigningMessage(nonce),
-              });
+              }));
               const { publicKey } = deriveMetamaskFactor(signResult, nonce);
 
-              await createFactor({
+              const { data } = await createFactor({
                 variables: {
                   name: `Metamask ${account.substring(
                     0,
@@ -82,8 +76,19 @@ function ConnectSignAndAdd({ continuous }) {
                   nonce,
                 },
               });
-            } catch {
-              toast.error("Unable to add your wallet factor. Please try again.");
+              if (continuous) {
+                setIsMigrating(true);
+                await continuousFactorIn(data, client, session);
+              } else {
+                toast.success("You need to perform factor migration yourself");
+                window.location.reload();
+              }
+            } catch (error) {
+              toast.error(error instanceof Error ? error.message : "Unable to add your wallet factor. Please try again.");
+            } finally {
+              requesting.current = false;
+              setIsRequesting(false);
+              setIsMigrating(false);
             }
           }}
         >
@@ -97,7 +102,7 @@ function ConnectSignAndAdd({ continuous }) {
           )}
         </SimpleButton>
       ) : (
-        <SimpleButton onClick={connect}>Connect</SimpleButton>
+        <SimpleButton disabled={isRequesting} onClick={connect}>{isRequesting ? "Waiting for MetaMask..." : "Connect"}</SimpleButton>
       )}
     </div>
   );

@@ -1,12 +1,18 @@
+// Presents factor enrollment choices with native passkey capability feedback.
+// Owns the selected factor form and unsupported-device guidance.
+// Does not derive keys or change existing factors.
 "use client";
 import SimpleButton from "@/components/common/SimpleButton";
 import { useState } from "react";
 import AddMasterPassword from "./add/AddMasterPassword";
 import AddMetamask from "./add/AddMetamask";
 import AddPasskey from "./add/AddPasskey";
+import { useMobileClient, useMobilePasskeys } from "@/common/mobile/useMobileClient";
 
 export default function FactorChoice({ continuous }) {
   const [choice, setChoice] = useState<string | null>(null);
+  const mobile = useMobileClient();
+  const passkeys = useMobilePasskeys(mobile);
   return (
     <div className="bg-secondary p-4 rounded-md text-black dark:text-white w-full max-w-sm">
       {choice === null && (
@@ -48,16 +54,20 @@ export default function FactorChoice({ continuous }) {
               </li>
             </ul>
           </div>
-          {navigator.credentials && (
+          {(mobile || (typeof navigator !== "undefined" && navigator.credentials)) && (
             <div
               className="w-full p-2"
             >
               <button 
-              className="w-full text-center p-2 mb-2 border border-default rounded-md hover:cursor-pointer bg-primary text-white"
+              disabled={mobile && passkeys !== true}
+              className="w-full text-center p-2 mb-2 border border-default rounded-md hover:cursor-pointer bg-primary text-white disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => {
                  setChoice("passkey");
                }}
               >Passkey</button>
+              {mobile && passkeys !== true && <p role="note" className="text-sm mb-2">
+                {passkeys === null ? "Checking passkey support…" : "This device does not support passkeys. Update Android System WebView or choose another factor."}
+              </p>}
               <ul className="text-sm list-disc list-inside text-left font-medium">
                 <li>
                   Use a passkey stored in your device to encrypt your account

@@ -1,140 +1,64 @@
+// Creates passkey factors on supported browsers and Android devices.
+// Owns credential enrollment, API creation and subsequent key synchronization.
+// Does not change the key derivation of existing passkey factors.
 "use client";
-
-import logger from "@/common/debug/logger";
-import areUnit8ArraysEqual from "@/common/string/areUnit8ArraysEqual";
-import generateRandomBytes from "@/common/string/generateRandomBytes";
-import SimpleButton from "@/components/common/SimpleButton";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import toast from "react-hot-toast";
-import crypto from "crypto";
-import { ec as EC } from "elliptic";
-import mergeUint8Arrays from "@/common/string/mergeUint8Arrays";
 import { useApolloClient, useMutation } from "@apollo/client/react";
+import SimpleButton from "@/components/common/SimpleButton";
 import CREATE_FACTOR from "@/graphql/ops/auth/mutations/CREATE_FACTOR";
 import { useSession } from "@/contexts/SessionContext";
-import continuousFactorIn from "./continuousFactorIn";
 import { useUserContext } from "@/contexts/UserSetupContext";
-import extractDomainName from "@/common/string/extractDomainName";
-
-const ec = new EC("secp256k1");
-
-function arrayBufferToStr(buf) {
-  return String.fromCharCode.apply(null, new Uint8Array(buf));
-}
+import { createPasskeyFactor, passkeyErrorMessage } from "@/common/factor/passkeyFactor";
+import continuousFactorIn from "./continuousFactorIn";
 
 export default function AddPasskey({ continuous }) {
   const { session } = useSession();
   const { user } = useUserContext();
   const [isMigrating, setIsMigrating] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submitting = useRef(false);
   const [name, setName] = useState("Passkey");
   const client = useApolloClient();
-
-  const [createFactor, { loading }] = useMutation(CREATE_FACTOR, {
-    onCompleted: async (data, clientOptions) => {
-      if (continuous) {
-        setIsMigrating(true);
-        await continuousFactorIn(data, client, session);
-        setIsMigrating(false);
-      } else {
-        toast.success("You need to perform factor migration yourself");
-        window.location.reload();
-      }
-    },
-  });
+  const [createFactor, { loading }] = useMutation(CREATE_FACTOR);
 
   return (
     <div className="flex flex-col gap-2">
-      <h3 className="font-semibold py-1 w-screen">Add Passkey</h3>
-      <label>Name for factor</label>
-
-      <input
-        type="text"
+      <h3 className="font-semibold py-1">Add Passkey</h3>
+      <label htmlFor="passkey-factor-name">Name for factor</label>
+      <input id="passkey-factor-name" type="text"
         className="border p-2 rounded-sm bg-white dark:bg-neutral-800"
-        placeholder="Enter a name for this factor"
-        value={name}
-        onChange={(e) => {
-          setName(e.target.value);
-        }}
-      />
-      <div className="text-sm text-neutral-500 dark:text-neutral-400">
-        <div>
-          Please note: If you're adding a passkey using a NFC device, keep your
-          device close to the NFC reader as it may take a little longer if
-          you've a slow NFC reader.
-        </div>
-        <div className="mt-2">
-          Avg Time: Minimum 3 seconds to Maximum 30 seconds
-        </div>
-      </div>
-      <SimpleButton
+        placeholder="Enter a name for this factor" value={name}
+        onChange={(e) => setName(e.target.value)} />
+      <p className="text-sm text-neutral-500 dark:text-neutral-400">
+        Follow your device or password manager’s instructions. Keep an NFC security key near your device until setup finishes.
+      </p>
+      <SimpleButton disabled={isSubmitting || isMigrating || loading}
         onClick={async () => {
-          if (isMigrating || loading) return;
-          if(!user || !user.id) {
-            toast.error("User not found. Please log in again.");
-            return;
+          if (submitting.current || isMigrating || loading) return;
+          if (!user?.id) { toast.error("Please log in again."); return; }
+          if (!name.trim()) { toast.error("Enter a name for this factor."); return; }
+          submitting.current = true;
+          setIsSubmitting(true);
+          try {
+            const factor = await createPasskeyFactor(user.id, user.email, user.first_name || user.email);
+            const { data } = await createFactor({ variables: { name, type: "passkey", ...factor } });
+            if (continuous) {
+              setIsMigrating(true);
+              await continuousFactorIn(data, client, session);
+            } else {
+              toast.success("You need to perform factor migration yourself");
+              window.location.reload();
+            }
+          } catch (error) {
+            toast.error(passkeyErrorMessage(error));
+          } finally {
+            submitting.current = false;
+            setIsSubmitting(false);
+            setIsMigrating(false);
           }
-          const domain = extractDomainName(window.location.href);
-          logger.info("domain", domain);
-          if (domain !== "localhost" && domain !== "cipherwill.com") {
-            toast.error("Cannot add passkey on this domain");
-            return;
-          }
-          const factor_nonce = generateRandomBytes(8); // 64 bits or 8 bytes random nonce
-          const challenge = generateRandomBytes(32); // 256 bits or 32 bytes random challenge
-          await navigator.credentials
-            .create({
-              publicKey: {
-                challenge,
-                rp: { id: domain, name: "Cipherwill" },
-                user: {
-                  //@ts-ignore
-                  id: mergeUint8Arrays(
-                    factor_nonce,
-                    new Uint8Array(Buffer.from(user.id, "utf-8"))
-                  ),
-                  name: user.email,
-                  displayName: user.first_name
-                    ? `${user.first_name}`
-                    : user.email,
-                },
-                pubKeyCredParams: [
-                  { alg: -7, type: "public-key" }, // ES256
-                  { alg: -257, type: "public-key" }, // RS256
-                ],
-                authenticatorSelection: {
-                  requireResidentKey: true,
-                  residentKey: "required",
-                },
-              },
-            })
-            .then(async (credential: PublicKeyCredential) => {
-              const registration_id = new Uint8Array(credential.rawId);
-              if (registration_id && factor_nonce) {
-                let secret = crypto
-                  .createHash("sha256")
-                  .update(mergeUint8Arrays(factor_nonce, registration_id))
-                  .digest("hex");
-                const keyPair = ec.keyFromPrivate(secret);
-                const publicKey = keyPair.getPublic("hex");
-
-                await createFactor({
-                  variables: {
-                    name,
-                    type: "passkey",
-                    publicKey,
-                    nonce: Buffer.from(factor_nonce).toString("base64"),
-                  },
-                });
-              } else {
-                toast.error("Failed to add passkey as registration_id is null");
-                logger.error(
-                  "Failed to add passkey as registration_id is null"
-                );
-              }
-            });
-        }}
-      >
-        {isMigrating ? "Adding Factor..." : "Add Passkey"}
+        }}>
+        {isMigrating ? "Synchronizing keys..." : isSubmitting ? "Waiting for passkey..." : "Add Passkey"}
       </SimpleButton>
     </div>
   );

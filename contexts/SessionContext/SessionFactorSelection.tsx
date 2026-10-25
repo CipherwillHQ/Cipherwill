@@ -1,18 +1,17 @@
 // Presents existing vault-unlock factors with native capability checks.
-// Owns mobile wallet/passkey notices and the existing browser choices.
+// Owns device passkey guidance and shared mobile/browser factor choices.
 // Does not create factors or transfer encryption keys to native code.
 "use client";
 
 import Link from "next/link";
 import Image from "next/image";
-import { MetaMaskProvider } from "@metamask/sdk-react";
+import WalletProvider from "@/components/app/factors/WalletProvider";
 import logoBlack from "../../assets/name-black.png";
 import logoWhite from "../../assets/name-white.png";
 import MasterPassword from "./MasterPassword";
 import Metamask from "./Metamask";
 import Passkey from "./Passkey";
 import ResetFactor from "./ResetFactor";
-import MobileDesktopGate, { DesktopRequired } from "@/components/app/common/DesktopRequired";
 import { useMobileClient, useMobilePasskeys } from "@/common/mobile/useMobileClient";
 
 type SessionToken = {
@@ -73,14 +72,7 @@ export default function SessionFactorSelection({
           Select Authentication Factor
         </h1>
         <div className="flex flex-wrap justify-center">
-          <MetaMaskProvider
-            sdkOptions={{
-              dappMetadata: {
-                name: "Cipherwill",
-                url: window.location.href,
-              },
-            }}
-          >
+          <WalletProvider>
             {methods.map((method) => {
               if (method.type === "master-password") {
                 return (
@@ -91,10 +83,6 @@ export default function SessionFactorSelection({
                   />
                 );
               } else if (method.type === "metamask") {
-                if (mobile) return <div key={method.id} className="m-2 max-w-sm">
-                  <DesktopRequired action="use your wallet factor" />
-                  <p className="p-2 text-sm">To use the mobile vault, add a master-password or supported passkey factor on desktop.</p>
-                </div>;
                 return (
                   <Metamask
                     key={method.id}
@@ -105,8 +93,7 @@ export default function SessionFactorSelection({
               } else if (method.type === "passkey") {
                 if (mobile && passkeys === null) return <p key={method.id}>Checking passkey support…</p>;
                 if (mobile && !passkeys) return <div key={method.id} className="m-2 max-w-sm">
-                  <DesktopRequired action="unlock with this passkey" />
-                  <p className="p-2 text-sm">This device cannot use passkeys. You can use another master-password factor here.</p>
+                  <p role="note" className="p-2 text-sm">This device does not support passkeys. Update Android System WebView or use your master password or MetaMask factor.</p>
                 </div>;
                 return (
                   <Passkey
@@ -119,13 +106,11 @@ export default function SessionFactorSelection({
                 return null;
               }
             })}
-          </MetaMaskProvider>
+          </WalletProvider>
         </div>
       </div>
       <div className="py-12">
-        <MobileDesktopGate action="reset your security factors">
         <ResetFactor />
-        </MobileDesktopGate>
       </div>
     </div>
   );

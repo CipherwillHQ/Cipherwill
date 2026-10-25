@@ -1,4 +1,8 @@
+// Migrates keys out of a factor using the existing encrypted-key format.
+// Owns key reads and uploads while protecting pending mobile navigation.
+// Does not remove the factor record or persist private keys.
 import { ApolloClient } from "@apollo/client";
+import { runFactorOperation } from "@/common/mobile/runFactorOperation";
 import toast from "react-hot-toast";
 import GET_FACTORS from "../../graphql/ops/auth/queries/AVAILABLE_AUTH_FACTORS";
 import decrypt from "../../crypto/e0/decrypt";
@@ -15,108 +19,110 @@ export default async function perform_migrate_out(
   publicKey: string,
   privateKey: string
 ) {
-  // get factors count
-  const factors = await client.query<GetFactorsQuery>({
-    fetchPolicy: "network-only",
-    query: GET_FACTORS,
-  });
-  
-  if (!factors.data) {
-    toast.error("Failed to fetch factors");
-    return;
-  }
-  
-  const all_factors = factors.data.getFactors;
-
-  if (all_factors.length > 1) {
-    // delete by public key
-    await client.mutate({
-      mutation: DELETE_KEY_BY_PUBLIC_KEY,
-      variables: {
-        publicKey,
-      },
+  return runFactorOperation(async () => {
+    // get factors count
+    const factors = await client.query<GetFactorsQuery>({
+      fetchPolicy: "network-only",
+      query: GET_FACTORS,
     });
-  } else if (all_factors.length === 1) {
-    let cursor = undefined;
-    let has_more = true;
-    while (has_more) {
-      logger.info(`Migrate out for cursor:${cursor} and has_more:${has_more}`);
-      await debug_sleep(5000);
 
-      // download all from max one
-      const res: any = await client.query({
-        query: GET_KEY_ITEMS_BY_PUBLIC_KEY,
-        fetchPolicy: "network-only",
-        variables: cursor
-          ? {
-              publicKey,
-              cursor,
-            }
-          : {
-              publicKey,
-            },
+    if (!factors.data) {
+      toast.error("Failed to fetch factors");
+      return;
+    }
+
+    const all_factors = factors.data.getFactors;
+
+    if (all_factors.length > 1) {
+      // delete by public key
+      await client.mutate({
+        mutation: DELETE_KEY_BY_PUBLIC_KEY,
+        variables: {
+          publicKey,
+        },
       });
-      const items = res?.data?.getKeyItemsByPublicKey?.items || [];
-      if (items.length < 1) {
-        toast.error("No data items to migrate");
-        has_more = false;
-        break;
-      }
+    } else if (all_factors.length === 1) {
+      let cursor = undefined;
+      let has_more = true;
+      while (has_more) {
+        logger.info(`Migrate out for cursor:${cursor} and has_more:${has_more}`);
+        await debug_sleep(5000);
 
-      if (res.data.getKeyItemsByPublicKey.has_more) {
-        has_more = res.data.getKeyItemsByPublicKey.has_more;
-        cursor =
-          items[
-            items.length - 1
-          ].id;
-      } else {
-        has_more = false;
-      }
-
-      const all_keys = items;
-      // decrypt each one with current privatekey
-      const all_decrypted: Key[] = [];
-      for await (const item of all_keys) {
-        try {
-          let decryptedKey = item.key;
-          if (typeof item.key === "string" && item.key.startsWith("{")) {
-            const encrypted_string = JSON.parse(item.key);
-            if (encrypted_string.type === "E0") {
-              decryptedKey = await decrypt(
-                privateKey,
-                Buffer.from(encrypted_string.ciphertext, "base64"),
-                Buffer.from(encrypted_string.ephemPublicKey, "base64"),
-                Buffer.from(encrypted_string.iv, "base64"),
-                Buffer.from(encrypted_string.mac, "base64")
-              );
-            }
-          }
-          all_decrypted.push({
-            ref_id: item.ref_id,
-            beneficiary_id: item.beneficiary_id,
-            publicKey: "null",
-            key: decryptedKey,
-          });
-        } catch (error) {
-          logger.error("Failed to migrate key while migrating out", {
-            ref_id: item?.ref_id,
-            publicKey: item?.publicKey,
-            error,
-          });
-          throw error;
+        // download all from max one
+        const res: any = await client.query({
+          query: GET_KEY_ITEMS_BY_PUBLIC_KEY,
+          fetchPolicy: "network-only",
+          variables: cursor
+            ? {
+                publicKey,
+                cursor,
+              }
+            : {
+                publicKey,
+              },
+        });
+        const items = res?.data?.getKeyItemsByPublicKey?.items || [];
+        if (items.length < 1) {
+          toast.error("No data items to migrate");
+          has_more = false;
+          break;
         }
 
-        // throw new Error("Not implemented");
-      }
-      logger.info(`Processed ${all_decrypted.length} items`);
+        if (res.data.getKeyItemsByPublicKey.has_more) {
+          has_more = res.data.getKeyItemsByPublicKey.has_more;
+          cursor =
+            items[
+              items.length - 1
+            ].id;
+        } else {
+          has_more = false;
+        }
 
-      // upload all
-      await recurring_upload({
-        client,
-        key_cluster: all_decrypted,
-      });
+        const all_keys = items;
+        // decrypt each one with current privatekey
+        const all_decrypted: Key[] = [];
+        for await (const item of all_keys) {
+          try {
+            let decryptedKey = item.key;
+            if (typeof item.key === "string" && item.key.startsWith("{")) {
+              const encrypted_string = JSON.parse(item.key);
+              if (encrypted_string.type === "E0") {
+                decryptedKey = await decrypt(
+                  privateKey,
+                  Buffer.from(encrypted_string.ciphertext, "base64"),
+                  Buffer.from(encrypted_string.ephemPublicKey, "base64"),
+                  Buffer.from(encrypted_string.iv, "base64"),
+                  Buffer.from(encrypted_string.mac, "base64")
+                );
+              }
+            }
+            all_decrypted.push({
+              ref_id: item.ref_id,
+              beneficiary_id: item.beneficiary_id,
+              publicKey: "null",
+              key: decryptedKey,
+            });
+          } catch (error) {
+            logger.error("Failed to migrate key while migrating out", {
+              ref_id: item?.ref_id,
+              publicKey: item?.publicKey,
+              error,
+            });
+            throw error;
+          }
+
+          // throw new Error("Not implemented");
+        }
+        logger.info(`Processed ${all_decrypted.length} items`);
+
+        // upload all
+        await recurring_upload({
+          client,
+          key_cluster: all_decrypted,
+        });
+      }
+    } else {
+      toast.error("No factors to migrate out");
     }
-  } else {
-    toast.error("No factors to migrate out");
-  }
+  });
 }

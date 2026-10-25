@@ -23,18 +23,7 @@ export default function AddMasterPassword({ continuous }) {
   const submitting = useRef(false);
   const client = useApolloClient();
 
-  const [createFactor, { loading }] = useMutation(CREATE_FACTOR, {
-    onCompleted: async (data, clientOptions) => {
-      if (continuous) {
-        setIsMigrating(true);
-        await continuousFactorIn(data, client, session);
-        setIsMigrating(false);
-      } else {
-        toast.success("You need to perform factor migration yourself");
-        window.location.reload();
-      }
-    },
-  });
+  const [createFactor, { loading }] = useMutation(CREATE_FACTOR);
   return (
     <div className="flex flex-col gap-2">
       <h3 className="font-semibold p-1">Add Master Password</h3>
@@ -80,7 +69,7 @@ export default function AddMasterPassword({ continuous }) {
             const nonce = createMasterPasswordNonce();
             const { publicKey } = await deriveMasterPasswordFactor(password, nonce);
 
-            await createFactor({
+            const { data } = await createFactor({
               variables: {
                 name,
                 type: "master-password",
@@ -88,11 +77,19 @@ export default function AddMasterPassword({ continuous }) {
                 nonce,
               },
             });
+            if (continuous) {
+              setIsMigrating(true);
+              await continuousFactorIn(data, client, session);
+            } else {
+              toast.success("You need to perform factor migration yourself");
+              window.location.reload();
+            }
           } catch {
             toast.error("Unable to add your master password. Please update Cipherwill and try again.");
           } finally {
             submitting.current = false;
             setIsSubmitting(false);
+            setIsMigrating(false);
           }
         }}
       >
