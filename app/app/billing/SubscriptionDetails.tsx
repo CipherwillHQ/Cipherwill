@@ -1,5 +1,5 @@
 // Displays the current subscription and its management control.
-// Owns subscription dates and the mobile desktop-management notice.
+// Owns subscription dates and browser/native billing portal navigation.
 // Does not open upgrades or change subscription entitlements.
 "use client";
 import logger from "@/common/debug/logger";
@@ -7,7 +7,7 @@ import capitalizeFirstLetter from "@/common/string/capitalizeFirstLetter";
 import SimpleButton from "@/components/common/SimpleButton";
 import GET_PADDLE_PORTAL_SESSION_URL from "@/graphql/ops/app/billing/queries/GET_PADDLE_PORTAL_SESSION_URL";
 import { DateTime } from "luxon";
-import MobileDesktopGate from "@/components/app/common/DesktopRequired";
+import { isMobileClient } from "@/common/mobile/useMobileClient";
 
 export default function SubscriptionDetails({
   subscription,
@@ -46,42 +46,43 @@ export default function SubscriptionDetails({
       )}
       {subscription.cancel_at === null && (
         <div className="flex flex-col sm:flex-row gap-2 mt-2">
-          <MobileDesktopGate action="manage your subscription">
-            <SimpleButton
-              onClick={async () => {
-                if (subscription.payment_gateway === "paddle") {
-                  await client
-                    .query({
-                      query: GET_PADDLE_PORTAL_SESSION_URL,
-                      variables: { subscription_id: subscription.id },
-                    })
-                    .then((data) => {
-                      const url = data?.data?.getPaddlePortalSessionUrl;
-                      if (url) {
-                        // open url in new tab
-                        window.open(url, "_blank");
+          <SimpleButton
+            onClick={async () => {
+              if (subscription.payment_gateway === "paddle") {
+                await client
+                  .query({
+                    query: GET_PADDLE_PORTAL_SESSION_URL,
+                    variables: { subscription_id: subscription.id },
+                  })
+                  .then((data) => {
+                    const url = data?.data?.getPaddlePortalSessionUrl;
+                    if (url) {
+                      if (isMobileClient()) {
+                        window.location.assign(url);
                       } else {
-                        logger.error(
-                          "Error while creating paddle checkout session",
-                          {
-                            subscription,
-                          }
-                        );
+                        window.open(url, "_blank");
                       }
-                    })
-                    .catch((err) => {
-                      logger.error(err);
-                    });
-                } else {
-                  logger.error(
-                    `Manage payment method not defined for payment gateway ${subscription.payment_gateway}`
-                  );
-                }
-              }}
-            >
-              Manage Subscription
-            </SimpleButton>
-          </MobileDesktopGate>
+                    } else {
+                      logger.error(
+                        "Error while creating paddle checkout session",
+                        {
+                          subscription,
+                        }
+                      );
+                    }
+                  })
+                  .catch((err) => {
+                    logger.error(err);
+                  });
+              } else {
+                logger.error(
+                  `Manage payment method not defined for payment gateway ${subscription.payment_gateway}`
+                );
+              }
+            }}
+          >
+            Manage Subscription
+          </SimpleButton>
         </div>
       )}
     </div>

@@ -1,9 +1,9 @@
 // Defines the account overview data and display contracts for guided setup.
-// Owns count-only responses, profile milestones, and overview component props.
-// Does not include asset content, factor keys, or conversation drafts.
+// Owns count responses, factor sync status, and overview component props.
+// Does not include asset content, private keys, or conversation drafts.
 import type { DeferredGuidanceProps } from "./guidanceChoices";
-import type { MetamodelTypeCount } from "./metamodel";
-export interface GuidanceOverviewData {
+import type { GetAllKeyCountQuery, MetamodelTypeCount } from "./metamodel";
+export interface GuidanceOverviewData extends GetAllKeyCountQuery {
   getUserScore: string;
   me: { first_name: string | null; email_verified: boolean };
   getMetamodelTypeCounts: MetamodelTypeCount[];
@@ -18,6 +18,7 @@ export interface GuidanceOverview {
   typeCounts: MetamodelTypeCount[];
   beneficiaryCount: number;
   factorCount: number;
+  factorsInSync: boolean;
 }
 export interface DataRecordsMetricProps {
   count: number;

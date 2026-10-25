@@ -8,6 +8,7 @@ import DeferredGuidance from "./DeferredGuidance";
 import BannerArea from "@/components/app/common/BannerArea";
 import EmailVerificationBanner from "./EmailVerificationBanner";
 import DataRecordsMetric from "./DataRecordsMetric";
+import FactorSyncMetric from "./FactorSyncMetric";
 import { LayoutGroup, motion, MotionConfig } from "framer-motion";
 
 export default function GuideOverview(props: GuidanceOverviewProps) {
@@ -29,7 +30,7 @@ export default function GuideOverview(props: GuidanceOverviewProps) {
           <motion.div layout="position"><OverviewMetric count={overview.score} label="Score" suffix="/ 950" href="/app/score" /></motion.div>
           <DataRecordsMetric count={overview.itemCount} typeCounts={overview.typeCounts} />
           <motion.div layout="position"><OverviewMetric count={overview.beneficiaryCount} label="Beneficiaries" href="/app/beneficiaries" /></motion.div>
-          <motion.div layout="position"><OverviewMetric count={overview.factorCount} label="Security factors" href="/app/factors" /></motion.div>
+          <motion.div layout="position"><FactorSyncMetric factorCount={overview.factorCount} factorsInSync={overview.factorsInSync} /></motion.div>
           {props.deferred.length > 0 && <motion.div layout="position"><DeferredGuidance deferred={props.deferred} onResume={props.onResume} loading={setupLoading} /></motion.div>}
         </motion.nav>
         {!overview.emailVerified && <motion.div layout="position" className="w-full max-w-2xl"><BannerArea>

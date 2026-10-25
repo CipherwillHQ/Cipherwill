@@ -10,7 +10,9 @@ data-record counts, and beneficiary/factor counts.
 The opening slide uses the same centered heading, text, and button styles as objective slides, with
 small wrapping pills linking Score to `/app/score`, Data records to `/app/segments`, Beneficiaries to
 `/app/beneficiaries`, and Security factors to `/app/factors`. There is no category pill, page top bar, or footer tagline.
-The overview query returns score/count data, the greeting first name, and email verification status, and runs fresh each time the overview is mounted.
+The Security factors pill shows **In sync** or **Needs sync** using the dashboard's key-count comparison;
+clicking it opens the existing factors page for migration, factor management, and unencrypted-key cleanup.
+The overview query returns score/count data, factor key counts, the greeting first name, and email verification status, and runs fresh each time the overview is mounted.
 Unverified accounts show an email verification banner above **Continue Cipherwill Setup**. `BannerArea` stacks
 independent notice components and collapses when empty, so more banners can be added in the same space.
 Continue Setup and deferred-task Resume open objectives independently of verification. Only **Verify your email** opens

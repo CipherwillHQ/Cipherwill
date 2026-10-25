@@ -12,7 +12,8 @@ const props: GuidanceOverviewProps = {
   overview: buildGuidanceOverview({ getUserScore: '{"base":300,"firstName":100}',
     me: { first_name: "Asha <script>", email_verified: true },
     getMetamodelTypeCounts: [{ type: "NOTE", count: 3 }], getSmartWillBeneficiaries: [{ id: "person-1" }],
-    getFactors: [{ id: "factor-1" }, { id: "factor-2" }], }),
+    getFactors: [{ id: "factor-1" }, { id: "factor-2" }],
+    getAllKeyCount: [{ publicKey: "null", count: 0 }, { publicKey: "factor-1", count: 3 }, { publicKey: "factor-2", count: 3 }], }),
   loading: false, error: false, onRetry: () => {}, onStart: () => {},
   onVerifyEmail: () => {},
   setupLoading: false, setupAvailable: true, setupError: false,
@@ -28,6 +29,7 @@ test("opening slide links three metrics and opens data records through a menu bu
   assert.match(html, /Data records/);
   assert.match(html, /Beneficiaries/);
   assert.match(html, /Security factors/);
+  assert.match(html, /In sync/);
   for (const [href, label] of [["/app/score", "Score"],
     ["/app/beneficiaries", "Beneficiaries"], ["/app/factors", "Security factors"]]) {
     assert.match(html, new RegExp(`<a[^>]*href="${href}"[^>]*><span[^>]*>${label}</span>`));
@@ -44,6 +46,18 @@ test("opening slide links three metrics and opens data records through a menu bu
   assert.match(html, /Continue Cipherwill Setup/);
   assert.match(html, /Asha &lt;script&gt;/);
   assert.doesNotMatch(html, /<script>|<header|<footer|rounded-2xl|rounded-3xl|text-2xl|grid-cols|Go at your own pace/);
+});
+
+test("factor sync status remains a link to the existing factors page in both states", async () => {
+  const { default: Overview } = await import("./GuideOverview");
+  for (const factorsInSync of [true, false]) {
+    const html = renderToStaticMarkup(<Overview {...props} overview={{ ...props.overview!, factorsInSync }} />);
+    const factorLink = html.match(/<a[^>]*href="\/app\/factors"[^>]*>[\s\S]*?<\/a>/)?.[0];
+    assert.ok(factorLink);
+    assert.match(factorLink, /Security factors/);
+    assert.match(factorLink, factorsInSync ? /In sync/ : /Needs sync/);
+    assert.doesNotMatch(factorLink, /<button|aria-expanded|aria-haspopup/);
+  }
 });
 
 test("unverified accounts show a verification banner above independent setup controls", async () => {

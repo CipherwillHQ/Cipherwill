@@ -39,7 +39,7 @@ mock.module(pathToFileURL(require.resolve("framer-motion")), { namedExports: {
 mock.module("../../../../contexts/AuthContext/index.tsx", { namedExports: { useAuth: () => ({ user: {} }) } });
 mock.module("../../../../common/auth/emailVerification.ts", { namedExports: { sendVerificationEmail: sends, checkEmailVerification: checks } });
 mock.module("../hooks/useGuidanceOverview.ts", { defaultExport: () => ({ loading: false, error: false, onRetry: refresh,
-  overview: { firstName: "Asha", emailVerified: verified, score: 300, itemCount: 0, typeCounts: [], beneficiaryCount: 0, factorCount: 0 } }) });
+  overview: { firstName: "Asha", emailVerified: verified, score: 300, itemCount: 0, typeCounts: [], beneficiaryCount: 0, factorCount: 0, factorsInSync: false } }) });
 mock.module("./GuideOverview.tsx", { defaultExport: (props: GuidanceOverviewProps) => {
   overviewProps = props; return <section>Continue Cipherwill Setup{!props.overview?.emailVerified && "Verify your email"}</section>;
 } });
