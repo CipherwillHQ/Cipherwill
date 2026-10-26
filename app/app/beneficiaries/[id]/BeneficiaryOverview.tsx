@@ -1,4 +1,4 @@
-// Displays a beneficiary's identity, addition date, and account status.
+// Displays a beneficiary's identity, addition date, account, and security status.
 // Owns the overview card and the legacy missing-date presentation.
 // Does not infer membership from email or fetch person data.
 
@@ -6,6 +6,7 @@ import { TbCalendarEvent, TbUser } from "react-icons/tb";
 import getPersonDisplayName from "@/common/people/getPersonDisplayName";
 import getTimeAgo from "@/common/time/getTimeAgo";
 import type { Person, SmartWillBeneficiary } from "@/types/interfaces";
+import BeneficiarySecurityStatus from "./BeneficiarySecurityStatus";
 
 export default function BeneficiaryOverview({
   beneficiary,
@@ -31,7 +32,7 @@ export default function BeneficiaryOverview({
           </p>
         </div>
       </div>
-      <dl className="grid min-w-0 grid-cols-1 gap-6 border-t border-default pt-6 sm:grid-cols-2 lg:border-t-0 lg:border-l lg:pl-6 lg:pt-0">
+      <dl className="grid min-w-0 grid-cols-1 gap-6 border-t border-default pt-6 sm:grid-cols-2 lg:border-t-0 lg:border-l lg:pl-6 lg:pt-0 xl:grid-cols-3">
         <div>
           <dt className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
             <TbCalendarEvent size={20} aria-hidden="true" /> Added as beneficiary
@@ -60,6 +61,7 @@ export default function BeneficiaryOverview({
             </p>
           </dd>
         </div>
+        <BeneficiarySecurityStatus beneficiaryId={beneficiary.id} accountType={person.__typename} />
       </dl>
     </section>
   );

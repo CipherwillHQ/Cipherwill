@@ -9,6 +9,7 @@ import type { SmartWillBeneficiary, Person } from "@/types/interfaces";
 import GET_SMARTWILL_BENEFICIARY from "@/graphql/ops/app/smartwill/queries/GET_SMARTWILL_BENEFICIARY";
 import GET_PERSON_BY_IDS from "@/graphql/ops/app/people/queries/GET_PERSON_BY_IDS";
 import GET_BENEFICIARY_SEGMENT_COUNTS from "@/graphql/ops/app/smartwill/queries/GET_BENEFICIARY_SEGMENT_COUNTS";
+import GET_BENEFICIARY_FACTORS from "@/graphql/ops/auth/queries/GET_BENEFICIARY_FACTORS";
 
 const beneficiary: SmartWillBeneficiary = {
   id: "beneficiary-1", person_id: "person-1", user_id: "owner-1",
@@ -27,6 +28,9 @@ const query = mock.fn((document: unknown, options: { skip?: boolean }) => {
   if (document === GET_SMARTWILL_BENEFICIARY) return beneficiaries;
   if (document === GET_PERSON_BY_IDS) return options.skip ? { loading: false } : people;
   if (document === GET_BENEFICIARY_SEGMENT_COUNTS) return segments;
+  if (document === GET_BENEFICIARY_FACTORS) return { loading: false, data: {
+    getBeneficiaryFactors: [{ beneficiary_id: "beneficiary-1", factors: [{ id: "factor-1" }] }],
+  } };
   throw new Error("Unexpected query");
 });
 let messageProps: { beneficiary_id: string; custom_message: string | null } | undefined;
@@ -54,6 +58,8 @@ test("direct detail visits show identity, added date, account status, segment co
   assert.match(html, /asha@example.com/);
   assert.match(html, /dateTime="2026-10-18T18:30:00\.000Z"/);
   assert.match(html, />On Cipherwill<\/span>/);
+  assert.match(html, /Security factors/);
+  assert.match(html, /End-to-end encrypted/);
   assert.match(html, /beneficiary-data-total"><span[^>]*>3<\/span> items across 2 segments/);
   assert.match(html, /beneficiary-count-notes">2 items/);
   assert.match(html, /beneficiary-count-passwords">1 item/);
@@ -75,6 +81,8 @@ test("guests show pending membership and missing legacy dates are not shown as 1
   const html = renderToStaticMarkup(<Details beneficiaryId="beneficiary-1" />);
 
   assert.match(html, /Not on Cipherwill yet/);
+  assert.match(html, /No security factors added/);
+  assert.doesNotMatch(html, /End-to-end encrypted/);
   assert.match(html, /Not recorded/);
   assert.doesNotMatch(html, /1970|dateTime=/);
   people.data.getPersonByIds[0] = person;
