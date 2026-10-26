@@ -3,6 +3,7 @@
 // Does not select objectives or expose saved asset contents.
 import type { GuidanceOverviewProps, OverviewExpandedMetric } from "@/types/interfaces";
 import { useState } from "react";
+import capitalizeFirstLetter from "@/common/string/capitalizeFirstLetter";
 import GuidedButton from "./GuidedButton";
 import OverviewMetric from "./OverviewMetric";
 import DeferredGuidance from "./DeferredGuidance";
@@ -24,9 +25,9 @@ export default function GuideOverview(props: GuidanceOverviewProps) {
   <section aria-label="Account overview" className="flex flex-1 flex-col px-5 py-8 md:px-10 md:py-12">
     <div className="flex min-h-96 flex-1 flex-col items-center justify-center text-center">
       <motion.div layout="position" className="flex w-full max-w-4xl min-h-72 md:min-h-88 flex-col items-center justify-center gap-7">
-        <motion.h1 layout="position" className="text-3xl md:text-5xl font-semibold leading-tight">Your Cipherwill Status</motion.h1>
+        <motion.h1 layout="position" className="text-3xl md:text-5xl font-semibold leading-tight">Your Cipherwill</motion.h1>
         <motion.p layout="position" className="max-w-2xl text-base md:text-xl text-black/70 dark:text-white/70 leading-relaxed">
-          {overview.firstName ? `${overview.firstName}, here's where your Cipherwill stands.` : "Here's where your Cipherwill stands."}
+          {overview.firstName ? `${capitalizeFirstLetter(overview.firstName)}, here's where your Cipherwill stands.` : "Here's where your Cipherwill stands."}
           {" "}Continue your setup, one step at a time.
         </motion.p>
         <motion.nav layout="position" aria-label="Account status" className="flex max-w-2xl flex-wrap justify-center gap-2 items-end">

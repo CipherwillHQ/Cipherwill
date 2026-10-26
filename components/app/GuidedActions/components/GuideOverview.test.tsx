@@ -17,7 +17,7 @@ beforeEach(() => { shared = []; granted = []; });
 
 const props: GuidanceOverviewProps = {
   overview: buildGuidanceOverview({ getUserScore: '{"base":300,"firstName":100}',
-    me: { first_name: "Asha <script>", email_verified: true },
+    me: { first_name: "asha <script>", email_verified: true },
     getMetamodelTypeCounts: [{ type: "NOTE", count: 3 }], getSmartWillBeneficiaries: [{ id: "person-1" }],
     getFactors: [{ id: "factor-1" }, { id: "factor-2" }],
     getAllKeyCount: [{ publicKey: "null", count: 0 }, { publicKey: "factor-1", count: 3 }, { publicKey: "factor-2", count: 3 }], }),
@@ -41,7 +41,7 @@ test("opening slide links three metrics and opens data records through a menu bu
     ["/app/beneficiaries", "Beneficiaries"], ["/app/factors", "Security factors"]]) {
     assert.match(html, new RegExp(`<a[^>]*href="${href}"[^>]*><span[^>]*>${label}</span>`));
   }
-  assert.match(html, /Your Cipherwill Status/);
+  assert.match(html, /<h1[^>]*>Your Cipherwill<\/h1>/);
   assert.doesNotMatch(html, /Data categor|Your Cipherwill overview|Storage used|2.0 KB|Profile details/);
   assert.equal((html.match(/<a /g) ?? []).length, 3);
   assert.match(html, /<button[^>]*aria-label="Data records \(3\)"[^>]*aria-controls="[^"]+"[^>]*aria-expanded="false"/);

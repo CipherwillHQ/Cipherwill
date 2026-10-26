@@ -5,7 +5,7 @@ calculates progress, and prepares guidance with rules and templates.
 
 ## Guide page
 
-`/app/guide` opens with **Your Cipherwill Status**. It shows the existing 300–950 Cipherwill score,
+`/app/guide` opens with **Your Cipherwill**. It shows the existing 300–950 Cipherwill score,
 data-record counts, and beneficiary/factor counts.
 The opening slide uses the same centered heading, text, and button styles as objective slides, with
 small wrapping pills linking Score to `/app/score`, Data records to `/app/segments`, Beneficiaries to
