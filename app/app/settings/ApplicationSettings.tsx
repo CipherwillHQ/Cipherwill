@@ -77,7 +77,8 @@ export default function ApplicationSettings() {
         <div>
           <div>Delete My Account</div>
           <div className="text-sm text-gray-500">
-            This will delete account, you will need to signup again
+            This will deactivate your account and delete your vault data and
+            beneficiary connections. Your other account information will be retained.
           </div>
         </div>
         <button

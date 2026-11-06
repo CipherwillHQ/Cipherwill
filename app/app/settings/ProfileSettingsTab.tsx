@@ -72,8 +72,9 @@ export default function ProfileSettingsTab() {
           <div className="text-base font-medium pb-2">Delete account</div>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="text-sm pb-4 max-w-md">
-              This will delete your account and all associated data. Are you
-              sure you want to delete your account?
+              This will deactivate your account and delete your vault data,
+              beneficiary access, friends, and beneficiaries. Your other account
+              information will be retained.
             </div>
             <FeedbackConfirmationButton
               options={[
