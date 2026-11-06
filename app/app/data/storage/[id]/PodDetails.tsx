@@ -6,7 +6,7 @@
 import logger from "@/common/debug/logger";
 import SimpleButton from "@/components/common/SimpleButton";
 import { useSession } from "@/contexts/SessionContext";
-import GET_POD from "@/graphql/ops/app/pod/queries/GET_POD";
+import GET_POD_SIZE from "@/graphql/ops/app/pod/queries/GET_POD_SIZE";
 import { useApolloClient } from "@apollo/client/react";
 import toast from "react-hot-toast";
 import GET_METAMODEL from "@/graphql/ops/app/metamodel/queries/GET_METAMODEL";
@@ -38,9 +38,9 @@ export default function PodDetails({ id }: FileDetailsProps) {
   });
 
   const { data: podData, loading: podLoading } = useQuery<
-    GetPodQuery,
+    { getPod: Pick<GetPodQuery["getPod"], "size"> },
     GetPodVariables
-  >(GET_POD, {
+  >(GET_POD_SIZE, {
     variables: { ref_id: id },
   });
 
