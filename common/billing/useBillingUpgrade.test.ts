@@ -4,23 +4,31 @@
 import assert from "node:assert/strict";
 import { after, before, beforeEach, mock, test } from "node:test";
 import React from "react";
+import toast from "react-hot-toast";
 const assign = mock.fn<(url: string) => void>();
 const open = mock.fn<(config: unknown) => void>();
 const error = mock.fn();
+const query = mock.fn(async () => ({ data: { getCheckoutEligibility: { allowed: true } } }));
 const originalWindow = Object.getOwnPropertyDescriptor(globalThis, "window");
 let account: { id: string; email: string } | undefined;
 let paddle: { Checkout: { open: typeof open } } | undefined;
 let user: { email: string } | undefined;
 mock.module("react", { defaultExport: React, namedExports: {
-  ...React, useCallback: (callback: () => void) => callback,
+  ...React,
+  useCallback: (callback: () => Promise<void>) => callback,
+  useRef: (initial: unknown) => ({ current: initial }),
 } });
-mock.module("@apollo/client/react", { namedExports: { useQuery: () => ({ data: { me: account } }) } });
+mock.module("@apollo/client/react", { namedExports: {
+  useApolloClient: () => ({ query }),
+  useQuery: () => ({ data: { me: account } }),
+} });
 mock.module("../../contexts/UserSetupContext/index.tsx", { namedExports: { useUserContext: () => ({ user }) } });
 mock.module("../../contexts/PaymentGatewayContext.tsx", { namedExports: {
   usePaddle: () => ({ paddle, PADDLE_YEARLY_PRICE_ID: "pri_annual" }),
 } });
 mock.module("react-hot-toast", { defaultExport: { error } });
 mock.module("../debug/logger.ts", { defaultExport: { error } });
+mock.method(toast, "error", error);
 let useBillingUpgrade: typeof import("./useBillingUpgrade").default;
 before(async () => { ({ default: useBillingUpgrade } = await import("./useBillingUpgrade")); });
 after(() => {
@@ -31,6 +39,8 @@ beforeEach(() => {
   assign.mock.resetCalls();
   open.mock.resetCalls();
   error.mock.resetCalls();
+  query.mock.resetCalls();
+  query.mock.mockImplementation(async () => ({ data: { getCheckoutEligibility: { allowed: true } } }));
   account = { id: "database_account/with+chars", email: "owner+mobile@example.com" };
   user = { email: "owner+desktop@example.com" };
   paddle = { Checkout: { open } };
@@ -38,9 +48,9 @@ beforeEach(() => {
     location: { assign }, CipherwillAuth: { uid: "firebase_uid", idToken: "private-token" },
   } });
 });
-test("mobile opens the public upgrade URL with encoded database ID and email without Paddle", () => {
+test("mobile opens the public upgrade URL with encoded database ID and email without Paddle", async () => {
   paddle = undefined;
-  useBillingUpgrade()();
+  await useBillingUpgrade()();
   const url = new URL(assign.mock.calls[0].arguments[0]);
   assert.equal(url.origin, "https://cipherwill.com");
   assert.equal(url.pathname, "/upgrade");
@@ -50,9 +60,9 @@ test("mobile opens the public upgrade URL with encoded database ID and email wit
   assert.doesNotMatch(url.href, /firebase_uid|private-token/);
   assert.equal(open.mock.callCount(), 0);
 });
-test("ordinary browsers retain annual Paddle checkout options and customer details", () => {
+test("ordinary browsers retain annual Paddle checkout options and customer details", async () => {
   Object.defineProperty(globalThis, "window", { configurable: true, value: { location: { assign } } });
-  useBillingUpgrade()();
+  await useBillingUpgrade()();
   assert.deepEqual(open.mock.calls[0].arguments[0], {
     settings: {
       successUrl: "https://www.cipherwill.com/callback/checkout_success",
@@ -63,16 +73,26 @@ test("ordinary browsers retain annual Paddle checkout options and customer detai
   });
   assert.equal(assign.mock.callCount(), 0);
 });
-test("browser checkout still works without a prefilled customer", () => {
+test("browser checkout still works without a prefilled customer", async () => {
   Object.defineProperty(globalThis, "window", { configurable: true, value: {} });
   user = undefined;
-  useBillingUpgrade()();
+  await useBillingUpgrade()();
   assert.ok(!("customer" in (open.mock.calls[0].arguments[0] as object)));
 });
-test("missing backend account details prevent an unattributed upgrade", () => {
+test("missing backend account details prevent an unattributed upgrade", async () => {
   account = undefined;
-  useBillingUpgrade()();
+  await useBillingUpgrade()();
   assert.equal(assign.mock.callCount(), 0);
   assert.equal(open.mock.callCount(), 0);
   assert.ok(error.mock.callCount() > 0);
+});
+test("blocks checkout and shows a toast when user already has an active or past-due subscription", async () => {
+  Object.defineProperty(globalThis, "window", { configurable: true, value: { location: { assign } } });
+  query.mock.mockImplementation(async () => ({
+    data: { getCheckoutEligibility: { allowed: false, status: "active", reason: "Already subscribed" } },
+  }));
+  await useBillingUpgrade()();
+  assert.equal(assign.mock.callCount(), 0);
+  assert.equal(open.mock.callCount(), 0);
+  assert.deepEqual(error.mock.calls[0].arguments, ["Already subscribed"]);
 });

@@ -185,3 +185,24 @@ test("ignores Paddle events after the upgrade screen unmounts", async () => {
   assert.equal(renderCheckout().completed, false);
   assert.equal(postMessage.mock.callCount(), 0);
 });
+
+test("blocks checkout and notifies Flutter when backend reports an existing subscription", async () => {
+  const previousApiHost = process.env.NEXT_PUBLIC_API_HOST;
+  const previousFetch = globalThis.fetch;
+  process.env.NEXT_PUBLIC_API_HOST = "https://api.cipherwill.com/v1/";
+  globalThis.fetch = mock.fn(async () => ({
+    ok: true,
+    json: async () => ({ allowed: false, status: "active", reason: "Already subscribed" }),
+  })) as unknown as typeof fetch;
+
+  try {
+    const checkout = await loadCheckout();
+    assert.equal(checkout.canCheckout, false);
+    assert.equal(checkout.error, "Already subscribed");
+    assert.equal(initialize.mock.callCount(), 0);
+    assert.equal(JSON.parse(postMessage.mock.calls[0].arguments[0]).code, "already_subscribed");
+  } finally {
+    process.env.NEXT_PUBLIC_API_HOST = previousApiHost;
+    globalThis.fetch = previousFetch;
+  }
+});

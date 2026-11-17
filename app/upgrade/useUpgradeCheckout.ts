@@ -6,11 +6,13 @@
 import { useEffect, useRef, useState } from "react";
 import { initializePaddle, type Paddle } from "@paddle/paddle-js";
 import { PADDLE_ENVIRONMENT, PADDLE_TOKEN, PADDLE_YEARLY_PRICE_ID } from "@/common/billing/paddleConfig";
+import getCheckoutEligibilityUrl from "@/common/billing/getCheckoutEligibilityUrl";
 import validate_email from "@/common/validators/validate_email";
 import notifyUpgradeWebView from "@/common/billing/notifyUpgradeWebView";
 import type { UpgradeScreenProps } from "@/types/interfaces";
 
 const unavailableMessage = "Checkout is unavailable right now. Please reopen this page and try again.";
+const eligibilityErrorMessage = "Unable to verify subscription status. Please try again.";
 
 export default function useUpgradeCheckout({ email, userId }: UpgradeScreenProps) {
   const hasValidLink = Boolean(userId && validate_email(email));
@@ -33,43 +35,78 @@ export default function useUpgradeCheckout({ email, userId }: UpgradeScreenProps
     }
     let active = true;
 
-    initializePaddle({
-      environment: PADDLE_ENVIRONMENT,
-      token: PADDLE_TOKEN,
-      eventCallback: (event) => {
-        if (!active) return;
-        if (event.name === "checkout.completed") {
-          setCompleted(true);
-          setCheckoutOpen(false);
-          notifyUpgradeWebView({ status: "success" }, notificationSent);
-        } else if (event.name === "checkout.closed") {
-          setCheckoutOpen(false);
-        } else if (event.name === "checkout.error" || event.name === "checkout.failed"
-          || event.name === "checkout.payment.error" || event.name === "checkout.payment.failed") {
-          setError("Checkout could not be completed. Please try again.");
-          setCheckoutOpen(false);
+    const eligibilityUrl = getCheckoutEligibilityUrl(email, userId);
+
+    async function setupUpgradeCheckout() {
+      if (eligibilityUrl) {
+        try {
+          const response = await fetch(eligibilityUrl, { cache: "no-store" });
+          const payload = (await response.json()) as { allowed?: boolean; reason?: string | null };
+          if (!active) return;
+          if (!response.ok || payload.allowed === false) {
+            const message =
+              payload.reason || "You already have an active or pending Premium subscription.";
+            setError(message);
+            notifyUpgradeWebView({
+              status: "error",
+              code: response.ok ? "already_subscribed" : "invalid_link",
+              message,
+            }, notificationSent);
+            return;
+          }
+        } catch {
+          if (!active) return;
+          setError(eligibilityErrorMessage);
           notifyUpgradeWebView({
-            status: "error", code: event.name,
-            message: "Checkout could not be completed. Please try again.",
+            status: "error",
+            code: "eligibility_check_failed",
+            message: eligibilityErrorMessage,
           }, notificationSent);
+          return;
         }
-      },
-    }).then((instance) => {
-      if (!active) return;
-      if (instance) setPaddle(instance);
-      else {
-        setError(unavailableMessage);
-        notifyUpgradeWebView({ status: "error", code: "initialization_failed", message: unavailableMessage }, notificationSent);
       }
-    }).catch(() => {
-      if (active) {
-        setError(unavailableMessage);
-        notifyUpgradeWebView({ status: "error", code: "initialization_failed", message: unavailableMessage }, notificationSent);
+
+      try {
+        const instance = await initializePaddle({
+          environment: PADDLE_ENVIRONMENT,
+          token: PADDLE_TOKEN,
+          eventCallback: (event) => {
+            if (!active) return;
+            if (event.name === "checkout.completed") {
+              setCompleted(true);
+              setCheckoutOpen(false);
+              notifyUpgradeWebView({ status: "success" }, notificationSent);
+            } else if (event.name === "checkout.closed") {
+              setCheckoutOpen(false);
+            } else if (event.name === "checkout.error" || event.name === "checkout.failed"
+              || event.name === "checkout.payment.error" || event.name === "checkout.payment.failed") {
+              setError("Checkout could not be completed. Please try again.");
+              setCheckoutOpen(false);
+              notifyUpgradeWebView({
+                status: "error", code: event.name,
+                message: "Checkout could not be completed. Please try again.",
+              }, notificationSent);
+            }
+          },
+        });
+        if (!active) return;
+        if (instance) setPaddle(instance);
+        else {
+          setError(unavailableMessage);
+          notifyUpgradeWebView({ status: "error", code: "initialization_failed", message: unavailableMessage }, notificationSent);
+        }
+      } catch {
+        if (active) {
+          setError(unavailableMessage);
+          notifyUpgradeWebView({ status: "error", code: "initialization_failed", message: unavailableMessage }, notificationSent);
+        }
       }
-    });
+    }
+
+    void setupUpgradeCheckout();
 
     return () => { active = false; };
-  }, [hasValidLink, configurationError]);
+  }, [configurationError, email, hasValidLink, userId]);
 
   const openCheckout = () => {
     if (!paddle || !hasValidLink || checkoutOpen || completed) return;

@@ -44,6 +44,12 @@ export default function SubscriptionDetails({
           )}
         </div>
       )}
+      {subscription.status === "past_due" && (
+        <div className="mt-2 rounded-md border border-amber-500/40 bg-amber-500/10 p-2 text-sm">
+          Your renewal payment failed and your subscription is past due. Please update your payment
+          method to keep your Premium features active.
+        </div>
+      )}
       {subscription.cancel_at === null && (
         <div className="flex flex-col sm:flex-row gap-2 mt-2">
           <SimpleButton
@@ -81,7 +87,7 @@ export default function SubscriptionDetails({
               }
             }}
           >
-            Manage Subscription
+            {subscription.status === "past_due" ? "Update Payment Method" : "Manage Subscription"}
           </SimpleButton>
         </div>
       )}
