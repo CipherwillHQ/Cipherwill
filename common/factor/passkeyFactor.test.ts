@@ -27,8 +27,12 @@ after(() => {
 });
 
 test("existing passkeys reproduce their exact original public and private keys", async () => {
-  const factor = await unlockPasskeyFactor("AAECAwQFBgc=", "04ead7fbacc6b56912eaae8e37aa899795eca5d52fc525f9baf9300a79bdde9384f90b2044ea8c1138caa9e5c983847a410706e87e65320e1afe0fed92475f0cdb");
-  assert.equal(factor.privateKey, "ea0b582df1653dfe613c93e743223db7cb6f7787350c017427f5458d7f794a76");
+  for (const host of ["cipherwill.com", "www.cipherwill.com"]) {
+    window.location.href = `https://${host}/app`;
+    const factor = await unlockPasskeyFactor("AAECAwQFBgc=", "04ead7fbacc6b56912eaae8e37aa899795eca5d52fc525f9baf9300a79bdde9384f90b2044ea8c1138caa9e5c983847a410706e87e65320e1afe0fed92475f0cdb");
+    assert.equal(factor.privateKey, "ea0b582df1653dfe613c93e743223db7cb6f7787350c017427f5458d7f794a76");
+    assert.equal(get.mock.calls.at(-1)!.arguments[0]!.publicKey!.rpId, "cipherwill.com");
+  }
 });
 
 test("enrollment produces public factor data that unlocks existing E0 encryption", async () => {
@@ -49,6 +53,25 @@ test("enrollment produces public factor data that unlocks existing E0 encryption
   assert.equal(request.userVerification, "required");
   assert.equal((request.challenge as Uint8Array).byteLength, 32);
   assert.notDeepEqual(request.challenge, creation.challenge);
+});
+
+test("production passkeys work across root and www hosts", async () => {
+  for (const [creationHost, unlockHost] of [["cipherwill.com", "www.cipherwill.com"], ["www.cipherwill.com", "cipherwill.com"]]) {
+    window.location.href = `https://${creationHost}/app`;
+    const factor = await createPasskeyFactor("user-123", "test@example.test", "Test");
+    assert.equal(create.mock.calls.at(-1)!.arguments[0]!.publicKey!.rp.id, "cipherwill.com");
+    window.location.href = `https://${unlockHost}/app`;
+    await unlockPasskeyFactor(factor.nonce, factor.publicKey);
+    assert.equal(get.mock.calls.at(-1)!.arguments[0]!.publicKey!.rpId, "cipherwill.com");
+  }
+});
+
+test("localhost passkeys retain their own relying party ID", async () => {
+  window.location.href = "http://localhost:3000/app";
+  const factor = await createPasskeyFactor("user-123", "test@example.test", "Test");
+  await unlockPasskeyFactor(factor.nonce, factor.publicKey);
+  assert.equal(create.mock.calls[0].arguments[0]!.publicKey!.rp.id, "localhost");
+  assert.equal(get.mock.calls[0].arguments[0]!.publicKey!.rpId, "localhost");
 });
 
 test("choosing a different passkey cannot unlock the selected factor", async () => {

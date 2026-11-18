@@ -10,13 +10,13 @@ const ec = new EC("secp256k1");
 
 export function getPasskeyDomain(): string {
   const domain = new URL(window.location.href).hostname;
-  if (domain !== "localhost" && domain !== "cipherwill.com") {
+  if (domain !== "localhost" && domain !== "cipherwill.com" && domain !== "www.cipherwill.com") {
     throw new Error("Passkeys can only be used on cipherwill.com.");
   }
   if (!navigator.credentials?.create || !navigator.credentials?.get) {
     throw new Error("Passkeys are unavailable. Update your browser or Android System WebView and try again.");
   }
-  return domain;
+  return domain === "localhost" ? domain : "cipherwill.com";
 }
 
 export function derivePasskeyFactor(rawId: ArrayBuffer, nonce: Uint8Array) {
