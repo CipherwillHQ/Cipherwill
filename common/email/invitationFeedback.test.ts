@@ -4,7 +4,7 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import invitationFeedback from "./invitationFeedback";
+import invitationFeedback, { isQuotaSkippedInvitation } from "./invitationFeedback";
 
 test("displays the first invitation as sent", () => {
   assert.equal(invitationFeedback({ status: "sent" }), "Invitation email sent.");
@@ -17,4 +17,9 @@ test("displays a provider failure as retryable", () => {
 });
 test("displays skipped invitations with their reason", () => {
   assert.equal(invitationFeedback({ status: "skipped", reason: "Email disabled" }), "Invitation email skipped. Email disabled");
+});
+test("identifies daily invitation quota skips", () => {
+  assert.equal(isQuotaSkippedInvitation({ status: "skipped", reason: "You've reached your daily invitation quota." }), true);
+  assert.equal(isQuotaSkippedInvitation({ status: "skipped", reason: "Email disabled" }), false);
+  assert.equal(isQuotaSkippedInvitation({ status: "sent" }), false);
 });

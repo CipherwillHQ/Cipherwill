@@ -4,6 +4,10 @@
 
 import type { InvitationEmailResult } from "@/types/interfaces";
 
+export function isQuotaSkippedInvitation(result: InvitationEmailResult): boolean {
+  return result.status === "skipped" && Boolean(result.reason?.toLowerCase().includes("daily invitation quota"));
+}
+
 export default function invitationFeedback(result: InvitationEmailResult): string {
   switch (result.status) {
     case "sent": return "Invitation email sent.";

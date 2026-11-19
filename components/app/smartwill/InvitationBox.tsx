@@ -9,7 +9,7 @@ import SimpleButton from "@/components/common/SimpleButton";
 import INVITE_USER from "@/graphql/ops/app/people/mutations/INVITE_USER";
 import { PersonRef } from "@/types/Will";
 import type { InviteUserData, InviteUserVariables } from "@/types/interfaces";
-import invitationFeedback from "@/common/email/invitationFeedback";
+import invitationFeedback, { isQuotaSkippedInvitation } from "@/common/email/invitationFeedback";
 import toast from "react-hot-toast";
 import LoadingIndicator from "../../common/LoadingIndicator";
 
@@ -52,7 +52,7 @@ export default function InvitationBox({
       const outcome = data.inviteUser.invitation_email;
       const message = invitationFeedback(outcome);
       if (sendEmail) setHasAttemptedEmail(true);
-      if (outcome.status === "failed" || (sendEmail && outcome.status === "skipped" && data.inviteUser.__typename !== "User")) {
+      if (outcome.status === "failed" || (sendEmail && outcome.status === "skipped" && !isQuotaSkippedInvitation(outcome) && data.inviteUser.__typename !== "User")) {
         setFeedback(message);
         return;
       }
