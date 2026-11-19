@@ -17,37 +17,40 @@ import DevOnly from "@/components/debug/DevOnly";
 import Link from "next/link";
 import SegmentsIntroduction from "@/components/app/dashboard/SegmentsIntroduction";
 import SecuredCounter from "@/components/app/dashboard/SecuredCounter";
+import HomeGuideGate from "@/components/app/dashboard/HomeGuideGate";
 
 export default function App() {
   return (
-    <div className="w-full">
-      <MobileMenu />
-      <Topbar />
-      <div className="px-2">
-        <div className="p-2">
-          <Greetings />
-        </div>
-        <div className="p-2">
-          <EmailVerificationCheck />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            <OnboardingChecklist />
-            {/* <PendingActionsBox /> */}
-            <SecuredCounter />
-            <FactorsSyncStatus />
-            <SegmentsIntroduction />
-            <ExecutorPermissions />
-            <GrantedBeneficiaryAccessList />
-            <DevOnly>
-              <Link
-                href="/executor"
-                className="border border-primary p-1 rounded-md"
-              >
-                Executor Dashboard
-              </Link>
-            </DevOnly>
+    <HomeGuideGate>
+      <div className="w-full">
+        <MobileMenu />
+        <Topbar />
+        <div className="px-2">
+          <div className="p-2">
+            <Greetings />
+          </div>
+          <div className="p-2">
+            <EmailVerificationCheck />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <OnboardingChecklist />
+              {/* <PendingActionsBox /> */}
+              <SecuredCounter />
+              <FactorsSyncStatus />
+              <SegmentsIntroduction />
+              <ExecutorPermissions />
+              <GrantedBeneficiaryAccessList />
+              <DevOnly>
+                <Link
+                  href="/executor"
+                  className="border border-primary p-1 rounded-md"
+                >
+                  Executor Dashboard
+                </Link>
+              </DevOnly>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </HomeGuideGate>
   );
 }

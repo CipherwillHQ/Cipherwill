@@ -6,8 +6,12 @@ import assert from "node:assert/strict";
 import { renderToStaticMarkup } from "react-dom/server";
 
 let pathname = "/app/guide";
+let isGuideHome = false;
 mock.module("next/navigation", { namedExports: { usePathname: () => pathname } });
 mock.module("../Sidebar/index.tsx", { defaultExport: () => <aside>App navigation</aside> });
+mock.module("../../../common/analytics/useHomeGuideExperiment.ts", {
+  namedExports: { useHomeGuideExperiment: () => ({ variant: isGuideHome ? "guide" : "control", ready: true, isGuideHome }) },
+});
 
 test("the guide retains the sidebar and fills the content area without a reading-width restriction", async () => {
   const { default: Shell } = await import("./AppPageShell");
@@ -22,9 +26,20 @@ test("the guide retains the sidebar and fills the content area without a reading
 test("ordinary app pages keep their existing sidebar, scrolling, and content width", async () => {
   const { default: Shell } = await import("./AppPageShell");
   pathname = "/app";
+  isGuideHome = false;
   const html = renderToStaticMarkup(<Shell><main>Dashboard</main></Shell>);
   assert.match(html, /App navigation/);
   assert.match(html, /cw-content-width-wrapper/);
   assert.match(html, /pb-40/);
   assert.match(html, /Dashboard/);
+});
+
+test("/app uses full-area guide shell when home-guide-experiment assigns guide", async () => {
+  const { default: Shell } = await import("./AppPageShell");
+  pathname = "/app";
+  isGuideHome = true;
+  const html = renderToStaticMarkup(<Shell><main>Guide home</main></Shell>);
+  assert.match(html, /flex min-h-full w-full flex-col/);
+  assert.doesNotMatch(html, /cw-content-width-wrapper|pb-40/);
+  assert.match(html, /Guide home/);
 });

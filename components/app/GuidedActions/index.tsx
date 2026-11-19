@@ -7,6 +7,7 @@ import { usePostHog } from "posthog-js/react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSession } from "@/contexts/SessionContext";
 import MobileFloatingMenu from "@/components/app/Sidebar/MobileFloatingMenu";
+import ProfilePopup from "@/components/app/Topbar/ProfilePopup";
 import GuidePanel from "./components/GuidePanel";
 import GuideOverviewSlide from "./components/GuideOverviewSlide";
 import useObjectiveEngine from "./hooks/useObjectiveEngine";
@@ -63,6 +64,7 @@ function GuidedActionsView() {
 
   return <main className="cw-private-guidance ph-no-capture sentry-block relative flex min-h-full w-full flex-1 flex-col bg-dashboardCream dark:bg-darkCanvas">
     <div className="absolute left-5 top-5 z-10 sm:hidden"><MobileFloatingMenu /></div>
+    {!active && <div className="absolute right-5 top-5 z-10"><ProfilePopup /></div>}
     {active ? <GuidePanel current={current} started={started} loading={loading} error={error} postActionStatus={postActionStatus}
       onClose={returnToOverview} onRetry={retry} onContinue={advance} onStart={startObjective} onDefer={defer} onSubmit={(value) => engine.submit(value)} />
       : <GuideOverviewSlide onStart={start} setupLoading={loading} setupAvailable={Boolean(current)} setupError={Boolean(error)}

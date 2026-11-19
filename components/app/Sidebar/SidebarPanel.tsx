@@ -19,10 +19,12 @@ import LiveChatBox from "../LiveChatBox";
 import { motion } from "framer-motion";
 import { useLayoutEffect, useRef, useState } from "react";
 import { useFeatureFlagEnabled } from "posthog-js/react";
+import { useHomeGuideExperiment } from "@/common/analytics/useHomeGuideExperiment";
 
 export default function SidebarPanel() {
   const pathname = usePathname();
   const chatEnabled = useFeatureFlagEnabled("chat-feature");
+  const { isGuideHome } = useHomeGuideExperiment();
   const { lock, session } = useSession();
   const { preferences } = useUserContext();
   const menuItemsRef = useRef<HTMLDivElement>(null);
@@ -63,7 +65,7 @@ export default function SidebarPanel() {
     return () => {
       window.removeEventListener("resize", updateActiveSelection);
     };
-  }, [pathname, preferences, chatEnabled]);
+  }, [pathname, preferences, chatEnabled, isGuideHome]);
 
   return (
     <div className="flex flex-col flex-1 justify-between overflow-hidden">
@@ -87,6 +89,9 @@ export default function SidebarPanel() {
           )}
           {menu.map((item, index) => {
             if (item.path === "/app/chat" && chatEnabled !== true) {
+              return null;
+            }
+            if (item.path === "/app/guide" && isGuideHome) {
               return null;
             }
             if ((item as Divider).divider) {

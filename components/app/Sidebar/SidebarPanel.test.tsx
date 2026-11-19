@@ -8,11 +8,15 @@ import { pathToFileURL } from "node:url";
 import { renderToStaticMarkup } from "react-dom/server";
 
 let chatEnabled: boolean | undefined;
+let isGuideHome = false;
 const featureFlag = mock.fn((_flag: string) => chatEnabled);
 
 mock.module("next/navigation", { namedExports: { usePathname: () => "/app/chat" } });
 mock.module(pathToFileURL(require.resolve("posthog-js/react")), {
   namedExports: { useFeatureFlagEnabled: featureFlag },
+});
+mock.module("../../../common/analytics/useHomeGuideExperiment.ts", {
+  namedExports: { useHomeGuideExperiment: () => ({ variant: isGuideHome ? "guide" : "control", ready: true, isGuideHome }) },
 });
 mock.module("../../../contexts/SessionContext/index.tsx", {
   namedExports: { useSession: () => ({ lock: mock.fn(), session: null }) },
@@ -28,6 +32,7 @@ mock.module("../LiveChatBox.tsx", { defaultExport: () => null });
 
 beforeEach(() => {
   featureFlag.mock.resetCalls();
+  isGuideHome = false;
 });
 
 for (const flagState of [true, false, undefined]) {
@@ -56,3 +61,13 @@ for (const flagState of [true, false, undefined]) {
     assert.deepEqual(featureFlag.mock.calls[0]?.arguments, ["chat-feature"]);
   });
 }
+
+test("sidebar hides duplicate Guide item when home-guide-experiment assigns guide", async () => {
+  const { default: SidebarPanel } = await import("./SidebarPanel");
+  chatEnabled = false;
+  isGuideHome = true;
+  const markup = renderToStaticMarkup(<SidebarPanel />);
+  assert.doesNotMatch(markup, /href="\/app\/guide"/);
+  assert.doesNotMatch(markup, />Guide<\/div>/);
+  assert.match(markup, /href="\/app"/);
+});
