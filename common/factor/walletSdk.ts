@@ -20,7 +20,7 @@ export function getWalletSdkOptions(): MetaMaskSDKOptions {
   return {
     dappMetadata: {
       name: "Cipherwill",
-      url: typeof window === "undefined" ? "https://cipherwill.com" : window.location.href,
+      url: typeof window === "undefined" ? "https://www.cipherwill.com" : window.location.href,
       ...(mobile ? { scheme: "cipherwill-wallet" } : {}),
     },
     ...(mobile ? { preferDesktop: false, useDeeplink: true, openDeeplink: openWalletDeeplink } : {}),

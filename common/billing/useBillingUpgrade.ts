@@ -60,7 +60,7 @@ export default function useBillingUpgrade() {
 
     const user_id = account.id;
     if (isMobileClient()) {
-      const url = new URL("/upgrade", "https://cipherwill.com");
+      const url = new URL("/upgrade", "https://www.cipherwill.com");
       url.searchParams.set("email", account.email);
       url.searchParams.set("user_id", user_id);
       window.location.assign(url.toString());

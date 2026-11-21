@@ -7,6 +7,7 @@
 const { version } = require("./package.json");
 const path = require('path')
 const upgradeHeaders = require("./common/billing/upgradeHeaders");
+const canonicalRedirects = require("./common/url/canonicalRedirects");
 
 const siteCacheHeaders = [
   {
@@ -43,6 +44,9 @@ const nextConfig = {
   output: "standalone",
   turbopack: {
     root: path.join(__dirname, "."),
+  },
+  async redirects() {
+    return canonicalRedirects;
   },
   async headers() {
     return [

@@ -52,7 +52,7 @@ test("mobile opens the public upgrade URL with encoded database ID and email wit
   paddle = undefined;
   await useBillingUpgrade()();
   const url = new URL(assign.mock.calls[0].arguments[0]);
-  assert.equal(url.origin, "https://cipherwill.com");
+  assert.equal(url.origin, "https://www.cipherwill.com");
   assert.equal(url.pathname, "/upgrade");
   assert.equal(url.searchParams.get("email"), account!.email);
   assert.equal(url.searchParams.get("user_id"), account!.id);
