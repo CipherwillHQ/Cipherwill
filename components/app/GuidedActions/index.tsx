@@ -10,6 +10,7 @@ import MobileFloatingMenu from "@/components/app/Sidebar/MobileFloatingMenu";
 import ProfilePopup from "@/components/app/Topbar/ProfilePopup";
 import GuidePanel from "./components/GuidePanel";
 import GuideOverviewSlide from "./components/GuideOverviewSlide";
+import HowThisWorksButton from "./components/HowThisWorksButton";
 import useObjectiveEngine from "./hooks/useObjectiveEngine";
 import useGuidedTimedDisplay from "./hooks/useGuidedTimedDisplay";
 
@@ -63,7 +64,10 @@ function GuidedActionsView() {
   useGuidedTimedDisplay(active, current, error, advance);
 
   return <main className="cw-private-guidance ph-no-capture sentry-block relative flex min-h-full w-full flex-1 flex-col bg-dashboardCream dark:bg-darkCanvas">
-    <div className="absolute left-5 top-5 z-10 sm:hidden"><MobileFloatingMenu /></div>
+    <div className="absolute left-5 top-5 z-10 flex items-center gap-3">
+      <div className="sm:hidden"><MobileFloatingMenu /></div>
+      {!active && <HowThisWorksButton />}
+    </div>
     {!active && <div className="absolute right-5 top-5 z-10"><ProfilePopup /></div>}
     {active ? <GuidePanel current={current} started={started} loading={loading} error={error} postActionStatus={postActionStatus}
       onClose={returnToOverview} onRetry={retry} onContinue={advance} onStart={startObjective} onDefer={defer} onSubmit={(value) => engine.submit(value)} />

@@ -9,12 +9,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { TbPlayerPlayFilled } from "react-icons/tb";
+import { CIPHERWILL_EXPLAINER } from "@/common/constant";
+import VideoPopup from "@/components/public/VideoPopup";
 import { constellationCards } from "./heroData";
 import HeroCard from "./HeroCard";
 
 export default function Hero() {
   const [hoveredCardId, setHoveredCardId] = useState<string | null>(null);
   const [screenSize, setScreenSize] = useState<"mobile" | "tablet" | "desktop">("desktop");
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -74,6 +78,16 @@ export default function Hero() {
           <p className="mx-auto mt-4 sm:mt-6 max-w-[220px] sm:max-w-xl lg:max-w-2xl text-base lg:text-lg text-forest/70 dark:text-cream/70 font-medium leading-relaxed font-gilroy">
             Let understand how to put your digital legacy on autopilot with encryption, so when the time comes, your data is delivered to your loved ones.
           </p>
+          <div className="mt-6 sm:mt-8 flex justify-center pointer-events-auto">
+            <button
+              type="button"
+              onClick={() => setIsVideoOpen(true)}
+              className="inline-flex items-center justify-center gap-2.5 min-h-[44px] px-6 py-3 rounded-full bg-primary hover:bg-primary-700 active:scale-[0.98] text-white font-gilroy font-semibold text-sm sm:text-base shadow-level-1 hover:shadow-level-2 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-cream"
+            >
+              <TbPlayerPlayFilled className="w-4 h-4 shrink-0" />
+              <span>Watch Video</span>
+            </button>
+          </div>
         </div>
 
         {/* Radial Cards Constellation Container */}
@@ -133,6 +147,13 @@ export default function Hero() {
           })}
         </div>
       </div>
+
+      <VideoPopup
+        open={isVideoOpen}
+        onClose={() => setIsVideoOpen(false)}
+        videoUrl={CIPHERWILL_EXPLAINER}
+        title="How Cipherwill Works"
+      />
     </section>
   );
 }

@@ -15,3 +15,10 @@ export interface AssetNode {
   decayStatus: string;
   timeframe: string;
 }
+
+export interface VideoPopupProps {
+  open: boolean;
+  onClose: () => void;
+  videoUrl: string;
+  title?: string;
+}

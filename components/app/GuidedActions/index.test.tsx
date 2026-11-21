@@ -44,6 +44,7 @@ mock.module("../../../contexts/AuthContext/index.tsx", { namedExports: { useAuth
 mock.module("../../../contexts/SessionContext/index.tsx", { namedExports: { useSession: () => ({ session: null }) } });
 mock.module("../Sidebar/MobileFloatingMenu.tsx", { defaultExport: () => <button>App menu</button> });
 mock.module("../Topbar/ProfilePopup.tsx", { defaultExport: () => <button aria-label="Account menu">Profile</button> });
+mock.module("./components/HowThisWorksButton.tsx", { defaultExport: () => <button>How this works?</button> });
 mock.module("./hooks/useObjectiveEngine.ts", { defaultExport: () => ({ ...engine.getSnapshot(), engine }) });
 mock.module("./hooks/useGuidedTimedDisplay.ts", { defaultExport: (active: boolean) => { timerActive = active; } });
 mock.module("./components/GuidePanel.tsx", { defaultExport: (props: GuidancePanelProps) => { panel = props; return <section>Objective slide</section>; } });
@@ -75,6 +76,7 @@ test("overview is first; Let's do this later returns there without completing or
   const initial = await renderPage();
   assert.match(initial, /Account overview/);
   assert.match(initial, /App menu/);
+  assert.match(initial, /How this works\?/);
   assert.match(initial, /aria-label="Account menu"/);
   assert.doesNotMatch(initial, /<header|Leave setup/);
   assert.equal(timerActive, false);
@@ -82,6 +84,7 @@ test("overview is first; Let's do this later returns there without completing or
   const activeMarkup = await renderPage();
   assert.match(activeMarkup, /Objective slide/);
   assert.doesNotMatch(activeMarkup, /aria-label="Account menu"/);
+  assert.doesNotMatch(activeMarkup, /How this works\?/);
   assert.equal(timerActive, true);
   assert.equal(panel.started, false);
   panel.onStart(); await renderPage();
