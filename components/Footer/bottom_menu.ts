@@ -98,6 +98,10 @@ const menu = [
         path: "/blog",
       },
       {
+        title: "Research",
+        path: "/research",
+      },
+      {
         title: "Download App",
         path: "/download",
       },

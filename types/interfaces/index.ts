@@ -17,6 +17,7 @@ export * from './press';
 export * from './pod';
 export * from './compare';
 export * from './persona';
+export * from './research';
 export * from './blog';
 export * from './landing';
 export * from './executor';
